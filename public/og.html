@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Declarix OG</title>
+    <style>
+      :root {
+        --ink: #16313d;
+        --paper: #f7f6f1;
+        --cleared: #1b7a4b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        width: 1200px;
+        height: 630px;
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: Arial, sans-serif;
+      }
+
+      .frame {
+        position: relative;
+        width: 1152px;
+        height: 582px;
+        padding: 44px;
+        border: 2px solid var(--ink);
+        overflow: hidden;
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+
+      h1 {
+        position: absolute;
+        left: 44px;
+        bottom: 132px;
+        max-width: 760px;
+        margin: 0;
+        font-size: 72px;
+        font-weight: 900;
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .bottom {
+        position: absolute;
+        left: 44px;
+        bottom: 44px;
+        color: #5c6e76;
+      }
+
+      .stamp {
+        position: absolute;
+        right: 58px;
+        bottom: 54px;
+        display: grid;
+        place-items: center;
+        width: 210px;
+        height: 210px;
+        border: 8px double var(--cleared);
+        color: var(--cleared);
+        border-radius: 50%;
+        rotate: 15deg;
+        text-align: center;
+      }
+
+      .stamp strong {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 30px;
+        line-height: 1.05;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <div class="mono">DECLARIX · FORM DCLRX-H1</div>
+      <h1>Customer paperwork in.<br />Entry-ready pack out.</h1>
+      <div class="mono bottom">PRICED PER ENTRY · NOTHING STORED</div>
+      <div class="stamp"><strong>PACK<br />COMPLETE</strong></div>
+    </main>
+  </body>
+</html>
