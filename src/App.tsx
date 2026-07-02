@@ -7,7 +7,7 @@ import { SplitText } from 'gsap/SplitText'
 import Lenis from 'lenis'
 import { CONFIG, isConfigured } from './config'
 import { initAnalytics, track } from './analytics'
-import { documents, flights, packRows, questions, specimens } from './data'
+import { documents, flights, mobileMovements, packRows, questions, specimens } from './data'
 
 type ButtonTone = 'primary' | 'secondary'
 
@@ -33,6 +33,18 @@ function buildMailto(src: string) {
     'Attached: one anonymised job.\nOur declaration system: [Sequoia / Descartes / other]\nEntries per week, roughly: [ ]\nSend the pack back to: [ ]',
   )
   return `mailto:${CONFIG.packEmail}?subject=${subject}&body=${body}`
+}
+
+function googleCalendarEmbedUrl() {
+  if (!isConfigured(CONFIG.googleCalendarUrl)) return ''
+  try {
+    const url = new URL(CONFIG.googleCalendarUrl)
+    if (url.hostname !== 'calendar.google.com') return ''
+    if (!url.searchParams.has('gv')) url.searchParams.set('gv', 'true')
+    return url.toString()
+  } catch {
+    return ''
+  }
 }
 
 function Button({
@@ -181,7 +193,7 @@ function Header({
       {multimodalLive ? (
         <a className="multimodal-bar" href="#book" onClick={useMultimodalSource}>
           <span>
-            MET US AT MULTIMODAL (NEC · 30 JUN-2 JUL)? Mention it when you book — we'll bring
+            MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll bring
             your stand notes to the call. →
           </span>
           <button
@@ -310,6 +322,15 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
         aria-label="A messy customs job assembles into an entry-ready pack with evidence pinned to every field."
       >
         <div className="assembly-stage">
+          <div className="mobile-story-steps" aria-label="Mobile assembly sequence">
+            {mobileMovements.map((movement) => (
+              <article className="mobile-story-step" key={movement.tag}>
+                <span>{movement.tag}</span>
+                <strong>{movement.title}</strong>
+                <p>{movement.copy}</p>
+              </article>
+            ))}
+          </div>
           <div className="assembly-caption">
             <p className="type-caption caption-one">08:52 — THE JOB LANDS.</p>
             <p className="type-caption caption-two">
@@ -637,47 +658,31 @@ function PilotSection() {
   )
 }
 
-function CalEmbed({ source }: { source: string }) {
-  useEffect(() => {
-    if (!isConfigured(CONFIG.calLink)) return
-    const script = document.createElement('script')
-    script.async = true
-    script.src = 'https://app.cal.com/embed/embed.js'
-    document.body.appendChild(script)
+function GoogleCalendarEmbed({ source }: { source: string }) {
+  const embedUrl = googleCalendarEmbedUrl()
 
-    const handler = (event: MessageEvent) => {
-      if (typeof event.data === 'object' && event.data?.type === 'bookingSuccessful') {
-        track('booking_confirmed', { source })
-      }
-    }
-    window.addEventListener('message', handler)
-    return () => {
-      window.removeEventListener('message', handler)
-      script.remove()
-    }
-  }, [source])
-
-  if (!isConfigured(CONFIG.calLink)) {
+  if (!embedUrl) {
     return (
       <div className="cal-placeholder">
-        <span>CAL.COM LINK NEEDED</span>
-        <p>Add the Cal.com event slug to CONFIG.calLink to turn this into the live diary.</p>
+        <span>GOOGLE CALENDAR LINK NEEDED</span>
+        <p>
+          Paste the Google Calendar appointment schedule iframe URL into
+          CONFIG.googleCalendarUrl to turn this into the live diary.
+        </p>
       </div>
     )
   }
 
   return (
-    <div
-      className="cal-inline-widget"
-      data-cal-config={JSON.stringify({
-        theme: 'light',
-        layout: 'month_view',
-        brandColor: '#1B7A4B',
-        metadata: { src: source },
-      })}
-      data-cal-link={CONFIG.calLink}
-    >
+    <div className="cal-inline-widget">
       <p className="mono-note">LOADING THE DIARY...</p>
+      <iframe
+        allowFullScreen
+        loading="lazy"
+        onLoad={() => track('booking_frame_load', { provider: 'google', source })}
+        src={embedUrl}
+        title="Book a 20-minute numbers call"
+      />
     </div>
   )
 }
@@ -712,7 +717,7 @@ function BookSection({
             </p>
             <div className="card-actions">
               <Button href={mailto} onClick={() => track('cta_pack_mailto', { source })}>
-                Email the job to {CONFIG.packEmail}
+                Email {CONFIG.packEmail}
               </Button>
               <button className="copy-chip" type="button" onClick={copyEmail}>
                 {copied ? 'COPIED ✓' : 'COPY ADDRESS'}
@@ -729,7 +734,7 @@ function BookSection({
               Bring one week's real volume. We rebuild the cost-per-entry model live and you leave
               with the spreadsheet either way.
             </p>
-            <CalEmbed source={source} />
+            <GoogleCalendarEmbed source={source} />
             <a className="text-link" href={`mailto:${CONFIG.packEmail}`}>
               Calendar tools not your thing? Email {CONFIG.packEmail} with two times that suit. →
             </a>
@@ -743,7 +748,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.0 · THIS PAGE SETS NO MARKETING COOKIES — THERE IS NOTHING TO CONSENT TO.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.0 · THIS PAGE SETS NO MARKETING COOKIES — GOOGLE SERVES THE BOOKING FRAME WHEN CONNECTED.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -804,7 +809,7 @@ function PrivacyPage() {
           <p>
             This site may use cookieless PostHog analytics when a key is configured. The analytics
             setup uses memory persistence and does not set marketing cookies. Booking is handled by
-            Cal.com only when a calendar link is connected.
+            Google Calendar only when an appointment schedule link is connected.
           </p>
           <p>
             For subprocessors, security questions, or deletion evidence, contact {CONFIG.packEmail}.
@@ -865,9 +870,12 @@ function HomePage() {
       }
 
       if (!reduceMotion && wide) {
-        gsap.set('.flight-chip, .flag-cards article, .evidence-copy, .handover-card, .stamp-animated', {
-          autoAlpha: 0,
-        })
+        gsap.set(
+          '.entry-grid, .flight-chip, .flag-cards article, .evidence-copy, .handover-card, .stamp-animated',
+          {
+            autoAlpha: 0,
+          },
+        )
         gsap.set('.stamp-animated', { scale: 1.6, rotate: -8 })
 
         const timeline = gsap.timeline({
@@ -911,6 +919,14 @@ function HomePage() {
           .to('.stamp-animated', { autoAlpha: 0.92, scale: 1, rotate: -3, duration: 0.035, ease: 'back.out(3)' }, 0.965)
           .to('.handover-card', { y: 3, duration: 0.02, yoyo: true, repeat: 1 }, 0.97)
       }
+
+      const scrollToHash = () => {
+        if (!window.location.hash) return
+        const target = document.querySelector<HTMLElement>(window.location.hash)
+        target?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
+      }
+      window.setTimeout(scrollToHash, 80)
+      window.setTimeout(scrollToHash, 850)
 
       gsap.fromTo(
         '.shred-doc i',

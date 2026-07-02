@@ -92,32 +92,92 @@ export const documents = [
       'Ship to: Meridian Housewares Ltd, Leicester',
       'CIF FELIXSTOWE',
       '¥ 4,862,400 · JPY',
+      'LINE 01 STONEWARE MUGS · 180 CTN',
+      'LINE 02 SIDE PLATES · 220 CTN',
+      'PAGE 1 OF 2 · TOTALS CARRIED',
     ],
   },
   {
     tag: 'D2 · INVOICE OTC-4488',
     title: 'ADDITIONAL STONEWARE LINES',
-    lines: ['Lines 19-43 · JP origin', 'Material: stoneware', 'Totals reconciled ✓'],
+    lines: [
+      'Lines 19-43 · JP origin',
+      'Material: stoneware',
+      'Totals reconciled ✓',
+      'LINE 41 BOWLS · 72 CTN',
+      'AMALGAMATION NOTE: OTC-4471 + OTC-4488',
+    ],
   },
   {
     tag: 'D3 · PACKING LIST',
     title: '640 CARTONS / 16 PALLETS',
-    lines: ['8,412 KG GROSS', '7,706 KG NET', 'Marks: DX-2216'],
+    lines: [
+      '8,412 KG GROSS',
+      '7,706 KG NET',
+      'Marks: DX-2216',
+      'PALLET 01-08 · FELIXSTOWE',
+      'PALLET 09-16 · FELIXSTOWE',
+    ],
   },
   {
     tag: 'D4 · BILL OF LADING MAEU 2264 8891',
     title: 'PORT OF LOADING: OSAKA',
-    lines: ['Previous document: N705', 'Arrival: GBFXT', 'Container: MRKU 118204-7'],
+    lines: [
+      'Previous document: N705',
+      'Arrival: GBFXT',
+      'Container: MRKU 118204-7',
+      'Vessel: MAERSK AVON',
+      'ETA: 09 JUL · TERMS CHECKED',
+    ],
   },
   {
     tag: 'D5 · EMAIL — RE: URGENT FELIXSTOWE',
     title: '14:22 FROM CUSTOMER',
-    lines: ['Need this cleared tomorrow.', 'Terms may be CIP?', 'Packing list attached.'],
+    lines: [
+      'Need this cleared tomorrow.',
+      'Terms may be CIP?',
+      'Packing list attached.',
+      'Please combine both invoices.',
+      'Call if tariff code missing.',
+    ],
   },
   {
     tag: 'D6 · PHONE PHOTO DELIVERY NOTE',
     title: 'DELIVERY NOTE',
-    lines: ['Photo skewed 4°', 'Pallet count confirmed', 'Two signatures visible'],
+    lines: [
+      'Photo skewed 4°',
+      'Pallet count confirmed',
+      'Two signatures visible',
+      'Warehouse copy · partial glare',
+    ],
+  },
+]
+
+export const mobileMovements = [
+  {
+    tag: 'MV-1 · THE MESS',
+    title: '08:52 — the job lands.',
+    copy: '6 attachments, 3 formats, 43 lines, 2 invoices. The stack arrives exactly how your customer sends it.',
+  },
+  {
+    tag: 'MV-2 · THE READ',
+    title: 'Values lift into the pack.',
+    copy: 'Exporter, importer, terms, totals, packages, mass, previous document and origin move into their rows.',
+  },
+  {
+    tag: 'MV-3 · THE FLAGS',
+    title: 'Missing facts are surfaced.',
+    copy: 'Commodity code not stated. Incoterm conflict. The question is raised with evidence instead of guessed.',
+  },
+  {
+    tag: 'MV-4 · THE EVIDENCE',
+    title: 'Every field shows its working.',
+    copy: 'Tap a row and the source document, page and line stay attached to the value your clerk checks.',
+  },
+  {
+    tag: 'MV-5 · THE HANDOVER',
+    title: 'The pack is ready for your system.',
+    copy: 'The finished pack seats into Sequoia, Descartes e-Customs or your requested CSV format.',
   },
 ]
 

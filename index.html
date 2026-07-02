@@ -9,26 +9,189 @@
     />
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#F7F6F1" />
-    <link rel="canonical" href="https://getdeclarix.com/" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://cleanerbeybe.github.io/declarix-site/" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Declarix — customer paperwork in, entry-ready pack out" />
     <meta
       property="og:description"
       content="CDS-ready packs for Sequoia or Descartes, with evidence pinned to every field and nothing stored."
     />
-    <meta property="og:image" content="https://getdeclarix.com/og.png" />
+    <meta property="og:image" content="https://cleanerbeybe.github.io/declarix-site/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Declarix — customer paperwork in, entry-ready pack out" />
     <meta
       name="twitter:description"
       content="Send one anonymised ugly pack and see the entry-ready pack come back."
     />
-    <meta name="twitter:image" content="https://getdeclarix.com/og.png" />
+    <meta name="twitter:image" content="https://cleanerbeybe.github.io/declarix-site/og.png" />
     <title>Declarix — customer paperwork in, entry-ready pack out</title>
+    <style>
+      :root {
+        --ink: #16313d;
+        --paper: #f7f6f1;
+        --field: #fff;
+        --cleared: #1b7a4b;
+        --muted: #5c6e76;
+        --manifest: #c77b27;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: Arial, sans-serif;
+      }
+
+      .pre-render-frame {
+        min-height: calc(100svh - 32px);
+        margin: 16px;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+      }
+
+      .pre-render-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--field);
+      }
+
+      .pre-render-wordmark,
+      .pre-render-book {
+        padding: 22px 24px;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+
+      .pre-render-book {
+        color: var(--paper);
+        background: var(--cleared);
+        text-decoration: none;
+      }
+
+      .pre-render-bar {
+        padding: 12px 20px;
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--manifest);
+        font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        text-align: center;
+      }
+
+      .pre-render-hero {
+        display: grid;
+        place-items: center;
+        min-height: 78svh;
+        padding: 48px 20px;
+        text-align: center;
+      }
+
+      .pre-render-hero > div {
+        display: grid;
+        justify-items: center;
+        gap: 18px;
+        max-width: 980px;
+      }
+
+      .pre-render-kicker,
+      .pre-render-price {
+        color: var(--muted);
+        font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        letter-spacing: 0.1em;
+      }
+
+      .pre-render-hero h1 {
+        margin: 0;
+        font-size: clamp(36px, 8vw, 76px);
+        font-weight: 900;
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .pre-render-hero p {
+        max-width: 58ch;
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+
+      .pre-render-ctas {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .pre-render-ctas a {
+        padding: 16px 24px;
+        border: 1.5px solid var(--ink);
+        color: var(--ink);
+        font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+      }
+
+      .pre-render-ctas a:last-child {
+        color: var(--paper);
+        border-color: var(--cleared);
+        background: var(--cleared);
+      }
+
+      @media (max-width: 620px) {
+        .pre-render-frame {
+          min-height: calc(100svh - 16px);
+          margin: 8px;
+        }
+
+        .pre-render-hero h1 {
+          font-size: 26px;
+        }
+
+        .pre-render-hero h1 span {
+          white-space: nowrap;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="pre-render-frame">
+        <header class="pre-render-header">
+          <div class="pre-render-wordmark">DECLARIX</div>
+          <a class="pre-render-book" href="#book">BOOK THE CALL</a>
+        </header>
+        <div class="pre-render-bar">
+          MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll bring your stand notes to the call. →
+        </div>
+        <main class="pre-render-hero">
+          <div>
+            <div class="pre-render-kicker">CUSTOMS ENTRY PREPARATION — FOR BROKERS, NOT INSTEAD OF THEM</div>
+            <h1><span>Customer paperwork in.</span><br /><span>Entry-ready pack out.</span></h1>
+            <p>
+              Declarix reads the whole job — any file, straight off a forwarded email — and returns a
+              CDS-ready pack for Sequoia or Descartes, with the evidence pinned to every field.
+            </p>
+            <div class="pre-render-price">PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS</div>
+            <div class="pre-render-ctas">
+              <a href="mailto:pack@getdeclarix.com">SEND ONE UGLY PACK</a>
+              <a href="#book">BOOK THE 20-MINUTE NUMBERS CALL</a>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <noscript>
+      <div class="pre-render-frame">
+        <main class="pre-render-hero">
+          <div>
+            <h1>Customer paperwork in.<br />Entry-ready pack out.</h1>
+            <p>JavaScript is required for the interactive demo. Email pack@getdeclarix.com to start.</p>
+          </div>
+        </main>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

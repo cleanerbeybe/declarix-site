@@ -35,6 +35,10 @@ html {
   scroll-behavior: smooth;
 }
 
+[id] {
+  scroll-margin-top: 128px;
+}
+
 body {
   min-width: 320px;
   margin: 0;
@@ -280,6 +284,7 @@ main,
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
   min-height: 48px;
   padding: 16px 26px;
   border: var(--border-w) solid currentColor;
@@ -288,6 +293,8 @@ main,
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+  text-align: center;
   text-decoration: none;
   text-transform: uppercase;
   transition:
@@ -358,6 +365,7 @@ main,
   font-weight: 900;
   line-height: 1.02;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .hero-line {
@@ -526,6 +534,10 @@ main,
   z-index: 4;
 }
 
+.mobile-story-steps {
+  display: none;
+}
+
 .type-caption {
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -615,7 +627,9 @@ main,
   top: 448px;
   left: 92px;
   rotate: 7deg;
-  transform: perspective(700px) rotateX(5deg) skewX(-2deg);
+  background: #fbf4e8;
+  box-shadow: inset 0 0 42px rgb(22 49 61 / 0.08);
+  transform: perspective(700px) rotateX(5deg) rotateY(-4deg) skewX(-2deg);
 }
 
 .scan-band {
@@ -697,6 +711,7 @@ main,
 .entry-grid-row strong {
   font-size: 12px;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .entry-grid-row.is-selected {
@@ -1287,9 +1302,19 @@ input[type='range'] {
 
 .cal-inline-widget,
 .cal-placeholder {
+  position: relative;
   min-height: 560px;
   border: var(--border-w) solid var(--ink);
   background: var(--paper);
+  overflow: hidden;
+}
+
+.cal-inline-widget iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .cal-placeholder {
@@ -1482,6 +1507,36 @@ input[type='range'] {
     padding: 22px 16px 26px;
   }
 
+  .mobile-story-steps {
+    display: grid;
+    gap: 10px;
+    order: -3;
+  }
+
+  .mobile-story-step {
+    display: grid;
+    gap: 7px;
+    padding: 14px;
+    background: var(--field);
+    border: var(--border-w) solid var(--ink);
+  }
+
+  .mobile-story-step span {
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .mobile-story-step strong {
+    font-size: 18px;
+  }
+
+  .mobile-story-step p {
+    max-width: none;
+    font-size: 14px;
+  }
+
   .assembly-caption {
     position: static;
     order: -2;
@@ -1508,7 +1563,7 @@ input[type='range'] {
   }
 
   .paper-doc-6 {
-    transform: none;
+    transform: perspective(700px) rotateX(3deg) rotateY(-3deg) skewX(-1deg);
   }
 
   .scan-band,
@@ -1623,7 +1678,12 @@ input[type='range'] {
   }
 
   .hero-title {
-    font-size: clamp(40px, 15vw, 56px);
+    font-size: 26px;
+    line-height: 1.02;
+  }
+
+  .hero-line > span {
+    white-space: nowrap;
   }
 
   .hero-pile {
