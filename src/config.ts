@@ -1,5 +1,5 @@
 export const CONFIG = {
-  domain: 'cleanerbeybe.github.io/declarix-site',
+  domain: 'getdeclarix.com',
   packEmail: 'pack@getdeclarix.com',
   googleCalendarUrl: '',
   companyLegal: 'Declarix Ltd',
