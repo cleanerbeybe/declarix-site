@@ -25,6 +25,7 @@ jobs:
         env:
           VITE_BASE_PATH: /
       - run: cp dist/index.html dist/404.html
+      - run: touch dist/.nojekyll
       - name: Publish gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
