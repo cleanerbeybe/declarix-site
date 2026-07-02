@@ -1,7 +1,9 @@
 export const CONFIG = {
   domain: 'getdeclarix.com',
   packEmail: 'pack@getdeclarix.com',
-  googleCalendarUrl: '',
+  zohoBookingScriptUrl: 'https://bookings.nimbuspop.com/assets/embed.js',
+  zohoBookingUrl: 'https://declarixlimited.zohobookings.eu/portal-embed#/declarixlimited',
+  bookingEmbedHeight: '600px',
   companyLegal: 'Declarix Ltd',
   companyNo: 'TBC',
   linkedin: '',

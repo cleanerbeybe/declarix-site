@@ -10,6 +10,15 @@ import { initAnalytics, track } from './analytics'
 import { documents, flights, mobileMovements, packRows, questions, specimens } from './data'
 
 type ButtonTone = 'primary' | 'secondary'
+type BookingStatus = 'loading' | 'ready' | 'missing' | 'error'
+
+declare global {
+  interface Window {
+    Bookings?: {
+      inlineEmbed: (options: { url: string; parent: string; height: string }) => void
+    }
+  }
+}
 
 function appPath(path: string) {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '')
@@ -55,18 +64,6 @@ const costPresets = [
     close: 'GROW DECLARATIONS, NOT PAYROLL.',
   },
 ]
-
-function googleCalendarEmbedUrl() {
-  if (!isConfigured(CONFIG.googleCalendarUrl)) return ''
-  try {
-    const url = new URL(CONFIG.googleCalendarUrl)
-    if (url.hostname !== 'calendar.google.com') return ''
-    if (!url.searchParams.has('gv')) url.searchParams.set('gv', 'true')
-    return url.toString()
-  } catch {
-    return ''
-  }
-}
 
 function Button({
   href,
@@ -797,31 +794,86 @@ function PilotSection() {
   )
 }
 
-function GoogleCalendarEmbed({ source }: { source: string }) {
-  const embedUrl = googleCalendarEmbedUrl()
+function ZohoBookingEmbed({ source }: { source: string }) {
+  const [status, setStatus] = useState<BookingStatus>(() =>
+    isConfigured(CONFIG.zohoBookingUrl) && isConfigured(CONFIG.zohoBookingScriptUrl) ? 'loading' : 'missing',
+  )
 
-  if (!embedUrl) {
+  useEffect(() => {
+    if (!isConfigured(CONFIG.zohoBookingUrl) || !isConfigured(CONFIG.zohoBookingScriptUrl)) {
+      setStatus('missing')
+      return
+    }
+
+    const scriptId = 'zoho-bookings-embed-script'
+    let cancelled = false
+
+    const mountEmbed = () => {
+      if (cancelled) return
+      const parent = document.querySelector('#inline-container')
+      if (!parent || !window.Bookings?.inlineEmbed) {
+        setStatus('error')
+        return
+      }
+      parent.innerHTML = ''
+      window.Bookings.inlineEmbed({
+        url: CONFIG.zohoBookingUrl,
+        parent: '#inline-container',
+        height: CONFIG.bookingEmbedHeight,
+      })
+      setStatus('ready')
+      track('booking_frame_load', { provider: 'zoho', source })
+    }
+
+    if (window.Bookings?.inlineEmbed) {
+      mountEmbed()
+      return
+    }
+
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null
+    const onError = () => {
+      if (!cancelled) setStatus('error')
+    }
+
+    if (!script) {
+      script = document.createElement('script')
+      script.id = scriptId
+      script.async = true
+      script.src = CONFIG.zohoBookingScriptUrl
+      document.head.append(script)
+    }
+
+    script.addEventListener('load', mountEmbed)
+    script.addEventListener('error', onError)
+
+    return () => {
+      cancelled = true
+      script?.removeEventListener('load', mountEmbed)
+      script?.removeEventListener('error', onError)
+    }
+  }, [source])
+
+  if (status === 'missing') {
     return (
       <div className="cal-placeholder">
-        <span>GOOGLE CALENDAR LINK NEEDED</span>
+        <span>BOOKING LINK NEEDED</span>
         <p>
-          Paste the Google Calendar appointment schedule iframe URL into
-          CONFIG.googleCalendarUrl to turn this into the live diary.
+          Add the Zoho Bookings embed URL and script URL in the site config to turn this into the
+          live diary.
         </p>
       </div>
     )
   }
 
   return (
-    <div className="cal-inline-widget">
-      <p className="mono-note">LOADING THE DIARY...</p>
-      <iframe
-        allowFullScreen
-        loading="lazy"
-        onLoad={() => track('booking_frame_load', { provider: 'google', source })}
-        src={embedUrl}
-        title="Book a 20-minute numbers call"
-      />
+    <div className="cal-inline-widget zoho-booking-widget">
+      {status !== 'ready' ? (
+        <div className="cal-status">
+          <span>{status === 'error' ? 'BOOKING WIDGET COULD NOT LOAD' : 'LOADING THE DIARY...'}</span>
+          {status === 'error' ? <p>Email {CONFIG.packEmail} with two times that suit.</p> : null}
+        </div>
+      ) : null}
+      <div id="inline-container" className="zoho-inline-container" />
     </div>
   )
 }
@@ -873,7 +925,7 @@ function BookSection({
               Bring one week's real volume. We rebuild the cost-per-entry model live and you leave
               with the spreadsheet either way.
             </p>
-            <GoogleCalendarEmbed source={source} />
+            <ZohoBookingEmbed source={source} />
             <a className="text-link" href={`mailto:${CONFIG.packEmail}`}>
               Calendar tools not your thing? Email {CONFIG.packEmail} with two times that suit. →
             </a>
@@ -887,7 +939,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.2 · THIS PAGE SETS NO MARKETING COOKIES — GOOGLE SERVES THE BOOKING FRAME WHEN CONNECTED.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.2 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -948,7 +1000,7 @@ function PrivacyPage() {
           <p>
             This site may use cookieless PostHog analytics when a key is configured. The analytics
             setup uses memory persistence and does not set marketing cookies. Booking is handled by
-            Google Calendar only when an appointment schedule link is connected.
+            Zoho Bookings.
           </p>
           <p>
             For subprocessors, security questions, or deletion evidence, contact {CONFIG.packEmail}.
