@@ -161,7 +161,7 @@ export const mobileMovements = [
   },
   {
     tag: 'MV-2 · THE READ',
-    title: 'Values lift into the pack.',
+    title: 'The scan finds the values.',
     copy: 'Exporter, importer, terms, totals, packages, mass, previous document and origin move into their rows.',
   },
   {
@@ -191,6 +191,10 @@ export const questions = [
     a: "Keep them. That's the point. Declarix outputs a pack your system ingests; we sit in front of your software, not instead of it.",
   },
   {
+    q: "We're a forwarder, not a broker.",
+    a: "Same desk, same keying. If entries clear through your own badge — or you want them to — Declarix feeds whatever you file through. The pack doesn't care whose letterhead the invoice arrived on.",
+  },
+  {
     q: 'Our jobs are messy.',
     a: "Good — messy is the product's home ground: amalgamated invoices, part shipments, scans, spreadsheets that fight back. The pilot is one anonymised ugly pack processed side-by-side. If Declarix can't structure it, you've lost nothing and we've learned something.",
   },
@@ -204,7 +208,11 @@ export const questions = [
   },
   {
     q: 'Will my clerks need training?',
-    a: 'No. The pack arrives; they check it in the system they already know. Most clerks are reviewing their first pack within the hour — with their own name still on the entry.',
+    a: 'No. The pack arrives; they check it in the system they already know, with their own name still on the entry.',
+  },
+  {
+    q: 'We outsource customs today.',
+    a: 'Declarix changes the maths of bringing it in-house: one experienced clerk plus packs can carry a desk that used to need several. If insourcing is on your roadmap, bring it to the call.',
   },
 ]
 

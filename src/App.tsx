@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Flip } from 'gsap/Flip'
@@ -30,10 +30,31 @@ function getStoredSource() {
 function buildMailto(src: string) {
   const subject = encodeURIComponent(`Ugly pack — [your company] — via DCLRX-H1/${src}`)
   const body = encodeURIComponent(
-    'Attached: one anonymised job.\nOur declaration system: [Sequoia / Descartes / other]\nEntries per week, roughly: [ ]\nSend the pack back to: [ ]',
+    'Attached: one anonymised job.\nOur declaration system: [Sequoia / Descartes / other]\nDeclarations per week, roughly: [ ]\nSend the pack back to: [ ]',
   )
   return `mailto:${CONFIG.packEmail}?subject=${subject}&body=${body}`
 }
+
+const costPresets = [
+  {
+    title: 'THE 12-CLERK DESK',
+    volume: 480,
+    lines: ['480 DECLARATIONS / WK', 'COST / DECLARATION £7.95 → £2.45', 'BOTTOM LINE £137,280 / YR'],
+    close: 'THE CAPACITY OF ~3 MORE CLERKS. HIRED BY NOBODY.',
+  },
+  {
+    title: 'THE 6-CLERK DESK',
+    volume: 210,
+    lines: ['210 DECLARATIONS / WK', 'COST / DECLARATION £7.95 → £2.45', 'BOTTOM LINE £60,060 / YR'],
+    close: 'PEAK SEASON STOPS MEANING OVERTIME.',
+  },
+  {
+    title: 'THE GROWTH PROBLEM',
+    volume: null,
+    lines: ['BOOK UP 40% · HEADCOUNT FLAT', 'NEW BUSINESS AT £2.45 A DECLARATION, NOT £7.95'],
+    close: 'GROW DECLARATIONS, NOT PAYROLL.',
+  },
+]
 
 function googleCalendarEmbedUrl() {
   if (!isConfigured(CONFIG.googleCalendarUrl)) return ''
@@ -65,6 +86,40 @@ function Button({
       {children}
     </a>
   )
+}
+
+function CountUp({
+  value,
+  formatter = (number) => Math.round(number).toLocaleString('en-GB'),
+}: {
+  value: number
+  formatter?: (number: number) => string
+}) {
+  const previous = useRef(value)
+  const [display, setDisplay] = useState(value)
+
+  useEffect(() => {
+    const from = previous.current
+    const to = value
+    previous.current = value
+    if (from === to) {
+      setDisplay(to)
+      return
+    }
+
+    const start = performance.now()
+    let frame = 0
+    const animate = (now: number) => {
+      const progress = Math.min((now - start) / 500, 1)
+      const eased = 1 - (1 - progress) ** 3
+      setDisplay(from + (to - from) * eased)
+      if (progress < 1) frame = requestAnimationFrame(animate)
+    }
+    frame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frame)
+  }, [value])
+
+  return <>{formatter(display)}</>
 }
 
 function PaperGrain() {
@@ -163,7 +218,7 @@ function Header({
           <span className="mark" />
           <span>
             <strong>DECLARIX</strong>
-            <small>THE OFFICE LAYER FOR CUSTOMS BROKERS</small>
+            <small>THE OFFICE LAYER FOR THE CLEARANCE DESK</small>
           </span>
         </a>
         <div className="header-cell">
@@ -172,17 +227,16 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>2.0 · JUL 2026</strong>
+          <strong>2.2 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
           <span>PILOT SLOTS</span>
           <strong>{CONFIG.pilotSlotsOpen} OF 5 OPEN</strong>
         </div>
         <nav className="header-nav" aria-label="Page sections">
-          <a href="#job">THE JOB</a>
-          <a href="#evidence">EVIDENCE</a>
-          <a href="#security">SECURITY</a>
+          <a href="#job">THE 3×</a>
           <a href="#numbers">NUMBERS</a>
+          <a href="#security">SECURITY</a>
           <a href="#pilot">PILOT</a>
         </nav>
         <Button href="#book" className="header-cta" onClick={() => track('cta_book_click', { source })}>
@@ -227,19 +281,19 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
   return (
     <section className="hero-section" id="top" aria-labelledby="hero-title">
       <div className="hero-copy">
-        <p className="kicker reveal">CUSTOMS ENTRY PREPARATION — FOR BROKERS, NOT INSTEAD OF THEM</p>
+        <p className="kicker reveal">FOR CUSTOMS BROKERS & FREIGHT FORWARDERS WHO CLEAR THEIR OWN ENTRIES</p>
         <h1 className="hero-title" id="hero-title">
           <span className="hero-line">
-            <span>Customer paperwork in.</span>
-          </span>
-          <span className="hero-line">
-            <span>Entry-ready pack out.</span>
+            <span>
+              Up to <span className="nowrap">3× the entries</span> per clerk.
+            </span>
           </span>
         </h1>
+        <p className="hero-support reveal">No new headcount. More margin on every declaration.</p>
         <p className="hero-body reveal">
-          Declarix reads the whole job — any file, straight off a forwarded email — and returns a
-          CDS-ready pack for Sequoia or Descartes, with the evidence pinned to every field. Your
-          clerk checks it in minutes and submits through your own system, same as today.
+          Declarix reads the whole job — any file, straight off a forwarded email — and returns an
+          entry-ready pack for Sequoia or Descartes, evidence pinned to every field. Your clerk
+          checks it in minutes instead of building it by hand.
         </p>
         <p className="price-cue reveal">PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS</p>
         <div className="cta-row reveal">
@@ -250,6 +304,9 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
             Book the 20-minute numbers call
           </Button>
         </div>
+        <p className="hero-footnote reveal">
+          3× IS PILOT MODELLING, NOT A PROMISE — WE REBUILD IT WITH YOUR NUMBERS ON THE CALL.
+        </p>
       </div>
       <div className="hero-pile" aria-hidden="true">
         {documents.slice(0, 5).map((doc, index) => (
@@ -281,7 +338,7 @@ function EntryGrid({ selected, setSelected }: { selected: number; setSelected: (
     <div className="entry-grid" aria-label="Entry pack worked example">
       <header>
         <strong>ENTRY PACK — DRAFT</strong>
-        <span>JOB REF DX-2216 · PREPARED 09:03</span>
+        <span>JOB REF DX-2216 · LANDED 08:52 · PACK 08:56</span>
       </header>
       <div className="entry-grid-body">
         {packRows.map((row, index) => (
@@ -314,8 +371,11 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
       <div className="box-inner">
         <div className="section-title reveal">
           <span>BOX 2</span>
-          <h2 id="job-title">The job assembles itself.</h2>
+          <h2 id="job-title">Where the 3× comes from.</h2>
         </div>
+        <p className="standfirst reveal">
+          Customer paperwork in. Entry-ready pack out. Watch one real-shaped job go through.
+        </p>
       </div>
       <div
         className="assembly-pin"
@@ -336,7 +396,10 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
             <p className="type-caption caption-two">
               ONE JOB: 6 ATTACHMENTS · 3 FORMATS · 43 LINES · 2 INVOICES, AMALGAMATED
             </p>
-            <p className="type-caption caption-three">OR NO ONE DOES.</p>
+            <p className="type-caption caption-three">
+              KEYED BY HAND, THIS IS ~50 MINUTES OF A CLERK'S MORNING.
+            </p>
+            <p className="type-caption caption-four">OR NO ONE KEYS IT.</p>
           </div>
           <div className="docs-stage">
             <div className="scan-band" aria-hidden="true" />
@@ -400,6 +463,13 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
               </div>
               <Stamp className="stamp-animated" ring="DECLARIX · PACK COMPLETE · 09:07" centre="PACK · COMPLETE" />
             </div>
+            <div className="handover-caption">
+              <strong>Keep Sequoia. Keep Descartes. Lose the keying.</strong>
+              <span>
+                LANDED 08:52 → PACK 08:56 → CHECKED &amp; SUBMITTED 09:05. THE OTHER 40 MINUTES GO
+                BACK TO THE DESK.
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -439,7 +509,7 @@ function AnyFile({ mailto, source }: { mailto: string; source: string }) {
     <section className="box" aria-labelledby="files-title">
       <div className="box-inner two-col">
         <div>
-          <SectionTitle box="BOX 3" title="It reads whatever your customers send." />
+          <SectionTitle box="BOX 4" title="It reads whatever your customers send." />
           <p>
             PDF invoices, spreadsheets with merged cells, scans, phone photos of delivery notes,
             forwarded email chains, the 300-line packing list. If a person could read it, it goes in
@@ -469,11 +539,12 @@ function SystemSection() {
   return (
     <section className="box" id="system" aria-labelledby="system-title">
       <div className="box-inner">
-        <SectionTitle box="BOX 4" title="Not customs software. The layer in front of it." />
+        <SectionTitle box="BOX 5" title="Not customs software. The layer in front of it." />
         <p className="wide-copy">
           Declarix never touches HMRC and never asks you to migrate anything. The pack drops into
-          the system you already run — your badge, your CSP, your submission, your client
-          relationship. Output for Sequoia and Descartes e-Customs today; other formats on request.
+          the system customs brokers and freight forwarders already run — your badge, your CSP, your
+          submission, your client relationship. Output for Sequoia and Descartes e-Customs today;
+          other formats on request.
         </p>
         <div className="flow-strip reveal">
           {['CUSTOMER PAPERWORK', 'DECLARIX', "YOUR CLERK'S CHECK", 'SEQUOIA / DESCARTES', 'HMRC CDS'].map(
@@ -497,7 +568,7 @@ function SecuritySection() {
     <section className="box dark-box" id="security" aria-labelledby="security-title">
       <div className="box-inner two-col">
         <div>
-          <SectionTitle box="BOX 5" title="Processed. Returned. Deleted." />
+          <SectionTitle box="BOX 6" title="Processed. Returned. Deleted." />
           <p>
             Your documents exist with us for exactly as long as it takes to build the pack. Then
             they're destroyed. Nothing is archived, nothing waits on a server, and nothing of yours
@@ -541,22 +612,52 @@ function SecuritySection() {
   )
 }
 
-function NumbersSection({ source }: { source: string }) {
+function DeskMathSection({ source }: { source: string }) {
   const [entries, setEntries] = useState(120)
-  const hours = Math.round((entries * 14) / 60)
-  const saved = Math.round(entries * (7.95 - 2.45))
+  const annualSaving = Math.round(entries * 5.5 * 52)
+
+  function applyPreset(volume: number | null) {
+    if (!volume) return
+    setEntries(volume)
+    track('roi_slider_change', { entries: volume, annual_saving: Math.round(volume * 5.5 * 52), preset: true })
+    window.setTimeout(() => {
+      document.getElementById('cost-outputs')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }, 40)
+  }
 
   return (
     <section className="box" id="numbers" aria-labelledby="numbers-title">
-      <div className="box-inner two-col numbers-grid">
-        <div>
-          <SectionTitle box="BOX 6" title="The numbers call, previewed." />
-          <p className="mono-note">
-            KEYING COST PER ENTRY TODAY £7.95 · WITH DECLARIX £2.45 · ILLUSTRATIVE — WE REBUILD
-            THIS WITH YOUR NUMBERS ON THE CALL
-          </p>
+      <div className="box-inner desk-maths">
+        <SectionTitle box="BOX 3" title="One declaration, costed." />
+        <div className="cost-docket reveal">
+          <p className="cost-docket-title">ONE DECLARATION, COSTED</p>
+          <div className="cost-columns">
+            <div>
+              <h3>TODAY</h3>
+              <p><span>KEYING &amp; ASSEMBLY</span><strong>~46 MIN</strong></p>
+              <p><span>CHASES &amp; REKEYS</span><strong>BUILT IN</strong></p>
+              <p><span>LOADED CLERK COST</span><strong>£7.95</strong></p>
+              <p className="total-row"><span>TOTAL</span><strong>£7.95</strong></p>
+            </div>
+            <div>
+              <h3>WITH DECLARIX</h3>
+              <p><span>CHECK &amp; SUBMIT</span><strong>~9 MIN</strong></p>
+              <p><span>FLAGS, PRE-ANSWERED</span><strong>IN THE PACK</strong></p>
+              <p><span>LOADED CLERK COST</span><strong>£2.45</strong></p>
+              <p><span>DECLARIX RATE</span><strong>SET ON THE CALL</strong></p>
+              <p className="total-row"><span>TOTAL</span><strong>UNDER TODAY'S — OR THERE'S NO DEAL WORTH DOING.</strong></p>
+            </div>
+          </div>
+        </div>
+        <p className="desk-intro">
+          The per-entry rate is priced against your £7.95, not against hope — if the total doesn't
+          come down, the pilot already told you for free.
+        </p>
+        <div className="numbers-grid">
+          <div className="calculator-panel">
+            <p className="mono-note">HOW MANY DECLARATIONS DOES THE DESK PROCESS?</p>
           <label className="range-label" htmlFor="entries">
-            <span>ENTRIES PER WEEK</span>
+            <span>DECLARATIONS PER WEEK</span>
             <strong>{entries}</strong>
           </label>
           <input
@@ -566,30 +667,68 @@ function NumbersSection({ source }: { source: string }) {
             onChange={(event) => {
               const value = Number(event.currentTarget.value)
               setEntries(value)
-              track('roi_slider_change', { entries: value })
+              track('roi_slider_change', { entries: value, annual_saving: Math.round(value * 5.5 * 52) })
             }}
             step="5"
             type="range"
             value={entries}
           />
-          <Button href="#book" onClick={() => track('cta_book_click', { source })}>
-            Book the 20-minute numbers call
-          </Button>
-          <p className="mono-note">BRING A REAL WEEK'S VOLUME. WE'LL REBUILD THE MODEL LIVE.</p>
         </div>
-        <div className="roi-output" aria-live="polite">
+        <div className="roi-output" id="cost-outputs" aria-live="polite">
           <article>
-            <span>KEYING HOURS BACK PER WEEK</span>
-            <strong>{hours}</strong>
+            <span>COST PER DECLARATION</span>
+            <strong>£7.95 <em>→</em> £2.45</strong>
+            <small>LABOUR ONLY · YOUR PER-ENTRY RATE IS ADDED — AND SIZED — ON THE CALL</small>
           </article>
           <article>
-            <span>SAVED PER WEEK £</span>
-            <strong>{saved.toLocaleString('en-GB')}</strong>
+            <span>BOTTOM LINE, PER YEAR</span>
+            <strong>£<CountUp value={annualSaving} /></strong>
           </article>
           <article>
             <span>SAME TEAM</span>
-            <strong>ROUGHLY 3× THE ENTRIES</strong>
+            <strong>UP TO 3× THE ENTRIES</strong>
           </article>
+        </div>
+      </div>
+        <p className="mono-note assumption-note">
+          ASSUMES £5.50 LABOUR SAVING PER DECLARATION × 52 WEEKS · ILLUSTRATIVE — YOUR NUMBERS WILL DIFFER.
+          THAT'S THE CALL.
+        </p>
+        <div className="preset-cards">
+          {costPresets.map((preset) => (
+            <button
+              className="preset-card"
+              key={preset.title}
+              type="button"
+              onClick={() => applyPreset(preset.volume)}
+            >
+              <span>{preset.title}</span>
+              {preset.lines.map((line) => (
+                <strong key={line}>{line}</strong>
+              ))}
+              <em>{preset.close}</em>
+            </button>
+          ))}
+        </div>
+        <div className="persona-strip">
+          <article>
+            <span>MD / OWNER</span>
+            <p>Margin per entry up. Fixed costs flat. No software migration on the risk register.</p>
+          </article>
+          <article>
+            <span>OPS MANAGER</span>
+            <p>Peaks absorbed without panic hires. Capacity you can quote against.</p>
+          </article>
+          <article>
+            <span>HEAD OF CUSTOMS</span>
+            <p>Fewer rekeys, fewer queries, evidence pinned to every field your clerk approves.</p>
+          </article>
+        </div>
+        <div className="desk-cta">
+          <Button href="#book" onClick={() => track('cta_book_click', { source })}>
+            Book the 20-minute numbers call
+          </Button>
+          <p className="mono-note">BRING A REAL WEEK'S VOLUME. WE'LL REBUILD THE MODEL LIVE — YOU KEEP THE SPREADSHEET.</p>
         </div>
       </div>
     </section>
@@ -602,7 +741,7 @@ function QuestionsSection() {
   return (
     <section className="box" id="questions" aria-labelledby="questions-title">
       <div className="box-inner">
-        <SectionTitle box="BOX 7" title="Questions brokers ask." />
+        <SectionTitle box="BOX 7" title="Questions desks ask." />
         <div className="accordion">
           {questions.map((item, index) => (
             <article className="accordion-row" key={item.q}>
@@ -748,7 +887,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.0 · THIS PAGE SETS NO MARKETING COOKIES — GOOGLE SERVES THE BOOKING FRAME WHEN CONNECTED.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.2 · THIS PAGE SETS NO MARKETING COOKIES — GOOGLE SERVES THE BOOKING FRAME WHEN CONNECTED.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -871,7 +1010,7 @@ function HomePage() {
 
       if (!reduceMotion && wide) {
         gsap.set(
-          '.entry-grid, .flight-chip, .flag-cards article, .evidence-copy, .handover-card, .stamp-animated',
+          '.entry-grid, .flight-chip, .flag-cards article, .evidence-copy, .handover-card, .handover-caption, .stamp-animated',
           {
             autoAlpha: 0,
           },
@@ -900,8 +1039,9 @@ function HomePage() {
           .to('.docs-stage', { rotate: -1, x: -10, duration: 0.12 }, 0)
           .to('.caption-one', { text: '08:52 — THE JOB LANDS.', duration: 0.05 }, 0)
           .to('.caption-two', { autoAlpha: 1, duration: 0.05 }, 0.08)
-          .to('.caption-three', { autoAlpha: 1, duration: 0.05 }, 0.16)
-          .to('.entry-grid', { autoAlpha: 1, duration: 0.08 }, 0.16)
+          .to('.caption-three', { autoAlpha: 1, duration: 0.05 }, 0.13)
+          .to('.caption-four', { autoAlpha: 1, duration: 0.05 }, 0.18)
+          .to('.entry-grid', { autoAlpha: 1, duration: 0.08 }, 0.2)
           .to('.scan-band', { yPercent: 560, duration: 0.25, ease: 'none' }, 0.18)
 
         flights.forEach((_, index) => {
@@ -916,6 +1056,7 @@ function HomePage() {
           .to('.entry-grid-row:nth-child(3), .entry-grid-row:nth-child(4)', { scale: 1.015, duration: 0.08 }, 0.66)
           .to('.handover-card', { autoAlpha: 1, x: 0, duration: 0.08 }, 0.82)
           .to('.entry-grid', { scale: 0.9, x: 16, duration: 0.1 }, 0.82)
+          .to('.handover-caption', { autoAlpha: 1, y: 0, duration: 0.08 }, 0.88)
           .to('.stamp-animated', { autoAlpha: 0.92, scale: 1, rotate: -3, duration: 0.035, ease: 'back.out(3)' }, 0.965)
           .to('.handover-card', { y: 3, duration: 0.02, yoyo: true, repeat: 1 }, 0.97)
       }
@@ -965,10 +1106,10 @@ function HomePage() {
       <main>
         <Hero mailto={mailto} source={source} />
         <AssemblyScene mailto={mailto} source={source} />
+        <DeskMathSection source={source} />
         <AnyFile mailto={mailto} source={source} />
         <SystemSection />
         <SecuritySection />
-        <NumbersSection source={source} />
         <QuestionsSection />
         <PilotSection />
         <BookSection mailto={mailto} source={source} />
