@@ -222,6 +222,7 @@ export const questions = [
 ]
 
 export const specimens = [
+  'D6 · FROM THE JOB ABOVE',
   'SCANNED CMR — SKEWED 4°',
   'XLSX — 312 LINES, MERGED CELLS',
   '.EML + 5 ATTACHMENTS',

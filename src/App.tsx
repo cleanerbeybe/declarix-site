@@ -65,6 +65,18 @@ const costPresets = [
   },
 ]
 
+const spineLinks = [
+  { number: 1, label: 'Hero', href: '#top' },
+  { number: 2, label: 'Job', href: '#job' },
+  { number: 3, label: 'Numbers', href: '#numbers' },
+  { number: 4, label: 'Files', href: '#files' },
+  { number: 5, label: 'System', href: '#system' },
+  { number: 6, label: 'Security', href: '#security' },
+  { number: 7, label: 'Questions', href: '#questions' },
+  { number: 8, label: 'Pilot', href: '#pilot' },
+  { number: 9, label: 'Book', href: '#book' },
+]
+
 function Button({
   href,
   children,
@@ -188,6 +200,18 @@ function Signature() {
   )
 }
 
+function MarginSpine() {
+  return (
+    <nav className="margin-spine" aria-label="Form progress">
+      {spineLinks.map((link) => (
+        <a data-spine-link={link.href} href={link.href} key={link.href} title={link.label}>
+          <span>{link.number}</span>
+        </a>
+      ))}
+    </nav>
+  )
+}
+
 function Header({
   source,
   setSource,
@@ -224,7 +248,7 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>2.3 · JUL 2026</strong>
+          <strong>2.4 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
           <span>PILOT SLOTS</span>
@@ -268,7 +292,7 @@ function Header({
 function SectionTitle({ box, title }: { box: string; title: string }) {
   return (
     <div className="section-title reveal">
-      <span>{box}</span>
+      <span data-box-tag={box}>{box}</span>
       <h2>{title}</h2>
     </div>
   )
@@ -307,7 +331,7 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
       </div>
       <div className="hero-pile" aria-hidden="true">
         {documents.slice(0, 5).map((doc, index) => (
-          <div className={`peek-doc peek-${index + 1}`} key={doc.tag}>
+          <div className={`peek-doc peek-${index + 1}`} data-doc-id={`d${index + 1}`} key={doc.tag}>
             <span>{doc.tag}</span>
           </div>
         ))}
@@ -319,7 +343,7 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
 
 function PaperDocument({ doc, index }: { doc: (typeof documents)[number]; index: number }) {
   return (
-    <article className={`paper-doc paper-doc-${index + 1}`}>
+    <article className={`paper-doc paper-doc-${index + 1}`} data-doc-id={`d${index + 1}`}>
       <header>{doc.tag}</header>
       <strong>{doc.title}</strong>
       {doc.lines.map((line) => (
@@ -335,7 +359,10 @@ function EntryGrid({ selected, setSelected }: { selected: number; setSelected: (
     <div className="entry-grid" aria-label="Entry pack worked example">
       <header>
         <strong>ENTRY PACK — DRAFT</strong>
-        <span>JOB REF DX-2216 · LANDED 08:52 · PACK 08:56</span>
+        <span>
+          JOB REF DX-2216 · LANDED 08:52 · PACK <b className="pack-clock">08:52</b>
+        </span>
+        <i className="grid-stamp-mark">PACK COMPLETE</i>
       </header>
       <div className="entry-grid-body">
         {packRows.map((row, index) => (
@@ -409,6 +436,11 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
           </div>
           <div className="docs-stage">
             <div className="scan-band" aria-hidden="true" />
+            <div className="source-ghost ghost-0" aria-hidden="true" />
+            <div className="source-ghost ghost-1" aria-hidden="true" />
+            <div className="source-ghost ghost-2" aria-hidden="true" />
+            <div className="source-ghost ghost-3" aria-hidden="true" />
+            <div className="source-ghost ghost-4" aria-hidden="true" />
             {documents.map((doc, index) => (
               <PaperDocument doc={doc} index={index} key={doc.tag} />
             ))}
@@ -488,12 +520,15 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
               to the value your clerk approves.
             </p>
           </div>
-          <div className="evidence-popover">
-            <span>{row.ref}</span>
-            <strong>{row.row}</strong>
-            <p>{row.value}</p>
-            <small>SOURCE: {row.source}</small>
-            <a href="#job">↗ view in place</a>
+          <div className="live-grid-card">
+            <EntryGrid selected={selected} setSelected={setSelected} />
+            <div className="evidence-popover">
+              <span>{row.ref}</span>
+              <strong>{row.row}</strong>
+              <p>{row.value}</p>
+              <small>SOURCE: {row.source}</small>
+              <a href="#job">↗ view in place</a>
+            </div>
           </div>
         </div>
         <div className="cta-row centred">
@@ -512,7 +547,7 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
 
 function AnyFile({ mailto, source }: { mailto: string; source: string }) {
   return (
-    <section className="box" aria-labelledby="files-title">
+    <section className="box" id="files" aria-labelledby="files-title">
       <div className="box-inner two-col">
         <div>
           <SectionTitle box="BOX 4" title="It reads whatever your customers send." />
@@ -529,7 +564,7 @@ function AnyFile({ mailto, source }: { mailto: string; source: string }) {
         <div className="specimen-marquee" aria-label="Example customer files">
           <div>
             {[...specimens, ...specimens].map((item, index) => (
-              <article className="specimen" key={`${item}-${index}`}>
+              <article className={`specimen ${item.includes('D6 · FROM THE JOB ABOVE') ? 'specimen-from-job' : ''}`} key={`${item}-${index}`}>
                 <span>{item}</span>
                 <p>DECLARIX INTAKE · ANY FILE</p>
               </article>
@@ -553,6 +588,7 @@ function SystemSection() {
           other formats on request.
         </p>
         <div className="flow-strip reveal">
+          <span className="flow-pack-token" aria-hidden="true">PACK</span>
           {['CUSTOMER PAPERWORK', 'DECLARIX', "YOUR CLERK'S CHECK", 'SEQUOIA / DESCARTES', 'HMRC CDS'].map(
             (node) => (
               <div className={node === 'DECLARIX' ? 'flow-node flow-cleared' : 'flow-node'} key={node}>
@@ -578,6 +614,7 @@ function SystemSection() {
 function SecuritySection() {
   return (
     <section className="box dark-box" id="security" aria-labelledby="security-title">
+      <div className="schedule-tag schedule-tag-top">CONTINUATION SHEET · SECURITY SCHEDULE — FORM DCLRX-H1</div>
       <div className="box-inner two-col">
         <div>
           <SectionTitle box="BOX 6" title="Processed. Returned. Deleted." />
@@ -593,11 +630,15 @@ function SecuritySection() {
         <div className="shred-stage" aria-hidden="true">
           {documents.slice(0, 5).map((doc, index) => (
             <div className={`shred-doc shred-${index}`} key={doc.tag}>
+              <span>{doc.tag}</span>
               {Array.from({ length: 6 }).map((_, strip) => (
                 <i key={strip} />
               ))}
             </div>
           ))}
+          <div className="shred-ghost shred-ghost-1" />
+          <div className="shred-ghost shred-ghost-2" />
+          <div className="shred-ghost shred-ghost-3" />
           <div className="ledger">
             <p>
               <span>DOCUMENTS RETAINED</span>
@@ -629,6 +670,7 @@ function SecuritySection() {
           </div>
         </div>
       </div>
+      <div className="schedule-tag schedule-tag-bottom">END OF SCHEDULE — CONTINUE OVERLEAF →</div>
     </section>
   )
 }
@@ -651,18 +693,20 @@ function DeskMathSection({ source }: { source: string }) {
       <div className="box-inner desk-maths">
         <SectionTitle box="BOX 3" title="One declaration, costed." />
         <div className="cost-docket reveal">
+          <span className="docket-clock">09:05</span>
+          <span className="docket-scan" aria-hidden="true" />
           <p className="cost-docket-title">ONE DECLARATION, COSTED</p>
           <div className="cost-columns">
             <div>
               <h3>TODAY</h3>
-              <p><span>KEYING &amp; ASSEMBLY</span><strong>~46 MIN</strong></p>
+              <p><span>KEYING &amp; ASSEMBLY</span><strong className="docket-minutes" data-text="~46 MIN">~46 MIN</strong></p>
               <p><span>CHASES &amp; REKEYS</span><strong>BUILT IN</strong></p>
               <p><span>LOADED CLERK COST</span><strong>£7.95</strong></p>
               <p className="total-row"><span>TOTAL</span><strong>£7.95</strong></p>
             </div>
             <div>
               <h3>WITH DECLARIX</h3>
-              <p><span>CHECK &amp; SUBMIT</span><strong>~9 MIN</strong></p>
+              <p><span>CHECK &amp; SUBMIT</span><strong className="docket-minutes" data-text="~9 MIN">~9 MIN</strong></p>
               <p><span>FLAGS, PRE-ANSWERED</span><strong>IN THE PACK</strong></p>
               <p><span>LOADED CLERK COST</span><strong>£2.45</strong></p>
               <p><span>DECLARIX RATE</span><strong>SET ON THE CALL</strong></p>
@@ -810,7 +854,10 @@ function PilotSection() {
           </div>
         </div>
         <div className="pilot-proof">
-          <Stamp ring="FREE IF IT FAILS · CAPPED IF IT WORKS" centre="£0 · £500" />
+          <div className="pilot-stamp-wrap">
+            <Stamp ring="FREE IF IT FAILS · CAPPED IF IT WORKS" centre="£0 · £500" />
+            <span>SECOND IMPRESSION</span>
+          </div>
           <p>
             Declarix is built in the UK by {CONFIG.founderLine}. We'd rather prove it on your
             paperwork than pitch it on ours.
@@ -899,6 +946,7 @@ function ZohoBookingEmbed({ source }: { source: string }) {
 
   return (
     <div className="cal-inline-widget zoho-booking-widget">
+      <Stamp className="booking-stamp-crop" ring="DECLARIX · PACK COMPLETE · 09:07" centre="PACK · COMPLETE" />
       {status !== 'ready' ? (
         <div className="cal-status">
           <span>{status === 'error' ? 'BOOKING WIDGET COULD NOT LOAD' : 'LOADING THE DIARY...'}</span>
@@ -971,7 +1019,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.3 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.4 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -1077,11 +1125,124 @@ function HomePage() {
         )
       })
 
+      gsap.utils.toArray<HTMLElement>('.box').forEach((box) => {
+        if (reduceMotion) {
+          box.style.setProperty('--rule-scale', '1')
+          return
+        }
+        gsap.fromTo(
+          box,
+          { '--rule-scale': 0 },
+          {
+            '--rule-scale': 1,
+            duration: 0.45,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: box, start: 'top 85%', once: true },
+          },
+        )
+      })
+
+      gsap.utils.toArray<HTMLElement>('[data-box-tag]').forEach((tag) => {
+        const text = tag.dataset.boxTag || tag.textContent || ''
+        if (reduceMotion) {
+          tag.textContent = text
+          return
+        }
+        gsap.fromTo(
+          tag,
+          { text: '' },
+          {
+            text,
+            duration: Math.max(text.length / 24, 0.18),
+            ease: 'none',
+            scrollTrigger: { trigger: tag, start: 'top 88%', once: true },
+          },
+        )
+      })
+
+      spineLinks.forEach((link) => {
+        const section = document.querySelector(link.href)
+        const anchor = document.querySelector(`[data-spine-link="${link.href}"]`)
+        if (!section || !anchor) return
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => anchor.classList.add('is-active'),
+          onEnterBack: () => anchor.classList.add('is-active'),
+        })
+      })
+
       ScrollTrigger.create({
         start: 80,
         onEnter: () => document.body.classList.add('is-scrolled'),
         onLeaveBack: () => document.body.classList.remove('is-scrolled'),
       })
+
+      if (!reduceMotion) {
+        gsap.utils.toArray<HTMLElement>('.docket-minutes').forEach((element, index) => {
+          gsap.fromTo(
+            element,
+            { text: '' },
+            {
+              text: element.dataset.text || element.textContent || '',
+              duration: 0.45,
+              delay: index * 0.12,
+              ease: 'none',
+              scrollTrigger: { trigger: '.cost-docket', start: 'top 72%', once: true },
+            },
+          )
+        })
+        gsap.fromTo(
+          '.docket-scan',
+          { xPercent: -115, autoAlpha: 0 },
+          {
+            xPercent: 115,
+            autoAlpha: 1,
+            duration: 0.42,
+            ease: 'none',
+            scrollTrigger: { trigger: '.cost-docket', start: 'top 72%', once: true },
+          },
+        )
+        gsap.fromTo(
+          '.flow-pack-token',
+          { x: 0, autoAlpha: 0 },
+          {
+            x: () => {
+              const strip = document.querySelector<HTMLElement>('.flow-strip')
+              return strip ? strip.clientWidth * 0.62 : 0
+            },
+            autoAlpha: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: '.flow-strip', start: 'top 78%', end: 'top 30%', scrub: 0.4 },
+          },
+        )
+        gsap.to('.flow-node:nth-child(5)', {
+          borderWidth: 2,
+          scrollTrigger: { trigger: '.flow-strip', start: 'top 42%', once: true },
+        })
+        gsap.fromTo(
+          '.dark-box',
+          { clipPath: 'inset(0 0 100% 0)' },
+          {
+            clipPath: 'inset(0 0 0% 0)',
+            ease: 'none',
+            scrollTrigger: { trigger: '.dark-box', start: 'top 86%', end: 'top 46%', scrub: 0.4 },
+          },
+        )
+        gsap.fromTo(
+          '.shred-ghost',
+          { autoAlpha: 0 },
+          {
+            autoAlpha: 0.55,
+            duration: 0.16,
+            stagger: 0.06,
+            yoyo: true,
+            repeat: 1,
+            scrollTrigger: { trigger: '.shred-stage', start: 'top 70%', once: true },
+          },
+        )
+      }
 
       if (!reduceMotion && !touch) {
         const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1 })
@@ -1099,7 +1260,19 @@ function HomePage() {
             autoAlpha: 0,
           },
         )
+        gsap.set('.live-grid-card .entry-grid', { autoAlpha: 1 })
         gsap.set('.stamp-animated', { scale: 1.6, rotate: -8 })
+        gsap.set('.source-ghost', { autoAlpha: 0 })
+        gsap.set('.paper-doc', { opacity: 0.88 })
+        gsap.set('.paper-doc-5', { opacity: 1 })
+
+        gsap.to('.peek-doc', {
+          y: 64,
+          rotate: 0,
+          autoAlpha: 0,
+          ease: 'none',
+          scrollTrigger: { trigger: '.assembly-pin', start: 'top bottom', end: 'top top', scrub: 0.4 },
+        })
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -1122,21 +1295,39 @@ function HomePage() {
         timeline
           .to('.docs-stage', { rotate: -1, x: -10, duration: 0.12 }, 0)
           .to('.caption-one', { text: '08:52 — THE JOB LANDS.', duration: 0.05 }, 0)
-          .to('.caption-two', { autoAlpha: 1, duration: 0.05 }, 0.08)
-          .to('.caption-three', { autoAlpha: 1, duration: 0.05 }, 0.13)
-          .to('.caption-four', { autoAlpha: 1, duration: 0.05 }, 0.18)
-          .to('.entry-grid', { autoAlpha: 1, duration: 0.08 }, 0.2)
-          .to('.scan-band', { yPercent: 560, duration: 0.25, ease: 'none' }, 0.18)
+          .from('.paper-doc', { y: -18, rotate: 0, autoAlpha: 0, duration: 0.08, stagger: 0.008 }, 0.02)
+          .to('.caption-two', { autoAlpha: 1, duration: 0.05 }, 0.06)
+          .to('.caption-three', { autoAlpha: 1, duration: 0.05 }, 0.11)
+          .to('.caption-four', { autoAlpha: 1, duration: 0.05 }, 0.16)
+          .to('.entry-grid', { autoAlpha: 1, duration: 0.08 }, 0.18)
+          .to('.scan-band', { yPercent: 560, duration: 0.31, ease: 'none' }, 0.16)
+          .to('.paper-doc-5', { y: 4, opacity: 0.88, duration: 0.07, ease: 'power3.out' }, 0.22)
+          .to('.paper-doc-1', { opacity: 1, duration: 0.025 }, 0.2)
+          .to('.paper-doc-1', { y: 4, opacity: 0.88, duration: 0.07, ease: 'power3.out' }, 0.29)
+          .to('.paper-doc-2', { opacity: 1, duration: 0.025 }, 0.27)
+          .to('.paper-doc-2', { y: 4, opacity: 0.88, duration: 0.07, ease: 'power3.out' }, 0.36)
+          .to('.paper-doc-3', { opacity: 1, duration: 0.025 }, 0.34)
+          .to('.paper-doc-3', { y: 4, opacity: 0.88, duration: 0.07, ease: 'power3.out' }, 0.43)
+          .to('.paper-doc-4', { opacity: 1, duration: 0.025 }, 0.41)
+          .to('.paper-doc-4', { y: 4, opacity: 0.88, duration: 0.07, ease: 'power3.out' }, 0.49)
+          .to('.pack-clock', { text: '08:53', duration: 0.02 }, 0.28)
+          .to('.pack-clock', { text: '08:54', duration: 0.02 }, 0.42)
+          .to('.pack-clock', { text: '08:55', duration: 0.02 }, 0.58)
+          .to('.pack-clock', { text: '08:56', duration: 0.02 }, 0.74)
+          .to('.pack-clock', { text: '09:05', duration: 0.02 }, 0.88)
+          .to('.source-ghost', { autoAlpha: 1, duration: 0.04, stagger: 0.025 }, 0.28)
 
         flights.forEach((_, index) => {
           timeline
-            .to(`.flight-${index}`, { autoAlpha: 1, x: 32 + index * 2, y: 16 + index * 3, duration: 0.03 }, 0.22 + index * 0.03)
+            .to(`.flight-${index}`, { autoAlpha: 1, x: 32 + index * 2, y: 16 + index * 3, duration: 0.04, ease: 'power3.out' }, 0.21 + index * 0.028)
             .to(`.tether-${index}`, { strokeDashoffset: 0, duration: 0.06 }, 0.21 + index * 0.03)
+            .to(`.entry-grid-row:nth-child(${index + 1})`, { borderBottomColor: 'rgb(22 49 61 / 1)', duration: 0.02, yoyo: true, repeat: 1 }, 0.28 + index * 0.028)
         })
 
         timeline
           .to('.flag-cards article', { autoAlpha: 1, x: 0, duration: 0.08, stagger: 0.04 }, 0.48)
           .to('.evidence-copy', { autoAlpha: 1, y: -10, duration: 0.1 }, 0.63)
+          .to('.ghost-2', { borderColor: 'var(--cleared)', borderStyle: 'solid', duration: 0.04 }, 0.63)
           .to('.entry-grid-row:nth-child(3), .entry-grid-row:nth-child(4)', { scale: 1.015, duration: 0.08 }, 0.66)
           .to('.handover-card', { autoAlpha: 1, x: 0, duration: 0.08 }, 0.82)
           .to('.entry-grid', { scale: 0.9, x: 16, duration: 0.1 }, 0.82)
@@ -1186,6 +1377,7 @@ function HomePage() {
   return (
     <div className="document-frame">
       <PaperGrain />
+      <MarginSpine />
       <Header source={source} setSource={setSource} />
       <main>
         <Hero mailto={mailto} source={source} />
