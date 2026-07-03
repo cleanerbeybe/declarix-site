@@ -4,19 +4,20 @@ export const CONFIG = {
   zohoBookingScriptUrl: 'https://bookings.nimbuspop.com/assets/embed.js',
   zohoBookingUrl: 'https://declarixlimited.zohobookings.eu/portal-embed#/declarixlimited',
   bookingEmbedHeight: '600px',
-  companyLegal: 'Declarix Ltd',
-  companyNo: 'TBC',
+  companyLegal: 'Declarix',
+  companyNo: '',
+  companyLocation: 'Leicester, England',
   linkedin: '',
   posthogKey: '',
   posthogHost: 'https://eu.i.posthog.com',
   pilotSlotsOpen: 3,
   multimodalBarUntil: '2026-07-31',
   founderLine:
-    'a UK team building document-reading systems for regulated operators',
+    'Ihusan Adam, a PhD engineer who builds document-reading systems for regulated industries',
 }
 
 export function isConfigured(value: string) {
-  return Boolean(value && !value.includes('{{') && value !== 'TBC')
+  return Boolean(value && !value.includes('{{'))
 }
 
 export function siteOrigin() {

@@ -49,19 +49,19 @@ const costPresets = [
     title: 'THE 12-CLERK DESK',
     volume: 480,
     lines: ['480 DECLARATIONS / WK', 'COST / DECLARATION £7.95 → £2.45', 'BOTTOM LINE £137,280 / YR'],
-    close: 'THE CAPACITY OF ~3 MORE CLERKS. HIRED BY NOBODY.',
+    close: ['THE CAPACITY OF ~3 MORE CLERKS. HIRED BY NOBODY.'],
   },
   {
     title: 'THE 6-CLERK DESK',
     volume: 210,
     lines: ['210 DECLARATIONS / WK', 'COST / DECLARATION £7.95 → £2.45', 'BOTTOM LINE £60,060 / YR'],
-    close: 'PEAK SEASON STOPS MEANING OVERTIME.',
+    close: ['PEAK SEASON STOPS MEANING OVERTIME.'],
   },
   {
     title: 'THE GROWTH PROBLEM',
     volume: null,
     lines: ['BOOK UP 40% · HEADCOUNT FLAT', 'NEW BUSINESS AT £2.45 A DECLARATION, NOT £7.95'],
-    close: 'GROW DECLARATIONS, NOT PAYROLL.',
+    close: ['GROW DECLARATIONS, NOT PAYROLL.', 'SAME-DAY ANSWERS YOUR CUSTOMERS CAN FEEL.'],
   },
 ]
 
@@ -224,7 +224,7 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>2.2 · JUL 2026</strong>
+          <strong>2.3 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
           <span>PILOT SLOTS</span>
@@ -282,7 +282,7 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
         <h1 className="hero-title" id="hero-title">
           <span className="hero-line">
             <span>
-              Up to <span className="nowrap">3× the entries</span> per clerk.
+              Up to <span className="nowrap">3× the entries</span> <span className="nowrap">per clerk.</span>
             </span>
           </span>
         </h1>
@@ -290,7 +290,7 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
         <p className="hero-body reveal">
           Declarix reads the whole job — any file, straight off a forwarded email — and returns an
           entry-ready pack for Sequoia or Descartes, evidence pinned to every field. Your clerk
-          checks it in minutes instead of building it by hand.
+          checks it in minutes instead of keying it for the best part of an hour.
         </p>
         <p className="price-cue reveal">PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS</p>
         <div className="cta-row reveal">
@@ -385,6 +385,15 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
                 <span>{movement.tag}</span>
                 <strong>{movement.title}</strong>
                 <p>{movement.copy}</p>
+                {movement.chips ? (
+                  <div className="mobile-scan-values" aria-hidden="true">
+                    {movement.chips.map((chip, index) => (
+                      <i key={chip} style={{ animationDelay: `${index * 0.18}s` }}>
+                        {chip}
+                      </i>
+                    ))}
+                  </div>
+                ) : null}
               </article>
             ))}
           </div>
@@ -429,8 +438,8 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
               <article>
                 <span>PROPOSED — FOR YOUR CLERK'S CONFIRMATION</span>
                 <p>
-                  6912 00 — ceramic tableware, stoneware. Reasoned from line descriptions +
-                  supplier history. Indicative duty shown from the UK tariff.
+                  6912 00 — ceramic tableware, stoneware. Reasoned from the line descriptions and
+                  the other documents in this job. Indicative duty shown from the UK tariff.
                 </p>
                 <em>ILLUSTRATIVE DEMO DATA</em>
               </article>
@@ -548,13 +557,19 @@ function SystemSection() {
             (node) => (
               <div className={node === 'DECLARIX' ? 'flow-node flow-cleared' : 'flow-node'} key={node}>
                 <span>{node}</span>
-                {node === 'DECLARIX' ? <small>MINUTES</small> : null}
+                {node === 'DECLARIX' ? (
+                  <>
+                    <small>MINUTES</small>
+                    <small>TYPICAL PACK-BACK SLA SET AGAINST DESK VOLUME</small>
+                  </>
+                ) : null}
                 {node === "YOUR CLERK'S CHECK" ? <small>STILL YOURS</small> : null}
               </div>
             ),
           )}
         </div>
         <p className="mono-note">NO INTEGRATION PROJECT. NO INSTALLATION. AN EMAIL ADDRESS. GO-LIVE: TODAY.</p>
+        <p className="mono-note intake-note">ONE FORWARDING RULE ON THE DESK INBOX. JOB REFS SURVIVE THE ROUND TRIP.</p>
       </div>
     </section>
   )
@@ -571,6 +586,8 @@ function SecuritySection() {
             they're destroyed. Nothing is archived, nothing waits on a server, and nothing of yours
             trains anything. The models read your documents the way a clerk would — then forget them
             the way a clerk can't.
+            The pack and its evidence file are returned to you in full — yours to archive against
+            HMRC record-keeping years. We keep the nothing; you keep the everything.
           </p>
         </div>
         <div className="shred-stage" aria-hidden="true">
@@ -588,11 +605,18 @@ function SecuritySection() {
             </p>
             <p>
               <span>PACKS RETAINED</span>
-              <strong>YOUR COPY ONLY</strong>
+              <strong>
+                YOUR COPY ONLY
+                <small>INCLUDING THE EVIDENCE FILE, FOR YOUR RECORDS</small>
+              </strong>
             </p>
             <p>
               <span>TRAINING ON YOUR DATA</span>
               <strong>NONE</strong>
+            </p>
+            <p>
+              <span>DESK REFERENCE DATA</span>
+              <strong>NONE HELD</strong>
             </p>
             <p>
               <span>ACCESS TO HMRC</span>
@@ -703,7 +727,9 @@ function DeskMathSection({ source }: { source: string }) {
               {preset.lines.map((line) => (
                 <strong key={line}>{line}</strong>
               ))}
-              <em>{preset.close}</em>
+              {preset.close.map((line) => (
+                <em key={line}>{line}</em>
+              ))}
             </button>
           ))}
         </div>
@@ -719,6 +745,10 @@ function DeskMathSection({ source }: { source: string }) {
           <article>
             <span>HEAD OF CUSTOMS</span>
             <p>Fewer rekeys, fewer queries, evidence pinned to every field your clerk approves.</p>
+          </article>
+          <article>
+            <span>SENIOR CLERK</span>
+            <p>You check, you approve, your name on the entry — minus the keying.</p>
           </article>
         </div>
         <div className="desk-cta">
@@ -786,7 +816,9 @@ function PilotSection() {
             paperwork than pitch it on ours.
           </p>
           <p className="mono-note">
-            {CONFIG.companyLegal} · CO. {CONFIG.companyNo} · ENGLAND &amp; WALES
+            {isConfigured(CONFIG.companyNo)
+              ? `${CONFIG.companyLegal} · CO. ${CONFIG.companyNo} · ENGLAND & WALES`
+              : `DECLARIX · BUILT IN ${CONFIG.companyLocation.toUpperCase()}`}
           </p>
         </div>
       </div>
@@ -939,7 +971,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.2 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.3 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -1000,7 +1032,7 @@ function PrivacyPage() {
           <p>
             This site may use cookieless PostHog analytics when a key is configured. The analytics
             setup uses memory persistence and does not set marketing cookies. Booking is handled by
-            Zoho Bookings.
+            Zoho Bookings, which serves the live diary frame.
           </p>
           <p>
             For subprocessors, security questions, or deletion evidence, contact {CONFIG.packEmail}.

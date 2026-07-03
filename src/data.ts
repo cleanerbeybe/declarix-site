@@ -163,6 +163,7 @@ export const mobileMovements = [
     tag: 'MV-2 · THE READ',
     title: 'The scan finds the values.',
     copy: 'Exporter, importer, terms, totals, packages, mass, previous document and origin move into their rows.',
+    chips: ['EXPORTER', 'INCOTERM', 'TOTAL', 'MASS', 'ORIGIN'],
   },
   {
     tag: 'MV-3 · THE FLAGS',
@@ -200,7 +201,11 @@ export const questions = [
   },
   {
     q: 'Where does client data go?',
-    a: 'In, through, out. Documents are deleted once the pack is returned — retention zero days, no training on your data, subprocessors listed on request.',
+    a: 'In, through, out. Documents are deleted once the pack is returned — retention zero days, no training on your data, subprocessors listed on request. The pack and its evidence file are returned to you in full, yours to archive against HMRC record-keeping years.',
+  },
+  {
+    q: "What's the turnaround at 9am, not in a demo?",
+    a: 'The pilot promise is within one working day for ugly jobs. For live desks, we set the production pack-back SLA on the call against your volume and surge pattern; if it does not hold at 9am, it is not a pilot worth scaling.',
   },
   {
     q: 'What does it cost?',
@@ -208,7 +213,7 @@ export const questions = [
   },
   {
     q: 'Will my clerks need training?',
-    a: 'No. The pack arrives; they check it in the system they already know, with their own name still on the entry.',
+    a: 'No. The pack arrives; they check it in the system they already know, with their own name still on the entry. When a pack needs correcting, the correction path is agreed in the pilot before live volume; zero-retention means we do not quietly learn from a stored copy.',
   },
   {
     q: 'We outsource customs today.',
