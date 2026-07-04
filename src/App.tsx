@@ -248,7 +248,7 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>2.4 · JUL 2026</strong>
+          <strong>2.5 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
           <span>PILOT SLOTS</span>
@@ -268,8 +268,8 @@ function Header({
       {multimodalLive ? (
         <a className="multimodal-bar" href="#book" onClick={useMultimodalSource}>
           <span>
-            MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll bring
-            your stand notes to the call. →
+            MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll pick up
+            where the conversation left off. →
           </span>
           <button
             aria-label="Dismiss Multimodal bar"
@@ -298,6 +298,44 @@ function SectionTitle({ box, title }: { box: string; title: string }) {
   )
 }
 
+// v2.5 B1.1 / v3.0 §1 — every cell a verifiable fact; {{}} tokens are find-replace before deploy
+function ProvenanceStrip() {
+  const cells = [
+    'MULTIMODAL 2026 — NEC, IN ATTENDANCE',
+    `ICC SEAMLESS TRADE FINALIST ${CONFIG.iccFinalistYear}`,
+    `UK REGISTERED — CO. ${CONFIG.companyNo}`,
+    'BUILT IN LEICESTER',
+  ]
+  return (
+    <div className="provenance-strip reveal" aria-label="Provenance">
+      {cells.map((cell) => (
+        <span key={cell}>{cell}</span>
+      ))}
+    </div>
+  )
+}
+
+// v2.5 B1.3 — sockets ship dark; the day the first pilot quote lands, populate CONFIG.testimonials
+function TestimonialStrip() {
+  if (CONFIG.testimonials.length === 0) return null
+  return (
+    <section className="box" aria-label="What desks say">
+      <div className="box-inner">
+        <div className="testimonial-strip">
+          {CONFIG.testimonials.map((item) => (
+            <blockquote key={item.name}>
+              <p>{item.quote}</p>
+              <footer>
+                {item.name} · {item.title} · <span>{item.firm}</span>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Hero({ mailto, source }: { mailto: string; source: string }) {
   return (
     <section className="hero-section" id="top" aria-labelledby="hero-title">
@@ -313,8 +351,8 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
         <p className="hero-support reveal">No new headcount. More margin on every declaration.</p>
         <p className="hero-body reveal">
           Declarix reads the whole job — any file, straight off a forwarded email — and returns an
-          entry-ready pack for Sequoia or Descartes, evidence pinned to every field. Your clerk
-          checks it in minutes instead of keying it for the best part of an hour.
+          entry-ready pack for Sequoia or Descartes. Your clerk checks it in minutes instead of
+          keying it for the best part of an hour.
         </p>
         <p className="price-cue reveal">PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS</p>
         <div className="cta-row reveal">
@@ -325,9 +363,6 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
             Book the 20-minute numbers call
           </Button>
         </div>
-        <p className="hero-footnote reveal">
-          3× IS PILOT MODELLING, NOT A PROMISE — WE REBUILD IT WITH YOUR NUMBERS ON THE CALL.
-        </p>
       </div>
       <div className="hero-pile" aria-hidden="true">
         {documents.slice(0, 5).map((doc, index) => (
@@ -446,15 +481,21 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
             ))}
           </div>
           <svg className="tether-layer" aria-hidden="true" viewBox="0 0 1000 620" preserveAspectRatio="none">
-            {flights.map((flight, index) => (
-              <path
-                className={`tether tether-${index}`}
-                d={`M ${245 + index * 9} ${120 + index * 42} C 420 ${100 + index * 20}, 540 ${
-                  122 + index * 28
-                }, 700 ${118 + index * 38}`}
-                key={flight.row}
-              />
-            ))}
+            {/* v2.5 B4.1 — orthogonal routed connectors: horizontal → elbow → vertical → grid row.
+                Routed lines read as engineering; each flight gets its own bus lane so nothing crosses. */}
+            {flights.map((flight, index) => {
+              const startX = 245 + index * 9
+              const startY = 120 + index * 42
+              const busX = 640 - index * 12
+              const endY = 118 + index * 38
+              return (
+                <path
+                  className={`tether tether-${index}`}
+                  d={`M ${startX} ${startY} H ${busX} V ${endY} H 700`}
+                  key={flight.row}
+                />
+              )
+            })}
           </svg>
           <div className="pack-side">
             <EntryGrid selected={selected} setSelected={setSelected} />
@@ -582,11 +623,17 @@ function SystemSection() {
       <div className="box-inner">
         <SectionTitle box="BOX 5" title="Not customs software. The layer in front of it." />
         <p className="wide-copy">
-          Declarix never touches HMRC and never asks you to migrate anything. The pack drops into
-          the system customs brokers and freight forwarders already run — your badge, your CSP, your
-          submission, your client relationship. Output for Sequoia and Descartes e-Customs today;
-          other formats on request.
+          Declarix never touches HMRC and never asks you to migrate anything. Output for Sequoia
+          and Descartes e-Customs today; other formats on request.
         </p>
+        <div className="integration-wall reveal" aria-label="Output formats">
+          <div>
+            <span>SEQUOIA</span>
+            <span>DESCARTES E-CUSTOMS</span>
+            <span>CSV / YOUR FORMAT</span>
+          </div>
+          <p className="mono-note">THE SYSTEMS UK DESKS ALREADY RUN.</p>
+        </div>
         <div className="flow-strip reveal">
           <span className="flow-pack-token" aria-hidden="true">PACK</span>
           {['CUSTOMER PAPERWORK', 'DECLARIX', "YOUR CLERK'S CHECK", 'SEQUOIA / DESCARTES', 'HMRC CDS'].map(
@@ -604,7 +651,10 @@ function SystemSection() {
             ),
           )}
         </div>
-        <p className="mono-note">NO INTEGRATION PROJECT. NO INSTALLATION. AN EMAIL ADDRESS. GO-LIVE: TODAY.</p>
+        <p className="mono-note">
+          NO INTEGRATION PROJECT. NO INSTALLATION. AN EMAIL ADDRESS. GO-LIVE: TODAY. NOT "WITHIN
+          WEEKS."
+        </p>
         <p className="mono-note intake-note">ONE FORWARDING RULE ON THE DESK INBOX. JOB REFS SURVIVE THE ROUND TRIP.</p>
       </div>
     </section>
@@ -614,6 +664,15 @@ function SystemSection() {
 function SecuritySection() {
   return (
     <section className="box dark-box" id="security" aria-labelledby="security-title">
+      {/* v2.5 B3.2 — container stacks, ink-dominant duotone, fixed at 10-12%: depth without noise */}
+      <img
+        className="dark-box-backdrop"
+        src={appPath('/exhibits/box6-stacks.jpg')}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        aria-hidden="true"
+      />
       <div className="schedule-tag schedule-tag-top">CONTINUATION SHEET · SECURITY SCHEDULE — FORM DCLRX-H1</div>
       <div className="box-inner two-col">
         <div>
@@ -666,6 +725,12 @@ function SecuritySection() {
             <p>
               <span>SUBPROCESSORS</span>
               <strong>LISTED IN FULL, ON REQUEST</strong>
+            </p>
+            <p className="ledger-link-row">
+              <span>FULL SECURITY NOTES</span>
+              <strong>
+                <a href={appPath('/security')}>→ /SECURITY</a>
+              </strong>
             </p>
           </div>
         </div>
@@ -757,7 +822,7 @@ function DeskMathSection({ source }: { source: string }) {
       </div>
         <p className="mono-note assumption-note">
           ASSUMES £5.50 LABOUR SAVING PER DECLARATION × 52 WEEKS · ILLUSTRATIVE — YOUR NUMBERS WILL DIFFER.
-          THAT'S THE CALL.
+          THAT'S THE CALL. 3× IS PILOT MODELLING, NOT A PROMISE.
         </p>
         <div className="preset-cards">
           {costPresets.map((preset) => (
@@ -858,9 +923,20 @@ function PilotSection() {
             <Stamp ring="FREE IF IT FAILS · CAPPED IF IT WORKS" centre="£0 · £500" />
             <span>SECOND IMPRESSION</span>
           </div>
+          {isConfigured(CONFIG.founderPortrait) ? (
+            <figure className="pilot-exhibit exhibit-frame">
+              <img src={CONFIG.founderPortrait} alt={CONFIG.founderName} loading="lazy" decoding="async" />
+              <figcaption>EXHIBIT — THE DESK IT'S BUILT AT</figcaption>
+            </figure>
+          ) : null}
           <p>
-            Declarix is built in the UK by {CONFIG.founderLine}. We'd rather prove it on your
-            paperwork than pitch it on ours.
+            Declarix is built in the UK by{' '}
+            {isConfigured(CONFIG.linkedin) ? (
+              <a href={CONFIG.linkedin}>{CONFIG.founderLine}</a>
+            ) : (
+              CONFIG.founderLine
+            )}
+            . We'd rather prove it on your paperwork than pitch it on ours.
           </p>
           <p className="mono-note">
             {isConfigured(CONFIG.companyNo)
@@ -1019,7 +1095,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.4 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.5 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -1084,6 +1160,59 @@ function PrivacyPage() {
           </p>
           <p>
             For subprocessors, security questions, or deletion evidence, contact {CONFIG.packEmail}.
+          </p>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+// v2.5 B1.8 — the page an ops manager forwards to IT. Small, real, token-gated truths only.
+function SecurityPage() {
+  return (
+    <div className="document-frame privacy-page">
+      <PaperGrain />
+      <Header source="direct" setSource={() => undefined} />
+      <main className="box">
+        <div className="box-inner">
+          <SectionTitle box="SECURITY" title="The security schedule, in full." />
+          <p>
+            Declarix processes customer documents for exactly as long as it takes to build and
+            return the entry pack. Documents are then destroyed. There is no archive, no queue of
+            stored jobs, and no training of any model on customer documents — ours or anyone
+            else's.
+          </p>
+          <div className="security-ledger">
+            <p>
+              <span>DOCUMENT RETENTION</span>
+              <strong>0 DAYS — DELETED ON PACK RETURN</strong>
+            </p>
+            <p>
+              <span>PACK RETENTION</span>
+              <strong>YOUR COPY ONLY, WITH THE EVIDENCE FILE</strong>
+            </p>
+            <p>
+              <span>TRAINING ON CUSTOMER DATA</span>
+              <strong>NONE</strong>
+            </p>
+            <p>
+              <span>ACCESS TO HMRC</span>
+              <strong>NONE — WE NEVER SUBMIT</strong>
+            </p>
+            <p>
+              <span>PROCESSING LOCATION</span>
+              <strong>{CONFIG.securityProcessingLocation}</strong>
+            </p>
+            <p>
+              <span>SUBPROCESSORS</span>
+              <strong>{CONFIG.securitySubprocessors}</strong>
+            </p>
+          </div>
+          <p>
+            For data-processing agreements, deletion evidence, or the subprocessor list on
+            letterhead, contact {CONFIG.packEmail}. Answers come from the person who built the
+            system, not a support queue.
           </p>
         </div>
       </main>
@@ -1214,7 +1343,7 @@ function HomePage() {
             },
             autoAlpha: 1,
             ease: 'none',
-            scrollTrigger: { trigger: '.flow-strip', start: 'top 78%', end: 'top 30%', scrub: 0.4 },
+            scrollTrigger: { trigger: '.flow-strip', start: 'top 78%', end: 'top 30%', scrub: 0.55 },
           },
         )
         gsap.to('.flow-node:nth-child(5)', {
@@ -1227,7 +1356,7 @@ function HomePage() {
           {
             clipPath: 'inset(0 0 0% 0)',
             ease: 'none',
-            scrollTrigger: { trigger: '.dark-box', start: 'top 86%', end: 'top 46%', scrub: 0.4 },
+            scrollTrigger: { trigger: '.dark-box', start: 'top 86%', end: 'top 46%', scrub: 0.55 },
           },
         )
         gsap.fromTo(
@@ -1271,7 +1400,7 @@ function HomePage() {
           rotate: 0,
           autoAlpha: 0,
           ease: 'none',
-          scrollTrigger: { trigger: '.assembly-pin', start: 'top bottom', end: 'top top', scrub: 0.4 },
+          scrollTrigger: { trigger: '.assembly-pin', start: 'top bottom', end: 'top top', scrub: 0.55 },
         })
 
         const timeline = gsap.timeline({
@@ -1280,7 +1409,7 @@ function HomePage() {
             start: 'top top',
             end: '+=420%',
             pin: true,
-            scrub: 0.4,
+            scrub: 0.55,
             onEnter: () => gsap.set('.assembly-stage', { willChange: 'transform' }),
             onLeave: () => gsap.set('.assembly-stage', { willChange: 'auto' }),
             onUpdate: (self) => {
@@ -1317,18 +1446,21 @@ function HomePage() {
           .to('.pack-clock', { text: '09:05', duration: 0.02 }, 0.88)
           .to('.source-ghost', { autoAlpha: 1, duration: 0.04, stagger: 0.025 }, 0.28)
 
+        // v2.5 B4.2 — one thing moves at a time: strictly sequential flights,
+        // the next launches only when the previous has landed.
         flights.forEach((_, index) => {
+          const slot = 0.2 + index * 0.042
           timeline
-            .to(`.flight-${index}`, { autoAlpha: 1, x: 32 + index * 2, y: 16 + index * 3, duration: 0.04, ease: 'power3.out' }, 0.21 + index * 0.028)
-            .to(`.tether-${index}`, { strokeDashoffset: 0, duration: 0.06 }, 0.21 + index * 0.03)
-            .to(`.entry-grid-row:nth-child(${index + 1})`, { borderBottomColor: 'rgb(22 49 61 / 1)', duration: 0.02, yoyo: true, repeat: 1 }, 0.28 + index * 0.028)
+            .to(`.flight-${index}`, { autoAlpha: 1, x: 32 + index * 2, y: 16 + index * 3, duration: 0.034, ease: 'power3.out' }, slot)
+            .to(`.tether-${index}`, { strokeDashoffset: 0, duration: 0.03 }, slot + 0.006)
+            .to(`.entry-grid-row:nth-child(${index + 1})`, { borderBottomColor: 'rgb(22 49 61 / 1)', duration: 0.008, yoyo: true, repeat: 1 }, slot + 0.036)
         })
 
         timeline
-          .to('.flag-cards article', { autoAlpha: 1, x: 0, duration: 0.08, stagger: 0.04 }, 0.48)
-          .to('.evidence-copy', { autoAlpha: 1, y: -10, duration: 0.1 }, 0.63)
-          .to('.ghost-2', { borderColor: 'var(--cleared)', borderStyle: 'solid', duration: 0.04 }, 0.63)
-          .to('.entry-grid-row:nth-child(3), .entry-grid-row:nth-child(4)', { scale: 1.015, duration: 0.08 }, 0.66)
+          .to('.flag-cards article', { autoAlpha: 1, x: 0, duration: 0.08, stagger: 0.04 }, 0.56)
+          .to('.evidence-copy', { autoAlpha: 1, y: -10, duration: 0.1 }, 0.66)
+          .to('.ghost-2', { borderColor: 'var(--cleared)', borderStyle: 'solid', duration: 0.04 }, 0.66)
+          .to('.entry-grid-row:nth-child(3), .entry-grid-row:nth-child(4)', { scale: 1.015, duration: 0.08 }, 0.7)
           .to('.handover-card', { autoAlpha: 1, x: 0, duration: 0.08 }, 0.82)
           .to('.entry-grid', { scale: 0.9, x: 16, duration: 0.1 }, 0.82)
           .to('.handover-caption', { autoAlpha: 1, y: 0, duration: 0.08 }, 0.88)
@@ -1386,7 +1518,9 @@ function HomePage() {
         <AnyFile mailto={mailto} source={source} />
         <SystemSection />
         <SecuritySection />
+        <TestimonialStrip />
         <QuestionsSection />
+        <ProvenanceStrip />
         <PilotSection />
         <BookSection mailto={mailto} source={source} />
       </main>
@@ -1399,6 +1533,7 @@ function HomePage() {
 function App() {
   const path = window.location.pathname
   if (path.endsWith('/privacy')) return <PrivacyPage />
+  if (path.endsWith('/security')) return <SecurityPage />
   return <HomePage />
 }
 

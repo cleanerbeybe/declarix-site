@@ -486,31 +486,32 @@ main,
   letter-spacing: 0.04em;
 }
 
+/* v2.5 B4.3 — fixed rest-angle set {-2.5, -1, 0, +1.5, +3}: art-directed, not ransom-note */
 .peek-1 {
   left: 12%;
-  rotate: -5deg;
+  rotate: -2.5deg;
 }
 
 .peek-2 {
   left: 29%;
-  rotate: 2deg;
+  rotate: 1.5deg;
   animation-delay: -2s;
 }
 
 .peek-3 {
   left: 46%;
-  rotate: -1deg;
+  rotate: 0deg;
 }
 
 .peek-4 {
   left: 63%;
-  rotate: 4deg;
+  rotate: 3deg;
   animation-delay: -3s;
 }
 
 .peek-5 {
   left: 78%;
-  rotate: -3deg;
+  rotate: -1deg;
 }
 
 @keyframes tiny-draught {
@@ -549,14 +550,15 @@ main,
   pointer-events: none;
 }
 
+/* v2.5 B2.1 — the air budget doubles: density is the enemy, not the brand */
 .box-inner {
   width: min(1080px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 34px 0;
+  padding: 64px 0 120px;
 }
 
 .section-title {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .section-title span {
@@ -568,12 +570,13 @@ main,
   letter-spacing: 0.1em;
 }
 
+/* v2.5 B2.5 — fewer, larger, calmer */
 .section-title h2 {
   max-width: 760px;
-  font-size: 34px;
+  font-size: 40px;
   font-weight: 700;
   line-height: 1.08;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 .standfirst {
@@ -684,16 +687,17 @@ main,
   opacity: 0.25;
 }
 
+/* v2.5 B4.3 — rest angles snap to the fixed set */
 .paper-doc-1 {
   top: 96px;
   left: 42px;
-  rotate: -6deg;
+  rotate: -2.5deg;
 }
 
 .paper-doc-2 {
   top: 182px;
   left: 160px;
-  rotate: 4deg;
+  rotate: 1.5deg;
 }
 
 .paper-doc-3 {
@@ -705,19 +709,19 @@ main,
 .paper-doc-4 {
   top: 384px;
   left: 205px;
-  rotate: -4deg;
+  rotate: -1deg;
 }
 
 .paper-doc-5 {
   top: 24px;
   left: 210px;
-  rotate: 2deg;
+  rotate: 0deg;
 }
 
 .paper-doc-6 {
   top: 448px;
   left: 92px;
-  rotate: 7deg;
+  rotate: 3deg;
   background: #fbf4e8;
   box-shadow: inset 0 0 42px rgb(22 49 61 / 0.08);
   transform: perspective(700px) rotateX(5deg) rotateY(-4deg) skewX(-2deg);
@@ -782,8 +786,8 @@ main,
   fill: none;
   stroke: var(--ink);
   stroke-width: 1.5;
-  stroke-dasharray: 900;
-  stroke-dashoffset: 900;
+  stroke-dasharray: 620;
+  stroke-dashoffset: 620;
 }
 
 .pack-side {
@@ -830,7 +834,7 @@ main,
   font-size: 8px;
   font-style: normal;
   letter-spacing: 0.08em;
-  rotate: -2deg;
+  rotate: -2.5deg;
 }
 
 .live-grid-card .grid-stamp-mark {
@@ -1126,10 +1130,11 @@ main,
   background: var(--field);
 }
 
+/* v2.5 B4.4 — marquee speed -20% */
 .specimen-marquee > div {
   display: flex;
   width: max-content;
-  animation: marquee 48s linear infinite;
+  animation: marquee 58s linear infinite;
 }
 
 .specimen-marquee:hover > div {
@@ -1207,7 +1212,7 @@ main,
   gap: 7px;
   min-height: 104px;
   padding: 14px;
-  border-right: var(--border-w) solid var(--ink);
+  border-right: 1px solid rgb(22 49 61 / 0.6);
   text-align: center;
 }
 
@@ -1335,7 +1340,7 @@ main,
 .shred-1 {
   left: 96px;
   top: 58px;
-  rotate: -5deg;
+  rotate: -2.5deg;
 }
 
 .shred-2 {
@@ -1353,7 +1358,7 @@ main,
 .shred-4 {
   left: 260px;
   top: 112px;
-  rotate: 5deg;
+  rotate: 1.5deg;
 }
 
 .shred-ghost {
@@ -1368,7 +1373,7 @@ main,
   left: 96px;
   width: 210px;
   height: 142px;
-  rotate: -5deg;
+  rotate: -2.5deg;
 }
 
 .shred-ghost-2 {
@@ -1384,7 +1389,7 @@ main,
   left: 260px;
   width: 210px;
   height: 142px;
-  rotate: 5deg;
+  rotate: 1.5deg;
 }
 
 .ledger {
@@ -1727,7 +1732,12 @@ input[type='range'] {
   border-top: var(--border-w) solid var(--ink);
 }
 
+/* v2.5 B2.2 — ink hierarchy: internal rules 1px at 60% ink; structure stays 1.5px */
 .accordion-row {
+  border-bottom: 1px solid rgb(22 49 61 / 0.6);
+}
+
+.accordion-row:last-child {
   border-bottom: var(--border-w) solid var(--ink);
 }
 
@@ -1789,6 +1799,180 @@ input[type='range'] {
 
 .accordion-row button[aria-expanded='true'] + .accordion-panel p {
   padding-bottom: 20px;
+}
+
+/* v2.5 B1.1 / v3.0 §1 — provenance strip: header-cell grammar, every cell verifiable */
+.provenance-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto;
+  border: var(--border-w) solid var(--ink);
+  border-bottom: 0;
+  background: var(--field);
+}
+
+.provenance-strip span {
+  padding: 14px 16px;
+  border-right: 1px solid rgb(22 49 61 / 0.6);
+  color: var(--ink);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.provenance-strip span:last-child {
+  border-right: 0;
+}
+
+/* v2.5 B1.4 — integration wall: text-as-logo cells, no third-party marks */
+.integration-wall {
+  display: grid;
+  gap: 10px;
+  margin: 26px 0 8px;
+}
+
+.integration-wall > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.integration-wall > div span {
+  display: grid;
+  place-items: center;
+  min-height: 76px;
+  padding: 14px;
+  border-right: 1px solid rgb(22 49 61 / 0.6);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.integration-wall > div span:last-child {
+  border-right: 0;
+}
+
+/* v2.5 B1.3 — testimonial sockets: mono attribution, Archivo 500 quote */
+.testimonial-strip {
+  display: grid;
+  gap: 18px;
+}
+
+.testimonial-strip blockquote {
+  max-width: 760px;
+  margin: 0;
+  padding: 22px;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.testimonial-strip blockquote p {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.testimonial-strip footer {
+  margin-top: 14px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.testimonial-strip footer span {
+  padding: 2px 6px;
+  border: 1px solid rgb(22 49 61 / 0.6);
+  color: var(--ink);
+}
+
+/* v2.5 B3.2 — depth without noise */
+.dark-box-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.11;
+  pointer-events: none;
+}
+
+.ledger-link-row a {
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration-color: rgb(247 246 241 / 0.5);
+}
+
+.ledger-link-row a:hover {
+  text-decoration-color: var(--paper);
+}
+
+.security-ledger {
+  max-width: 760px;
+  margin: 8px 0;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+.security-ledger p {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: none;
+  padding: 12px 16px;
+  border-top: 1px solid rgb(22 49 61 / 0.6);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.security-ledger p:first-child {
+  border-top: 0;
+}
+
+.security-ledger span {
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.security-ledger strong {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* v2.5 B3.3 — filed-exhibit frame: photography always ruled, always captioned */
+.exhibit-frame {
+  margin: 0;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.exhibit-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.exhibit-frame figcaption {
+  padding: 8px 10px;
+  border-top: 1px solid rgb(22 49 61 / 0.6);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pilot-exhibit {
+  width: min(240px, 60%);
 }
 
 .pilot-docket {
@@ -2120,7 +2304,7 @@ input[type='range'] {
 
   .box-inner {
     width: min(100% - 32px, 1080px);
-    padding: 24px 0;
+    padding: 40px 0 64px;
   }
 
   .section-title h2 {
@@ -2133,6 +2317,33 @@ input[type='range'] {
   .site-footer,
   .numbers-grid {
     grid-template-columns: 1fr;
+  }
+
+  .provenance-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100% - 32px, 1080px);
+  }
+
+  .provenance-strip span:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .provenance-strip span:nth-child(-n + 2) {
+    border-bottom: 1px solid rgb(22 49 61 / 0.6);
+  }
+
+  .integration-wall > div {
+    grid-template-columns: 1fr;
+  }
+
+  .integration-wall > div span {
+    min-height: 56px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(22 49 61 / 0.6);
+  }
+
+  .integration-wall > div span:last-child {
+    border-bottom: 0;
   }
 
   .assembly-pin {
