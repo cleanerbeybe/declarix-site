@@ -16,79 +16,127 @@
       }
 
       body {
-        display: grid;
-        place-items: center;
         width: 1200px;
         height: 630px;
         margin: 0;
-        color: var(--ink);
-        background: var(--paper);
-        font-family: Arial, sans-serif;
+        color: var(--paper);
+        background: var(--ink);
+        font-family: Archivo, Arial, sans-serif;
       }
 
-      .frame {
+      @font-face {
+        font-family: Archivo;
+        font-style: normal;
+        font-weight: 900;
+        src: url('./fonts/archivo-latin-900-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 500;
+        src: url('./fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+      }
+
+      /* v3.0 §4.10 — the OG is the film hero: duotone frame, scrim, H1 paper-on-ink */
+      .film {
         position: relative;
-        width: 1152px;
-        height: 582px;
-        padding: 44px;
-        border: 2px solid var(--ink);
+        width: 1200px;
+        height: 630px;
+        background: url('./exhibits/hero-terminal-1920.jpg') center / cover no-repeat;
         overflow: hidden;
       }
 
+      .scrim {
+        position: absolute;
+        inset: 0;
+        background: rgb(22 49 61 / 0.65);
+      }
+
+      .frame {
+        position: absolute;
+        inset: 20px;
+        border: 2px solid var(--paper);
+        padding: 40px 44px;
+      }
+
       .mono {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 22px;
-        font-weight: 600;
-        letter-spacing: 0.08em;
+        font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 19px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+      }
+
+      .masthead {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .mark {
+        width: 12px;
+        height: 12px;
+        background: var(--cleared);
       }
 
       h1 {
         position: absolute;
         left: 44px;
-        bottom: 132px;
-        max-width: 760px;
+        bottom: 110px;
+        max-width: 860px;
         margin: 0;
-        font-size: 72px;
+        font-size: 88px;
         font-weight: 900;
         line-height: 0.98;
-        letter-spacing: 0;
+        letter-spacing: -0.02em;
+        color: var(--paper);
       }
 
       .bottom {
         position: absolute;
         left: 44px;
-        bottom: 44px;
-        color: #5c6e76;
+        bottom: 40px;
+        color: rgb(247 246 241 / 0.78);
       }
 
       .stamp {
         position: absolute;
-        right: 58px;
-        bottom: 54px;
+        right: 46px;
+        top: 96px;
         display: grid;
         place-items: center;
-        width: 210px;
-        height: 210px;
-        border: 8px double var(--cleared);
-        color: var(--cleared);
+        width: 190px;
+        height: 190px;
+        border: 3px solid var(--paper);
+        outline: 2px solid var(--paper);
+        outline-offset: -14px;
+        color: var(--paper);
         border-radius: 50%;
-        rotate: 15deg;
+        rotate: 12deg;
         text-align: center;
+        opacity: 0.92;
       }
 
       .stamp strong {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 30px;
-        line-height: 1.05;
+        font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 26px;
+        font-weight: 500;
+        line-height: 1.15;
       }
     </style>
   </head>
   <body>
-    <main class="frame">
-      <div class="mono">DECLARIX · FORM DCLRX-H1 · ISSUE 2.4</div>
-      <h1>Up to 3× the entries per clerk.</h1>
-      <div class="mono bottom">NO NEW HEADCOUNT · COST PER DECLARATION DOWN</div>
-      <div class="stamp"><strong>PACK<br />COMPLETE</strong></div>
+    <main class="film">
+      <div class="scrim"></div>
+      <div class="frame">
+        <div class="masthead">
+          <span class="mark"></span>
+          <span class="mono">DECLARIX · FORM DCLRX-H1 · ISSUE 3.0</span>
+        </div>
+        <h1>Up to 3× the entries per clerk.</h1>
+        <div class="mono bottom">NO NEW HEADCOUNT · PRICED PER ENTRY, NOT PER SEAT</div>
+        <div class="stamp"><strong>PACK<br />COMPLETE</strong></div>
+      </div>
     </main>
   </body>
 </html>

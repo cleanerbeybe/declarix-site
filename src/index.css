@@ -2,6 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* v3.0 §4.3 — self-hosted, font-display: optional: the page never flashes a swap.
+   Critical weights are preloaded from index.html, so 'optional' means 'always there'. */
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 700;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 900;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-900-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url('/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: optional;
+  src: url('/fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2');
+}
+
 :root {
   --ink: #16313d;
   --paper: #f7f6f1;
@@ -44,6 +102,8 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--paper);
+  /* v3.0 §4.7 — every number on the page uses tabular figures */
+  font-variant-numeric: tabular-nums;
 }
 
 body,
@@ -3044,5 +3104,228 @@ input[type='range'] {
 
   .dark-box {
     clip-path: none !important;
+  }
+}
+
+/* ============================================================================
+   v3.0 §4.11 — THE PRINT STYLESHEET. This audience prints things.
+   Printing the page yields a clean mono/ink form on white: headers, boxes,
+   docket, FAQ. Film and motion stripped; footer declaration intact.
+   ============================================================================ */
+@media print {
+  :root {
+    background: #fff;
+  }
+
+  body {
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .document-frame {
+    min-height: auto;
+    margin: 0;
+    border: var(--frame-w) solid var(--ink) !important;
+    background: #fff;
+  }
+
+  /* strip the film, the furniture, and everything interactive-only */
+  .hero-media,
+  .frame-draw,
+  .paper-grain,
+  .margin-spine,
+  .multimodal-bar,
+  .mobile-cta,
+  .tether-layer,
+  .scan-band,
+  .source-ghost,
+  .flight-deck,
+  .docket-scan,
+  .shred-ghost,
+  .dark-box-backdrop,
+  .zoho-inline-container,
+  .cal-status,
+  .booking-stamp-crop,
+  .grid-stamp-mark {
+    display: none !important;
+  }
+
+  /* the hero prints as the form masthead: ink on white */
+  .hero-section {
+    min-height: auto;
+    padding: 48px 24px 64px;
+    color: var(--ink);
+    background: #fff;
+    border-bottom: var(--border-w) solid var(--ink);
+  }
+
+  .hero-section .kicker,
+  .hero-section .price-cue {
+    color: var(--muted);
+  }
+
+  .hero-section .hero-title,
+  .hero-section .hero-support {
+    color: var(--ink);
+  }
+
+  .hero-section .hero-body {
+    color: var(--ink);
+  }
+
+  .hero-section .btn {
+    color: var(--ink) !important;
+    background: none !important;
+    border-color: var(--ink) !important;
+  }
+
+  .hero-pile {
+    display: none;
+  }
+
+  /* everything GSAP may have parked at opacity 0 prints at rest state */
+  .reveal,
+  .hero-line > span,
+  .hero-copy .reveal,
+  .entry-grid,
+  .flag-cards article,
+  .evidence-copy,
+  .handover-card,
+  .handover-caption,
+  .stamp-animated,
+  .paper-doc,
+  .site-header > * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  /* the pinned scene prints as a flat worked example */
+  .assembly-pin {
+    min-height: auto;
+  }
+
+  .assembly-stage {
+    min-height: auto;
+    padding: 24px 0;
+  }
+
+  .docs-stage {
+    display: none;
+  }
+
+  .assembly-caption {
+    position: static;
+  }
+
+  .type-caption {
+    opacity: 1 !important;
+  }
+
+  .pack-side {
+    min-height: auto;
+  }
+
+  .evidence-copy,
+  .handover-card,
+  .handover-caption,
+  .flag-cards {
+    position: static;
+    width: auto;
+    margin-top: 12px;
+  }
+
+  /* the continuation sheet prints as a ruled schedule, not a dark panel */
+  .dark-box {
+    color: var(--ink);
+    background: #fff;
+    border-inline: 0;
+  }
+
+  .dark-box::after {
+    background: var(--ink);
+  }
+
+  .dark-box p,
+  .dark-box .section-title span,
+  .dark-box .mono-note {
+    color: var(--ink);
+  }
+
+  .schedule-tag {
+    border-color: var(--ink);
+  }
+
+  .shred-stage {
+    border-color: var(--ink);
+    min-height: auto;
+  }
+
+  .shred-doc {
+    display: none;
+  }
+
+  .ledger {
+    position: static;
+    background: none;
+  }
+
+  .ledger p {
+    border-top: 1px solid rgb(22 49 61 / 0.6);
+  }
+
+  .ledger strong,
+  .ledger strong small {
+    color: var(--ink);
+  }
+
+  .ledger-link-row a {
+    color: var(--ink);
+  }
+
+  /* FAQ prints fully open */
+  .accordion-panel {
+    grid-template-rows: 1fr !important;
+  }
+
+  .accordion-panel p {
+    padding-bottom: 20px !important;
+  }
+
+  .specimen-marquee > div {
+    animation: none !important;
+  }
+
+  .peek-doc,
+  .hero-poster {
+    animation: none !important;
+  }
+
+  /* form furniture holds its ink */
+  .site-header {
+    position: static;
+  }
+
+  .box-inner {
+    padding: 32px 0 48px;
+  }
+
+  .cost-docket,
+  .accordion-row,
+  .pilot-docket,
+  .provenance-strip,
+  .roi-output article,
+  .preset-card,
+  .start-card {
+    break-inside: avoid;
+  }
+
+  .site-footer {
+    border-top: var(--border-w) solid var(--ink);
+    background: #fff;
+  }
+
+  a {
+    text-decoration: none;
   }
 }

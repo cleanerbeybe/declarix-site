@@ -1,11 +1,6 @@
 import { createRoot } from 'react-dom/client'
-import '@fontsource/archivo/latin-400.css'
-import '@fontsource/archivo/latin-500.css'
-import '@fontsource/archivo/latin-700.css'
-import '@fontsource/archivo/latin-900.css'
-import '@fontsource/ibm-plex-mono/latin-400.css'
-import '@fontsource/ibm-plex-mono/latin-500.css'
-import '@fontsource/ibm-plex-mono/latin-600.css'
+// Fonts are self-hosted from /public/fonts with font-display: optional (v3.0 §4.3 — no FOUC);
+// @font-face declarations live in index.css, critical weights preloaded from index.html.
 import './index.css'
 import App from './App.tsx'
 

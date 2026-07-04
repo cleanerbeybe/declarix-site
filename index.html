@@ -11,6 +11,28 @@
     <meta name="theme-color" content="#16313D" />
     <link rel="canonical" href="https://getdeclarix.com/" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <!-- v3.0 §4.3 — critical faces preloaded so font-display: optional always lands -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="%BASE_URL%fonts/archivo-latin-900-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="%BASE_URL%fonts/archivo-latin-400-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="%BASE_URL%fonts/ibm-plex-mono-latin-500-normal.woff2"
+      crossorigin
+    />
     <!-- v3.0 §2 — the poster is the LCP element; preload the frame the viewport will use -->
     <link
       rel="preload"
@@ -32,14 +54,14 @@
       property="og:description"
       content="Entry-ready packs for Sequoia or Descartes, with evidence pinned to every field and cost per declaration down from £7.95 to £2.45 labour."
     />
-    <meta property="og:image" content="https://getdeclarix.com/og.png" />
+    <meta property="og:image" content="https://getdeclarix.com/og.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Declarix — up to 3× the entries per clerk, no new headcount" />
     <meta
       name="twitter:description"
       content="No new headcount. More margin on every declaration. Send one anonymised ugly pack and see the entry-ready pack come back."
     />
-    <meta name="twitter:image" content="https://getdeclarix.com/og.png" />
+    <meta name="twitter:image" content="https://getdeclarix.com/og.jpg" />
     <title>Declarix — up to 3× the entries per clerk, no new headcount</title>
     <style>
       :root {
@@ -196,7 +218,7 @@
           <div class="pre-render-wordmark">DECLARIX</div>
           <a class="pre-render-book" href="#book">BOOK THE CALL</a>
         </header>
-        <div class="pre-render-issue">FORM DCLRX-H1 · ISSUE 2.5</div>
+        <div class="pre-render-issue">FORM DCLRX-H1 · ISSUE 3.0</div>
         <div class="pre-render-bar">
           MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll pick up where the conversation left off. →
         </div>

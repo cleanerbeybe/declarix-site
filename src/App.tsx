@@ -248,7 +248,7 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>2.5 · JUL 2026</strong>
+          <strong>3.0 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
           <span>PILOT SLOTS</span>
@@ -1146,7 +1146,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 2.5 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 3.0 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
