@@ -108,6 +108,53 @@ h3 {
   background: var(--paper);
 }
 
+/* v3.0 §3 — the frame draws itself on load; with JS the real border yields to the edges */
+body.js-choreo .document-frame {
+  border-color: transparent;
+}
+
+.frame-draw i {
+  position: absolute;
+  display: none;
+  background: var(--ink);
+  z-index: 40;
+  pointer-events: none;
+}
+
+body.js-choreo .frame-draw i {
+  display: block;
+}
+
+.fd-top,
+.fd-bottom {
+  right: 0;
+  left: 0;
+  height: var(--frame-w);
+}
+
+.fd-top {
+  top: 0;
+}
+
+.fd-bottom {
+  bottom: 0;
+}
+
+.fd-left,
+.fd-right {
+  top: 0;
+  bottom: 0;
+  width: var(--frame-w);
+}
+
+.fd-left {
+  left: 0;
+}
+
+.fd-right {
+  right: 0;
+}
+
 .paper-grain {
   position: fixed;
   inset: 0;
@@ -289,6 +336,33 @@ main,
 .header-nav a {
   white-space: nowrap;
   text-decoration: none;
+  transition: text-decoration-color 0.15s var(--ease-out);
+}
+
+.header-nav a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: var(--cleared);
+  text-underline-offset: 4px;
+}
+
+.wordmark small {
+  transition: color 0.15s var(--ease-out);
+}
+
+.wordmark:hover small {
+  color: var(--cleared);
+}
+
+.multimodal-bar:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.margin-spine a:hover {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
 .header-cta {
@@ -344,9 +418,13 @@ main,
   text-decoration: none;
   text-transform: uppercase;
   transition:
-    color 0.13s var(--ease-out),
-    background 0.13s var(--ease-out),
-    transform 0.13s var(--ease-out);
+    color 0.15s var(--ease-out),
+    background 0.15s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+
+.btn:active {
+  transform: translateY(0.5px);
 }
 
 .btn-primary {
@@ -917,6 +995,12 @@ main,
   color: var(--ink);
   cursor: pointer;
   text-align: left;
+  transition: box-shadow 0.15s var(--ease-out);
+}
+
+/* v3.0 §3 — grid rows show a 2px left ink bar on hover */
+.entry-grid-row:hover:not(.is-selected) {
+  box-shadow: inset 2px 0 0 var(--ink);
 }
 
 .entry-grid-row:last-child {
@@ -1089,6 +1173,11 @@ main,
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 9px;
   cursor: pointer;
+  transition: background 0.15s var(--ease-out);
+}
+
+.slot-toggle button:hover {
+  background: rgb(22 49 61 / 0.06);
 }
 
 .stamp {
@@ -1518,12 +1607,38 @@ main,
   position: absolute;
   top: 14px;
   right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 4px 7px;
   color: var(--paper);
   background: var(--cleared);
   font-size: 10px;
   letter-spacing: 0.08em;
   z-index: 2;
+}
+
+/* v3.0 §3 — the scene clock stays alive at rest: a quiet 1s tick */
+.docket-clock::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--paper);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .docket-clock::before {
+    animation: clock-tick 2s steps(2, jump-none) infinite;
+  }
+}
+
+@keyframes clock-tick {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.35;
+  }
 }
 
 .docket-scan {
@@ -1726,7 +1841,7 @@ input[type='range'] {
 .preset-card:hover {
   background: rgb(27 122 75 / 0.06);
   border-color: var(--cleared);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .preset-card span,
@@ -1817,6 +1932,12 @@ input[type='range'] {
   cursor: pointer;
   color: var(--ink);
   text-align: left;
+  transition: background 0.15s var(--ease-out);
+}
+
+/* v3.0 §3 — FAQ rows tint to field on hover */
+.accordion-row button:hover {
+  background: var(--field);
 }
 
 .accordion-row button span,
@@ -2128,6 +2249,15 @@ input[type='range'] {
   cursor: pointer;
   font-size: 11px;
   letter-spacing: 0.08em;
+  transition: text-decoration-color 0.15s var(--ease-out);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+/* v3.0 §3 — chips underline on hover */
+.copy-chip:hover {
+  text-decoration-color: var(--cleared);
 }
 
 .cal-inline-widget,

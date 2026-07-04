@@ -1272,6 +1272,11 @@ function SecurityPage() {
   )
 }
 
+// v3.0 §3 — anchor scrolls take 900ms on the --ease-inout curve; nothing snaps
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2
+}
+
 function HomePage() {
   const [source, setSource] = useState(() => getStoredSource())
   const mailto = useMemo(() => buildMailto(source), [source])
@@ -1283,22 +1288,45 @@ function HomePage() {
     const touch = window.matchMedia('(pointer: coarse)').matches
     const wide = window.matchMedia('(min-width: 981px)').matches
     let sceneComplete = false
+    let lenis: Lenis | null = null
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.hero-line > span',
-        { yPercent: 110 },
-        { yPercent: 0, duration: 0.8, stagger: 0.07, ease: 'power3.out' },
-      )
+      // v3.0 §3 — page-load choreography: one orchestration, 900ms total, runs once.
+      // Frame draws -> header cells rise -> H1 line-masks -> kicker/body/CTAs.
+      const heroReveals = gsap.utils.toArray<HTMLElement>('.hero-copy .reveal')
+      if (!reduceMotion) {
+        document.body.classList.add('js-choreo')
+        const load = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        load
+          .fromTo('.fd-top, .fd-bottom', { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'power2.inOut' }, 0)
+          .fromTo('.fd-left, .fd-right', { scaleY: 0 }, { scaleY: 1, duration: 0.3, ease: 'power2.inOut' }, 0)
+          .fromTo(
+            '.site-header > *',
+            { y: 10, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.06 },
+            0.15,
+          )
+          .fromTo('.hero-line > span', { yPercent: 110 }, { yPercent: 0, duration: 0.45 }, 0.35)
+          .fromTo(
+            heroReveals,
+            { autoAlpha: 0, y: 14 },
+            { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06 },
+            0.5,
+          )
+      } else {
+        gsap.set('.hero-line > span', { yPercent: 0 })
+        gsap.set('.hero-copy .reveal', { autoAlpha: 1 })
+      }
 
       gsap.utils.toArray<HTMLElement>('.reveal').forEach((element) => {
+        if (heroReveals.includes(element)) return
         gsap.fromTo(
           element,
           { autoAlpha: 0, y: reduceMotion ? 0 : 24 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: reduceMotion ? 0.2 : 0.55,
+            duration: reduceMotion ? 0.2 : 0.45,
             ease: 'power3.out',
             scrollTrigger: { trigger: element, start: 'top 78%', once: true },
           },
@@ -1425,12 +1453,13 @@ function HomePage() {
       }
 
       if (!reduceMotion && !touch) {
-        const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1 })
+        // v3.0 §3 — Lenis lerp 0.08 on desktop
+        lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 1 })
         lenis.on('scroll', ScrollTrigger.update)
-        const tick = (time: number) => lenis.raf(time * 1000)
+        const tick = (time: number) => lenis!.raf(time * 1000)
         gsap.ticker.add(tick)
         gsap.ticker.lagSmoothing(0)
-        window.addEventListener('beforeunload', () => lenis.destroy(), { once: true })
+        window.addEventListener('beforeunload', () => lenis!.destroy(), { once: true })
       }
 
       if (!reduceMotion && wide) {
@@ -1519,14 +1548,6 @@ function HomePage() {
           .to('.handover-card', { y: 3, duration: 0.02, yoyo: true, repeat: 1 }, 0.97)
       }
 
-      const scrollToHash = () => {
-        if (!window.location.hash) return
-        const target = document.querySelector<HTMLElement>(window.location.hash)
-        target?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-      }
-      window.setTimeout(scrollToHash, 80)
-      window.setTimeout(scrollToHash, 850)
-
       gsap.fromTo(
         '.shred-doc i',
         { y: 0, autoAlpha: 1 },
@@ -1551,7 +1572,46 @@ function HomePage() {
       )
     })
 
+    // v3.0 §3 — every anchor ride takes 900ms on --ease-inout, through Lenis when it runs
+    const scrollToTarget = (target: HTMLElement) => {
+      if (reduceMotion) {
+        target.scrollIntoView({ behavior: 'auto', block: 'start' })
+        return
+      }
+      if (lenis) {
+        lenis.scrollTo(target, { offset: -120, duration: 0.9, easing: easeInOutCubic })
+      } else {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+
+    const onAnchorClick = (event: MouseEvent) => {
+      const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href*="#"]')
+      if (!anchor) return
+      const hash = anchor.hash
+      if (!hash || (anchor.pathname !== window.location.pathname && anchor.pathname !== '')) return
+      const target = document.querySelector<HTMLElement>(hash)
+      if (!target) return
+      event.preventDefault()
+      history.pushState(null, '', hash)
+      scrollToTarget(target)
+    }
+    document.addEventListener('click', onAnchorClick)
+
+    const scrollToHash = () => {
+      if (!window.location.hash) return
+      const target = document.querySelector<HTMLElement>(window.location.hash)
+      if (target) scrollToTarget(target)
+    }
+    const hashTimerA = window.setTimeout(scrollToHash, 80)
+    const hashTimerB = window.setTimeout(scrollToHash, 950)
+    window.addEventListener('hashchange', scrollToHash)
+
     return () => {
+      document.removeEventListener('click', onAnchorClick)
+      window.removeEventListener('hashchange', scrollToHash)
+      window.clearTimeout(hashTimerA)
+      window.clearTimeout(hashTimerB)
       ctx.revert()
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }
@@ -1559,6 +1619,13 @@ function HomePage() {
 
   return (
     <div className="document-frame">
+      {/* v3.0 §3 — the frame draws itself first: four edges, scaleX/Y from centre, 300ms */}
+      <div className="frame-draw" aria-hidden="true">
+        <i className="fd-top" />
+        <i className="fd-bottom" />
+        <i className="fd-left" />
+        <i className="fd-right" />
+      </div>
       <PaperGrain />
       <MarginSpine />
       <Header source={source} setSource={setSource} />
