@@ -2917,7 +2917,8 @@ input[type='range'] {
   }
 
   .hero-title {
-    font-size: clamp(34px, 11.5vw, 48px);
+    /* 10vw keeps the nowrap "3× the entries" inside a 320-620px frame - no horizontal scroll */
+    font-size: clamp(30px, 10vw, 42px);
     line-height: 1.02;
   }
 
@@ -3298,6 +3299,21 @@ input[type='range'] {
 
   .peek-doc,
   .hero-poster {
+    animation: none !important;
+  }
+
+  /* the docket minutes are typed in by scroll on screen; print reads the source attribute */
+  .docket-minutes {
+    font-size: 0;
+  }
+
+  .docket-minutes::after {
+    content: attr(data-text);
+    font-size: 12px;
+  }
+
+  .mobile-scan-values i {
+    opacity: 1 !important;
     animation: none !important;
   }
 

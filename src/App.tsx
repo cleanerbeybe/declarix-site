@@ -1567,7 +1567,8 @@ function HomePage() {
         {
           strokeDashoffset: 0,
           duration: reduceMotion ? 0.2 : 0.6,
-          scrollTrigger: { trigger: '.signature', start: 'top 85%', once: true },
+          // the footer is the page's last inch: fire as soon as the signature enters the viewport
+          scrollTrigger: { trigger: '.signature', start: 'top bottom-=32', once: true },
         },
       )
     })
