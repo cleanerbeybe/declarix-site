@@ -336,9 +336,61 @@ function TestimonialStrip() {
   )
 }
 
+// v3.0 §2 — the ink-duotone film hero: the physical world behind, the paperwork in front.
+// Mobile, reduced-motion and Save-Data always get the poster still; it is the LCP element.
+function HeroMedia() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [filmAllowed, setFilmAllowed] = useState(false)
+
+  useEffect(() => {
+    if (!isConfigured(CONFIG.heroLoopUrl)) return
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const wide = window.matchMedia('(min-width: 981px)').matches
+    const connection = (navigator as { connection?: { saveData?: boolean } }).connection
+    const saveData = Boolean(connection?.saveData)
+    setFilmAllowed(wide && !reduceMotion && !saveData)
+  }, [])
+
+  useEffect(() => {
+    // 0.75× — the terminal moves at dawn pace, not showreel pace
+    if (filmAllowed && videoRef.current) videoRef.current.playbackRate = 0.75
+  }, [filmAllowed])
+
+  return (
+    <div className="hero-media" aria-hidden="true">
+      {filmAllowed ? (
+        <video
+          className="hero-film"
+          ref={videoRef}
+          src={CONFIG.heroLoopUrl}
+          poster={appPath(CONFIG.heroPosterWide)}
+          autoPlay
+          muted
+          playsInline
+          loop
+          preload="metadata"
+        />
+      ) : (
+        <picture>
+          <source media="(max-width: 980px)" srcSet={appPath(CONFIG.heroPosterTall)} />
+          <img
+            className="hero-poster"
+            src={appPath(CONFIG.heroPosterWide)}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
+      )}
+      <div className="hero-scrim" />
+    </div>
+  )
+}
+
 function Hero({ mailto, source }: { mailto: string; source: string }) {
   return (
     <section className="hero-section" id="top" aria-labelledby="hero-title">
+      <HeroMedia />
       <div className="hero-copy">
         <p className="kicker reveal">FOR CUSTOMS BROKERS & FREIGHT FORWARDERS WHO CLEAR THEIR OWN ENTRIES</p>
         <h1 className="hero-title" id="hero-title">
@@ -371,7 +423,6 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
           </div>
         ))}
       </div>
-      <p className="scroll-cue">SCROLL — THE JOB ARRIVES ▾</p>
     </section>
   )
 }

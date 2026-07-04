@@ -232,7 +232,6 @@ main,
 .multimodal-bar,
 .mono-note,
 .price-cue,
-.scroll-cue,
 .kicker,
 .type-caption,
 .entry-grid,
@@ -373,27 +372,99 @@ main,
   transform: translateY(-1px);
 }
 
+/* v3.0 §2 — the film hero: ink world behind a scrim, paper type in front,
+   and a hard 2px paper rule as the seam where the page returns to the form. */
 .hero-section {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 92svh;
-  padding: 92px 24px 130px;
+  /* full-bleed film, but the fold must still show the CTAs under the header stack */
+  min-height: calc(100svh - 116px);
+  padding: 72px 24px 150px;
   overflow: clip;
   text-align: center;
-  border-bottom: var(--border-w) solid var(--ink);
+  color: var(--paper);
+  background: var(--ink);
+  border-bottom: var(--frame-w) solid var(--paper);
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-film,
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ken Burns fallback until the loop ships: 40s, 1.0 -> 1.04, desktop only */
+@media (min-width: 981px) and (prefers-reduced-motion: no-preference) {
+  .hero-poster {
+    animation: hero-drift 40s var(--ease-inout) infinite alternate;
+  }
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+/* 65% ink scrim — AA verified against the brightest frame */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(22 49 61 / 0.65);
 }
 
 .hero-copy {
+  position: relative;
   display: grid;
   justify-items: center;
   gap: 22px;
   max-width: 980px;
+  z-index: 1;
+}
+
+.hero-section .kicker,
+.hero-section .price-cue {
+  color: rgb(247 246 241 / 0.78);
+}
+
+.hero-section .hero-title {
+  color: var(--paper);
+}
+
+.hero-section .hero-support {
+  color: var(--paper);
+}
+
+.hero-section .hero-body {
+  color: rgb(247 246 241 / 0.92);
+}
+
+.hero-section .btn-secondary {
+  color: var(--paper);
+  border-color: var(--paper);
+}
+
+.hero-section .btn-secondary:hover {
+  color: var(--ink);
+  background: var(--paper);
 }
 
 .kicker,
 .price-cue,
-.scroll-cue,
 .mono-note {
   color: var(--muted);
   font-size: 13px;
@@ -440,6 +511,10 @@ main,
   max-width: 58ch;
   margin-inline: auto;
   font-size: 18px;
+}
+
+.price-cue {
+  max-width: none;
 }
 
 .hero-footnote {
@@ -521,14 +596,6 @@ main,
   to {
     transform: rotate(0.4deg);
   }
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  translate: -50% 0;
-  font-size: 11px;
 }
 
 .box {

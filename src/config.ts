@@ -17,6 +17,11 @@ export const CONFIG = {
   founderName: 'Ihusan Adam',
   // v2.5 B1.2 — real duotone portrait path once approved; empty renders no exhibit
   founderPortrait: '',
+  // v3.0 §2 — the 8-10s duotone terminal loop (≤2.5MB, H.265/VP9). Empty ships the
+  // poster still with the 40s Ken Burns fallback; drop the file in and the film plays.
+  heroLoopUrl: '',
+  heroPosterWide: '/exhibits/hero-terminal-1920.jpg',
+  heroPosterTall: '/exhibits/hero-terminal-1080.jpg',
   // v3.0 §1 — ICC finalist confirmed; year ships as a find-replace token
   iccFinalistYear: '{{YEAR}}',
   // v2.5 B1.8 — /security page truths still owed by the desk
