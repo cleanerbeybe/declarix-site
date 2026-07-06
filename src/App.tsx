@@ -249,7 +249,7 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>3.0 · JUL 2026</strong>
+          <strong>4.0 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
           <span>PILOT SLOTS</span>
@@ -302,7 +302,7 @@ function SectionTitle({ box, title }: { box: string; title: string }) {
 // v2.5 B1.1 / v3.0 §1 — every cell a verifiable fact; unresolved tokens ship dark, never literal
 function ProvenanceStrip() {
   const cells = [
-    'MULTIMODAL 2026 — NEC, IN ATTENDANCE',
+    'MULTIMODAL 2026 — NEC, ATTENDED',
     isConfigured(CONFIG.iccFinalistYear) ? `ICC SEAMLESS TRADE FINALIST ${CONFIG.iccFinalistYear}` : '',
     isConfigured(CONFIG.companyNo) ? `UK REGISTERED — CO. ${CONFIG.companyNo}` : 'UK REGISTERED',
     'BUILT IN LEICESTER',
@@ -1147,7 +1147,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 3.0 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 4.0 · THIS PAGE SETS NO MARKETING COOKIES — ZOHO SERVES THE BOOKING FRAME.</p>
       <nav>
         <a href={appPath('/privacy')}>PRIVACY</a>
         {isConfigured(CONFIG.linkedin) ? <a href={CONFIG.linkedin}>LINKEDIN</a> : null}
@@ -1193,6 +1193,9 @@ function MobileCta({ mailto, source }: { mailto: string; source: string }) {
 }
 
 function PrivacyPage() {
+  useEffect(() => {
+    document.title = 'Privacy — Declarix'
+  }, [])
   return (
     <div className="document-frame privacy-page">
       <PaperGrain />
@@ -1222,6 +1225,9 @@ function PrivacyPage() {
 
 // v2.5 B1.8 — the page an ops manager forwards to IT. Small, real, token-gated truths only.
 function SecurityPage() {
+  useEffect(() => {
+    document.title = 'Security — Declarix'
+  }, [])
   return (
     <div className="document-frame privacy-page">
       <PaperGrain />
@@ -1434,6 +1440,9 @@ function HomePage() {
         )
         gsap.to('.flow-node:nth-child(5)', {
           borderWidth: 2,
+          // the node only declares border-right; widening all edges must not
+          // surface the preflight-gray default on the other three
+          borderColor: '#16313d',
           scrollTrigger: { trigger: '.flow-strip', start: 'top 42%', once: true },
         })
         gsap.fromTo(

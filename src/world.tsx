@@ -263,6 +263,8 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       }
     }
 
+    const cardEl = root.querySelector<HTMLElement>('.world-card')
+
     const ctx = gsap.context(() => {
       scenes.forEach((scene) => {
         const section = root.querySelector<HTMLElement>(`[data-world-scene="${scene.id}"]`)
@@ -276,7 +278,17 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
           end: '+=160%',
           pin: true,
           scrub: 0.55,
+          // the card is height-0-rail furniture: past the journey it would jut
+          // over BOX 2's heading — it leaves with the last scene
+          onLeave: () => {
+            if (scene.id === 5 && cardEl) {
+              gsap.to(cardEl, { autoAlpha: 0, duration: 0.3, ease: 'power2.inOut' })
+            }
+          },
           onEnter: () => {
+            if (scene.id === 5 && cardEl) {
+              gsap.to(cardEl, { autoAlpha: 1, duration: 0.3, ease: 'power2.inOut' })
+            }
             setCard(scene.id)
             loadScene(scene.id) // deep links land mid-journey
             loadScene(scene.id + 1)
@@ -290,6 +302,9 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
             }
           },
           onEnterBack: () => {
+            if (scene.id === 5 && cardEl) {
+              gsap.to(cardEl, { autoAlpha: 1, duration: 0.3, ease: 'power2.inOut' })
+            }
             setCard(scene.id)
             loadScene(scene.id)
             loadScene(scene.id - 1)
