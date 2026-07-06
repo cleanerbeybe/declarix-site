@@ -207,9 +207,28 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
         ),
       ).then((frames) => {
         const firstGood = frames.find(Boolean)
-        if (firstGood) {
-          frameCache.set(scene, frames.map((frame) => frame ?? firstGood))
-          redraw(scene)
+        if (!firstGood) return
+        // a fast scroll may have moved on while this scene decoded
+        if (activeScene && Math.abs(scene - activeScene) >= 2) {
+          frames.forEach((frame) => frame?.close())
+          loading.delete(scene)
+          return
+        }
+        frameCache.set(scene, frames.map((frame) => frame ?? firstGood))
+        redraw(scene)
+      })
+    }
+
+    // decoded frames are ~4MB each off-heap — only the active scene and its
+    // neighbours may stay resident, or laptops OOM the renderer
+    const evictFor = (scene: number) => {
+      frameCache.forEach((frames, key) => {
+        if (Math.abs(key - scene) >= 2) {
+          frames.forEach((frame) => {
+            if (frame instanceof ImageBitmap) frame.close()
+          })
+          frameCache.delete(key)
+          loading.delete(key)
         }
       })
     }
@@ -217,6 +236,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     const setCard = (scene: number) => {
       if (activeScene === scene) return
       activeScene = scene
+      evictFor(scene)
       const copy = scenes[scene - 1]
       root.classList.toggle('world-final', scene === 5)
       cardTimeline?.kill()
@@ -258,6 +278,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
           scrub: 0.55,
           onEnter: () => {
             setCard(scene.id)
+            loadScene(scene.id) // deep links land mid-journey
             loadScene(scene.id + 1)
             // v2.4 seam grammar — a hard paper-rule wipe, never a crossfade
             if (wipe) {
@@ -268,7 +289,11 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
               )
             }
           },
-          onEnterBack: () => setCard(scene.id),
+          onEnterBack: () => {
+            setCard(scene.id)
+            loadScene(scene.id)
+            loadScene(scene.id - 1)
+          },
           onUpdate: (self) => {
             if (!count) return
             const index = Math.round(
@@ -282,6 +307,9 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
         })
         if (stage) sizeCanvas(scene.id)
       })
+      // these pins are created after BOX 2's trigger and out of document order —
+      // without a sort, every trigger below the world keeps pre-pin positions
+      ScrollTrigger.sort()
       ScrollTrigger.refresh()
     }, root)
 

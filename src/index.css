@@ -3142,7 +3142,7 @@ input[type='range'] {
 
 .world-card {
   position: absolute;
-  top: 84px;
+  top: 100px;
   left: max(20px, calc((100vw - 1180px) / 2));
   width: min(380px, 34vw);
   padding: 18px 20px 20px;
@@ -3488,7 +3488,7 @@ input[type='range'] {
     text-decoration: none;
   }
 
-  /* v4.0 — the world prints as the five captioned stills */
+  /* v4.0 — the world prints as the five captioned stills, two to a page */
   .world-stages,
   .world-stills {
     display: none !important;
@@ -3501,5 +3501,20 @@ input[type='range'] {
 
   .world-print .exhibit-frame {
     break-inside: avoid;
+  }
+
+  .world-print .exhibit-frame img {
+    max-height: 320px;
+    object-fit: cover;
+  }
+
+  /* v4.0 QA — the stamp lands on the handover copy when flattened to paper */
+  .stamp-animated {
+    display: none !important;
+  }
+
+  /* the booking frame prints as an empty box; the email fallback line stays */
+  #inline-container {
+    display: none !important;
   }
 }
