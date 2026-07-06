@@ -8,6 +8,7 @@ import Lenis from 'lenis'
 import { CONFIG, isConfigured } from './config'
 import { initAnalytics, track } from './analytics'
 import { documents, flights, mobileMovements, packRows, questions, specimens } from './data'
+import { PaperWorld } from './world'
 
 type ButtonTone = 'primary' | 'secondary'
 type BookingStatus = 'loading' | 'ready' | 'missing' | 'error'
@@ -298,14 +299,14 @@ function SectionTitle({ box, title }: { box: string; title: string }) {
   )
 }
 
-// v2.5 B1.1 / v3.0 §1 — every cell a verifiable fact; {{}} tokens are find-replace before deploy
+// v2.5 B1.1 / v3.0 §1 — every cell a verifiable fact; unresolved tokens ship dark, never literal
 function ProvenanceStrip() {
   const cells = [
     'MULTIMODAL 2026 — NEC, IN ATTENDANCE',
-    `ICC SEAMLESS TRADE FINALIST ${CONFIG.iccFinalistYear}`,
-    `UK REGISTERED — CO. ${CONFIG.companyNo}`,
+    isConfigured(CONFIG.iccFinalistYear) ? `ICC SEAMLESS TRADE FINALIST ${CONFIG.iccFinalistYear}` : '',
+    isConfigured(CONFIG.companyNo) ? `UK REGISTERED — CO. ${CONFIG.companyNo}` : 'UK REGISTERED',
     'BUILT IN LEICESTER',
-  ]
+  ].filter(Boolean)
   return (
     <div className="provenance-strip reveal" aria-label="Provenance">
       {cells.map((cell) => (
@@ -1251,13 +1252,19 @@ function SecurityPage() {
               <span>ACCESS TO HMRC</span>
               <strong>NONE — WE NEVER SUBMIT</strong>
             </p>
-            <p>
-              <span>PROCESSING LOCATION</span>
-              <strong>{CONFIG.securityProcessingLocation}</strong>
-            </p>
+            {isConfigured(CONFIG.securityProcessingLocation) ? (
+              <p>
+                <span>PROCESSING LOCATION</span>
+                <strong>{CONFIG.securityProcessingLocation}</strong>
+              </p>
+            ) : null}
             <p>
               <span>SUBPROCESSORS</span>
-              <strong>{CONFIG.securitySubprocessors}</strong>
+              <strong>
+                {isConfigured(CONFIG.securitySubprocessors)
+                  ? CONFIG.securitySubprocessors
+                  : 'LISTED IN FULL, ON REQUEST'}
+              </strong>
             </p>
           </div>
           <p>
@@ -1632,6 +1639,7 @@ function HomePage() {
       <Header source={source} setSource={setSource} />
       <main>
         <Hero mailto={mailto} source={source} />
+        <PaperWorld mailto={mailto} source={source} />
         <AssemblyScene mailto={mailto} source={source} />
         <DeskMathSection source={source} />
         <AnyFile mailto={mailto} source={source} />

@@ -3109,6 +3109,149 @@ input[type='range'] {
 }
 
 /* ============================================================================
+   v4.0 §6 — THE PAPER WORLD. Five pinned scrub stages, one persistent narration
+   card (sticky rail), paper-rule wipes between scenes. The no-frames / mobile /
+   reduced-motion state is five filed exhibits — the section must stand on stills.
+   ============================================================================ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.world-intro {
+  padding-bottom: 40px;
+}
+
+.world-stages {
+  position: relative;
+}
+
+.world-card-rail {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  height: 0;
+}
+
+.world-card {
+  position: absolute;
+  top: 84px;
+  left: max(20px, calc((100vw - 1180px) / 2));
+  width: min(380px, 34vw);
+  padding: 18px 20px 20px;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.world-card-tag {
+  display: block;
+  min-height: 14px;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.world-card-headline {
+  min-height: 2.15em;
+  margin: 0 0 8px;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.world-card-body {
+  min-height: 3.1em;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.world-card-ctas {
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.world-final .world-card-ctas {
+  display: flex;
+}
+
+.world-scene {
+  height: 100svh;
+  border-top: var(--frame-w) solid var(--ink);
+  background: var(--ink);
+}
+
+.world-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.world-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--ink);
+}
+
+.world-wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
+}
+
+.world-stills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  padding-top: 0;
+}
+
+.world-still img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.world-still-5 {
+  grid-column: 1 / -1;
+}
+
+.world-stills .cta-row {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+  .world-stills {
+    grid-template-columns: 1fr;
+  }
+
+  .world-still img {
+    aspect-ratio: auto;
+  }
+}
+
+.world-print {
+  display: none;
+}
+
+/* ============================================================================
    v3.0 §4.11 — THE PRINT STYLESHEET. This audience prints things.
    Printing the page yields a clean mono/ink form on white: headers, boxes,
    docket, FAQ. Film and motion stripped; footer declaration intact.
@@ -3343,5 +3486,20 @@ input[type='range'] {
 
   a {
     text-decoration: none;
+  }
+
+  /* v4.0 — the world prints as the five captioned stills */
+  .world-stages,
+  .world-stills {
+    display: none !important;
+  }
+
+  .world-print {
+    display: grid !important;
+    gap: 18px;
+  }
+
+  .world-print .exhibit-frame {
+    break-inside: avoid;
   }
 }

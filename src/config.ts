@@ -4,8 +4,9 @@ export const CONFIG = {
   zohoBookingScriptUrl: 'https://bookings.nimbuspop.com/assets/embed.js',
   zohoBookingUrl: 'https://declarixlimited.zohobookings.eu/portal-embed#/declarixlimited',
   bookingEmbedHeight: '600px',
-  companyLegal: 'Declarix',
-  companyNo: '{{NUMBER}}',
+  companyLegal: 'Declarix Limited',
+  // verified against the public register 2026-07-06: DECLARIX LIMITED, active, inc. 19 Jun 2026
+  companyNo: '17288258',
   companyLocation: 'Leicester, England',
   linkedin: '',
   posthogKey: '',

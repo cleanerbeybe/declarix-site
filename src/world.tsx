@@ -1,0 +1,422 @@
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { TextPlugin } from 'gsap/TextPlugin'
+import { track } from './analytics'
+
+// v4.0 §6 — THE PAPER WORLD: five scrub scenes, one narration card, the macro story.
+// Renders fully from poster stills alone; frame sequences upgrade it to a scroll film.
+
+type WorldManifest = { scenes: Record<string, number>; source?: string }
+
+const scenes = [
+  {
+    id: 1,
+    tag: 'S1 · THE INBOX',
+    headline: 'EVERY TRADE BECOMES PAPERWORK.',
+    body: "It lands like this — six attachments, three formats, nobody's favourite job.",
+  },
+  {
+    id: 2,
+    tag: 'S2 · THE SCAN',
+    headline: 'DECLARIX READS ALL OF IT.',
+    body: 'Every format, every page, every line. Nothing keyed by hand.',
+  },
+  {
+    id: 3,
+    tag: 'S3 · THE PORT',
+    headline: 'WHILE YOUR GOODS CROSS THE WORLD…',
+    body: '…the entry is already being built, evidence pinned to every field.',
+  },
+  {
+    id: 4,
+    tag: 'S4 · THE ROAD',
+    headline: '…THE PACK IS ALREADY HOME.',
+    body: 'Entry-ready for Sequoia or Descartes before the ship clears the strait.',
+  },
+  {
+    id: 5,
+    tag: 'S5 · THE STAMP',
+    headline: 'YOUR CLERK CHECKS. YOUR NAME SIGNS.',
+    body: 'PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS',
+  },
+]
+
+// scenes with a 4:5 poster-tall.jpg crop for narrow viewports
+const tallPosterScenes = [1, 5]
+
+function worldPath(path: string) {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+  if (!base) return path
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`
+}
+
+function frameUrl(scene: number, index: number) {
+  return worldPath(`/world/scene-${scene}/f_${String(index + 1).padStart(3, '0')}.jpg`)
+}
+
+function posterUrl(scene: number) {
+  return worldPath(`/world/scene-${scene}/poster.jpg`)
+}
+
+// cover-fit draw — same maths as object-fit: cover
+function drawCover(
+  canvas: HTMLCanvasElement,
+  source: ImageBitmap | HTMLImageElement,
+) {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  const sw = source.width
+  const sh = source.height
+  const cw = canvas.width
+  const ch = canvas.height
+  if (!sw || !sh || !cw || !ch) return
+  const scale = Math.max(cw / sw, ch / sh)
+  const dw = sw * scale
+  const dh = sh * scale
+  ctx.drawImage(source, (cw - dw) / 2, (ch - dh) / 2, dw, dh)
+}
+
+async function fetchBitmap(url: string) {
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`frame ${url}: ${response.status}`)
+  return createImageBitmap(await response.blob())
+}
+
+function loadPoster(scene: number) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = reject
+    image.src = posterUrl(scene)
+  })
+}
+
+function WorldStill({ scene }: { scene: (typeof scenes)[number] }) {
+  const tall = tallPosterScenes.includes(scene.id)
+  return (
+    <figure className={`exhibit-frame world-still world-still-${scene.id} reveal`}>
+      <picture>
+        {tall ? (
+          <source
+            media="(max-width: 640px)"
+            srcSet={worldPath(`/world/scene-${scene.id}/poster-tall.jpg`)}
+          />
+        ) : null}
+        <img src={posterUrl(scene.id)} alt="" loading="lazy" decoding="async" />
+      </picture>
+      <figcaption>
+        {scene.tag} — {scene.headline} {scene.body}
+      </figcaption>
+    </figure>
+  )
+}
+
+export function PaperWorld({ mailto, source }: { mailto: string; source: string }) {
+  const [frameCounts, setFrameCounts] = useState<Record<string, number> | null>(null)
+  const rootRef = useRef<HTMLElement>(null)
+  const cardTag = useRef<HTMLSpanElement>(null)
+  const cardHeadline = useRef<HTMLHeadingElement>(null)
+  const cardBody = useRef<HTMLParagraphElement>(null)
+
+  const scrub = Boolean(frameCounts)
+
+  // the scroll film needs a wide pointer viewport, motion allowed, and no Save-Data —
+  // everyone else (and the no-frames-yet state) gets the five filed exhibits
+  useEffect(() => {
+    const wide = window.matchMedia('(min-width: 981px)').matches
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const connection = (navigator as { connection?: { saveData?: boolean } }).connection
+    if (!wide || reduceMotion || connection?.saveData) return
+    let cancelled = false
+    const request = () =>
+      fetch(worldPath('/world/manifest.json'))
+        .then((response) => (response.ok ? (response.json() as Promise<WorldManifest>) : null))
+        .then((manifest) => {
+          if (cancelled || !manifest) return
+          const counts = manifest.scenes || {}
+          if (Object.values(counts).some((count) => count > 0)) setFrameCounts(counts)
+        })
+        .catch(() => undefined)
+    // after the hero settles; never in the LCP window
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(request, { timeout: 2500 })
+    } else {
+      window.setTimeout(request, 1600)
+    }
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!scrub || !frameCounts || !rootRef.current) return
+    gsap.registerPlugin(ScrollTrigger, TextPlugin)
+
+    const root = rootRef.current
+    const frameCache = new Map<number, Array<ImageBitmap | HTMLImageElement>>()
+    const posterCache = new Map<number, HTMLImageElement>()
+    const loading = new Set<number>()
+    const seen = new Set<number>()
+    const lastFrame = new Map<number, number>()
+    let cardTimeline: gsap.core.Timeline | null = null
+    let activeScene = 0
+
+    const countFor = (scene: number) => frameCounts[String(scene)] || 0
+
+    const canvasFor = (scene: number) =>
+      root.querySelector<HTMLCanvasElement>(`[data-world-canvas="${scene}"]`)
+
+    const redraw = (scene: number) => {
+      const canvas = canvasFor(scene)
+      if (!canvas) return
+      const frames = frameCache.get(scene)
+      const index = lastFrame.get(scene) ?? 0
+      if (frames && frames[index]) {
+        drawCover(canvas, frames[index])
+      } else if (posterCache.get(scene)) {
+        drawCover(canvas, posterCache.get(scene)!)
+      }
+    }
+
+    const sizeCanvas = (scene: number) => {
+      const canvas = canvasFor(scene)
+      if (!canvas) return
+      const ratio = Math.min(window.devicePixelRatio || 1, 2)
+      const { clientWidth, clientHeight } = canvas
+      canvas.width = Math.round(clientWidth * ratio)
+      canvas.height = Math.round(clientHeight * ratio)
+      redraw(scene)
+    }
+
+    // posters paint the stage immediately; frames replace them as they land
+    const loadScene = (scene: number) => {
+      if (scene < 1 || scene > 5 || loading.has(scene)) return
+      loading.add(scene)
+      loadPoster(scene)
+        .then((poster) => {
+          posterCache.set(scene, poster)
+          redraw(scene)
+        })
+        .catch(() => undefined)
+      const count = countFor(scene)
+      if (!count) return
+      Promise.all(
+        Array.from({ length: count }, (_, index) =>
+          fetchBitmap(frameUrl(scene, index)).catch(() => null),
+        ),
+      ).then((frames) => {
+        const firstGood = frames.find(Boolean)
+        if (firstGood) {
+          frameCache.set(scene, frames.map((frame) => frame ?? firstGood))
+          redraw(scene)
+        }
+      })
+    }
+
+    const setCard = (scene: number) => {
+      if (activeScene === scene) return
+      activeScene = scene
+      const copy = scenes[scene - 1]
+      root.classList.toggle('world-final', scene === 5)
+      cardTimeline?.kill()
+      if (!cardTag.current || !cardHeadline.current || !cardBody.current) return
+      // existing TextPlugin rule: 24 chars/s, ease none
+      cardTimeline = gsap
+        .timeline()
+        .set(cardTag.current, { text: copy.tag })
+        .fromTo(
+          cardHeadline.current,
+          { text: '' },
+          { text: copy.headline, duration: copy.headline.length / 24, ease: 'none' },
+          0,
+        )
+        .fromTo(
+          cardBody.current,
+          { text: '' },
+          { text: copy.body, duration: copy.body.length / 24, ease: 'none' },
+          '<+0.2',
+        )
+      if (!seen.has(scene)) {
+        seen.add(scene)
+        track('world_scene_view', { scene, source })
+      }
+    }
+
+    const ctx = gsap.context(() => {
+      scenes.forEach((scene) => {
+        const section = root.querySelector<HTMLElement>(`[data-world-scene="${scene.id}"]`)
+        if (!section) return
+        const stage = section.querySelector<HTMLElement>('.world-stage')
+        const wipe = section.querySelector<HTMLElement>('.world-wipe')
+        const count = countFor(scene.id)
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top top',
+          end: '+=160%',
+          pin: true,
+          scrub: 0.55,
+          onEnter: () => {
+            setCard(scene.id)
+            loadScene(scene.id + 1)
+            // v2.4 seam grammar — a hard paper-rule wipe, never a crossfade
+            if (wipe) {
+              gsap.fromTo(
+                wipe,
+                { clipPath: 'inset(0 0 0 0)' },
+                { clipPath: 'inset(0 0 100% 0)', duration: 0.45, ease: 'power2.inOut' },
+              )
+            }
+          },
+          onEnterBack: () => setCard(scene.id),
+          onUpdate: (self) => {
+            if (!count) return
+            const index = Math.round(
+              gsap.utils.mapRange(0, 1, 0, count - 1, self.progress),
+            )
+            if (lastFrame.get(scene.id) !== index) {
+              lastFrame.set(scene.id, index)
+              redraw(scene.id)
+            }
+          },
+        })
+        if (stage) sizeCanvas(scene.id)
+      })
+      ScrollTrigger.refresh()
+    }, root)
+
+    // scene 1 begins fetching once the page is idle; the pins fetch the rest
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(() => loadScene(1))
+    } else {
+      window.setTimeout(() => loadScene(1), 400)
+    }
+
+    let resizeTimer = 0
+    const onResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(() => {
+        scenes.forEach((scene) => sizeCanvas(scene.id))
+      }, 160)
+    }
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      window.removeEventListener('resize', onResize)
+      window.clearTimeout(resizeTimer)
+      cardTimeline?.kill()
+      ctx.revert()
+      frameCache.forEach((frames) =>
+        frames.forEach((frame) => {
+          if (frame instanceof ImageBitmap) frame.close()
+        }),
+      )
+      frameCache.clear()
+      ScrollTrigger.refresh()
+    }
+  }, [scrub, frameCounts, source])
+
+  return (
+    <section
+      className="box world-journey"
+      id="journey"
+      ref={rootRef}
+      aria-label="The journey of one job through world trade, told as a paper world"
+    >
+      <div className="box-inner world-intro">
+        <div className="section-title reveal">
+          <span data-box-tag="BOX 1A · THE JOURNEY">BOX 1A · THE JOURNEY</span>
+          <h2>One job, door to door.</h2>
+        </div>
+      </div>
+      {/* the full narration, readable without the film */}
+      <ul className="visually-hidden">
+        {scenes.map((scene) => (
+          <li key={scene.id}>
+            {scene.headline} {scene.body}
+          </li>
+        ))}
+      </ul>
+      {scrub ? (
+        <div className="world-stages">
+          <div className="world-card-rail" aria-hidden="true">
+            <aside className="world-card">
+              <span className="world-card-tag" ref={cardTag}>
+                {scenes[0].tag}
+              </span>
+              <h3 className="world-card-headline" ref={cardHeadline}>
+                {scenes[0].headline}
+              </h3>
+              <p className="world-card-body" ref={cardBody}>
+                {scenes[0].body}
+              </p>
+              <div className="world-card-ctas">
+                <a
+                  className="btn btn-secondary"
+                  href={mailto}
+                  tabIndex={-1}
+                  onClick={() => track('cta_pack_mailto', { source })}
+                >
+                  Send one ugly pack
+                </a>
+                <a
+                  className="btn btn-primary"
+                  href="#book"
+                  tabIndex={-1}
+                  onClick={() => track('cta_book_click', { source })}
+                >
+                  Book the 20-minute numbers call
+                </a>
+              </div>
+            </aside>
+          </div>
+          {scenes.map((scene) => (
+            <div className="world-scene" data-world-scene={scene.id} key={scene.id}>
+              <div className="world-stage">
+                <canvas
+                  className="world-canvas"
+                  data-world-canvas={scene.id}
+                  aria-hidden="true"
+                />
+                <div className="world-wipe" aria-hidden="true" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="box-inner world-stills">
+          {scenes.map((scene) => (
+            <WorldStill scene={scene} key={scene.id} />
+          ))}
+          <div className="cta-row centred reveal">
+            <a
+              className="btn btn-secondary"
+              href={mailto}
+              onClick={() => track('cta_pack_mailto', { source })}
+            >
+              Send one ugly pack
+            </a>
+            <a
+              className="btn btn-primary"
+              href="#book"
+              onClick={() => track('cta_book_click', { source })}
+            >
+              Book the 20-minute numbers call
+            </a>
+          </div>
+        </div>
+      )}
+      {/* the world prints as the five captioned stills */}
+      <div className="box-inner world-print" aria-hidden="true">
+        {scenes.map((scene) => (
+          <figure className="exhibit-frame world-still" key={scene.id}>
+            <img src={posterUrl(scene.id)} alt="" loading="lazy" decoding="async" />
+            <figcaption>
+              {scene.tag} — {scene.headline} {scene.body}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )
+}
