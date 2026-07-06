@@ -2,6 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* v3.0 §4.3 — self-hosted, font-display: optional: the page never flashes a swap.
+   Critical weights are preloaded from index.html, so 'optional' means 'always there'. */
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 700;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: 900;
+  font-display: optional;
+  src: url('/fonts/archivo-latin-900-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url('/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: optional;
+  src: url('/fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2');
+}
+
 :root {
   --ink: #16313d;
   --paper: #f7f6f1;
@@ -44,6 +102,8 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--paper);
+  /* v3.0 §4.7 — every number on the page uses tabular figures */
+  font-variant-numeric: tabular-nums;
 }
 
 body,
@@ -106,6 +166,53 @@ h3 {
   overflow: clip;
   border: var(--frame-w) solid var(--ink);
   background: var(--paper);
+}
+
+/* v3.0 §3 — the frame draws itself on load; with JS the real border yields to the edges */
+body.js-choreo .document-frame {
+  border-color: transparent;
+}
+
+.frame-draw i {
+  position: absolute;
+  display: none;
+  background: var(--ink);
+  z-index: 40;
+  pointer-events: none;
+}
+
+body.js-choreo .frame-draw i {
+  display: block;
+}
+
+.fd-top,
+.fd-bottom {
+  right: 0;
+  left: 0;
+  height: var(--frame-w);
+}
+
+.fd-top {
+  top: 0;
+}
+
+.fd-bottom {
+  bottom: 0;
+}
+
+.fd-left,
+.fd-right {
+  top: 0;
+  bottom: 0;
+  width: var(--frame-w);
+}
+
+.fd-left {
+  left: 0;
+}
+
+.fd-right {
+  right: 0;
 }
 
 .paper-grain {
@@ -232,7 +339,6 @@ main,
 .multimodal-bar,
 .mono-note,
 .price-cue,
-.scroll-cue,
 .kicker,
 .type-caption,
 .entry-grid,
@@ -290,6 +396,33 @@ main,
 .header-nav a {
   white-space: nowrap;
   text-decoration: none;
+  transition: text-decoration-color 0.15s var(--ease-out);
+}
+
+.header-nav a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: var(--cleared);
+  text-underline-offset: 4px;
+}
+
+.wordmark small {
+  transition: color 0.15s var(--ease-out);
+}
+
+.wordmark:hover small {
+  color: var(--cleared);
+}
+
+.multimodal-bar:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.margin-spine a:hover {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
 .header-cta {
@@ -345,9 +478,13 @@ main,
   text-decoration: none;
   text-transform: uppercase;
   transition:
-    color 0.13s var(--ease-out),
-    background 0.13s var(--ease-out),
-    transform 0.13s var(--ease-out);
+    color 0.15s var(--ease-out),
+    background 0.15s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+
+.btn:active {
+  transform: translateY(0.5px);
 }
 
 .btn-primary {
@@ -373,27 +510,99 @@ main,
   transform: translateY(-1px);
 }
 
+/* v3.0 §2 — the film hero: ink world behind a scrim, paper type in front,
+   and a hard 2px paper rule as the seam where the page returns to the form. */
 .hero-section {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 92svh;
-  padding: 92px 24px 130px;
+  /* full-bleed film, but the fold must still show the CTAs under the header stack */
+  min-height: calc(100svh - 116px);
+  padding: 72px 24px 150px;
   overflow: clip;
   text-align: center;
-  border-bottom: var(--border-w) solid var(--ink);
+  color: var(--paper);
+  background: var(--ink);
+  border-bottom: var(--frame-w) solid var(--paper);
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-film,
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ken Burns fallback until the loop ships: 40s, 1.0 -> 1.04, desktop only */
+@media (min-width: 981px) and (prefers-reduced-motion: no-preference) {
+  .hero-poster {
+    animation: hero-drift 40s var(--ease-inout) infinite alternate;
+  }
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+/* 65% ink scrim — AA verified against the brightest frame */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(22 49 61 / 0.65);
 }
 
 .hero-copy {
+  position: relative;
   display: grid;
   justify-items: center;
   gap: 22px;
   max-width: 980px;
+  z-index: 1;
+}
+
+.hero-section .kicker,
+.hero-section .price-cue {
+  color: rgb(247 246 241 / 0.78);
+}
+
+.hero-section .hero-title {
+  color: var(--paper);
+}
+
+.hero-section .hero-support {
+  color: var(--paper);
+}
+
+.hero-section .hero-body {
+  color: rgb(247 246 241 / 0.92);
+}
+
+.hero-section .btn-secondary {
+  color: var(--paper);
+  border-color: var(--paper);
+}
+
+.hero-section .btn-secondary:hover {
+  color: var(--ink);
+  background: var(--paper);
 }
 
 .kicker,
 .price-cue,
-.scroll-cue,
 .mono-note {
   color: var(--muted);
   font-size: 13px;
@@ -442,6 +651,10 @@ main,
   font-size: 18px;
 }
 
+.price-cue {
+  max-width: none;
+}
+
 .hero-footnote {
   max-width: 58ch;
   color: var(--muted);
@@ -486,31 +699,32 @@ main,
   letter-spacing: 0.04em;
 }
 
+/* v2.5 B4.3 — fixed rest-angle set {-2.5, -1, 0, +1.5, +3}: art-directed, not ransom-note */
 .peek-1 {
   left: 12%;
-  rotate: -5deg;
+  rotate: -2.5deg;
 }
 
 .peek-2 {
   left: 29%;
-  rotate: 2deg;
+  rotate: 1.5deg;
   animation-delay: -2s;
 }
 
 .peek-3 {
   left: 46%;
-  rotate: -1deg;
+  rotate: 0deg;
 }
 
 .peek-4 {
   left: 63%;
-  rotate: 4deg;
+  rotate: 3deg;
   animation-delay: -3s;
 }
 
 .peek-5 {
   left: 78%;
-  rotate: -3deg;
+  rotate: -1deg;
 }
 
 @keyframes tiny-draught {
@@ -520,14 +734,6 @@ main,
   to {
     transform: rotate(0.4deg);
   }
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  translate: -50% 0;
-  font-size: 11px;
 }
 
 .box {
@@ -549,14 +755,15 @@ main,
   pointer-events: none;
 }
 
+/* v2.5 B2.1 — the air budget doubles: density is the enemy, not the brand */
 .box-inner {
   width: min(1080px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 34px 0;
+  padding: 64px 0 120px;
 }
 
 .section-title {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .section-title span {
@@ -568,12 +775,13 @@ main,
   letter-spacing: 0.1em;
 }
 
+/* v2.5 B2.5 — fewer, larger, calmer */
 .section-title h2 {
   max-width: 760px;
-  font-size: 34px;
+  font-size: 40px;
   font-weight: 700;
   line-height: 1.08;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 .standfirst {
@@ -684,16 +892,17 @@ main,
   opacity: 0.25;
 }
 
+/* v2.5 B4.3 — rest angles snap to the fixed set */
 .paper-doc-1 {
   top: 96px;
   left: 42px;
-  rotate: -6deg;
+  rotate: -2.5deg;
 }
 
 .paper-doc-2 {
   top: 182px;
   left: 160px;
-  rotate: 4deg;
+  rotate: 1.5deg;
 }
 
 .paper-doc-3 {
@@ -705,19 +914,19 @@ main,
 .paper-doc-4 {
   top: 384px;
   left: 205px;
-  rotate: -4deg;
+  rotate: -1deg;
 }
 
 .paper-doc-5 {
   top: 24px;
   left: 210px;
-  rotate: 2deg;
+  rotate: 0deg;
 }
 
 .paper-doc-6 {
   top: 448px;
   left: 92px;
-  rotate: 7deg;
+  rotate: 3deg;
   background: #fbf4e8;
   box-shadow: inset 0 0 42px rgb(22 49 61 / 0.08);
   transform: perspective(700px) rotateX(5deg) rotateY(-4deg) skewX(-2deg);
@@ -782,8 +991,8 @@ main,
   fill: none;
   stroke: var(--ink);
   stroke-width: 1.5;
-  stroke-dasharray: 900;
-  stroke-dashoffset: 900;
+  stroke-dasharray: 620;
+  stroke-dashoffset: 620;
 }
 
 .pack-side {
@@ -830,7 +1039,7 @@ main,
   font-size: 8px;
   font-style: normal;
   letter-spacing: 0.08em;
-  rotate: -2deg;
+  rotate: -2.5deg;
 }
 
 .live-grid-card .grid-stamp-mark {
@@ -846,6 +1055,12 @@ main,
   color: var(--ink);
   cursor: pointer;
   text-align: left;
+  transition: box-shadow 0.15s var(--ease-out);
+}
+
+/* v3.0 §3 — grid rows show a 2px left ink bar on hover */
+.entry-grid-row:hover:not(.is-selected) {
+  box-shadow: inset 2px 0 0 var(--ink);
 }
 
 .entry-grid-row:last-child {
@@ -1018,6 +1233,11 @@ main,
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 9px;
   cursor: pointer;
+  transition: background 0.15s var(--ease-out);
+}
+
+.slot-toggle button:hover {
+  background: rgb(22 49 61 / 0.06);
 }
 
 .stamp {
@@ -1126,10 +1346,11 @@ main,
   background: var(--field);
 }
 
+/* v2.5 B4.4 — marquee speed -20% */
 .specimen-marquee > div {
   display: flex;
   width: max-content;
-  animation: marquee 48s linear infinite;
+  animation: marquee 58s linear infinite;
 }
 
 .specimen-marquee:hover > div {
@@ -1207,7 +1428,7 @@ main,
   gap: 7px;
   min-height: 104px;
   padding: 14px;
-  border-right: var(--border-w) solid var(--ink);
+  border-right: 1px solid rgb(22 49 61 / 0.6);
   text-align: center;
 }
 
@@ -1335,7 +1556,7 @@ main,
 .shred-1 {
   left: 96px;
   top: 58px;
-  rotate: -5deg;
+  rotate: -2.5deg;
 }
 
 .shred-2 {
@@ -1353,7 +1574,7 @@ main,
 .shred-4 {
   left: 260px;
   top: 112px;
-  rotate: 5deg;
+  rotate: 1.5deg;
 }
 
 .shred-ghost {
@@ -1368,7 +1589,7 @@ main,
   left: 96px;
   width: 210px;
   height: 142px;
-  rotate: -5deg;
+  rotate: -2.5deg;
 }
 
 .shred-ghost-2 {
@@ -1384,7 +1605,7 @@ main,
   left: 260px;
   width: 210px;
   height: 142px;
-  rotate: 5deg;
+  rotate: 1.5deg;
 }
 
 .ledger {
@@ -1446,12 +1667,38 @@ main,
   position: absolute;
   top: 14px;
   right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 4px 7px;
   color: var(--paper);
   background: var(--cleared);
   font-size: 10px;
   letter-spacing: 0.08em;
   z-index: 2;
+}
+
+/* v3.0 §3 — the scene clock stays alive at rest: a quiet 1s tick */
+.docket-clock::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--paper);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .docket-clock::before {
+    animation: clock-tick 2s steps(2, jump-none) infinite;
+  }
+}
+
+@keyframes clock-tick {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.35;
+  }
 }
 
 .docket-scan {
@@ -1654,7 +1901,7 @@ input[type='range'] {
 .preset-card:hover {
   background: rgb(27 122 75 / 0.06);
   border-color: var(--cleared);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .preset-card span,
@@ -1727,7 +1974,12 @@ input[type='range'] {
   border-top: var(--border-w) solid var(--ink);
 }
 
+/* v2.5 B2.2 — ink hierarchy: internal rules 1px at 60% ink; structure stays 1.5px */
 .accordion-row {
+  border-bottom: 1px solid rgb(22 49 61 / 0.6);
+}
+
+.accordion-row:last-child {
   border-bottom: var(--border-w) solid var(--ink);
 }
 
@@ -1740,6 +1992,12 @@ input[type='range'] {
   cursor: pointer;
   color: var(--ink);
   text-align: left;
+  transition: background 0.15s var(--ease-out);
+}
+
+/* v3.0 §3 — FAQ rows tint to field on hover */
+.accordion-row button:hover {
+  background: var(--field);
 }
 
 .accordion-row button span,
@@ -1789,6 +2047,182 @@ input[type='range'] {
 
 .accordion-row button[aria-expanded='true'] + .accordion-panel p {
   padding-bottom: 20px;
+}
+
+/* v2.5 B1.1 / v3.0 §1 — provenance strip: header-cell grammar, every cell verifiable */
+.provenance-strip {
+  display: grid;
+  /* cells ship dark when unverified — the grid takes however many render */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto;
+  border: var(--border-w) solid var(--ink);
+  border-bottom: 0;
+  background: var(--field);
+}
+
+.provenance-strip span {
+  padding: 14px 16px;
+  border-right: 1px solid rgb(22 49 61 / 0.6);
+  color: var(--ink);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.provenance-strip span:last-child {
+  border-right: 0;
+}
+
+/* v2.5 B1.4 — integration wall: text-as-logo cells, no third-party marks */
+.integration-wall {
+  display: grid;
+  gap: 10px;
+  margin: 26px 0 8px;
+}
+
+.integration-wall > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.integration-wall > div span {
+  display: grid;
+  place-items: center;
+  min-height: 76px;
+  padding: 14px;
+  border-right: 1px solid rgb(22 49 61 / 0.6);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.integration-wall > div span:last-child {
+  border-right: 0;
+}
+
+/* v2.5 B1.3 — testimonial sockets: mono attribution, Archivo 500 quote */
+.testimonial-strip {
+  display: grid;
+  gap: 18px;
+}
+
+.testimonial-strip blockquote {
+  max-width: 760px;
+  margin: 0;
+  padding: 22px;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.testimonial-strip blockquote p {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.testimonial-strip footer {
+  margin-top: 14px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.testimonial-strip footer span {
+  padding: 2px 6px;
+  border: 1px solid rgb(22 49 61 / 0.6);
+  color: var(--ink);
+}
+
+/* v2.5 B3.2 — depth without noise */
+.dark-box-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.11;
+  pointer-events: none;
+}
+
+.ledger-link-row a {
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration-color: rgb(247 246 241 / 0.5);
+}
+
+.ledger-link-row a:hover {
+  text-decoration-color: var(--paper);
+}
+
+.security-ledger {
+  max-width: 760px;
+  margin: 8px 0;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+.security-ledger p {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: none;
+  padding: 12px 16px;
+  border-top: 1px solid rgb(22 49 61 / 0.6);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.security-ledger p:first-child {
+  border-top: 0;
+}
+
+.security-ledger span {
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.security-ledger strong {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* v2.5 B3.3 — filed-exhibit frame: photography always ruled, always captioned */
+.exhibit-frame {
+  margin: 0;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.exhibit-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.exhibit-frame figcaption {
+  padding: 8px 10px;
+  border-top: 1px solid rgb(22 49 61 / 0.6);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pilot-exhibit {
+  width: min(240px, 60%);
 }
 
 .pilot-docket {
@@ -1877,6 +2311,15 @@ input[type='range'] {
   cursor: pointer;
   font-size: 11px;
   letter-spacing: 0.08em;
+  transition: text-decoration-color 0.15s var(--ease-out);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+/* v3.0 §3 — chips underline on hover */
+.copy-chip:hover {
+  text-decoration-color: var(--cleared);
 }
 
 .cal-inline-widget,
@@ -2120,7 +2563,7 @@ input[type='range'] {
 
   .box-inner {
     width: min(100% - 32px, 1080px);
-    padding: 24px 0;
+    padding: 40px 0 64px;
   }
 
   .section-title h2 {
@@ -2133,6 +2576,40 @@ input[type='range'] {
   .site-footer,
   .numbers-grid {
     grid-template-columns: 1fr;
+  }
+
+  .provenance-strip {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100% - 32px, 1080px);
+  }
+
+  .provenance-strip span:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .provenance-strip span:nth-child(-n + 2) {
+    border-bottom: 1px solid rgb(22 49 61 / 0.6);
+  }
+
+  /* an odd count leaves no orphan cell — the last one takes the full row */
+  .provenance-strip span:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    border-right: 0;
+  }
+
+  .integration-wall > div {
+    grid-template-columns: 1fr;
+  }
+
+  .integration-wall > div span {
+    min-height: 56px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(22 49 61 / 0.6);
+  }
+
+  .integration-wall > div span:last-child {
+    border-bottom: 0;
   }
 
   .assembly-pin {
@@ -2449,7 +2926,8 @@ input[type='range'] {
   }
 
   .hero-title {
-    font-size: clamp(34px, 11.5vw, 48px);
+    /* 10vw keeps the nowrap "3× the entries" inside a 320-620px frame - no horizontal scroll */
+    font-size: clamp(30px, 10vw, 42px);
     line-height: 1.02;
   }
 
@@ -2636,5 +3114,416 @@ input[type='range'] {
 
   .dark-box {
     clip-path: none !important;
+  }
+}
+
+/* ============================================================================
+   v4.0 §6 — THE PAPER WORLD. Five pinned scrub stages, one persistent narration
+   card (sticky rail), paper-rule wipes between scenes. The no-frames / mobile /
+   reduced-motion state is five filed exhibits — the section must stand on stills.
+   ============================================================================ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.world-intro {
+  padding-bottom: 40px;
+}
+
+.world-stages {
+  position: relative;
+}
+
+.world-card-rail {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  height: 0;
+}
+
+.world-card {
+  position: absolute;
+  top: 100px;
+  left: max(20px, calc((100vw - 1180px) / 2));
+  width: min(380px, 34vw);
+  padding: 18px 20px 20px;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.world-card-tag {
+  display: block;
+  min-height: 14px;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.world-card-headline {
+  min-height: 2.15em;
+  margin: 0 0 8px;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.world-card-body {
+  min-height: 3.1em;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.world-card-ctas {
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.world-final .world-card-ctas {
+  display: flex;
+}
+
+.world-scene {
+  height: 100svh;
+  border-top: var(--frame-w) solid var(--ink);
+  background: var(--ink);
+}
+
+.world-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.world-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--ink);
+}
+
+.world-wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
+}
+
+.world-stills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  padding-top: 0;
+}
+
+.world-still img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.world-still-5 {
+  grid-column: 1 / -1;
+}
+
+.world-stills .cta-row {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+  .world-stills {
+    grid-template-columns: 1fr;
+  }
+
+  .world-still img {
+    aspect-ratio: auto;
+  }
+}
+
+.world-print {
+  display: none;
+}
+
+/* ============================================================================
+   v3.0 §4.11 — THE PRINT STYLESHEET. This audience prints things.
+   Printing the page yields a clean mono/ink form on white: headers, boxes,
+   docket, FAQ. Film and motion stripped; footer declaration intact.
+   ============================================================================ */
+@media print {
+  :root {
+    background: #fff;
+  }
+
+  body {
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .document-frame {
+    min-height: auto;
+    margin: 0;
+    border: var(--frame-w) solid var(--ink) !important;
+    background: #fff;
+  }
+
+  /* strip the film, the furniture, and everything interactive-only */
+  .hero-media,
+  .frame-draw,
+  .paper-grain,
+  .margin-spine,
+  .multimodal-bar,
+  .mobile-cta,
+  .tether-layer,
+  .scan-band,
+  .source-ghost,
+  .flight-deck,
+  .docket-scan,
+  .shred-ghost,
+  .dark-box-backdrop,
+  .zoho-inline-container,
+  .cal-status,
+  .booking-stamp-crop,
+  .grid-stamp-mark {
+    display: none !important;
+  }
+
+  /* the hero prints as the form masthead: ink on white */
+  .hero-section {
+    min-height: auto;
+    padding: 48px 24px 64px;
+    color: var(--ink);
+    background: #fff;
+    border-bottom: var(--border-w) solid var(--ink);
+  }
+
+  .hero-section .kicker,
+  .hero-section .price-cue {
+    color: var(--muted);
+  }
+
+  .hero-section .hero-title,
+  .hero-section .hero-support {
+    color: var(--ink);
+  }
+
+  .hero-section .hero-body {
+    color: var(--ink);
+  }
+
+  .hero-section .btn {
+    color: var(--ink) !important;
+    background: none !important;
+    border-color: var(--ink) !important;
+  }
+
+  .hero-pile {
+    display: none;
+  }
+
+  /* everything GSAP may have parked at opacity 0 prints at rest state */
+  .reveal,
+  .hero-line > span,
+  .hero-copy .reveal,
+  .entry-grid,
+  .flag-cards article,
+  .evidence-copy,
+  .handover-card,
+  .handover-caption,
+  .stamp-animated,
+  .paper-doc,
+  .site-header > * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  /* the pinned scene prints as a flat worked example */
+  .assembly-pin {
+    min-height: auto;
+  }
+
+  .assembly-stage {
+    min-height: auto;
+    padding: 24px 0;
+  }
+
+  .docs-stage {
+    display: none;
+  }
+
+  .assembly-caption {
+    position: static;
+  }
+
+  .type-caption {
+    opacity: 1 !important;
+  }
+
+  .pack-side {
+    min-height: auto;
+  }
+
+  .evidence-copy,
+  .handover-card,
+  .handover-caption,
+  .flag-cards {
+    position: static;
+    width: auto;
+    margin-top: 12px;
+  }
+
+  /* the continuation sheet prints as a ruled schedule, not a dark panel */
+  .dark-box {
+    color: var(--ink);
+    background: #fff;
+    border-inline: 0;
+  }
+
+  .dark-box::after {
+    background: var(--ink);
+  }
+
+  .dark-box p,
+  .dark-box .section-title span,
+  .dark-box .mono-note {
+    color: var(--ink);
+  }
+
+  .schedule-tag {
+    border-color: var(--ink);
+  }
+
+  .shred-stage {
+    border-color: var(--ink);
+    min-height: auto;
+  }
+
+  .shred-doc {
+    display: none;
+  }
+
+  .ledger {
+    position: static;
+    background: none;
+  }
+
+  .ledger p {
+    border-top: 1px solid rgb(22 49 61 / 0.6);
+  }
+
+  .ledger strong,
+  .ledger strong small {
+    color: var(--ink);
+  }
+
+  .ledger-link-row a {
+    color: var(--ink);
+  }
+
+  /* FAQ prints fully open */
+  .accordion-panel {
+    grid-template-rows: 1fr !important;
+  }
+
+  .accordion-panel p {
+    padding-bottom: 20px !important;
+  }
+
+  .specimen-marquee > div {
+    animation: none !important;
+  }
+
+  .peek-doc,
+  .hero-poster {
+    animation: none !important;
+  }
+
+  /* the docket minutes are typed in by scroll on screen; print reads the source attribute */
+  .docket-minutes {
+    font-size: 0;
+  }
+
+  .docket-minutes::after {
+    content: attr(data-text);
+    font-size: 12px;
+  }
+
+  .mobile-scan-values i {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  /* form furniture holds its ink */
+  .site-header {
+    position: static;
+  }
+
+  .box-inner {
+    padding: 32px 0 48px;
+  }
+
+  .cost-docket,
+  .accordion-row,
+  .pilot-docket,
+  .provenance-strip,
+  .roi-output article,
+  .preset-card,
+  .start-card {
+    break-inside: avoid;
+  }
+
+  .site-footer {
+    border-top: var(--border-w) solid var(--ink);
+    background: #fff;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /* v4.0 — the world prints as the five captioned stills, two to a page */
+  .world-stages,
+  .world-stills {
+    display: none !important;
+  }
+
+  .world-print {
+    display: grid !important;
+    gap: 18px;
+  }
+
+  .world-print .exhibit-frame {
+    break-inside: avoid;
+  }
+
+  .world-print .exhibit-frame img {
+    max-height: 320px;
+    object-fit: cover;
+  }
+
+  /* v4.0 QA — the stamp lands on the handover copy when flattened to paper */
+  .stamp-animated {
+    display: none !important;
+  }
+
+  /* the booking frame prints as an empty box; the email fallback line stays */
+  #inline-container {
+    display: none !important;
   }
 }

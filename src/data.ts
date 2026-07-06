@@ -189,7 +189,11 @@ export const questions = [
   },
   {
     q: 'We already run Sequoia / Descartes.',
-    a: "Keep them. That's the point. Declarix outputs a pack your system ingests; we sit in front of your software, not instead of it.",
+    a: "Keep them. That's the point. Declarix outputs a pack your system ingests; we sit in front of your software, not instead of it. Schema and regulation changes — CDS versions, new reporting regimes — are our job to track, not yours.",
+  },
+  {
+    q: "We're comparing capture platforms.",
+    a: "Compare away — some are good. The differences to test: packs in your own system this week, not an integration project; nothing stored, ever; evidence pinned to every field for the clerk who signs; priced per entry against your £7.95; and a pilot that costs nothing if it fails. Bring the other quotes to the call.",
   },
   {
     q: "We're a forwarder, not a broker.",
