@@ -354,17 +354,30 @@ function HeroMedia() {
 
   return (
     <div className="hero-media" aria-hidden="true">
+      {/* the poster is ALWAYS the base layer (and the LCP element); the film
+          fades in over it only once frames are genuinely flowing, so no
+          autoplay policy or browser quirk can leave the hero blank */}
+      <picture>
+        <source media="(max-width: 980px)" srcSet={appPath(CONFIG.heroPosterTall)} />
+        <img
+          className="hero-poster"
+          src={appPath(CONFIG.heroPosterWide)}
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
       {filmAllowed ? (
         <video
           className="hero-film"
           key={smallViewport ? 'hero-960' : 'hero-1600'}
           ref={videoRef}
-          poster={appPath(smallViewport ? CONFIG.heroPosterTall : CONFIG.heroPosterWide)}
           autoPlay
           muted
           playsInline
           loop
           preload="metadata"
+          onPlaying={(event) => event.currentTarget.classList.add('is-playing')}
         >
           {/* VP9 first (Chrome/Firefox), H.264 mp4 fallback (Safari/iOS/all) */}
           <source
@@ -376,18 +389,7 @@ function HeroMedia() {
             type="video/mp4"
           />
         </video>
-      ) : (
-        <picture>
-          <source media="(max-width: 980px)" srcSet={appPath(CONFIG.heroPosterTall)} />
-          <img
-            className="hero-poster"
-            src={appPath(CONFIG.heroPosterWide)}
-            alt=""
-            fetchPriority="high"
-            decoding="async"
-          />
-        </picture>
-      )}
+      ) : null}
       <div className="hero-scrim" />
     </div>
   )

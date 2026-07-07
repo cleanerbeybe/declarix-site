@@ -157,21 +157,11 @@ function WorldStill({ scene, film }: { scene: (typeof scenes)[number]; film: boo
 
   return (
     <figure className={`exhibit-frame world-still world-still-${scene.id} reveal`}>
-      {film ? (
-        <video
-          ref={videoRef}
-          muted
-          playsInline
-          loop
-          preload="none"
-          poster={posterUrl(scene.id)}
-          aria-hidden="true"
-        >
-          <source src={worldPath(`/world/scene-${scene.id}/loop.mp4`)} type="video/mp4" />
-        </video>
-      ) : (
+      {/* the still is ALWAYS the base layer — the film fades in over it only
+          once it is genuinely playing, so no browser quirk can leave a blank */}
+      <div className={film ? 'world-media has-film' : 'world-media'}>
         <picture>
-          {tall ? (
+          {tall && !film ? (
             <source
               media="(max-width: 640px)"
               srcSet={worldPath(`/world/scene-${scene.id}/poster-tall.jpg`)}
@@ -179,7 +169,20 @@ function WorldStill({ scene, film }: { scene: (typeof scenes)[number]; film: boo
           ) : null}
           <img src={posterUrl(scene.id)} alt="" loading="lazy" decoding="async" />
         </picture>
-      )}
+        {film ? (
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            loop
+            preload="none"
+            aria-hidden="true"
+            onPlaying={(event) => event.currentTarget.classList.add('is-playing')}
+          >
+            <source src={worldPath(`/world/scene-${scene.id}/loop.mp4`)} type="video/mp4" />
+          </video>
+        ) : null}
+      </div>
       <figcaption>
         {scene.tag} — {scene.headline} {scene.body}
       </figcaption>

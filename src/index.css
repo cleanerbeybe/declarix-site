@@ -492,6 +492,16 @@ main,
   object-fit: cover;
 }
 
+/* the film reveals over the poster only once it is actually playing */
+.hero-film {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-out);
+}
+
+.hero-film.is-playing {
+  opacity: 1;
+}
+
 /* Ken Burns fallback until the loop ships: 40s, 1.0 -> 1.04, desktop only */
 @media (min-width: 981px) and (prefers-reduced-motion: no-preference) {
   .hero-poster {
@@ -3208,13 +3218,32 @@ input[type='range'] {
   padding-top: 0;
 }
 
-.world-still img,
-.world-still video {
+.world-media {
+  position: relative;
+}
+
+.world-still img {
   /* the posters are film frames now */
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+}
+
+/* the film sits over the still and only appears once frames are flowing */
+.world-still video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out);
+  pointer-events: none;
+}
+
+.world-still video.is-playing {
+  opacity: 1;
 }
 
 .world-still-5 {
@@ -3230,12 +3259,9 @@ input[type='range'] {
     grid-template-columns: 1fr;
   }
 
-  .world-still img {
+  /* stills-only users keep the natural tall crops on phones */
+  .world-media:not(.has-film) img {
     aspect-ratio: auto;
-  }
-
-  .world-still video {
-    aspect-ratio: 16 / 9;
   }
 }
 
