@@ -51,8 +51,21 @@ function worldPath(path: string) {
   return `${base}${path.startsWith('/') ? path : `/${path}`}`
 }
 
-function frameUrl(scene: number, index: number) {
-  return worldPath(`/world/scene-${scene}/f_${String(index + 1).padStart(3, '0')}.jpg`)
+// frames ship as a WebP ladder (840/1200) with the 1200px JPEGs as the
+// legacy-decoder fallback; width is chosen from the real canvas size × DPR
+function frameUrl(scene: number, index: number, width: number, webp: boolean) {
+  const name = `f_${String(index + 1).padStart(3, '0')}`
+  return webp
+    ? worldPath(`/world/scene-${scene}/w${width}/${name}.webp`)
+    : worldPath(`/world/scene-${scene}/${name}.jpg`)
+}
+
+function webpSupported() {
+  try {
+    return document.createElement('canvas').toDataURL('image/webp').startsWith('data:image/webp')
+  } catch {
+    return false
+  }
 }
 
 function posterUrl(scene: number) {
@@ -218,6 +231,12 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     let cardTimeline: gsap.core.Timeline | null = null
     let activeScene = 0
 
+    // pick the frame rung the screen can actually show: stage CSS px × DPR
+    const webp = webpSupported()
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const stageWidth = (root.querySelector('.world-stage')?.clientWidth || window.innerWidth) * dpr
+    const frameWidth = webp && stageWidth <= 1000 ? 840 : 1200
+
     const countFor = (scene: number) => frameCounts[String(scene)] || 0
 
     const canvasFor = (scene: number) =>
@@ -262,7 +281,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       if (!count) return
       Promise.all(
         Array.from({ length: count }, (_, index) =>
-          fetchBitmap(frameUrl(scene, index)).catch(() => null),
+          fetchBitmap(frameUrl(scene, index, frameWidth, webp)).catch(() => null),
         ),
       ).then((frames) => {
         const firstGood = frames.find(Boolean)

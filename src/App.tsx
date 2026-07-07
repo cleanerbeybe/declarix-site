@@ -320,12 +320,15 @@ function TestimonialStrip() {
 function HeroMedia() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [filmAllowed, setFilmAllowed] = useState(false)
+  const [smallViewport, setSmallViewport] = useState(false)
 
   useEffect(() => {
     if (!isConfigured(CONFIG.heroLoopUrl)) return
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const connection = (navigator as { connection?: { saveData?: boolean } }).connection
     const saveData = Boolean(connection?.saveData)
+    // phones fetch the 960px encode (~40% of the bytes, identical at that scale)
+    setSmallViewport(window.matchMedia('(max-width: 980px)').matches)
     setFilmAllowed(!reduceMotion && !saveData)
   }, [])
 
@@ -339,17 +342,24 @@ function HeroMedia() {
       {filmAllowed ? (
         <video
           className="hero-film"
+          key={smallViewport ? 'hero-960' : 'hero-1600'}
           ref={videoRef}
-          poster={appPath(CONFIG.heroPosterWide)}
+          poster={appPath(smallViewport ? CONFIG.heroPosterTall : CONFIG.heroPosterWide)}
           autoPlay
           muted
           playsInline
           loop
           preload="metadata"
         >
-          {/* VP9 first (Chrome/Firefox, smaller), H.264 mp4 fallback (Safari/iOS/all) */}
-          <source src={appPath(CONFIG.heroLoopUrl.replace(/\.mp4$/, '.webm'))} type="video/webm" />
-          <source src={appPath(CONFIG.heroLoopUrl)} type="video/mp4" />
+          {/* VP9 first (Chrome/Firefox), H.264 mp4 fallback (Safari/iOS/all) */}
+          <source
+            src={appPath(CONFIG.heroLoopUrl.replace(/\.mp4$/, smallViewport ? '-960.webm' : '.webm'))}
+            type="video/webm"
+          />
+          <source
+            src={appPath(smallViewport ? CONFIG.heroLoopUrl.replace(/\.mp4$/, '-960.mp4') : CONFIG.heroLoopUrl)}
+            type="video/mp4"
+          />
         </video>
       ) : (
         <picture>
