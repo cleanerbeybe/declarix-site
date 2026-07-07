@@ -3269,6 +3269,45 @@ input[type='range'] {
   display: none;
 }
 
+/* v4.1 — the scroll film on handsets: full-bleed scenes, the narration card
+   overlays the bottom of the pinned stage (film behind, words in front) */
+@media (max-width: 980px) {
+  .world-card {
+    top: calc(100svh - 208px);
+    left: 14px;
+    right: 14px;
+    width: auto;
+    padding: 14px 16px 16px;
+  }
+
+  .world-card-tag {
+    margin-bottom: 7px;
+    font-size: 10px;
+  }
+
+  .world-card-headline {
+    min-height: 0;
+    font-size: 19px;
+  }
+
+  .world-card-body {
+    min-height: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .world-card-ctas {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .world-card-ctas .btn {
+    min-height: 42px;
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+}
+
 /* ============================================================================
    v3.0 §4.11 — THE PRINT STYLESHEET. This audience prints things.
    Printing the page yields a clean mono/ink form on white: headers, boxes,

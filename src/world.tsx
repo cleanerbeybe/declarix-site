@@ -51,12 +51,13 @@ function worldPath(path: string) {
   return `${base}${path.startsWith('/') ? path : `/${path}`}`
 }
 
-// frames ship as a WebP ladder (840/1200) with the 1200px JPEGs as the
-// legacy-decoder fallback; width is chosen from the real canvas size × DPR
-function frameUrl(scene: number, index: number, width: number, webp: boolean) {
+// frames ship as a WebP ladder — w840/w1200 landscape plus p720 (a 9:16
+// centre crop of the same film) so portrait phones get full-bleed cover
+// without letterboxing or mush; 1200px JPEGs remain the legacy fallback
+function frameUrl(scene: number, index: number, rung: string, webp: boolean) {
   const name = `f_${String(index + 1).padStart(3, '0')}`
   return webp
-    ? worldPath(`/world/scene-${scene}/w${width}/${name}.webp`)
+    ? worldPath(`/world/scene-${scene}/${rung}/${name}.webp`)
     : worldPath(`/world/scene-${scene}/${name}.jpg`)
 }
 
@@ -208,13 +209,13 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     setStillFilm(!reduceMotion && !connection?.saveData)
   }, [])
 
-  // the scroll film needs a wide pointer viewport, motion allowed, and no Save-Data —
-  // everyone else (and the no-frames-yet state) gets the five filed exhibits
+  // the scroll film runs EVERYWHERE motion is welcome — phones included (the
+  // 840px frame rung makes it affordable); reduced-motion, Save-Data and the
+  // no-frames-yet state get the five filed exhibits instead
   useEffect(() => {
-    const wide = window.matchMedia('(min-width: 981px)').matches
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const connection = (navigator as { connection?: { saveData?: boolean } }).connection
-    if (!wide || reduceMotion || connection?.saveData) return
+    if (reduceMotion || connection?.saveData) return
     let cancelled = false
     const request = () =>
       fetch(worldPath('/world/manifest.json'))
@@ -249,11 +250,20 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     let cardTimeline: gsap.core.Timeline | null = null
     let activeScene = 0
 
-    // pick the frame rung the screen can actually show: stage CSS px × DPR
+    // pick the frame rung the screen can actually show: portrait viewports
+    // take the 9:16 centre-crop rung (full-bleed cover, no letterbox); wide
+    // viewports take w840/w1200 by stage CSS px × DPR
     const webp = webpSupported()
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
-    const stageWidth = (root.querySelector('.world-stage')?.clientWidth || window.innerWidth) * dpr
-    const frameWidth = webp && stageWidth <= 1000 ? 840 : 1200
+    const stage = root.querySelector('.world-stage')
+    const stageW = stage?.clientWidth || window.innerWidth
+    const stageH = stage?.clientHeight || window.innerHeight
+    const portrait = stageH > stageW
+    const rung = portrait ? 'p720' : (stageW * dpr <= 1000 ? 'w840' : 'w1200')
+
+    // iOS address-bar show/hide fires resize events mid-pin; re-measuring the
+    // whole pin stack for those makes the film judder — ignore them
+    ScrollTrigger.config({ ignoreMobileResize: true })
 
     const countFor = (scene: number) => frameCounts[String(scene)] || 0
 
@@ -299,7 +309,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       if (!count) return
       Promise.all(
         Array.from({ length: count }, (_, index) =>
-          fetchBitmap(frameUrl(scene, index, frameWidth, webp)).catch(() => null),
+          fetchBitmap(frameUrl(scene, index, rung, webp)).catch(() => null),
         ),
       ).then((frames) => {
         const firstGood = frames.find(Boolean)
