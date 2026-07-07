@@ -230,79 +230,6 @@ body.js-choreo .frame-draw i {
 main,
 .site-footer,
 .mobile-cta,
-.margin-spine {
-  position: relative;
-  z-index: 1;
-}
-
-.margin-spine {
-  position: fixed;
-  top: 138px;
-  bottom: 42px;
-  left: 34px;
-  display: none;
-  width: 28px;
-  border-left: 1px solid rgb(22 49 61 / 0.35);
-  z-index: 15;
-}
-
-.margin-spine a {
-  position: absolute;
-  left: -8px;
-  display: grid;
-  place-items: center;
-  width: 17px;
-  height: 17px;
-  color: var(--muted);
-  background: var(--paper);
-  border: 1px solid rgb(22 49 61 / 0.35);
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 9px;
-  text-decoration: none;
-  transition:
-    color 0.16s var(--ease-out),
-    background 0.16s var(--ease-out),
-    border-color 0.16s var(--ease-out);
-}
-
-.margin-spine a:nth-child(1) { top: 0; }
-.margin-spine a:nth-child(2) { top: 12.5%; }
-.margin-spine a:nth-child(3) { top: 25%; }
-.margin-spine a:nth-child(4) { top: 37.5%; }
-.margin-spine a:nth-child(5) { top: 50%; }
-.margin-spine a:nth-child(6) { top: 62.5%; }
-.margin-spine a:nth-child(7) { top: 75%; }
-.margin-spine a:nth-child(8) { top: 87.5%; }
-.margin-spine a:nth-child(9) { bottom: 0; }
-
-.margin-spine a.is-active {
-  color: var(--paper);
-  background: var(--ink);
-  border-color: var(--ink);
-}
-
-/* v4.0 QA — the numbered chips name their section on hover */
-.margin-spine a::after {
-  content: attr(title);
-  position: absolute;
-  left: 24px;
-  padding: 3px 7px;
-  color: var(--paper);
-  background: var(--ink);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.16s var(--ease-out);
-}
-
-.margin-spine a:hover::after,
-.margin-spine a:focus-visible::after {
-  opacity: 1;
-}
-
 .site-header {
   position: sticky;
   top: 0;
@@ -439,12 +366,6 @@ main,
 .multimodal-bar:hover span {
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-.margin-spine a:hover {
-  color: var(--paper);
-  background: var(--ink);
-  border-color: var(--ink);
 }
 
 .header-cta {
@@ -2544,10 +2465,7 @@ input[type='range'] {
 }
 
 @media (min-width: 1280px) {
-  .margin-spine {
-    display: block;
   }
-}
 
 @media (max-width: 1180px) {
   .site-header {
@@ -3340,24 +3258,7 @@ input[type='range'] {
   .hero-media,
   .frame-draw,
   .paper-grain,
-  .margin-spine,
-  .multimodal-bar,
-  .mobile-cta,
-  .tether-layer,
-  .scan-band,
-  .source-ghost,
-  .flight-deck,
-  .docket-scan,
-  .shred-ghost,
-  .dark-box-backdrop,
-  .zoho-inline-container,
-  .cal-status,
-  .booking-stamp-crop,
-  .grid-stamp-mark {
-    display: none !important;
-  }
-
-  /* the hero prints as the form masthead: ink on white */
+    /* the hero prints as the form masthead: ink on white */
   .hero-section {
     min-height: auto;
     padding: 48px 24px 64px;

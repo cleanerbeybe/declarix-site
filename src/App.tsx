@@ -66,17 +66,6 @@ const costPresets = [
   },
 ]
 
-const spineLinks = [
-  { number: 1, label: 'Hero', href: '#top' },
-  { number: 2, label: 'Job', href: '#job' },
-  { number: 3, label: 'Numbers', href: '#numbers' },
-  { number: 4, label: 'Files', href: '#files' },
-  { number: 5, label: 'System', href: '#system' },
-  { number: 6, label: 'Security', href: '#security' },
-  { number: 7, label: 'Questions', href: '#questions' },
-  { number: 8, label: 'Pilot', href: '#pilot' },
-  { number: 9, label: 'Book', href: '#book' },
-]
 
 function Button({
   href,
@@ -198,18 +187,6 @@ function Signature() {
     <svg className="signature" viewBox="0 0 260 86" aria-label="Declarix signature">
       <path d="M14 54 C42 18, 70 18, 79 48 S105 81, 131 41 C143 23, 162 24, 151 53 C142 76, 178 76, 201 45 C217 24, 238 24, 244 51" />
     </svg>
-  )
-}
-
-function MarginSpine() {
-  return (
-    <nav className="margin-spine" aria-label="Form progress">
-      {spineLinks.map((link) => (
-        <a data-spine-link={link.href} href={link.href} key={link.href} title={link.label}>
-          <span>{link.number}</span>
-        </a>
-      ))}
-    </nav>
   )
 }
 
@@ -1410,19 +1387,6 @@ function HomePage() {
         )
       })
 
-      spineLinks.forEach((link) => {
-        const section = document.querySelector(link.href)
-        const anchor = document.querySelector(`[data-spine-link="${link.href}"]`)
-        if (!section || !anchor) return
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top center',
-          end: 'bottom center',
-          onEnter: () => anchor.classList.add('is-active'),
-          onEnterBack: () => anchor.classList.add('is-active'),
-        })
-      })
-
       ScrollTrigger.create({
         start: 80,
         onEnter: () => document.body.classList.add('is-scrolled'),
@@ -1694,7 +1658,6 @@ function HomePage() {
         <i className="fd-right" />
       </div>
       <PaperGrain />
-      <MarginSpine />
       <Header source={source} setSource={setSource} />
       <main>
         <Hero mailto={mailto} source={source} />
