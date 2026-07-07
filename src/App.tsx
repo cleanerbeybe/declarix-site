@@ -1618,20 +1618,41 @@ function HomePage() {
     }
     document.addEventListener('click', onAnchorClick)
 
+    // A cold deep link (e.g. shared #book) must survive the world mounting its
+    // pins AFTER the async frame manifest loads — that grows the page ~6000px and
+    // moves every target below the world. Re-align as layout settles and on each
+    // ScrollTrigger refresh, but never fight a user who has already scrolled.
+    let userScrolled = false
+    const markScrolled = () => {
+      userScrolled = true
+    }
+    window.addEventListener('wheel', markScrolled, { passive: true })
+    window.addEventListener('touchstart', markScrolled, { passive: true })
+    window.addEventListener('keydown', markScrolled)
+
     const scrollToHash = () => {
-      if (!window.location.hash) return
+      if (!window.location.hash || userScrolled) return
       const target = document.querySelector<HTMLElement>(window.location.hash)
       if (target) scrollToTarget(target)
     }
-    const hashTimerA = window.setTimeout(scrollToHash, 80)
-    const hashTimerB = window.setTimeout(scrollToHash, 950)
-    window.addEventListener('hashchange', scrollToHash)
+    const hashTimers = [60, 500, 1200, 2200, 3400, 5000].map((delay) =>
+      window.setTimeout(scrollToHash, delay),
+    )
+    ScrollTrigger.addEventListener('refresh', scrollToHash)
+    const onHashChange = () => {
+      userScrolled = false
+      scrollToHash()
+    }
+    window.addEventListener('hashchange', onHashChange)
 
     return () => {
       document.removeEventListener('click', onAnchorClick)
-      window.removeEventListener('hashchange', scrollToHash)
-      window.clearTimeout(hashTimerA)
-      window.clearTimeout(hashTimerB)
+      window.removeEventListener('hashchange', onHashChange)
+      window.removeEventListener('wheel', markScrolled)
+      window.removeEventListener('touchstart', markScrolled)
+      window.removeEventListener('keydown', markScrolled)
+      ScrollTrigger.removeEventListener('refresh', scrollToHash)
+      hashTimers.forEach((timer) => window.clearTimeout(timer))
       ctx.revert()
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }

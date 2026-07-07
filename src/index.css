@@ -443,8 +443,11 @@ main,
   gap: 18px;
   min-height: 42px;
   padding: 9px 16px;
-  background: var(--manifest);
-  border-bottom: var(--border-w) solid var(--ink);
+  /* v4.0 QA — ink not orange: manifest-orange is reserved for one component
+     (the Box 2 clerk-confirmation flags); the event hook keeps its message */
+  color: var(--paper);
+  background: var(--ink);
+  border-bottom: var(--border-w) solid var(--cleared);
   font-size: 12px;
   letter-spacing: 0.04em;
   text-align: center;
@@ -1936,7 +1939,7 @@ input[type='range'] {
 }
 
 .intake-note {
-  margin-top: -8px;
+  margin-top: 4px;
 }
 
 .persona-strip {
@@ -2275,6 +2278,9 @@ input[type='range'] {
 .start-cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* v4.0 QA — don't stretch the mailto card to the taller booking card's height
+     (left it a ~450px void); each card takes its natural height */
+  align-items: start;
   gap: 18px;
 }
 
@@ -2412,6 +2418,10 @@ input[type='range'] {
 }
 
 .site-footer {
+  /* v4.0 QA — sit above the fixed margin-spine (z 15) so its bottom marker
+     doesn't clip the footer's mono line at the page end */
+  position: relative;
+  z-index: 16;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(260px, auto);
   gap: 22px;
@@ -3522,8 +3532,24 @@ input[type='range'] {
     display: none !important;
   }
 
-  /* the booking frame prints as an empty box; the email fallback line stays */
-  #inline-container {
+  /* the booking widget prints as an empty framed box; hide the whole wrapper,
+     the email fallback line above it stays */
+  #inline-container,
+  .cal-inline-widget,
+  .zoho-booking-widget {
     display: none !important;
+  }
+
+  /* the signature draws itself on scroll — if unscrolled at print time its
+     stroke is fully dashed-out (invisible); force it fully drawn on paper */
+  .signature path {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .site-footer > div {
+    break-inside: avoid;
   }
 }
