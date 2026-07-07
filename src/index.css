@@ -229,7 +229,11 @@ body.js-choreo .frame-draw i {
 .multimodal-bar,
 main,
 .site-footer,
-.mobile-cta,
+.mobile-cta {
+  position: relative;
+  z-index: 1;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -3258,7 +3262,23 @@ input[type='range'] {
   .hero-media,
   .frame-draw,
   .paper-grain,
-    /* the hero prints as the form masthead: ink on white */
+  .multimodal-bar,
+  .mobile-cta,
+  .tether-layer,
+  .scan-band,
+  .source-ghost,
+  .flight-deck,
+  .docket-scan,
+  .shred-ghost,
+  .dark-box-backdrop,
+  .zoho-inline-container,
+  .cal-status,
+  .booking-stamp-crop,
+  .grid-stamp-mark {
+    display: none !important;
+  }
+
+  /* the hero prints as the form masthead: ink on white */
   .hero-section {
     min-height: auto;
     padding: 48px 24px 64px;
