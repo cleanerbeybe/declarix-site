@@ -24,8 +24,9 @@ export const CONFIG = {
   heroLoopUrl: '/exhibits/hero-loop.mp4',
   heroPosterWide: '/exhibits/hero-terminal-1920.jpg',
   heroPosterTall: '/exhibits/hero-terminal-1080.jpg',
-  // v3.0 §1 — ICC finalist confirmed; year ships as a find-replace token
-  iccFinalistYear: '{{YEAR}}',
+  // owner-confirmed 2026-07-07: Seamless Trade Across Borders Challenge with
+  // the ICC (Digital Catapult delivery), cohort selected Oct 2025
+  iccFinalistYear: '2025',
   // v2.5 B1.8 — /security page truths still owed by the desk
   securitySubprocessors: '{{SUBPROCESSOR LIST}}',
   securityProcessingLocation: '{{UK / EU}}',
