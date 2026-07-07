@@ -126,18 +126,33 @@ function WorldStill({ scene, film }: { scene: (typeof scenes)[number]; film: boo
   useEffect(() => {
     const video = videoRef.current
     if (!film || !video) return
+    let inView = false
+    const tryPlay = () => {
+      if (inView && video.paused) video.play().catch(() => undefined)
+    }
     const observer = new IntersectionObserver(
       ([entry]) => {
+        inView = entry.isIntersecting
         if (entry.isIntersecting) {
-          video.play().catch(() => undefined)
+          tryPlay()
         } else {
           video.pause()
         }
       },
       { rootMargin: '160px 0px' },
     )
+    // iOS Low Power Mode rejects autoplay but allows playback started from a
+    // real gesture — retry on the first touches/scrolls so the films still run
+    window.addEventListener('touchstart', tryPlay, { passive: true })
+    window.addEventListener('touchmove', tryPlay, { passive: true })
+    window.addEventListener('scroll', tryPlay, { passive: true })
     observer.observe(video)
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('touchstart', tryPlay)
+      window.removeEventListener('touchmove', tryPlay)
+      window.removeEventListener('scroll', tryPlay)
+    }
   }, [film])
 
   return (

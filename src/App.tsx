@@ -337,6 +337,21 @@ function HeroMedia() {
     if (filmAllowed && videoRef.current) videoRef.current.playbackRate = 0.75
   }, [filmAllowed])
 
+  useEffect(() => {
+    // iOS Low Power Mode rejects autoplay; a real gesture may start playback
+    if (!filmAllowed) return
+    const tryPlay = () => {
+      const video = videoRef.current
+      if (video?.paused) video.play().catch(() => undefined)
+    }
+    window.addEventListener('touchstart', tryPlay, { passive: true })
+    window.addEventListener('scroll', tryPlay, { passive: true })
+    return () => {
+      window.removeEventListener('touchstart', tryPlay)
+      window.removeEventListener('scroll', tryPlay)
+    }
+  }, [filmAllowed])
+
   return (
     <div className="hero-media" aria-hidden="true">
       {filmAllowed ? (
