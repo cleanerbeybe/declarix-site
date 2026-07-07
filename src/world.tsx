@@ -92,7 +92,9 @@ function drawCover(
   ctx.imageSmoothingQuality = 'high'
   const cover = Math.max(cw / sw, ch / sh)
   const contain = Math.min(cw / sw, ch / sh)
-  const scale = Math.min(cover, contain * 1.45)
+  // portrait stages (phones) are ALWAYS full-bleed — ink letterbox bars read
+  // as broken black borders on OLED; the zoom cap only serves odd desktop windows
+  const scale = ch > cw ? cover : Math.min(cover, contain * 1.45)
   if (scale < cover) {
     ctx.fillStyle = '#16313d'
     ctx.fillRect(0, 0, cw, ch)
@@ -108,12 +110,12 @@ async function fetchBitmap(url: string) {
   return createImageBitmap(await response.blob())
 }
 
-function loadPoster(scene: number) {
+function loadPoster(scene: number, src?: string) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image()
     image.onload = () => resolve(image)
     image.onerror = reject
-    image.src = posterUrl(scene)
+    image.src = src || posterUrl(scene)
   })
 }
 
@@ -295,11 +297,13 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       redraw(scene)
     }
 
-    // posters paint the stage immediately; frames replace them as they land
+    // posters paint the stage immediately; frames replace them as they land.
+    // Portrait stages take the portrait crop's first frame as the poster —
+    // a landscape poster would letterbox the very first paint
     const loadScene = (scene: number) => {
       if (scene < 1 || scene > 5 || loading.has(scene)) return
       loading.add(scene)
-      loadPoster(scene)
+      loadPoster(scene, portrait && webp ? frameUrl(scene, 0, rung, webp) : undefined)
         .then((poster) => {
           posterCache.set(scene, poster)
           redraw(scene)
