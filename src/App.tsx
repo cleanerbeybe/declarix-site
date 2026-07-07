@@ -240,7 +240,7 @@ function Header({
           <span className="mark" />
           <span>
             <strong>DECLARIX</strong>
-            <small>THE OFFICE LAYER FOR THE CLEARANCE DESK</small>
+            <small>FASTER ENTRIES · BETTER MARGINS · FEWER ERRORS</small>
           </span>
         </a>
         <div className="header-cell">

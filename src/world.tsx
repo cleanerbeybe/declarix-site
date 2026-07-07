@@ -59,7 +59,10 @@ function posterUrl(scene: number) {
   return worldPath(`/world/scene-${scene}/poster.jpg`)
 }
 
-// cover-fit draw — same maths as object-fit: cover
+// cover-fit draw with a zoom cap: on ordinary landscape viewports this is
+// object-fit: cover; on extreme narrow-tall windows an uncapped cover would
+// blow a slice of the frame up 3-5× (mush) — beyond the cap the frame sits as
+// a film strip letterboxed in ink instead
 function drawCover(
   canvas: HTMLCanvasElement,
   source: ImageBitmap | HTMLImageElement,
@@ -71,7 +74,15 @@ function drawCover(
   const cw = canvas.width
   const ch = canvas.height
   if (!sw || !sh || !cw || !ch) return
-  const scale = Math.max(cw / sw, ch / sh)
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
+  const cover = Math.max(cw / sw, ch / sh)
+  const contain = Math.min(cw / sw, ch / sh)
+  const scale = Math.min(cover, contain * 1.45)
+  if (scale < cover) {
+    ctx.fillStyle = '#16313d'
+    ctx.fillRect(0, 0, cw, ch)
+  }
   const dw = sw * scale
   const dh = sh * scale
   ctx.drawImage(source, (cw - dw) / 2, (ch - dh) / 2, dw, dh)
@@ -184,8 +195,11 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       if (!canvas) return
       const ratio = Math.min(window.devicePixelRatio || 1, 2)
       const { clientWidth, clientHeight } = canvas
-      canvas.width = Math.round(clientWidth * ratio)
-      canvas.height = Math.round(clientHeight * ratio)
+      // supersampling the buffer past the frame width adds no detail — it only
+      // resamples the same pixels twice; let the browser do the final upscale
+      const width = Math.min(Math.round(clientWidth * ratio), 1600)
+      canvas.width = width
+      canvas.height = Math.round((width * clientHeight) / Math.max(clientWidth, 1))
       redraw(scene)
     }
 

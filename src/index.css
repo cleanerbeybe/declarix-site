@@ -281,6 +281,28 @@ main,
   border-color: var(--ink);
 }
 
+/* v4.0 QA — the numbered chips name their section on hover */
+.margin-spine a::after {
+  content: attr(title);
+  position: absolute;
+  left: 24px;
+  padding: 3px 7px;
+  color: var(--paper);
+  background: var(--ink);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s var(--ease-out);
+}
+
+.margin-spine a:hover::after,
+.margin-spine a:focus-visible::after {
+  opacity: 1;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -3265,7 +3287,8 @@ input[type='range'] {
 }
 
 .world-still img {
-  aspect-ratio: 3 / 2;
+  /* the posters are film frames now */
+  aspect-ratio: 16 / 9;
   object-fit: cover;
 }
 
