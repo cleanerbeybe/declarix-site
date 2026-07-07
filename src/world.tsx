@@ -103,19 +103,55 @@ function loadPoster(scene: number) {
   })
 }
 
-function WorldStill({ scene }: { scene: (typeof scenes)[number] }) {
+// The mobile/fallback edition plays each scene as a muted looping film
+// (hardware-decoded, ~150KB, fetched only when the figure nears the viewport).
+// Reduced-motion and Save-Data keep the plain stills.
+function WorldStill({ scene, film }: { scene: (typeof scenes)[number]; film: boolean }) {
   const tall = tallPosterScenes.includes(scene.id)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!film || !video) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => undefined)
+        } else {
+          video.pause()
+        }
+      },
+      { rootMargin: '160px 0px' },
+    )
+    observer.observe(video)
+    return () => observer.disconnect()
+  }, [film])
+
   return (
     <figure className={`exhibit-frame world-still world-still-${scene.id} reveal`}>
-      <picture>
-        {tall ? (
-          <source
-            media="(max-width: 640px)"
-            srcSet={worldPath(`/world/scene-${scene.id}/poster-tall.jpg`)}
-          />
-        ) : null}
-        <img src={posterUrl(scene.id)} alt="" loading="lazy" decoding="async" />
-      </picture>
+      {film ? (
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          loop
+          preload="none"
+          poster={posterUrl(scene.id)}
+          aria-hidden="true"
+        >
+          <source src={worldPath(`/world/scene-${scene.id}/loop.mp4`)} type="video/mp4" />
+        </video>
+      ) : (
+        <picture>
+          {tall ? (
+            <source
+              media="(max-width: 640px)"
+              srcSet={worldPath(`/world/scene-${scene.id}/poster-tall.jpg`)}
+            />
+          ) : null}
+          <img src={posterUrl(scene.id)} alt="" loading="lazy" decoding="async" />
+        </picture>
+      )}
       <figcaption>
         {scene.tag} — {scene.headline} {scene.body}
       </figcaption>
@@ -125,12 +161,21 @@ function WorldStill({ scene }: { scene: (typeof scenes)[number] }) {
 
 export function PaperWorld({ mailto, source }: { mailto: string; source: string }) {
   const [frameCounts, setFrameCounts] = useState<Record<string, number> | null>(null)
+  const [stillFilm, setStillFilm] = useState(false)
   const rootRef = useRef<HTMLElement>(null)
   const cardTag = useRef<HTMLSpanElement>(null)
   const cardHeadline = useRef<HTMLHeadingElement>(null)
   const cardBody = useRef<HTMLParagraphElement>(null)
 
   const scrub = Boolean(frameCounts)
+
+  // the exhibits play as looping films wherever motion is welcome —
+  // mobile included; reduced-motion and Save-Data stay on stills
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const connection = (navigator as { connection?: { saveData?: boolean } }).connection
+    setStillFilm(!reduceMotion && !connection?.saveData)
+  }, [])
 
   // the scroll film needs a wide pointer viewport, motion allowed, and no Save-Data —
   // everyone else (and the no-frames-yet state) gets the five filed exhibits
@@ -443,7 +488,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       ) : (
         <div className="box-inner world-stills">
           {scenes.map((scene) => (
-            <WorldStill scene={scene} key={scene.id} />
+            <WorldStill scene={scene} film={stillFilm} key={scene.id} />
           ))}
           <div className="cta-row centred reveal">
             <a

@@ -3208,8 +3208,11 @@ input[type='range'] {
   padding-top: 0;
 }
 
-.world-still img {
+.world-still img,
+.world-still video {
   /* the posters are film frames now */
+  display: block;
+  width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
@@ -3229,6 +3232,10 @@ input[type='range'] {
 
   .world-still img {
     aspect-ratio: auto;
+  }
+
+  .world-still video {
+    aspect-ratio: 16 / 9;
   }
 }
 

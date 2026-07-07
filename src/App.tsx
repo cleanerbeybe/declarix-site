@@ -314,8 +314,9 @@ function TestimonialStrip() {
   )
 }
 
-// v3.0 §2 — the ink-duotone film hero: the physical world behind, the paperwork in front.
-// Mobile, reduced-motion and Save-Data always get the poster still; it is the LCP element.
+// v3.0 §2 / v4.0 — the ink-duotone film hero: the physical world behind, the
+// paperwork in front. The film plays on every viewport (615KB loop, poster is
+// still the LCP element); reduced-motion and Save-Data keep the poster still.
 function HeroMedia() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [filmAllowed, setFilmAllowed] = useState(false)
@@ -323,10 +324,9 @@ function HeroMedia() {
   useEffect(() => {
     if (!isConfigured(CONFIG.heroLoopUrl)) return
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const wide = window.matchMedia('(min-width: 981px)').matches
     const connection = (navigator as { connection?: { saveData?: boolean } }).connection
     const saveData = Boolean(connection?.saveData)
-    setFilmAllowed(wide && !reduceMotion && !saveData)
+    setFilmAllowed(!reduceMotion && !saveData)
   }, [])
 
   useEffect(() => {
