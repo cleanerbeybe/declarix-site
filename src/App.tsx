@@ -1004,16 +1004,17 @@ function PilotSection() {
   )
 }
 
+// v4.0 — the Zoho diary is a third-party iframe that can't inherit our ink/paper
+// system, so it stays hidden until the visitor commits to booking: the panel reads
+// on-brand by default and the live calendar mounts inline on click (no new tab).
 function ZohoBookingEmbed({ source }: { source: string }) {
-  const [status, setStatus] = useState<BookingStatus>(() =>
-    isConfigured(CONFIG.zohoBookingUrl) && isConfigured(CONFIG.zohoBookingScriptUrl) ? 'loading' : 'missing',
-  )
+  const configured =
+    isConfigured(CONFIG.zohoBookingUrl) && isConfigured(CONFIG.zohoBookingScriptUrl)
+  const [revealed, setRevealed] = useState(false)
+  const [status, setStatus] = useState<BookingStatus>(configured ? 'loading' : 'missing')
 
   useEffect(() => {
-    if (!isConfigured(CONFIG.zohoBookingUrl) || !isConfigured(CONFIG.zohoBookingScriptUrl)) {
-      setStatus('missing')
-      return
-    }
+    if (!revealed || !configured) return
 
     const scriptId = 'zoho-bookings-embed-script'
     let cancelled = false
@@ -1033,6 +1034,10 @@ function ZohoBookingEmbed({ source }: { source: string }) {
       })
       setStatus('ready')
       track('booking_frame_load', { provider: 'zoho', source })
+      window.setTimeout(
+        () => document.querySelector('#inline-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+        120,
+      )
     }
 
     if (window.Bookings?.inlineEmbed) {
@@ -1061,23 +1066,44 @@ function ZohoBookingEmbed({ source }: { source: string }) {
       script?.removeEventListener('load', mountEmbed)
       script?.removeEventListener('error', onError)
     }
-  }, [source])
+  }, [revealed, configured, source])
 
-  if (status === 'missing') {
+  if (!configured) {
+    // no live diary configured — the public booking page is still one click away
     return (
-      <div className="cal-placeholder">
-        <span>BOOKING LINK NEEDED</span>
-        <p>
-          Add the Zoho Bookings embed URL and script URL in the site config to turn this into the
-          live diary.
-        </p>
+      <div className="cal-reveal">
+        <Button
+          href="https://declarixlimited.zohobookings.eu/#/declarixlimited"
+          onClick={() => track('cta_book_click', { source, mode: 'external' })}
+        >
+          See available times
+        </Button>
+        <p className="mono-note">OPENS THE DECLARIX DIARY.</p>
+      </div>
+    )
+  }
+
+  if (!revealed) {
+    return (
+      <div className="cal-reveal">
+        <Stamp className="booking-stamp-crop" ring="DECLARIX · PACK COMPLETE · 09:07" centre="PACK · COMPLETE" />
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={() => {
+            setRevealed(true)
+            track('booking_reveal', { source })
+          }}
+        >
+          See available times
+        </button>
+        <p className="mono-note">PICK A SLOT INLINE — NO NEW TAB, NO LOGIN.</p>
       </div>
     )
   }
 
   return (
     <div className="cal-inline-widget zoho-booking-widget">
-      <Stamp className="booking-stamp-crop" ring="DECLARIX · PACK COMPLETE · 09:07" centre="PACK · COMPLETE" />
       {status !== 'ready' ? (
         <div className="cal-status">
           <span>{status === 'error' ? 'BOOKING WIDGET COULD NOT LOAD' : 'LOADING THE DIARY...'}</span>
