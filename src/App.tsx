@@ -1622,7 +1622,10 @@ function HomePage() {
 
     const scrollToHash = () => {
       if (!window.location.hash || userScrolled) return
-      const target = document.querySelector<HTMLElement>(window.location.hash)
+      // tolerate '#book?src=x' — anything after ? is not part of the anchor
+      const hash = window.location.hash.split('?')[0]
+      if (hash.length < 2) return
+      const target = document.querySelector<HTMLElement>(hash)
       if (target) scrollToTarget(target)
     }
     const hashTimers = [60, 500, 1200, 2200, 3400, 5000].map((delay) =>

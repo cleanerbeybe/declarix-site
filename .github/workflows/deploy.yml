@@ -25,6 +25,12 @@ jobs:
         env:
           VITE_BASE_PATH: /
       - run: cp dist/index.html dist/404.html
+      # real files for the SPA routes so /security and /privacy serve HTTP 200
+      # (crawlers and link checkers were seeing the 404.html fallback status)
+      - run: |
+          mkdir -p dist/security dist/privacy
+          cp dist/index.html dist/security/index.html
+          cp dist/index.html dist/privacy/index.html
       - run: touch dist/.nojekyll
       - name: Publish gh-pages branch
         env:
