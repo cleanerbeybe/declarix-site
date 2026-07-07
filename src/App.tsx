@@ -363,14 +363,17 @@ function HeroMedia() {
         <video
           className="hero-film"
           ref={videoRef}
-          src={CONFIG.heroLoopUrl}
           poster={appPath(CONFIG.heroPosterWide)}
           autoPlay
           muted
           playsInline
           loop
           preload="metadata"
-        />
+        >
+          {/* VP9 first (Chrome/Firefox, smaller), H.264 mp4 fallback (Safari/iOS/all) */}
+          <source src={appPath(CONFIG.heroLoopUrl.replace(/\.mp4$/, '.webm'))} type="video/webm" />
+          <source src={appPath(CONFIG.heroLoopUrl)} type="video/mp4" />
+        </video>
       ) : (
         <picture>
           <source media="(max-width: 980px)" srcSet={appPath(CONFIG.heroPosterTall)} />
