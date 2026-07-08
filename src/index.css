@@ -2726,17 +2726,41 @@ input[type='range'] {
     z-index: 6;
   }
 
+  /* v4.1 — the six source docs read as a scattered physical intake pile, not a
+     wall of blank forms: tag + title only, rotated on the rest-angle set,
+     overlapped into a stack the green scan sweeps across */
   .paper-doc {
     position: static;
-    width: auto;
-    min-height: 120px;
+    width: min(84%, 300px);
+    min-height: 0;
+    margin: 0 auto;
+    padding: 9px 13px;
     transform: none;
-    rotate: 0deg;
   }
 
-  .paper-doc-6 {
-    transform: perspective(700px) rotateX(3deg) rotateY(-3deg) skewX(-1deg);
+  .paper-doc:not(:first-child) {
+    margin-top: -18px;
   }
+
+  .paper-doc p,
+  .paper-doc .doc-rule {
+    display: none;
+  }
+
+  .paper-doc header {
+    margin-bottom: 3px;
+  }
+
+  .paper-doc strong {
+    font-size: 12.5px;
+  }
+
+  .paper-doc-1 { rotate: -2.5deg; }
+  .paper-doc-2 { rotate: 1.5deg; margin-left: 12%; }
+  .paper-doc-3 { rotate: -1deg; margin-right: 10%; margin-left: auto; }
+  .paper-doc-4 { rotate: 3deg; margin-left: 8%; }
+  .paper-doc-5 { rotate: -1.5deg; margin-right: 6%; margin-left: auto; }
+  .paper-doc-6 { rotate: 2deg; transform: none; }
 
   .scan-band,
   .tether-layer,
