@@ -249,6 +249,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     const loading = new Set<number>()
     const seen = new Set<number>()
     const lastFrame = new Map<number, number>()
+    const denseLen = new Map<number, number>()
     let cardTimeline: gsap.core.Timeline | null = null
     let activeScene = 0
 
@@ -256,12 +257,15 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     // take the 9:16 centre-crop rung (full-bleed cover, no letterbox); wide
     // viewports take w840/w1200 by stage CSS px × DPR
     const webp = webpSupported()
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const stage = root.querySelector('.world-stage')
     const stageW = stage?.clientWidth || window.innerWidth
     const stageH = stage?.clientHeight || window.innerHeight
     const portrait = stageH > stageW
-    const rung = portrait ? 'p720' : (stageW * dpr <= 1000 ? 'w840' : 'w1200')
+    const rung = portrait ? 'p720' : (stageW * (window.devicePixelRatio || 1) <= 1000 ? 'w840' : 'w1200')
+    // phones: half the DPR ceiling (1.5×) and every OTHER frame (stride 2) —
+    // the scrub smoothing hides the drop, halving decode work + RAM
+    const dpr = Math.min(window.devicePixelRatio || 1, portrait ? 1.5 : 2)
+    const stride = portrait ? 2 : 1
 
     // iOS address-bar show/hide fires resize events mid-pin; re-measuring the
     // whole pin stack for those makes the film judder — ignore them
@@ -277,9 +281,18 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       if (!canvas) return
       const frames = frameCache.get(scene)
       const index = lastFrame.get(scene) ?? 0
-      if (frames && frames[index]) {
-        drawCover(canvas, frames[index])
-      } else if (posterCache.get(scene)) {
+      if (frames) {
+        // frames stream in order; if a fast scroll outran the decode, hold the
+        // nearest loaded frame rather than dropping to the poster
+        let f: ImageBitmap | HTMLImageElement | undefined = frames[index]
+        for (let j = index; !f && j >= 0; j--) f = frames[j]
+        for (let j = index; !f && j < frames.length; j++) f = frames[j]
+        if (f) {
+          drawCover(canvas, f)
+          return
+        }
+      }
+      if (posterCache.get(scene)) {
         drawCover(canvas, posterCache.get(scene)!)
       }
     }
@@ -287,11 +300,10 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     const sizeCanvas = (scene: number) => {
       const canvas = canvasFor(scene)
       if (!canvas) return
-      const ratio = Math.min(window.devicePixelRatio || 1, 2)
       const { clientWidth, clientHeight } = canvas
-      // supersampling the buffer past the frame width adds no detail — it only
-      // resamples the same pixels twice; let the browser do the final upscale
-      const width = Math.min(Math.round(clientWidth * ratio), 1600)
+      // dpr is capped to 1.5 on phones — fewer fill pixels per frame; the buffer
+      // never exceeds the frame width (supersampling just re-samples the same px)
+      const width = Math.min(Math.round(clientWidth * dpr), 1600)
       canvas.width = width
       canvas.height = Math.round((width * clientHeight) / Math.max(clientWidth, 1))
       redraw(scene)
@@ -311,22 +323,43 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
         .catch(() => undefined)
       const count = countFor(scene)
       if (!count) return
-      Promise.all(
-        Array.from({ length: count }, (_, index) =>
-          fetchBitmap(frameUrl(scene, index, rung, webp)).catch(() => null),
-        ),
-      ).then((frames) => {
-        const firstGood = frames.find(Boolean)
-        if (!firstGood) return
-        // a fast scroll may have moved on while this scene decoded
+      // phones load every `stride`-th frame (36 not 72) and decode in small
+      // chunks so Safari's main thread never stalls under a 72-image burst
+      const indices: number[] = []
+      for (let i = 0; i < count; i += stride) indices.push(i)
+      if (indices[indices.length - 1] !== count - 1) indices.push(count - 1)
+      denseLen.set(scene, indices.length)
+      const dense: Array<ImageBitmap | HTMLImageElement> = []
+      frameCache.set(scene, dense)
+
+      const CHUNK = 8
+      let cursor = 0
+      const decodeChunk = () => {
+        // bail if the scroll moved this scene out of the resident window
         if (activeScene && Math.abs(scene - activeScene) >= 2) {
-          frames.forEach((frame) => frame?.close())
           loading.delete(scene)
           return
         }
-        frameCache.set(scene, frames.map((frame) => frame ?? firstGood))
-        redraw(scene)
-      })
+        const slice = indices.slice(cursor, cursor + CHUNK)
+        Promise.all(
+          slice.map((idx) => fetchBitmap(frameUrl(scene, idx, rung, webp)).catch(() => null)),
+        ).then((bitmaps) => {
+          if (!frameCache.has(scene)) {
+            bitmaps.forEach((b) => b?.close())
+            return
+          }
+          bitmaps.forEach((b, k) => {
+            if (b) dense[cursor + k] = b
+          })
+          redraw(scene)
+          cursor += CHUNK
+          if (cursor < indices.length) {
+            // yield to the compositor between chunks
+            window.setTimeout(decodeChunk, 0)
+          }
+        })
+      }
+      decodeChunk()
     }
 
     // decoded frames are ~4MB each off-heap — only the active scene and its
@@ -385,9 +418,10 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
         ScrollTrigger.create({
           trigger: section,
           start: 'top top',
-          end: '+=160%',
+          // shorter pin on phones = each scene resolves in less thumb-travel
+          end: portrait ? '+=120%' : '+=160%',
           pin: true,
-          scrub: 0.55,
+          scrub: portrait ? 0.4 : 0.55,
           // the card is height-0-rail furniture: past the journey it would jut
           // over BOX 2's heading — it leaves with the last scene
           onLeave: () => {
@@ -420,10 +454,11 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
             loadScene(scene.id - 1)
           },
           onUpdate: (self) => {
-            if (!count) return
-            const index = Math.round(
-              gsap.utils.mapRange(0, 1, 0, count - 1, self.progress),
-            )
+            // map scroll progress across the frames actually loaded (the strided
+            // subset on phones), falling back to the full count before load
+            const span = (denseLen.get(scene.id) || count) - 1
+            if (span < 1) return
+            const index = Math.round(gsap.utils.mapRange(0, 1, 0, span, self.progress))
             if (lastFrame.get(scene.id) !== index) {
               lastFrame.set(scene.id, index)
               redraw(scene.id)
