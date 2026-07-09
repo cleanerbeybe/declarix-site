@@ -195,29 +195,30 @@ function WorldStill({ scene, film }: { scene: (typeof scenes)[number]; film: boo
 
 export function PaperWorld({ mailto, source }: { mailto: string; source: string }) {
   const [frameCounts, setFrameCounts] = useState<Record<string, number> | null>(null)
-  const [stillFilm, setStillFilm] = useState(false)
+  // 'scrub' = desktop canvas frame-scrub · 'video' = phones, hardware-decoded
+  // sticky loop videos (near-zero main-thread cost) · 'stills' = the fallback
+  const [renderMode, setRenderMode] = useState<'stills' | 'video' | 'scrub'>('stills')
   const rootRef = useRef<HTMLElement>(null)
   const cardTag = useRef<HTMLSpanElement>(null)
   const cardHeadline = useRef<HTMLHeadingElement>(null)
   const cardBody = useRef<HTMLParagraphElement>(null)
 
-  const scrub = Boolean(frameCounts)
+  const scrub = renderMode === 'scrub' && Boolean(frameCounts)
 
-  // the exhibits play as looping films wherever motion is welcome —
-  // mobile included; reduced-motion and Save-Data stay on stills
+  // choose the engine: phones get sticky hardware-decoded loop videos (the
+  // thing iOS is actually fast at); desktop gets the canvas scrub; reduced-motion
+  // and Save-Data get the filed still exhibits
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const connection = (navigator as { connection?: { saveData?: boolean } }).connection
-    setStillFilm(!reduceMotion && !connection?.saveData)
-  }, [])
-
-  // the scroll film runs EVERYWHERE motion is welcome — phones included (the
-  // 840px frame rung makes it affordable); reduced-motion, Save-Data and the
-  // no-frames-yet state get the five filed exhibits instead
-  useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const connection = (navigator as { connection?: { saveData?: boolean } }).connection
-    if (reduceMotion || connection?.saveData) return
+    if (reduceMotion || connection?.saveData) {
+      setRenderMode('stills')
+      return
+    }
+    if (window.matchMedia('(max-width: 980px)').matches) {
+      setRenderMode('video')
+      return
+    }
     let cancelled = false
     const request = () =>
       fetch(worldPath('/world/manifest.json'))
@@ -225,7 +226,10 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
         .then((manifest) => {
           if (cancelled || !manifest) return
           const counts = manifest.scenes || {}
-          if (Object.values(counts).some((count) => count > 0)) setFrameCounts(counts)
+          if (Object.values(counts).some((count) => count > 0)) {
+            setFrameCounts(counts)
+            setRenderMode('scrub')
+          }
         })
         .catch(() => undefined)
     // after the hero settles; never in the LCP window
@@ -238,6 +242,40 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       cancelled = true
     }
   }, [])
+
+  // video mode: play each sticky loop only while it's near the viewport
+  // (hardware-decoded, so cost is trivial), and start on the first gesture in
+  // case iOS Low Power Mode blocked autoplay
+  useEffect(() => {
+    if (renderMode !== 'video' || !rootRef.current) return
+    const root = rootRef.current
+    const videos = Array.from(root.querySelectorAll<HTMLVideoElement>('.world-vfilm'))
+    const near = new Set<HTMLVideoElement>()
+    const pump = () => near.forEach((v) => v.paused && v.play().catch(() => undefined))
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement
+          if (e.isIntersecting) {
+            near.add(v)
+            v.play().catch(() => undefined)
+          } else {
+            near.delete(v)
+            v.pause()
+          }
+        })
+      },
+      { rootMargin: '200px 0px' },
+    )
+    videos.forEach((v) => io.observe(v))
+    window.addEventListener('touchstart', pump, { passive: true })
+    window.addEventListener('scroll', pump, { passive: true })
+    return () => {
+      io.disconnect()
+      window.removeEventListener('touchstart', pump)
+      window.removeEventListener('scroll', pump)
+    }
+  }, [renderMode])
 
   useEffect(() => {
     if (!scrub || !frameCounts || !rootRef.current) return
@@ -571,10 +609,54 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
             </div>
           ))}
         </div>
+      ) : renderMode === 'video' ? (
+        <div className="world-videos">
+          {scenes.map((scene) => (
+            <section className="world-vscene" key={scene.id}>
+              <div className="world-vsticky">
+                <video
+                  className="world-vfilm"
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  poster={worldPath(`/world/scene-${scene.id}/poster-tall.jpg`)}
+                  aria-hidden="true"
+                  onPlaying={(event) => event.currentTarget.classList.add('is-playing')}
+                >
+                  <source src={worldPath(`/world/loops/scene-${scene.id}.mp4`)} type="video/mp4" />
+                </video>
+                <div className="world-vcard">
+                  <span className="world-card-tag">{scene.tag}</span>
+                  <h3 className="world-card-headline">{scene.headline}</h3>
+                  <p className="world-card-body">{scene.body}</p>
+                  {scene.id === 5 ? (
+                    <div className="world-card-ctas">
+                      <a
+                        className="btn btn-secondary"
+                        href={mailto}
+                        onClick={() => track('cta_pack_mailto', { source })}
+                      >
+                        Send one ugly pack
+                      </a>
+                      <a
+                        className="btn btn-primary"
+                        href="#book"
+                        onClick={() => track('cta_book_click', { source })}
+                      >
+                        Book the 20-minute numbers call
+                      </a>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </section>
+          ))}
+        </div>
       ) : (
         <div className="box-inner world-stills">
           {scenes.map((scene) => (
-            <WorldStill scene={scene} film={stillFilm} key={scene.id} />
+            <WorldStill scene={scene} film={false} key={scene.id} />
           ))}
           <div className="cta-row centred reveal">
             <a

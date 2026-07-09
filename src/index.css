@@ -3293,6 +3293,96 @@ input[type='range'] {
   display: none;
 }
 
+/* v4.2 — MOBILE SCROLL FILM (the aalo model): hardware-decoded sticky loop
+   videos, near-zero main-thread cost, scroll moves between them, text over.
+   No canvas, no per-frame decode — this is what iOS is fast at. */
+.world-videos {
+  position: relative;
+}
+
+.world-vscene {
+  height: 180svh;
+}
+
+.world-vsticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+.world-vfilm {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.world-vfilm.is-playing {
+  opacity: 1;
+}
+
+.world-vsticky::after {
+  /* legibility wash under the card */
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background: linear-gradient(180deg, rgb(22 49 61 / 0), rgb(22 49 61 / 0.72));
+  pointer-events: none;
+}
+
+.world-vcard {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: max(20px, env(safe-area-inset-bottom, 0px) + 16px);
+  z-index: 2;
+  padding: 14px 16px 16px;
+  border: var(--border-w) solid var(--ink);
+  background: var(--field);
+}
+
+.world-vcard .world-card-tag {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.world-vcard .world-card-headline {
+  margin: 0 0 6px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.world-vcard .world-card-body {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.world-vcard .world-card-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.world-vcard .world-card-ctas .btn {
+  min-height: 42px;
+  padding: 10px 14px;
+  font-size: 11px;
+}
+
 /* v4.1 — the scroll film on handsets: full-bleed scenes, the narration card
    overlays the bottom of the pinned stage (film behind, words in front) */
 @media (max-width: 980px) {
