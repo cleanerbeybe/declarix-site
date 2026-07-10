@@ -3319,6 +3319,8 @@ input[type='range'] {
   height: 100%;
   object-fit: cover;
   opacity: 0;
+  transform-origin: center;
+  will-change: transform;
   transition: opacity 0.5s var(--ease-out);
 }
 
@@ -3345,6 +3347,7 @@ input[type='range'] {
   padding: 14px 16px 16px;
   border: var(--border-w) solid var(--ink);
   background: var(--field);
+  will-change: transform, opacity;
 }
 
 .world-vcard .world-card-tag {

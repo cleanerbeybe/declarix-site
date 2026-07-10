@@ -269,11 +269,42 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     )
     videos.forEach((v) => io.observe(v))
     window.addEventListener('touchstart', pump, { passive: true })
-    window.addEventListener('scroll', pump, { passive: true })
+
+    // the video plays itself (smooth), but the COMPOSITION is tied to scroll:
+    // the frame pushes in and the card slides/fades as you scroll each scene —
+    // transform+opacity only, GPU-composited, so it stays glassy (the aalo feel)
+    const vscenes = Array.from(root.querySelectorAll<HTMLElement>('.world-vscene'))
+    let raf = 0
+    const onScroll = () => {
+      pump()
+      if (raf) return
+      raf = window.requestAnimationFrame(() => {
+        raf = 0
+        const vh = window.innerHeight
+        vscenes.forEach((sec) => {
+          const rect = sec.getBoundingClientRect()
+          const travel = rect.height - vh
+          if (travel <= 0 || rect.bottom < -vh || rect.top > vh) return
+          const p = Math.min(1, Math.max(0, -rect.top / travel))
+          const video = sec.querySelector<HTMLElement>('.world-vfilm')
+          const card = sec.querySelector<HTMLElement>('.world-vcard')
+          if (video) video.style.transform = `scale(${(1 + 0.08 * p).toFixed(3)})`
+          if (card) {
+            const slide = (1 - Math.min(p / 0.16, 1)) * 30
+            const out = Math.max(0, (p - 0.86) / 0.14)
+            card.style.transform = `translateY(${slide.toFixed(1)}px)`
+            card.style.opacity = (1 - out).toFixed(2)
+          }
+        })
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
     return () => {
       io.disconnect()
       window.removeEventListener('touchstart', pump)
-      window.removeEventListener('scroll', pump)
+      window.removeEventListener('scroll', onScroll)
+      if (raf) window.cancelAnimationFrame(raf)
     }
   }, [renderMode])
 
