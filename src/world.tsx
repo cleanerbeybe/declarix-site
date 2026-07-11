@@ -288,9 +288,12 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
           const p = Math.min(1, Math.max(0, -rect.top / travel))
           const video = sec.querySelector<HTMLElement>('.world-vfilm')
           const card = sec.querySelector<HTMLElement>('.world-vcard')
-          if (video) video.style.transform = `scale(${(1 + 0.08 * p).toFixed(3)})`
+          if (video) video.style.transform = `scale(${(1 + 0.2 * p).toFixed(3)})`
           if (card) {
-            const slide = (1 - Math.min(p / 0.16, 1)) * 30
+            // entry slide settles by p=0.16, then the card keeps drifting up at a
+            // different rate than the film's push-in — the parallax gap between the
+            // two layers is what makes the scene read as scroll-driven
+            const slide = (1 - Math.min(p / 0.16, 1)) * 30 - p * 44
             const out = Math.max(0, (p - 0.86) / 0.14)
             card.style.transform = `translateY(${slide.toFixed(1)}px)`
             card.style.opacity = (1 - out).toFixed(2)

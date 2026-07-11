@@ -3301,7 +3301,9 @@ input[type='range'] {
 }
 
 .world-vscene {
-  height: 180svh;
+  /* 140svh = 40svh of scrub travel per scene — short enough that each swipe
+     visibly hands off to the next scene (180svh read as scroll-dead) */
+  height: 140svh;
 }
 
 .world-vsticky {
