@@ -1,7 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { TextPlugin } from 'gsap/TextPlugin'
 import { track } from './analytics'
 
 // v4.0 §6 — THE PAPER WORLD: five scrub scenes, one narration card, the macro story.
@@ -313,7 +310,19 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
 
   useEffect(() => {
     if (!scrub || !frameCounts || !rootRef.current) return
-    gsap.registerPlugin(ScrollTrigger, TextPlugin)
+    let cancelled = false
+    let cleanup: (() => void) | undefined
+
+    // Desktop scrub is the ONLY path that reaches the canvas frame engine, so
+    // GSAP and the two plugins it needs load here as a separate async chunk
+    // rather than shipping to the video / stills paths (mobile, reduced-motion,
+    // Save-Data) that never run this effect. Everything below stays synchronous
+    // inside the .then, so the sort() → refresh() ordering after the late pins
+    // (BOX 2 pin staleness guard) is preserved exactly.
+    void Promise.all([import('gsap'), import('gsap/ScrollTrigger'), import('gsap/TextPlugin')]).then(
+      ([{ default: gsap }, { ScrollTrigger }, { TextPlugin }]) => {
+        if (cancelled || !rootRef.current) return
+        gsap.registerPlugin(ScrollTrigger, TextPlugin)
 
     const root = rootRef.current
     const frameCache = new Map<number, Array<ImageBitmap | HTMLImageElement>>()
@@ -322,7 +331,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     const seen = new Set<number>()
     const lastFrame = new Map<number, number>()
     const denseLen = new Map<number, number>()
-    let cardTimeline: gsap.core.Timeline | null = null
+    let cardTimeline: ReturnType<typeof gsap.timeline> | null = null
     let activeScene = 0
 
     // pick the frame rung the screen can actually show: portrait viewports
@@ -561,7 +570,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     }
     window.addEventListener('resize', onResize)
 
-    return () => {
+    cleanup = () => {
       window.removeEventListener('resize', onResize)
       window.clearTimeout(resizeTimer)
       cardTimeline?.kill()
@@ -573,6 +582,13 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       )
       frameCache.clear()
       ScrollTrigger.refresh()
+    }
+      },
+    )
+
+    return () => {
+      cancelled = true
+      cleanup?.()
     }
   }, [scrub, frameCounts, source])
 

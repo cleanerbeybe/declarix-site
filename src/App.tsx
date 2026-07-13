@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Flip } from 'gsap/Flip'
 import { TextPlugin } from 'gsap/TextPlugin'
 import { SplitText } from 'gsap/SplitText'
-import Lenis from 'lenis'
+import type Lenis from 'lenis'
 import { CONFIG, isConfigured } from './config'
 import { initAnalytics, track } from './analytics'
 import { documents, flights, mobileMovements, packRows, questions, specimens } from './data'
@@ -1334,6 +1334,7 @@ function HomePage() {
     const touch = window.matchMedia('(pointer: coarse)').matches
     const wide = window.matchMedia('(min-width: 981px)').matches
     let sceneComplete = false
+    let cancelled = false
     let lenis: Lenis | null = null
 
     const ctx = gsap.context(() => {
@@ -1489,13 +1490,18 @@ function HomePage() {
       }
 
       if (!reduceMotion && !touch) {
-        // v3.0 §3 — Lenis lerp 0.08 on desktop
-        lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 1 })
-        lenis.on('scroll', ScrollTrigger.update)
-        const tick = (time: number) => lenis!.raf(time * 1000)
-        gsap.ticker.add(tick)
-        gsap.ticker.lagSmoothing(0)
-        window.addEventListener('beforeunload', () => lenis!.destroy(), { once: true })
+        // v3.0 §3 — Lenis lerp 0.08 on desktop. Loaded as its own async chunk so
+        // the touch / reduced-motion / Save-Data paths never fetch it; until it
+        // resolves, anchor rides fall back to native smooth scroll (see below).
+        void import('lenis').then(({ default: Lenis }) => {
+          if (cancelled) return
+          lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 1 })
+          lenis.on('scroll', ScrollTrigger.update)
+          const tick = (time: number) => lenis!.raf(time * 1000)
+          gsap.ticker.add(tick)
+          gsap.ticker.lagSmoothing(0)
+          window.addEventListener('beforeunload', () => lenis!.destroy(), { once: true })
+        })
       }
 
       if (!reduceMotion && wide) {
@@ -1666,6 +1672,7 @@ function HomePage() {
     window.addEventListener('hashchange', onHashChange)
 
     return () => {
+      cancelled = true
       document.removeEventListener('click', onAnchorClick)
       window.removeEventListener('hashchange', onHashChange)
       window.removeEventListener('wheel', markScrolled)
