@@ -50,12 +50,11 @@ function worldPath(path: string) {
 
 // frames ship as a WebP ladder — w840/w1200 landscape plus p720 (a 9:16
 // centre crop of the same film) so portrait phones get full-bleed cover
-// without letterboxing or mush; 1200px JPEGs remain the legacy fallback
-function frameUrl(scene: number, index: number, rung: string, webp: boolean) {
+// without letterboxing or mush. The legacy 1200px JPEG rung was retired; scrub
+// mode is gated on webpSupported() and a browser without WebP keeps the stills.
+function frameUrl(scene: number, index: number, rung: string) {
   const name = `f_${String(index + 1).padStart(3, '0')}`
-  return webp
-    ? worldPath(`/world/scene-${scene}/${rung}/${name}.webp`)
-    : worldPath(`/world/scene-${scene}/${name}.jpg`)
+  return worldPath(`/world/scene-${scene}/${rung}/${name}.webp`)
 }
 
 function webpSupported() {
@@ -216,6 +215,13 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
       setRenderMode('video')
       return
     }
+    // The scrub engine only ships a WebP frame ladder now (the legacy JPEG rung
+    // was deleted). A desktop browser too old for WebP keeps the still exhibits
+    // rather than 404-looping on frames that no longer exist.
+    if (!webpSupported()) {
+      setRenderMode('stills')
+      return
+    }
     let cancelled = false
     const request = () =>
       fetch(worldPath('/world/manifest.json'))
@@ -336,8 +342,8 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
 
     // pick the frame rung the screen can actually show: portrait viewports
     // take the 9:16 centre-crop rung (full-bleed cover, no letterbox); wide
-    // viewports take w840/w1200 by stage CSS px × DPR
-    const webp = webpSupported()
+    // viewports take w840/w1200 by stage CSS px × DPR. (WebP support is already
+    // guaranteed here — the decision effect routes non-WebP browsers to stills.)
     const stage = root.querySelector('.world-stage')
     const stageW = stage?.clientWidth || window.innerWidth
     const stageH = stage?.clientHeight || window.innerHeight
@@ -396,7 +402,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
     const loadScene = (scene: number) => {
       if (scene < 1 || scene > 5 || loading.has(scene)) return
       loading.add(scene)
-      loadPoster(scene, portrait && webp ? frameUrl(scene, 0, rung, webp) : undefined)
+      loadPoster(scene, portrait ? frameUrl(scene, 0, rung) : undefined)
         .then((poster) => {
           posterCache.set(scene, poster)
           redraw(scene)
@@ -423,7 +429,7 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
         }
         const slice = indices.slice(cursor, cursor + CHUNK)
         Promise.all(
-          slice.map((idx) => fetchBitmap(frameUrl(scene, idx, rung, webp)).catch(() => null)),
+          slice.map((idx) => fetchBitmap(frameUrl(scene, idx, rung)).catch(() => null)),
         ).then((bitmaps) => {
           if (!frameCache.has(scene)) {
             bitmaps.forEach((b) => b?.close())
