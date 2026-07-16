@@ -4,7 +4,25 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   // Keep assets rooted for the custom domain.
   base: process.env.VITE_BASE_PATH ?? '/',
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'declarix-webmaster-verification',
+      transformIndexHtml(html) {
+        const tags = [
+          ['google-site-verification', process.env.VITE_GOOGLE_SITE_VERIFICATION],
+          ['msvalidate.01', process.env.VITE_BING_SITE_VERIFICATION],
+        ]
+          .filter(([, value]) => Boolean(value))
+          .map(([name, content]) => ({
+            tag: 'meta',
+            attrs: { name, content: content as string },
+            injectTo: 'head' as const,
+          }))
+        return { html, tags }
+      },
+    },
+  ],
   build: {
     rollupOptions: {
       output: {

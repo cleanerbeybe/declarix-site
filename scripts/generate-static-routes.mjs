@@ -5,6 +5,8 @@ import { routes, site } from './routes.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const dist = join(root, 'dist')
+const posthogKey = process.env.VITE_POSTHOG_KEY || ''
+const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
 
 const escapeHtml = (value) =>
   String(value)
@@ -12,6 +14,21 @@ const escapeHtml = (value) =>
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
+
+function webmasterTags() {
+  return [
+    ['google-site-verification', process.env.VITE_GOOGLE_SITE_VERIFICATION],
+    ['msvalidate.01', process.env.VITE_BING_SITE_VERIFICATION],
+  ]
+    .filter(([, value]) => Boolean(value))
+    .map(([name, content]) => `<meta name="${name}" content="${escapeHtml(content)}" />`)
+    .join('\n    ')
+}
+
+function bookingHref(route) {
+  const source = `static_${route.path.split('/').filter(Boolean).join('_')}`
+  return `/?src=${encodeURIComponent(source)}#book`
+}
 
 function routeLinks() {
   const links = [
@@ -98,6 +115,7 @@ function renderRoute(route) {
     <meta name="description" content="${escapeHtml(route.description)}" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#16313d" />
+    ${webmasterTags()}
     <link rel="canonical" href="${canonical}" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/static-routes.css" />
@@ -121,7 +139,7 @@ function renderRoute(route) {
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
         <div class="masthead-cell"><span>CLAIMS MANIFEST</span><strong>${site.claimsVersion}</strong></div>
-        <a class="masthead-cta" href="${site.booking}">BOOK A WORKFLOW CALL</a>
+        <a class="masthead-cta" href="${bookingHref(route)}">BOOK A WORKFLOW CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
       <div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div>
@@ -143,7 +161,7 @@ function renderRoute(route) {
         <div class="source-stamp">SOURCE AND CORRECTIONS · PUBLIC CLAIMS MANIFEST ${site.claimsVersion} · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
           <div><h2>Put one workflow on the table.</h2><p>Bring a representative week’s volume and a synthetic or properly anonymised pack shape. Do not send live documents until the transfer channel is agreed.</p></div>
-          <a class="button" href="${site.booking}">BOOK THE 20-MINUTE CALL</a>
+          <a class="button" href="${bookingHref(route)}">BOOK THE 20-MINUTE CALL</a>
         </section>
       </main>
       <footer class="footer">
@@ -164,6 +182,7 @@ function renderNotFound() {
     <meta name="description" content="The requested Declarix page was not found. Return home or use the evidence-backed product, scope, pricing, pilot, privacy, and security routes." />
     <meta name="robots" content="noindex,follow" />
     <meta name="theme-color" content="#16313d" />
+    ${webmasterTags()}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/static-routes.css" />
     <title>Page not found | Declarix</title>
@@ -195,6 +214,68 @@ function renderNotFound() {
 </html>`
 }
 
+function renderBookingConfirmed() {
+  const analyticsConfig = JSON.stringify({ posthogKey, posthogHost }).replaceAll('<', '\\u003c')
+  return `<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Your Declarix workflow call has been booked. Return to the site or review what to bring to the conversation." />
+    <meta name="robots" content="noindex,follow" />
+    <meta name="theme-color" content="#16313d" />
+    ${webmasterTags()}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/static-routes.css" />
+    <title>Workflow call booked | Declarix</title>
+  </head>
+  <body>
+    <div class="docket">
+      <header class="masthead">
+        <a class="wordmark" href="/">DECLARIX</a>
+        <div class="masthead-cell"><span>FORM STATUS</span><strong>BOOKED</strong></div>
+        <a class="masthead-cta" href="/pilot/">REVIEW THE PILOT</a>
+      </header>
+      <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
+      <main>
+        <header class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">BOOKING RECEIPT · WORKFLOW REVIEW</p>
+            <h1>Your workflow call is in the diary.</h1>
+            <p>Bring the approximate weekly volume, current customs system, representative document mix, and the exceptions that create work. Do not send live customer documents before a transfer channel is agreed.</p>
+          </div>
+          <aside class="hero-ledger">
+            <span class="route-ref">CONVERSION · BOOKING COMPLETE</span>
+            <div class="stamp">CALL<br />BOOKED</div>
+          </aside>
+        </header>
+        <section class="cta-band">
+          <div><h2>Prepare the useful facts.</h2><p>The call will define supported scope, the side-by-side measurement, and the information needed for a written pilot proposal.</p></div>
+          <a class="button" href="/pilot/">READ THE PILOT DOCKET</a>
+        </section>
+      </main>
+      <footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber}</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a></nav></footer>
+    </div>
+    <script>
+      (() => {
+        const config = ${analyticsConfig};
+        const source = sessionStorage.getItem('dclrx-source') || 'direct';
+        const campaign = sessionStorage.getItem('dclrx-campaign') || 'none';
+        const distinctId = sessionStorage.getItem('dclrx-distinct-id') || crypto.randomUUID();
+        sessionStorage.setItem('dclrx-distinct-id', distinctId);
+        const properties = { source, campaign, page_path: '/booking-confirmed/', provider: 'zoho' };
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'booking_completed', ...properties });
+        if (!config.posthogKey) return;
+        const body = JSON.stringify({ api_key: config.posthogKey, event: 'booking_completed', distinct_id: distinctId, properties });
+        if (navigator.sendBeacon && navigator.sendBeacon(config.posthogHost + '/capture/', body)) return;
+        fetch(config.posthogHost + '/capture/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => undefined);
+      })();
+    </script>
+  </body>
+</html>`
+}
+
 const paths = new Set()
 const titles = new Set()
 const headings = new Set()
@@ -221,5 +302,43 @@ ${routes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>$
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)
 
+const llmsRoutes = routes
+  .map((route) => `- [${route.title}](${site.origin}${route.path}): ${route.description}`)
+  .join('\n')
+const llms = `# Declarix
+> Source-linked customs declaration draft preparation for broker review before the broker files through its existing customs system.
+
+## Primary pages
+- [Declarix homepage](${site.origin}/): Product boundary, worked example, workflow measurement, and booking route.
+${llmsRoutes}
+
+## Verified boundaries
+- Declarix does not submit to HMRC.
+- The broker reviews and files through its existing customs system.
+- The current H1 profile is review-only and legal coverage is incomplete.
+- Numerical pricing is supplied only in an approved written proposal.
+- Do not send live customer documents through the public website.
+
+## Contact and corrections
+- Product and workflow enquiries: ${site.contact}
+- Sources and corrections: ${site.origin}/editorial-policy/
+`
+const llmsFull = `${llms}
+## Machine-readable publication contract
+- Public claims manifest: ${site.claimsVersion}
+- Last editorial review: ${site.reviewedOn}
+- Supported-scope profile: CDS_IMPORT_H1_MINIMAL
+- Scope status: candidate_review_only
+- Legal coverage complete: false
+- Activation mechanism implemented: false
+
+## Citation guidance
+Use the supported-scope, security, pricing-policy, and editorial-policy pages for current limitations. Treat worked examples and volume models as illustrative inputs, not customer outcomes or universal benchmarks.
+`
+await writeFile(join(dist, 'llms.txt'), llms)
+await writeFile(join(dist, 'llms-full.txt'), llmsFull)
+
 await writeFile(join(dist, '404.html'), renderNotFound())
+await mkdir(join(dist, 'booking-confirmed'), { recursive: true })
+await writeFile(join(dist, 'booking-confirmed', 'index.html'), renderBookingConfirmed())
 await writeFile(join(dist, '.nojekyll'), '')

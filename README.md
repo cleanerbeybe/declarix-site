@@ -20,9 +20,10 @@ npm run build
 npm run preview
 ```
 
-`npm run build` generates 11 static routes plus the homepage, sitemap, and real noindex 404. It then
-checks unique titles, H1s, self-canonicals, descriptions, sitemap membership, and the pinned public
-claims contract in `contracts/public-claims.v1.0.0.json`.
+`npm run build` generates 11 static routes plus the homepage, a noindex booking receipt, sitemap,
+`llms.txt`, `llms-full.txt`, and a real noindex 404. It then checks unique titles, H1s,
+self-canonicals, descriptions, sitemap membership, explicit AI crawler policy, IndexNow ownership,
+and the pinned public claims contract in `contracts/public-claims.v1.0.0.json`.
 
 ## Launch configuration
 
@@ -33,10 +34,22 @@ Edit `src/config.ts` before a branded launch:
 - `zohoBookingUrl` and `zohoBookingScriptUrl`: live diary and click-to-load embed
 - `companyLegal` and `companyNo`: legal footer and pilot copy
 - `linkedin`: company LinkedIn URL
-- `posthogKey`: EU PostHog project key, if analytics should run
+- `posthogKey`: read from the `VITE_POSTHOG_KEY` deployment variable; empty disables network capture
 - `founderLine`: approved founder wording
 
 The site is configured for `getdeclarix.com`, with `public/CNAME` included in the GitHub Pages artifact and the deploy workflow building with `VITE_BASE_PATH=/`.
+
+## Discovery and measurement configuration
+
+The deploy workflow reads optional repository variables `POSTHOG_KEY`, `POSTHOG_HOST`,
+`GOOGLE_SITE_VERIFICATION`, and `BING_SITE_VERIFICATION`. Verification tags are omitted when their
+values are empty. Every deployment publishes the IndexNow ownership key and submits the sitemap URL
+set after the Pages branch is updated.
+
+Configure Zoho Bookings to redirect a completed booking to
+`https://getdeclarix.com/booking-confirmed/`. That noindex receipt emits `booking_completed` to the
+local `dataLayer` and, when configured, PostHog. See `docs/TRACKING-PLAN.md` for the event and privacy
+contract.
 
 ## Route and claims ownership
 

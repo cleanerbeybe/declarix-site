@@ -35,7 +35,7 @@ export const routes = [
         label: '02 · PUBLIC SITE',
         title: 'What the website handles.',
         paragraphs: [
-          'The site is served through GitHub Pages, whose infrastructure may process routine request and security metadata. This release does not activate Declarix product analytics or marketing cookies.',
+          'The site is served through GitHub Pages, whose infrastructure may process routine request and security metadata. Declarix analytics is deployment-configured and records only documented interaction, route, and campaign properties; it must not receive document data, email addresses, EORIs, or free-text enquiry content.',
           'The Zoho Bookings frame loads only after a visitor asks to see available times. Zoho then handles the information entered in that booking flow under its own notices and the Declarix account configuration.',
         ],
       },
@@ -68,7 +68,7 @@ export const routes = [
         title: 'Operational notice, reviewed with each data-flow change.',
         facts: [
           ['Last reviewed', '16 July 2026'],
-          ['Public analytics', 'Not activated in this release'],
+          ['Public analytics', 'Deployment-configured, documented events only'],
           ['Booking provider', 'Zoho Bookings, loaded after visitor action'],
           ['Pilot document transfer', 'Agreed before live documents move'],
         ],

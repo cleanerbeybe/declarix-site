@@ -55,6 +55,13 @@ for (const route of expected) {
   if (!title || title !== route.title) throw new Error(`${route.path} has unexpected title: ${title}`)
   if (!canonical || canonical !== `${site.origin}${route.path}`) throw new Error(`${route.path} has unexpected canonical: ${canonical}`)
   if (!description || description.length < 80 || description.length > 180) throw new Error(`${route.path} has invalid description length`)
+  if (html.includes('undefined') || html.includes('{{')) throw new Error(`${route.path} contains an unresolved publication token`)
+  if (process.env.VITE_GOOGLE_SITE_VERIFICATION && !html.includes(process.env.VITE_GOOGLE_SITE_VERIFICATION)) {
+    throw new Error(`${route.path} is missing Google site verification`)
+  }
+  if (process.env.VITE_BING_SITE_VERIFICATION && !html.includes(process.env.VITE_BING_SITE_VERIFICATION)) {
+    throw new Error(`${route.path} is missing Bing site verification`)
+  }
   if (titles.has(title)) throw new Error(`Duplicate title: ${title}`)
   if (canonicals.has(canonical)) throw new Error(`Duplicate canonical: ${canonical}`)
   const heading = h1s[0][1].replace(/<[^>]*>/g, '').trim()
@@ -103,4 +110,31 @@ if (!notFound.includes('noindex,follow') || /rel="canonical"/.test(notFound) || 
   throw new Error('404 must be noindex, non-canonical, and static')
 }
 
-console.log(`Verified ${expected.length} indexable routes, one real 404, and claims manifest ${site.claimsVersion}`)
+const bookingConfirmed = await readFile(join(root, 'dist/booking-confirmed/index.html'), 'utf8')
+if (
+  !bookingConfirmed.includes('noindex,follow') ||
+  /rel="canonical"/.test(bookingConfirmed) ||
+  (bookingConfirmed.match(/<h1(?:\s[^>]*)?>/g) || []).length !== 1 ||
+  !bookingConfirmed.includes("event: 'booking_completed'")
+) {
+  throw new Error('Booking confirmation must be noindex, non-canonical, single-H1, and emit booking_completed')
+}
+
+const robots = await readFile(join(root, 'dist/robots.txt'), 'utf8')
+for (const crawler of ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot']) {
+  if (!robots.includes(`User-agent: ${crawler}`)) throw new Error(`robots.txt does not explicitly manage ${crawler}`)
+}
+if (!robots.includes(`Sitemap: ${site.origin}/sitemap.xml`)) throw new Error('robots.txt does not advertise the sitemap')
+
+for (const filename of ['llms.txt', 'llms-full.txt']) {
+  const content = await readFile(join(root, `dist/${filename}`), 'utf8')
+  for (const route of expected) {
+    if (!content.includes(`${site.origin}${route.path}`)) throw new Error(`${filename} is missing ${route.path}`)
+  }
+  if (!content.includes('Declarix does not submit to HMRC')) throw new Error(`${filename} is missing the filing boundary`)
+}
+
+const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
+if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
+
+console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and claims manifest ${site.claimsVersion}`)
