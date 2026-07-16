@@ -16,26 +16,26 @@ const scenes = [
   {
     id: 2,
     tag: 'S2 · THE SCAN',
-    headline: 'DECLARIX STRUCTURES THE EVIDENCE.',
-    body: 'Proposed values keep their source references; gaps and conflicts stay visible.',
+    headline: 'DECLARIX READS ALL OF IT.',
+    body: 'Every format, every page, every line. Nothing rebuilt field by field.',
   },
   {
     id: 3,
     tag: 'S3 · THE PORT',
     headline: 'WHILE YOUR GOODS CROSS THE WORLD…',
-    body: '…a source-linked draft is assembled for broker review.',
+    body: '…the CDS-ready entry pack is already being built, evidence pinned to every field.',
   },
   {
     id: 4,
     tag: 'S4 · THE ROAD',
-    headline: '…THE DRAFT KEEPS ITS SOURCES.',
-    body: 'The synthetic example follows paperwork into a broker-review handoff.',
+    headline: '…THE PACK IS ALREADY HOME.',
+    body: 'Ready for Sequoia, Descartes or your customer integration before the ship clears the strait.',
   },
   {
     id: 5,
     tag: 'S5 · THE STAMP',
     headline: 'YOUR CLERK CHECKS. YOUR NAME SIGNS.',
-    body: 'BROKER REVIEW · EXISTING SYSTEM FILES · CLAIMS MANIFEST 1.0.0',
+    body: 'UP TO 3× MORE DECLARATIONS · NO NEW HEADCOUNT · MORE MARGIN',
   },
 ]
 
@@ -189,7 +189,7 @@ function WorldStill({ scene, film }: { scene: (typeof scenes)[number]; film: boo
   )
 }
 
-export function PaperWorld({ mailto, source }: { mailto: string; source: string }) {
+export function PaperWorld({ source }: { source: string }) {
   const [frameCounts, setFrameCounts] = useState<Record<string, number> | null>(null)
   // 'scrub' = desktop canvas frame-scrub · 'video' = phones, hardware-decoded
   // sticky loop videos (near-zero main-thread cost) · 'stills' = the fallback
@@ -635,11 +635,11 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
               <div className="world-card-ctas">
                 <a
                   className="btn btn-secondary"
-                  href={mailto}
+                  href="#numbers"
                   tabIndex={-1}
-                  onClick={() => track('cta_pack_mailto', { source })}
+                  onClick={() => track('cta_roi_click', { source })}
                 >
-                  Send one ugly pack
+                  See the desk economics
                 </a>
                 <a
                   className="btn btn-primary"
@@ -690,10 +690,10 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
                     <div className="world-card-ctas">
                       <a
                         className="btn btn-secondary"
-                        href={mailto}
-                        onClick={() => track('cta_pack_mailto', { source })}
+                        href="#numbers"
+                        onClick={() => track('cta_roi_click', { source })}
                       >
-                        Send one ugly pack
+                        See the desk economics
                       </a>
                       <a
                         className="btn btn-primary"
@@ -717,10 +717,10 @@ export function PaperWorld({ mailto, source }: { mailto: string; source: string 
           <div className="cta-row centred reveal">
             <a
               className="btn btn-secondary"
-              href={mailto}
-              onClick={() => track('cta_pack_mailto', { source })}
+              href="#numbers"
+              onClick={() => track('cta_roi_click', { source })}
             >
-              Send one ugly pack
+              See the desk economics
             </a>
             <a
               className="btn btn-primary"

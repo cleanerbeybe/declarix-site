@@ -172,56 +172,56 @@ export const mobileMovements = [
   },
   {
     tag: 'MV-4 · THE EVIDENCE',
-    title: 'Each proposed value shows its working.',
+    title: 'Every field shows its working.',
     copy: 'Tap a row and the source document, page and line stay attached to the value your clerk checks.',
   },
   {
     tag: 'MV-5 · THE HANDOVER',
-    title: 'The draft reaches broker review.',
-    copy: 'The broker checks the source-linked draft before using its own customs system to file.',
+    title: 'The pack is ready for your system.',
+    copy: 'The CDS-ready export moves into Sequoia, Descartes e-Customs or your customer integration.',
   },
 ]
 
 export const questions = [
   {
     q: 'Who carries the liability?',
-    a: 'You do — exactly as today. Declarix prepares; your clerk approves; your firm submits through its own badge. Nothing reaches HMRC from us. The draft keeps sources visible during the check; it does not skip it.',
+    a: 'You do — exactly as today. Declarix prepares; your clerk approves; your firm submits through its own badge. Nothing reaches HMRC from us. The entry pack keeps sources visible during the check; it does not skip it.',
   },
   {
     q: 'We already run Sequoia / Descartes.',
-    a: "Keep the customs system and the broker's filing controls. Declarix is designed to prepare in front of existing Customs Management Systems. Any named-system handoff is described as tested only when its vendor, fixture, error-mapping, and pilot evidence exists.",
+    a: "Keep them. That's the point. Declarix produces CDS-ready exports for Sequoia, Descartes e-Customs and customer integrations. We sit in front of your filing system, not instead of it.",
   },
   {
     q: "We're comparing capture platforms.",
-    a: 'Compare the same representative source pack. Record preparation, customer chase, broker review, exceptions, rework, and handoff. Ask every supplier to evidence its supported scope, data schedule, system-specific claims, and measured outcomes.',
+    a: 'Compare the whole job, not a clean invoice demo: messy attachments in, clerk-checked entry data out, inside your existing system. Then compare cost per declaration, time to value and what the clerk still has to do.',
   },
   {
     q: "We're a forwarder, not a broker.",
-    a: "A pilot can assess the document-preparation workflow for a forwarder that files under its own permissions or hands work to a broker. Review, legal judgment, and submission remain with the appropriately authorised firm.",
+    a: "Same paperwork, same manual build. If your team files through its own permissions or hands the job to a broker, Declarix can prepare the entry pack and evidence for that workflow.",
   },
   {
     q: 'Our jobs are messy.',
-    a: "Good — test the real document shape: amalgamated invoices, part shipments, scans, and spreadsheets that fight back. Use a synthetic or properly anonymised pack, agree the transfer channel first, and keep every unsupported case in the result.",
+    a: "Good. Messy is the product's home ground: amalgamated invoices, part shipments, scans, phone photos and spreadsheets that fight back. Bring the worst workflow to the call; that is usually where the ROI is easiest to find.",
   },
   {
     q: 'Where does client data go?',
-    a: 'The answer is deployment-specific. Before a pilot, Declarix records the approved channel, purpose, access, subprocessors, processing locations, retention classes, deletion behavior, legal-hold treatment, and incident contacts in writing.',
+    a: 'Customer documents are processed for the job, returned with the pack and never used to train models. Before live documents move, we provide the deployment details your security and data teams need.',
   },
   {
     q: "What's the turnaround at 9am, not in a demo?",
-    a: 'Set the service window against your real volume, peak pattern, pack mix, and exception load in the written pilot proposal. Measure it on representative jobs; the website does not promise a universal turnaround.',
+    a: 'Typical Declarix processing is around 200 seconds before clerk review. Live desk turnaround depends on queue, job mix and exceptions, so the call maps your peak volume and the pilot proves it under your conditions.',
   },
   {
     q: 'What does it cost?',
-    a: 'The written proposal defines the value metric, scope, inclusions, exclusions, minimums, tax, corrections, retries, support, and exit terms. Numerical pricing is not published until those commercial terms are approved.',
+    a: "Per entry, not per seat. We size the rate against the labour and capacity you recover. The pilot is free if it fails and capped at £500 if it works. Your per-entry rate comes from the 20-minute numbers call.",
   },
   {
     q: 'Will my clerks need training?',
-    a: 'The pilot records the real review and training needed for the agreed handoff. Your clerk retains approval and your firm files in its existing system; correction and support paths are agreed before live volume.',
+    a: 'They keep the system they already know. Declarix changes the work arriving at their desk: instead of building the entry field by field, they check the CDS-ready pack and its linked evidence before approval.',
   },
   {
     q: 'We outsource customs today.',
-    a: 'If insourcing is on your roadmap, use the workflow call to map the roles, authorisations, customs system, review capacity, and evidence you would still need. Declarix does not replace that operating model with a traffic claim.',
+    a: 'Declarix changes the maths of bringing declarations in-house: one experienced clerk can review far more jobs when the entry is already built. Bring the outsourced cost and expected volume to the numbers call and compare it properly.',
   },
 ]
 

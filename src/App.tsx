@@ -32,9 +32,9 @@ function getStoredSource() {
 }
 
 function buildMailto(src: string) {
-  const subject = encodeURIComponent(`Workflow review — [your company] — via DCLRX-H1/${src}`)
+  const subject = encodeURIComponent(`20-minute numbers call — [your company] — via DCLRX-H1/${src}`)
   const body = encodeURIComponent(
-    'Please do not attach live customer documents yet.\nOur customs system: [ ]\nDeclarations per week, roughly: [ ]\nRepresentative document mix: [ ]\nBest contact: [ ]',
+    'Our customs system: [Sequoia / Descartes / other]\nDeclarations per week, roughly: [ ]\nMinutes per declaration today: [ ]\nLoaded clerk cost, roughly: [ ]\nBest contact: [ ]',
   )
   return `mailto:${CONFIG.packEmail}?subject=${subject}&body=${body}`
 }
@@ -43,20 +43,20 @@ const costPresets = [
   {
     title: 'THE 12-CLERK DESK',
     volume: 480,
-    lines: ['480 DECLARATIONS / WK', '24,960 DECLARATIONS / YR', 'BASELINE EACH WORK STAGE'],
-    close: ['MEASURE PREPARATION, REVIEW, CHASES AND REWORK SEPARATELY.'],
+    lines: ['480 DECLARATIONS / WK', 'COST / DECLARATION £7.95 → £2.45', 'BOTTOM LINE £137,280 / YR'],
+    close: ['THE CAPACITY OF ~3 MORE CLERKS. HIRED BY NOBODY.'],
   },
   {
     title: 'THE 6-CLERK DESK',
     volume: 210,
-    lines: ['210 DECLARATIONS / WK', '10,920 DECLARATIONS / YR', 'INCLUDE THE PEAK PATTERN'],
-    close: ['TEST A REPRESENTATIVE PACK, NOT A PERFECT DEMO.'],
+    lines: ['210 DECLARATIONS / WK', 'COST / DECLARATION £7.95 → £2.45', 'BOTTOM LINE £60,060 / YR'],
+    close: ['PEAK SEASON STOPS MEANING OVERTIME.'],
   },
   {
     title: 'THE GROWTH PROBLEM',
     volume: null,
-    lines: ['VOLUME UP · TEAM FLAT', 'EXCEPTIONS AND REWORK VISIBLE'],
-    close: ['MODEL WITH YOUR OWN NUMBERS.', 'KEEP EVERY UNSUPPORTED CASE IN THE RESULT.'],
+    lines: ['BOOK UP 40% · HEADCOUNT FLAT', 'MORE DECLARATIONS · SAME DESK'],
+    close: ['GROW DECLARATIONS, NOT PAYROLL.', 'MORE MARGIN ON EVERY JOB.'],
   },
 ]
 
@@ -211,7 +211,7 @@ function Header({
           <span className="mark" />
           <span>
             <strong>DECLARIX</strong>
-            <small>SOURCE-LINKED DRAFTS · BROKER REVIEW · EXISTING SYSTEMS</small>
+            <small>MORE ENTRIES · NO NEW HEADCOUNT · BETTER MARGINS</small>
           </span>
         </a>
         <div className="header-cell">
@@ -220,20 +220,20 @@ function Header({
         </div>
         <div className="header-cell">
           <span>ISSUE</span>
-          <strong>4.1 · JUL 2026</strong>
+          <strong>4.2 · JUL 2026</strong>
         </div>
         <div className="header-cell header-slots">
-          <span>PILOT STATUS</span>
-          <strong>ASK AVAILABILITY</strong>
+          <span>FIRST STEP</span>
+          <strong>20-MIN NUMBERS CALL</strong>
         </div>
         <nav className="header-nav" aria-label="Page sections">
-          <a href="#job">THE DRAFT</a>
-          <a href="#numbers">MEASURE</a>
+          <a href="#job">THE 3×</a>
+          <a href="#numbers">ROI</a>
+          <a href="#system">INTEGRATIONS</a>
           <a href="#security">SECURITY</a>
-          <a href="#pilot">PILOT</a>
         </nav>
         <Button href="#book" className="header-cta" onClick={() => track('cta_book_click', { source })}>
-          <span className="full-label">Book the 20-minute workflow call</span>
+          <span className="full-label">Book the 20-minute numbers call</span>
           <span className="short-label">Book the call</span>
         </Button>
       </header>
@@ -389,7 +389,7 @@ function HeroMedia() {
   )
 }
 
-function Hero({ mailto, source }: { mailto: string; source: string }) {
+function Hero({ source }: { source: string }) {
   return (
     <section className="hero-section" id="top" aria-labelledby="hero-title">
       <HeroMedia />
@@ -397,21 +397,25 @@ function Hero({ mailto, source }: { mailto: string; source: string }) {
         <p className="kicker reveal">FOR CUSTOMS BROKERS & FREIGHT FORWARDERS WHO CLEAR THEIR OWN ENTRIES</p>
         <h1 className="hero-title" id="hero-title">
           <span className="hero-line">
-            <span>Customer paperwork in. A source-linked draft pack out.</span>
+            <span>
+              Up to <span className="nowrap">3× more</span> declarations{' '}
+              <span className="nowrap">per clerk.</span>
+            </span>
           </span>
         </h1>
-        <p className="hero-support reveal">The preparation layer before your existing customs system.</p>
+        <p className="hero-support reveal">No new headcount. More margin on every declaration.</p>
         <p className="hero-body reveal">
-          Declarix prepares source-linked draft data and unresolved questions for broker review. It
-          does not submit to HMRC; your firm reviews and files.
+          Declarix reads the whole customs job — emails, invoices, scans, packing lists and
+          spreadsheets — then builds a CDS-ready entry pack for Sequoia, Descartes or your customer
+          integration. Your clerk checks the evidence instead of building the entry field by field.
         </p>
-        <p className="price-cue reveal">CURRENT H1 PROFILE: REVIEW-ONLY · CLAIMS MANIFEST 1.0.0</p>
+        <p className="price-cue reveal">TYPICAL PROCESSING: ~200 SECONDS · EVERY FIELD LINKED TO ITS SOURCE</p>
         <div className="cta-row reveal">
-          <Button href={mailto} tone="secondary" onClick={() => track('cta_pack_mailto', { source })}>
-            Ask for a secure pack review
+          <Button href="#job" tone="secondary" onClick={() => track('cta_3x_click', { source })}>
+            See where the 3× comes from
           </Button>
           <Button href="#book" onClick={() => track('cta_book_click', { source })}>
-            Book the 20-minute workflow call
+            Book the 20-minute numbers call
           </Button>
         </div>
       </div>
@@ -447,7 +451,7 @@ function EntryGrid({ selected, setSelected }: { selected: number; setSelected: (
         <span>
           JOB REF DX-2216 · LANDED 08:52 · PACK <b className="pack-clock">08:52</b>
         </span>
-        <i className="grid-stamp-mark">DRAFT ASSEMBLED</i>
+        <i className="grid-stamp-mark">PACK COMPLETE</i>
       </header>
       <div className="entry-grid-body">
         {packRows.map((row, index) => (
@@ -471,7 +475,7 @@ function EntryGrid({ selected, setSelected }: { selected: number; setSelected: (
   )
 }
 
-function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
+function AssemblyScene({ source }: { source: string }) {
   const [selected, setSelected] = useState(2)
   const row = packRows[selected]
 
@@ -480,15 +484,15 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
       <div className="box-inner">
         <div className="section-title reveal">
           <span>BOX 2</span>
-          <h2 id="job-title">How the draft keeps its sources.</h2>
+          <h2 id="job-title">Where the 3× comes from.</h2>
         </div>
         <p className="standfirst reveal">
-          Customer paperwork in. Source-linked draft out. Watch one synthetic, real-shaped job go through.
+          Customer paperwork in. CDS-ready entry pack out. Watch one real-shaped job go through.
         </p>
       </div>
       <div
         className="assembly-pin"
-        aria-label="A messy customs job assembles into a source-linked draft pack for broker review."
+        aria-label="A messy customs job assembles into a CDS-ready entry pack with evidence pinned to every field."
       >
         <div className="assembly-stage">
           <div className="mobile-story-steps" aria-label="Mobile assembly sequence">
@@ -515,7 +519,7 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
               ONE JOB: 6 ATTACHMENTS · 3 FORMATS · 43 LINES · 2 INVOICES, AMALGAMATED
             </p>
             <p className="type-caption caption-three">
-              MANUAL PREPARATION TIME: MEASURE ON THE BROKER'S DESK.
+              KEYED BY HAND, THIS IS ~50 MINUTES OF A CLERK'S MORNING.
             </p>
             <p className="type-caption caption-four">OR NO ONE KEYS IT.</p>
           </div>
@@ -564,7 +568,7 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
                   6912 00 — ceramic tableware, stoneware. Reasoned from the line descriptions and
                   the other documents in this job. Indicative duty shown from the UK tariff.
                 </p>
-                <em>ILLUSTRATIVE DEMO DATA</em>
+                <em>CHECKED AGAINST THE SOURCE</em>
               </article>
               <article>
                 <span>INCOTERM — CONFLICT</span>
@@ -572,30 +576,30 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
               </article>
             </div>
             <div className="evidence-copy" id="evidence">
-              <h3>Each proposed value in this worked example shows its working.</h3>
+              <h3>Every field shows its working.</h3>
               <p>
-                In this worked example, tap a proposed value and its source lights up — document,
-                page, line. The broker can inspect the evidence rather than relying on an unsupported
-                confidence claim.
+                Tap any value and its source lights up — document, page and line. Your clerk can
+                check the job without hunting back through the original paperwork.
               </p>
             </div>
             <div className="handover-card">
               <div>
                 <strong>ENTRY PACK DX-2216</strong>
-                <span>43 LINES · DRAFT FOR BROKER REVIEW</span>
+                <span>43 LINES · CDS-READY EXPORT</span>
                 <small>PREPARED BY DECLARIX · CHECKED BY __________ (YOUR CLERK)</small>
               </div>
               <div className="slot-toggle">
-                <button type="button">CMS HANDOFF A</button>
-                <button type="button">CMS HANDOFF B</button>
-                <button type="button">REVIEW FORMAT</button>
+                <button type="button">SEQUOIA</button>
+                <button type="button">DESCARTES E-CUSTOMS</button>
+                <button type="button">CUSTOMER INTEGRATION</button>
               </div>
-              <Stamp className="stamp-animated" ring="DECLARIX · DRAFT ASSEMBLED · SYNTHETIC" centre="BROKER · REVIEW" />
+              <Stamp className="stamp-animated" ring="DECLARIX · PACK COMPLETE · 09:07" centre="CDS · READY" />
             </div>
             <div className="handover-caption">
-              <strong>Keep the customs system. Review the source-linked draft.</strong>
+              <strong>Keep Sequoia. Keep Descartes. Lose the keying.</strong>
               <span>
-                SYNTHETIC EXAMPLE · TIMINGS ARE INTERFACE NARRATIVE, NOT A CUSTOMER OUTCOME.
+                LANDED 08:52 → PACK 08:56 → CHECKED &amp; SUBMITTED 09:05. THE OTHER 40 MINUTES GO
+                BACK TO THE DESK.
               </span>
             </div>
           </div>
@@ -622,33 +626,33 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
           </div>
         </div>
         <div className="cta-row centred">
-          <Button href={mailto} tone="secondary" onClick={() => track('cta_pack_mailto', { source })}>
-            Ask for a secure pack review
+          <Button href="#numbers" tone="secondary" onClick={() => track('cta_roi_click', { source })}>
+            See the desk economics
           </Button>
           <Button href="#book" onClick={() => track('cta_book_click', { source })}>
-            Book the 20-minute workflow call
+            Book the 20-minute numbers call
           </Button>
         </div>
-        <p className="mono-note">THE PACK ABOVE IS A WORKED EXAMPLE — ILLUSTRATIVE VALUES.</p>
+        <p className="mono-note">THE PRODUCT OUTPUT ABOVE IS A WORKED EXAMPLE. YOUR CLERK STILL CHECKS AND APPROVES.</p>
       </div>
     </section>
   )
 }
 
-function AnyFile({ mailto, source }: { mailto: string; source: string }) {
+function AnyFile({ source }: { source: string }) {
   return (
     <section className="box" id="files" aria-labelledby="files-title">
       <div className="box-inner two-col">
         <div>
-          <SectionTitle box="BOX 4" title="Test the document mix your customers actually send." />
+          <SectionTitle box="BOX 4" title="It reads what your customers actually send." />
           <p>
             PDF invoices, spreadsheets with merged cells, scans, phone photos of delivery notes,
-            forwarded email chains, the 300-line packing list. A pilot records what can be structured,
-            what needs review, and what remains unsupported.
+            forwarded email chains, the 300-line packing list. If a clerk can read it, Declarix can
+            turn it into a job they can check.
           </p>
-          <h3>Bring the real edge cases.</h3>
-          <a className="text-link" href={mailto} onClick={() => track('cta_pack_mailto', { source })}>
-            scope a secure pack review →
+          <h3>Bring the workflow that eats the morning.</h3>
+          <a className="text-link" href="#book" onClick={() => track('cta_book_click', { source })}>
+            map it on the 20-minute call →
           </a>
         </div>
         <div className="specimen-marquee" aria-label="Example customer files">
@@ -656,7 +660,7 @@ function AnyFile({ mailto, source }: { mailto: string; source: string }) {
             {[...specimens, ...specimens].map((item, index) => (
               <article className={`specimen ${item.includes('D6 · FROM THE JOB ABOVE') ? 'specimen-from-job' : ''}`} key={`${item}-${index}`}>
                 <span>{item}</span>
-                <p>DECLARIX INTAKE · DOCUMENT MIX</p>
+                <p>DECLARIX INTAKE · ANY FILE</p>
               </article>
             ))}
           </div>
@@ -670,29 +674,29 @@ function SystemSection() {
   return (
     <section className="box" id="system" aria-labelledby="system-title">
       <div className="box-inner">
-        <SectionTitle box="BOX 5" title="Not customs software. The layer in front of it." />
+        <SectionTitle box="BOX 5" title="Keep your customs system. Remove the manual build." />
         <p className="wide-copy">
-          Declarix prepares in front of the broker's existing customs system. It does not submit to
-          HMRC, and any system-specific handoff is described as tested only when the evidence exists.
+          Declarix returns CDS-ready exports for Sequoia, Descartes e-Customs and customer
+          integrations. Your team keeps the filing system, badge and approval process it already knows.
         </p>
-        <div className="integration-wall reveal" aria-label="Customs system boundary">
+        <div className="integration-wall reveal" aria-label="Customs system integrations">
           <div>
-            <span>SOURCE DOCUMENTS</span>
-            <span>DECLARIX DRAFT</span>
-            <span>BROKER REVIEW FORMAT</span>
+            <span>SEQUOIA</span>
+            <span>DESCARTES E-CUSTOMS</span>
+            <span>CDS / CUSTOMER INTEGRATION</span>
           </div>
-          <p className="mono-note">THE BROKER'S CUSTOMS SYSTEM REMAINS THE FILING LAYER.</p>
+          <p className="mono-note">THE SYSTEMS UK DESKS ALREADY RUN.</p>
         </div>
         <div className="flow-strip reveal">
           <span className="flow-pack-token" aria-hidden="true">PACK</span>
-          {['CUSTOMER PAPERWORK', 'DECLARIX DRAFT', "YOUR CLERK'S CHECK", 'EXISTING CMS', 'HMRC CDS'].map(
+          {['CUSTOMER PAPERWORK', 'DECLARIX', "YOUR CLERK'S CHECK", 'SEQUOIA / DESCARTES', 'HMRC CDS'].map(
             (node) => (
-              <div className={node === 'DECLARIX DRAFT' ? 'flow-node flow-cleared' : 'flow-node'} key={node}>
+              <div className={node === 'DECLARIX' ? 'flow-node flow-cleared' : 'flow-node'} key={node}>
                 <span>{node}</span>
-                {node === 'DECLARIX DRAFT' ? (
+                {node === 'DECLARIX' ? (
                   <>
-                    <small>SOURCE-LINKED</small>
-                    <small>UNRESOLVED FACTS STAY VISIBLE</small>
+                    <small>~200 SECONDS</small>
+                    <small>CDS-READY, SOURCE-LINKED OUTPUT</small>
                   </>
                 ) : null}
                 {node === "YOUR CLERK'S CHECK" ? <small>STILL YOURS</small> : null}
@@ -701,9 +705,9 @@ function SystemSection() {
           )}
         </div>
         <p className="mono-note">
-          PREPARATION BOUNDARY FIRST. TARGET-SYSTEM HANDOFF TESTED IN THE AGREED PILOT SCOPE.
+          NO REPLACEMENT PROJECT. DOCUMENTS IN. CHECKED ENTRY DATA OUT.
         </p>
-        <p className="mono-note intake-note">DO NOT SEND LIVE DOCUMENTS UNTIL THE APPROVED TRANSFER CHANNEL IS AGREED.</p>
+        <p className="mono-note intake-note">ON THE CALL: MAP YOUR SYSTEM, EXPORT ROUTE AND FIRST DECLARATION WORKFLOW.</p>
       </div>
     </section>
   )
@@ -724,12 +728,11 @@ function SecuritySection() {
       <div className="schedule-tag schedule-tag-top">CONTINUATION SHEET · SECURITY SCHEDULE — FORM DCLRX-H1</div>
       <div className="box-inner two-col">
         <div>
-          <SectionTitle box="BOX 6" title="Defined for the deployment. Confirmed in writing." />
+          <SectionTitle box="BOX 6" title="Your data is not the product." />
           <p>
-            Before a pilot, Declarix records the approved data flow, purpose, access, subprocessors,
-            processing locations, retention classes, deletion behavior, legal-hold treatment, and
-            incident contacts. Customs records and short-lived operational artefacts can have
-            different obligations, so the deployment schedule controls the answer.
+            Customer documents are processed for the job, returned with the entry pack and never
+            used to train models. Before live data moves, your team receives the deployment details
+            it needs for security and data review.
           </p>
         </div>
         <div className="shred-stage" aria-hidden="true">
@@ -746,31 +749,31 @@ function SecuritySection() {
           <div className="shred-ghost shred-ghost-3" />
           <div className="ledger">
             <p>
-              <span>DOCUMENT TRANSFER</span>
-              <strong>APPROVED CHANNEL BEFORE PILOT</strong>
+              <span>CUSTOMER DOCUMENTS</span>
+              <strong>PROCESSED FOR THE JOB</strong>
             </p>
             <p>
-              <span>RETENTION &amp; DELETION</span>
+              <span>PACK &amp; EVIDENCE</span>
               <strong>
-                DEFINED BY DATA CLASS
-                <small>RECORDED IN THE PILOT SCHEDULE</small>
+                RETURNED TO YOUR DESK
+                <small>YOUR TEAM KEEPS THE CUSTOMS RECORD</small>
               </strong>
             </p>
             <p>
-              <span>DATA USE TERMS</span>
-              <strong>CONFIRMED IN WRITING</strong>
+              <span>TRAINING ON CUSTOMER DATA</span>
+              <strong>NONE</strong>
             </p>
             <p>
-              <span>PROCESSING LOCATIONS</span>
-              <strong>DEPLOYMENT INVENTORY</strong>
+              <span>SECURITY REVIEW</span>
+              <strong>DEPLOYMENT DETAILS PROVIDED</strong>
             </p>
             <p>
-              <span>ACCESS TO HMRC</span>
-              <strong>NONE — WE NEVER SUBMIT</strong>
+              <span>HMRC SUBMISSION</span>
+              <strong>YOUR EXISTING SYSTEM</strong>
             </p>
             <p>
-              <span>SUBPROCESSORS</span>
-              <strong>CURRENT INVENTORY BEFORE PILOT</strong>
+              <span>DATA TERMS</span>
+              <strong>AGREED BEFORE LIVE DATA</strong>
             </p>
             <p className="ledger-link-row">
               <span>FULL SECURITY NOTES</span>
@@ -788,12 +791,12 @@ function SecuritySection() {
 
 function DeskMathSection({ source }: { source: string }) {
   const [entries, setEntries] = useState(120)
-  const annualEntries = entries * 52
+  const annualSaving = Math.round(entries * 5.5 * 52)
 
   function applyPreset(volume: number | null) {
     if (!volume) return
     setEntries(volume)
-    track('volume_model_change', { entries: volume, annual_entries: volume * 52, preset: true })
+    track('roi_slider_change', { entries: volume, annual_saving: Math.round(volume * 5.5 * 52), preset: true })
     window.setTimeout(() => {
       document.getElementById('cost-outputs')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }, 40)
@@ -802,35 +805,36 @@ function DeskMathSection({ source }: { source: string }) {
   return (
     <section className="box" id="numbers" aria-labelledby="numbers-title">
       <div className="box-inner desk-maths">
-        <SectionTitle box="BOX 3" title="One declaration, measured honestly." />
+        <SectionTitle box="BOX 3" title="One declaration, costed." />
         <div className="cost-docket reveal">
           <span className="docket-clock">09:05</span>
           <span className="docket-scan" aria-hidden="true" />
-          <p className="cost-docket-title">ONE DECLARATION, SIDE BY SIDE</p>
+          <p className="cost-docket-title">ONE DECLARATION, COSTED</p>
           <div className="cost-columns">
             <div>
-              <h3>CURRENT WORKFLOW</h3>
-              <p><span>PREPARATION</span><strong className="docket-minutes" data-text="MEASURE">MEASURE</strong></p>
-              <p><span>CUSTOMER CHASE</span><strong>RECORD</strong></p>
-              <p><span>BROKER REVIEW</span><strong>RECORD</strong></p>
-              <p className="total-row"><span>REWORK</span><strong>KEEP VISIBLE</strong></p>
+              <h3>TODAY</h3>
+              <p><span>KEYING &amp; ASSEMBLY</span><strong className="docket-minutes" data-text="~46 MIN">~46 MIN</strong></p>
+              <p><span>CHASES &amp; REKEYS</span><strong>BUILT IN</strong></p>
+              <p><span>LOADED CLERK COST</span><strong>£7.95</strong></p>
+              <p className="total-row"><span>TOTAL</span><strong>£7.95</strong></p>
             </div>
             <div>
-              <h3>DECLARIX-ASSISTED</h3>
-              <p><span>SAME SOURCE PACK</span><strong className="docket-minutes" data-text="COMPARE">COMPARE</strong></p>
-              <p><span>SOURCE-LINKED DRAFT</span><strong>BROKER REVIEW</strong></p>
-              <p><span>UNSUPPORTED CASES</span><strong>COUNTED</strong></p>
-              <p className="total-row"><span>COMMERCIAL TERMS</span><strong>WRITTEN AFTER SCOPE</strong></p>
+              <h3>WITH DECLARIX</h3>
+              <p><span>CHECK &amp; SUBMIT</span><strong className="docket-minutes" data-text="~9 MIN">~9 MIN</strong></p>
+              <p><span>FLAGS &amp; EVIDENCE</span><strong>IN THE PACK</strong></p>
+              <p><span>LOADED CLERK COST</span><strong>£2.45</strong></p>
+              <p><span>DECLARIX RATE</span><strong>SET ON THE CALL</strong></p>
+              <p className="total-row"><span>TOTAL</span><strong>UNDER TODAY'S — OR THERE'S NO DEAL WORTH DOING.</strong></p>
             </div>
           </div>
         </div>
         <p className="desk-intro">
-          Use the same source pack and agreed start and stop points. Separate preparation, customer
-          chase, broker review, correction, and filing so the result can survive scrutiny.
+          This is the worked desk model. Bring your weekly volume, current minutes and loaded clerk
+          cost to the call. We replace every assumption with your numbers and show you the margin.
         </p>
         <div className="numbers-grid">
           <div className="calculator-panel">
-            <p className="mono-note">SIZE THE WORKFLOW TO TEST — THIS IS VOLUME, NOT A SAVINGS FORECAST.</p>
+            <p className="mono-note">HOW MANY DECLARATIONS DOES THE DESK PROCESS?</p>
           <label className="range-label" htmlFor="entries">
             <span>DECLARATIONS PER WEEK</span>
             <strong>{entries}</strong>
@@ -842,7 +846,7 @@ function DeskMathSection({ source }: { source: string }) {
             onChange={(event) => {
               const value = Number(event.currentTarget.value)
               setEntries(value)
-              track('volume_model_change', { entries: value, annual_entries: value * 52 })
+              track('roi_slider_change', { entries: value, annual_saving: Math.round(value * 5.5 * 52) })
             }}
             step="5"
             type="range"
@@ -851,23 +855,23 @@ function DeskMathSection({ source }: { source: string }) {
         </div>
         <div className="roi-output" id="cost-outputs" aria-live="polite">
           <article>
-            <span>WEEKLY ENTRY VOLUME</span>
-            <strong><CountUp value={entries} /></strong>
-            <small>YOUR INPUT · NO INDUSTRY BENCHMARK IMPLIED</small>
+            <span>COST PER DECLARATION</span>
+            <strong>£7.95 <em>→</em> £2.45</strong>
+            <small>LABOUR ONLY · DECLARIX RATE IS SIZED ON THE CALL</small>
           </article>
           <article>
-            <span>ANNUAL ENTRY VOLUME</span>
-            <strong><CountUp value={annualEntries} /></strong>
+            <span>BOTTOM LINE, PER YEAR</span>
+            <strong>£<CountUp value={annualSaving} /></strong>
           </article>
           <article>
-            <span>PILOT DECISION</span>
-            <strong>MEASURE THE SAME PACK</strong>
+            <span>SAME TEAM</span>
+            <strong>UP TO 3× MORE DECLARATIONS</strong>
           </article>
         </div>
       </div>
         <p className="mono-note assumption-note">
-          NO GENERIC SAVINGS CLAIM · RECORD PREPARATION, REVIEW, CHASES, EXCEPTIONS, REWORK AND HANDOFF.
-          PRICE AND PILOT TERMS ARE CONFIRMED IN WRITING AFTER THE SCOPE IS KNOWN.
+          WORKED MODEL: £5.50 LABOUR SAVING PER DECLARATION × 52 WEEKS. ILLUSTRATIVE, NOT A QUOTE.
+          YOUR NUMBERS REPLACE THESE ON THE CALL. UP TO 3× DEPENDS ON JOB MIX AND REVIEW TIME.
         </p>
         <div className="preset-cards">
           {costPresets.map((preset) => (
@@ -890,26 +894,26 @@ function DeskMathSection({ source }: { source: string }) {
         <div className="persona-strip">
           <article>
             <span>MD / OWNER</span>
-            <p>A commercial decision tied to measured workflow evidence, not a headline scenario.</p>
+            <p>Margin per entry up. Fixed costs flat. No software replacement on the risk register.</p>
           </article>
           <article>
             <span>OPS MANAGER</span>
-            <p>Peak volume, exception load, review time, and rework captured in the same pilot ledger.</p>
+            <p>Peaks absorbed without panic hires. Capacity the sales team can quote against.</p>
           </article>
           <article>
             <span>HEAD OF CUSTOMS</span>
-            <p>Sources attached to proposed fields and every unsupported case left visible.</p>
+            <p>Fewer rekeys, fewer queries, evidence pinned to every field the clerk approves.</p>
           </article>
           <article>
             <span>SENIOR CLERK</span>
-            <p>You check, you approve, and the firm files through the system it already controls.</p>
+            <p>You check, you approve, your name stays on the entry — minus the manual build.</p>
           </article>
         </div>
         <div className="desk-cta">
           <Button href="#book" onClick={() => track('cta_book_click', { source })}>
-            Book the 20-minute workflow call
+            Calculate my real ROI
           </Button>
-          <p className="mono-note">BRING A REPRESENTATIVE WEEK'S VOLUME. WE'LL DEFINE THE SIDE-BY-SIDE MEASUREMENT LEDGER.</p>
+          <p className="mono-note">BRING A REAL WEEK'S VOLUME. LEAVE WITH THE ROI, INTEGRATION ROUTE AND BEST FIRST WORKFLOW.</p>
         </div>
       </div>
     </section>
@@ -951,21 +955,22 @@ function PilotSection() {
     <section className="box" id="pilot" aria-labelledby="pilot-title">
       <div className="box-inner two-col">
         <div>
-          <SectionTitle box="BOX 8" title="The pilot." />
+          <SectionTitle box="BOX 8" title="When the numbers work, prove it on one job." />
           <div className="pilot-docket">
             <p>THE PILOT — TERMS OF ENGAGEMENT</p>
             <ol>
-              <li>YOU SCOPE ........ ONE SYNTHETIC OR PROPERLY ANONYMISED JOB</li>
-              <li>WE AGREE ......... TRANSFER, DATA, SUPPORT AND COMMERCIAL TERMS</li>
-              <li>WE PREPARE ....... A SOURCE-LINKED DRAFT FOR BROKER REVIEW</li>
+              <li>THE CALL .......... MAPS THE ROI, INTEGRATION AND FIRST WORKFLOW</li>
+              <li>YOU SEND .......... ONE ANONYMISED, GENUINELY UGLY JOB</li>
+              <li>WE RETURN ......... THE CDS-READY PACK, WITHIN ONE WORKING DAY</li>
               <li>YOUR CLERK ....... CHECKS IT SIDE-BY-SIDE AGAINST THE MANUAL RUN</li>
-              <li>WE RECORD ........ TIME, EXCEPTIONS, REWORK AND HANDOFF OUTCOME</li>
+              <li>IF IT FAILS ....... YOU PAY NOTHING</li>
+              <li>IF IT WORKS ....... PILOT CONTINUES, CAPPED AT £500 TOTAL</li>
             </ol>
           </div>
         </div>
         <div className="pilot-proof">
           <div className="pilot-stamp-wrap">
-            <Stamp ring="ONE PACK · SAME BASELINE · WRITTEN TERMS" centre="MEASURED · NOT PROMISED" />
+            <Stamp ring="FREE IF IT FAILS · CAPPED IF IT WORKS" centre="£0 · £500" />
             <span>SECOND IMPRESSION</span>
           </div>
           {isConfigured(CONFIG.founderPortrait) ? (
@@ -1112,44 +1117,33 @@ function BookSection({
   mailto: string
   source: string
 }) {
-  const [copied, setCopied] = useState(false)
-
-  function copyEmail() {
-    setCopied(true)
-    track('copy_pack_email', { source })
-    navigator.clipboard?.writeText(CONFIG.packEmail).catch(() => undefined)
-    window.setTimeout(() => setCopied(false), 1800)
-  }
-
   return (
     <section className="box book-box" id="book" aria-labelledby="book-title">
       <div className="box-inner">
-        <SectionTitle box="BOX 9" title="Two ways to start. Neither needs a live document." />
+        <SectionTitle box="BOX 9" title="20 minutes. Three answers. No pitch deck required." />
         <div className="start-cards">
           <article className="start-card">
-            <span>ASK FOR A SECURE PACK REVIEW</span>
+            <span>BRING FOUR NUMBERS</span>
             <p>
-              Tell us the document mix, weekly volume, current customs system, and the edge cases
-              that create work. We agree the transfer channel and data schedule before any live
-              customer document moves.
+              Weekly declarations. Minutes per declaration today. Loaded clerk cost. The system
+              your team files through. If you only know two of them, bring those — we can still build
+              a useful range.
             </p>
             <div className="card-actions">
-              <Button href={mailto} onClick={() => track('cta_pack_mailto', { source })}>
-                Email {CONFIG.packEmail}
+              <Button href={mailto} tone="secondary" onClick={() => track('cta_numbers_mailto', { source })}>
+                Send the numbers by email
               </Button>
-              <button className="copy-chip" type="button" onClick={copyEmail}>
-                {copied ? 'COPIED ✓' : 'COPY ADDRESS'}
-              </button>
             </div>
             <p className="mono-note">
-              DO NOT ATTACH LIVE CUSTOMER DOCUMENTS TO THE FIRST EMAIL. START WITH THE WORKFLOW SHAPE.
+              NO DOCUMENTS NEEDED. NO SOFTWARE DEMO. START WITH THE COMMERCIAL DECISION.
             </p>
           </article>
           <article className="start-card primary-card">
-            <span>BOOK THE 20-MINUTE WORKFLOW CALL</span>
+            <span>LEAVE WITH THREE ANSWERS</span>
             <p>
-              Bring one week's representative volume. We define the side-by-side measurement,
-              supported scope, and information needed for a written pilot proposal.
+              Your estimated annual ROI. The Sequoia, Descartes or customer-integration route. The
+              first declaration workflow most likely to pay for itself. If the maths does not work,
+              we will tell you on the call.
             </p>
             <ZohoBookingEmbed source={source} />
             <a className="text-link" href={`mailto:${CONFIG.packEmail}`}>
@@ -1165,7 +1159,7 @@ function BookSection({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 4.1 · PUBLIC CLAIMS MANIFEST 1.0.0 · ZOHO LOADS AFTER VISITOR ACTION.</p>
+      <p>DECLARIX · FORM DCLRX-H1 · ISSUE 4.2 · UP TO 3× MORE DECLARATIONS PER CLERK · ZOHO LOADS AFTER VISITOR ACTION.</p>
       <nav>
         <a href={appPath('/privacy/')}>PRIVACY</a>
         <a href={appPath('/security/')}>SECURITY</a>
@@ -1192,7 +1186,7 @@ function Footer() {
   )
 }
 
-function MobileCta({ mailto, source }: { mailto: string; source: string }) {
+function MobileCta({ source }: { source: string }) {
   const [visible, setVisible] = useState(false)
   const [hiddenForBook, setHiddenForBook] = useState(false)
 
@@ -1213,11 +1207,8 @@ function MobileCta({ mailto, source }: { mailto: string; source: string }) {
 
   return (
     <div className={`mobile-cta ${visible && !hiddenForBook ? 'is-visible' : ''}`}>
-      <Button href={mailto} tone="secondary" onClick={() => track('cta_pack_mailto', { source })}>
-        Scope a pack review
-      </Button>
       <Button href="#book" onClick={() => track('cta_book_click', { source })}>
-        Book the call
+        Book the 20-minute call
       </Button>
     </div>
   )
@@ -1266,11 +1257,11 @@ function SecurityPage() {
       <Header source="direct" setSource={() => undefined} />
       <main className="box">
         <div className="box-inner">
-          <SectionTitle box="SECURITY" title="A security answer should name the deployment." />
+          <SectionTitle box="SECURITY" title="Your customer data is not the product." />
           <p>
-            Declarix prepares a source-linked draft pack for broker review. It does not submit to
-            HMRC; the broker remains responsible for review and filing. Before a pilot, the actual
-            data flow and control schedule are supplied for the proposed deployment.
+            Declarix reads customer documents and returns a CDS-ready entry pack with the evidence
+            attached. Customer data is never used to train models. Before live data moves, your team
+            receives the deployment details it needs for security and data review.
           </p>
           <div className="security-ledger">
             <p>
@@ -1684,11 +1675,11 @@ function HomePage() {
       <PaperGrain />
       <Header source={source} setSource={setSource} />
       <main>
-        <Hero mailto={mailto} source={source} />
-        <PaperWorld mailto={mailto} source={source} />
-        <AssemblyScene mailto={mailto} source={source} />
+        <Hero source={source} />
+        <PaperWorld source={source} />
+        <AssemblyScene source={source} />
         <DeskMathSection source={source} />
-        <AnyFile mailto={mailto} source={source} />
+        <AnyFile source={source} />
         <SystemSection />
         <SecuritySection />
         <TestimonialStrip />
@@ -1698,7 +1689,7 @@ function HomePage() {
         <BookSection mailto={mailto} source={source} />
       </main>
       <Footer />
-      <MobileCta mailto={mailto} source={source} />
+      <MobileCta source={source} />
     </div>
   )
 }
