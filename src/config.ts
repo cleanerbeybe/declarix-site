@@ -9,8 +9,8 @@ export const CONFIG = {
   companyNo: '17288258',
   companyLocation: 'Leicester, England',
   linkedin: '',
-  posthogKey: '',
-  posthogHost: 'https://eu.i.posthog.com',
+  posthogKey: import.meta.env.VITE_POSTHOG_KEY ?? '',
+  posthogHost: import.meta.env.VITE_POSTHOG_HOST ?? 'https://eu.i.posthog.com',
   multimodalBarUntil: '2026-07-31',
   founderLine:
     'Ihusan Adam, a PhD engineer who builds document-reading systems for regulated industries',

@@ -6,7 +6,7 @@ import { TextPlugin } from 'gsap/TextPlugin'
 import { SplitText } from 'gsap/SplitText'
 import type Lenis from 'lenis'
 import { CONFIG, isConfigured } from './config'
-import { initAnalytics, track } from './analytics'
+import { getAttribution, initAnalytics, track } from './analytics'
 import { documents, flights, mobileMovements, packRows, questions, specimens } from './data'
 import { PaperWorld } from './world'
 
@@ -28,13 +28,7 @@ function appPath(path: string) {
 }
 
 function getStoredSource() {
-  const params = new URLSearchParams(window.location.search)
-  const fromUrl = params.get('src')
-  if (fromUrl) {
-    sessionStorage.setItem('dclrx-src', fromUrl)
-    return fromUrl
-  }
-  return sessionStorage.getItem('dclrx-src') || 'direct'
+  return getAttribution().source
 }
 
 function buildMailto(src: string) {
