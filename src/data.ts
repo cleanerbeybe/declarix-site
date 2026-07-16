@@ -172,28 +172,28 @@ export const mobileMovements = [
   },
   {
     tag: 'MV-4 · THE EVIDENCE',
-    title: 'Every field shows its working.',
+    title: 'Each proposed value shows its working.',
     copy: 'Tap a row and the source document, page and line stay attached to the value your clerk checks.',
   },
   {
     tag: 'MV-5 · THE HANDOVER',
-    title: 'The pack is ready for your system.',
-    copy: 'The finished pack seats into Sequoia, Descartes e-Customs or your requested CSV format.',
+    title: 'The draft reaches broker review.',
+    copy: 'The broker checks the source-linked draft before using its own customs system to file.',
   },
 ]
 
 export const questions = [
   {
     q: 'Who carries the liability?',
-    a: 'You do — exactly as today. Declarix prepares; your clerk approves; your firm submits through its own badge. Nothing reaches HMRC from us, ever. The pack exists to make your check faster, not to skip it.',
+    a: 'You do — exactly as today. Declarix prepares; your clerk approves; your firm submits through its own badge. Nothing reaches HMRC from us. The draft keeps sources visible during the check; it does not skip it.',
   },
   {
     q: 'We already run Sequoia / Descartes.',
-    a: "Keep them. That's the point. Declarix outputs a pack your system ingests; we sit in front of your software, not instead of it. Schema and regulation changes — CDS versions, new reporting regimes — are our job to track, not yours.",
+    a: "Keep the customs system and the broker's filing controls. Declarix is designed to prepare in front of existing Customs Management Systems. Any named-system handoff is described as tested only when its vendor, fixture, error-mapping, and pilot evidence exists.",
   },
   {
     q: "We're comparing capture platforms.",
-    a: "Compare away — some are good. The differences to test: packs in your own system this week, not an integration project; nothing stored, ever; evidence pinned to every field for the clerk who signs; priced per entry against your £7.95; and a pilot that costs nothing if it fails. Bring the other quotes to the call.",
+    a: 'Compare the same representative source pack. Record preparation, customer chase, broker review, exceptions, rework, and handoff. Ask every supplier to evidence its supported scope, data schedule, system-specific claims, and measured outcomes.',
   },
   {
     q: "We're a forwarder, not a broker.",
@@ -201,27 +201,27 @@ export const questions = [
   },
   {
     q: 'Our jobs are messy.',
-    a: "Good — messy is the product's home ground: amalgamated invoices, part shipments, scans, spreadsheets that fight back. The pilot is one anonymised ugly pack processed side-by-side. If Declarix can't structure it, you've lost nothing and we've learned something.",
+    a: "Good — test the real document shape: amalgamated invoices, part shipments, scans, and spreadsheets that fight back. Use a synthetic or properly anonymised pack, agree the transfer channel first, and keep every unsupported case in the result.",
   },
   {
     q: 'Where does client data go?',
-    a: 'In, through, out. Documents are deleted once the pack is returned — retention zero days, no training on your data, subprocessors listed on request. The pack and its evidence file are returned to you in full, yours to archive against HMRC record-keeping years.',
+    a: 'The answer is deployment-specific. Before a pilot, Declarix records the approved channel, purpose, access, subprocessors, processing locations, retention classes, deletion behavior, legal-hold treatment, and incident contacts in writing.',
   },
   {
     q: "What's the turnaround at 9am, not in a demo?",
-    a: 'The pilot promise is within one working day for ugly jobs. For live desks, we set the production pack-back SLA on the call against your volume and surge pattern; if it does not hold at 9am, it is not a pilot worth scaling.',
+    a: 'Set the service window against your real volume, peak pattern, pack mix, and exception load in the written pilot proposal. Measure it on representative jobs; the website does not promise a universal turnaround.',
   },
   {
     q: 'What does it cost?',
-    a: "Per entry, not per seat. The pilot is free if it fails and capped at £500 if it works. Exact per-entry rate depends on your mix — that's the 20-minute call.",
+    a: 'The written proposal defines the value metric, scope, inclusions, exclusions, minimums, tax, corrections, retries, support, and exit terms. Numerical pricing is not published until those commercial terms are approved.',
   },
   {
     q: 'Will my clerks need training?',
-    a: 'No. The pack arrives; they check it in the system they already know, with their own name still on the entry. When a pack needs correcting, the correction path is agreed in the pilot before live volume; zero-retention means we do not quietly learn from a stored copy.',
+    a: 'The pilot records the real review and training needed for the agreed handoff. Your clerk retains approval and your firm files in its existing system; correction and support paths are agreed before live volume.',
   },
   {
     q: 'We outsource customs today.',
-    a: 'Declarix changes the maths of bringing it in-house: one experienced clerk plus packs can carry a desk that used to need several. If insourcing is on your roadmap, bring it to the call.',
+    a: 'If insourcing is on your roadmap, use the workflow call to map the roles, authorisations, customs system, review capacity, and evidence you would still need. Declarix does not replace that operating model with a traffic claim.',
   },
 ]
 

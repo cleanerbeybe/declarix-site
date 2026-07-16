@@ -16,26 +16,26 @@ const scenes = [
   {
     id: 2,
     tag: 'S2 · THE SCAN',
-    headline: 'DECLARIX READS ALL OF IT.',
-    body: 'Every format, every page, every line. Nothing keyed by hand.',
+    headline: 'DECLARIX STRUCTURES THE EVIDENCE.',
+    body: 'Proposed values keep their source references; gaps and conflicts stay visible.',
   },
   {
     id: 3,
     tag: 'S3 · THE PORT',
     headline: 'WHILE YOUR GOODS CROSS THE WORLD…',
-    body: '…the entry is already being built, evidence pinned to every field.',
+    body: '…a source-linked draft is assembled for broker review.',
   },
   {
     id: 4,
     tag: 'S4 · THE ROAD',
-    headline: '…THE PACK IS ALREADY HOME.',
-    body: 'Entry-ready for Sequoia or Descartes before the ship clears the strait.',
+    headline: '…THE DRAFT KEEPS ITS SOURCES.',
+    body: 'The synthetic example follows paperwork into a broker-review handoff.',
   },
   {
     id: 5,
     tag: 'S5 · THE STAMP',
     headline: 'YOUR CLERK CHECKS. YOUR NAME SIGNS.',
-    body: 'PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS',
+    body: 'BROKER REVIEW · EXISTING SYSTEM FILES · CLAIMS MANIFEST 1.0.0',
   },
 ]
 
