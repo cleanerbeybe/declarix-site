@@ -25,12 +25,21 @@ The anonymous identifier is session-scoped.
 | `copy_pack_email` | Do visitors prefer copying the inbox? | source, page_path | Visitor copies the address |
 | `volume_model_change` | Is the measurement model used? | entries, annual_entries, preset, source | Visitor changes the workload input |
 | `scene_complete` | Does the long-form product explanation retain attention? | source, page_path | Desktop evidence scene completes |
+| `tool_started` | Do visitors engage with the pack workpaper? | tool_id, source, page_path | First checklist interaction |
+| `tool_completed` | How far do visitors map the handoff? | tool_id, present_count, total_count, attention_groups, source | Visitor reviews the workpaper |
+| `tool_result_copied` | Is the open-prompt output useful? | tool_id, unmapped_count, source | Visitor copies unmapped prompts |
+| `tool_result_printed` | Is the workpaper used off-site? | tool_id, mapped_count, source | Visitor prints or saves the workpaper |
+| `tool_booking_clicked` | Does the tool assist a workflow call? | tool_id, mapped_count, source | Visitor selects the tool booking CTA |
 
 ## Attribution
 
 Supported query parameters are `src`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, and
 `utm_term`. First-touch values persist for the browser session. Static-route booking links return to
-the homepage with a route-specific `src` value before the third-party diary is loaded.
+the homepage with a route-specific `src` value before the third-party diary is loaded. A later
+internal `src` or UTM value never overwrites an attribution value already stored in that session.
+
+The customs document pack workpaper records aggregate counts only. It does not transmit individual
+checkbox selections, prompt text, document data, names, EORIs, values, or any free-text response.
 
 ## Deployment closure
 

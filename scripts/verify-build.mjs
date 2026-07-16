@@ -1,7 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { Script } from 'node:vm'
 import { routes, site } from './routes.mjs'
+import { tools } from './tools.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v1.0.0.json'), 'utf8'))
@@ -20,6 +22,7 @@ const publicSources = [
   'src/world.tsx',
   'public/og.html',
   'scripts/routes.mjs',
+  'scripts/tools.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -38,7 +41,7 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-const expected = [{ path: '/', title: 'Customs document preparation for brokers | Declarix' }, ...routes]
+const expected = [{ path: '/', title: 'Customs document preparation for brokers | Declarix' }, ...routes, ...tools]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const titles = new Set()
 const canonicals = new Set()
@@ -75,6 +78,21 @@ for (const route of expected) {
   }
   if (route.schemaType === 'Article' && !html.includes('"@type":"Article"')) {
     throw new Error(`${route.path} is missing Article structured data`)
+  }
+  if (tools.includes(route)) {
+    const checkboxCount = (html.match(/type="checkbox"/g) || []).length
+    if (checkboxCount < 18) throw new Error(`${route.path} has only ${checkboxCount} checklist prompts`)
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must not collect document data, identifiers, or free text`)
+    }
+    for (const phrase of ['not a legal completeness check', 'not a readiness verdict', 'tool_started', 'tool_completed', 'tool_booking_clicked']) {
+      if (!html.toLowerCase().includes(phrase.toLowerCase())) throw new Error(`${route.path} is missing tool contract: ${phrase}`)
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {

@@ -58,15 +58,15 @@ export function getAttribution(): Attribution {
   }
 
   for (const key of attributionKeys) {
-    if (incoming[key]) safeSessionSet(`dclrx-${key}`, incoming[key])
+    if (incoming[key] && !safeSessionGet(`dclrx-${key}`)) safeSessionSet(`dclrx-${key}`, incoming[key])
   }
 
   return {
-    source: incoming.source || safeSessionGet('dclrx-source') || 'direct',
-    medium: incoming.medium || safeSessionGet('dclrx-medium') || 'none',
-    campaign: incoming.campaign || safeSessionGet('dclrx-campaign') || 'none',
-    content: incoming.content || safeSessionGet('dclrx-content') || 'none',
-    term: incoming.term || safeSessionGet('dclrx-term') || 'none',
+    source: safeSessionGet('dclrx-source') || incoming.source || 'direct',
+    medium: safeSessionGet('dclrx-medium') || incoming.medium || 'none',
+    campaign: safeSessionGet('dclrx-campaign') || incoming.campaign || 'none',
+    content: safeSessionGet('dclrx-content') || incoming.content || 'none',
+    term: safeSessionGet('dclrx-term') || incoming.term || 'none',
   }
 }
 
