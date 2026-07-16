@@ -11,7 +11,6 @@ export const CONFIG = {
   linkedin: '',
   posthogKey: '',
   posthogHost: 'https://eu.i.posthog.com',
-  pilotSlotsOpen: 3,
   multimodalBarUntil: '2026-07-31',
   founderLine:
     'Ihusan Adam, a PhD engineer who builds document-reading systems for regulated industries',
@@ -27,9 +26,6 @@ export const CONFIG = {
   // owner-confirmed 2026-07-07: Seamless Trade Across Borders Challenge with
   // the ICC (Digital Catapult delivery), cohort selected Oct 2025
   iccFinalistYear: '2025',
-  // v2.5 B1.8 — /security page truths still owed by the desk
-  securitySubprocessors: '{{SUBPROCESSOR LIST}}',
-  securityProcessingLocation: '{{UK / EU}}',
   // v2.5 B1.3 — testimonial sockets ship dark until the first pilot quote lands
   testimonials: [] as Array<{ quote: string; name: string; title: string; firm: string }>,
 }

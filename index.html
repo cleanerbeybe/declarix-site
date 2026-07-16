@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Declarix turns customer paperwork into an entry-ready pack for Sequoia or Descartes. Up to 3× the entries per clerk, cost per declaration down from £7.95 to £2.45 labour, nothing stored."
+      content="Declarix prepares source-linked customs declaration drafts for broker review in front of the broker's existing customs system. The broker reviews and files."
     />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#16313D" />
     <link rel="canonical" href="https://getdeclarix.com/" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
@@ -49,20 +49,47 @@
       fetchpriority="high"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Declarix — up to 3× the entries per clerk, no new headcount" />
+    <meta property="og:site_name" content="Declarix" />
+    <meta property="og:title" content="Customs document preparation for brokers | Declarix" />
     <meta
       property="og:description"
-      content="Entry-ready packs for Sequoia or Descartes, with evidence pinned to every field and cost per declaration down from £7.95 to £2.45 labour."
+      content="Customer paperwork becomes a source-linked draft pack for broker review before the broker files in its existing customs system."
     />
+    <meta property="og:url" content="https://getdeclarix.com/" />
     <meta property="og:image" content="https://getdeclarix.com/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Declarix — up to 3× the entries per clerk, no new headcount" />
+    <meta name="twitter:title" content="Customs document preparation for brokers | Declarix" />
     <meta
       name="twitter:description"
-      content="No new headcount. More margin on every declaration. Send one anonymised ugly pack and see the entry-ready pack come back."
+      content="Source-linked customs declaration drafts for broker review, with the broker's existing system remaining the filing layer."
     />
     <meta name="twitter:image" content="https://getdeclarix.com/og.jpg" />
-    <title>Declarix — up to 3× the entries per clerk, no new headcount</title>
+    <title>Customs document preparation for brokers | Declarix</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://getdeclarix.com/#organization",
+            "name": "Declarix Limited",
+            "legalName": "Declarix Limited",
+            "identifier": "17288258",
+            "url": "https://getdeclarix.com/",
+            "email": "pack@getdeclarix.com"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://getdeclarix.com/#website",
+            "name": "Declarix",
+            "url": "https://getdeclarix.com/",
+            "publisher": { "@id": "https://getdeclarix.com/#organization" }
+          }
+        ]
+      }
+    </script>
     <style>
       :root {
         --ink: #16313d;
@@ -189,6 +216,22 @@
         background: var(--cleared);
       }
 
+      .pre-render-links {
+        display: flex;
+        flex-wrap: wrap;
+        border-top: 1.5px solid var(--ink);
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--field);
+      }
+
+      .pre-render-links a {
+        padding: 13px 18px;
+        border-right: 1px solid rgb(22 49 61 / 0.35);
+        color: var(--ink);
+        font: 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        text-decoration: none;
+      }
+
       @media (max-width: 620px) {
         .pre-render-frame {
           min-height: calc(100svh - 16px);
@@ -218,35 +261,46 @@
           <div class="pre-render-wordmark">DECLARIX</div>
           <a class="pre-render-book" href="#book">BOOK THE CALL</a>
         </header>
-        <div class="pre-render-issue">FORM DCLRX-H1 · ISSUE 4.0</div>
+        <div class="pre-render-issue">FORM DCLRX-H1 · ISSUE 4.1</div>
         <div class="pre-render-bar">
           MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll pick up where the conversation left off. →
         </div>
         <main class="pre-render-hero">
           <div>
             <div class="pre-render-kicker">FOR CUSTOMS BROKERS &amp; FREIGHT FORWARDERS WHO CLEAR THEIR OWN ENTRIES</div>
-            <h1>Up to <span style="white-space: nowrap">3× the entries</span> <span style="white-space: nowrap">per clerk.</span></h1>
-            <p><strong>No new headcount. More margin on every declaration.</strong></p>
+            <h1>Customer paperwork in. A source-linked draft pack out.</h1>
+            <p><strong>The preparation layer before your existing customs system.</strong></p>
             <p>
-              Declarix reads the whole job — any file, straight off a forwarded email — and returns an
-              entry-ready pack for Sequoia or Descartes. Your clerk checks it in minutes instead of
-              keying it for the best part of an hour.
+              Declarix prepares source-linked draft data and unresolved questions for broker review.
+              It does not submit to HMRC; your firm reviews and files.
             </p>
-            <div class="pre-render-price">PRICED PER ENTRY, NOT PER SEAT · PILOT: FREE IF IT FAILS</div>
+            <div class="pre-render-price">CURRENT H1 PROFILE: REVIEW-ONLY · CLAIMS MANIFEST 1.0.0</div>
             <div class="pre-render-ctas">
-              <a href="mailto:pack@getdeclarix.com">SEND ONE UGLY PACK</a>
-              <a href="#book">BOOK THE 20-MINUTE NUMBERS CALL</a>
+              <a href="mailto:pack@getdeclarix.com">ASK FOR A SECURE PACK REVIEW</a>
+              <a href="#book">BOOK THE 20-MINUTE WORKFLOW CALL</a>
             </div>
           </div>
         </main>
+        <nav class="pre-render-links" aria-label="Explore Declarix">
+          <a href="/how-it-works/">HOW IT WORKS</a>
+          <a href="/supported-scope/">SUPPORTED SCOPE</a>
+          <a href="/customs-declaration-software/">CUSTOMS SOFTWARE GUIDE</a>
+          <a href="/pricing/">PRICING</a>
+          <a href="/pilot/">PILOT</a>
+          <a href="/security/">SECURITY</a>
+          <a href="/privacy/">PRIVACY</a>
+          <a href="/about/">ABOUT</a>
+          <a href="/terms/">TERMS</a>
+          <a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a>
+        </nav>
       </div>
     </div>
     <noscript>
       <div class="pre-render-frame">
         <main class="pre-render-hero">
           <div>
-            <h1>Up to 3× the entries per clerk.</h1>
-            <p>JavaScript is required for the interactive demo. Email pack@getdeclarix.com to start.</p>
+            <p><strong>Customer paperwork in. A source-linked draft pack out.</strong></p>
+            <p>Declarix prepares for broker review; it does not submit to HMRC. Email pack@getdeclarix.com to start.</p>
           </div>
         </main>
       </div>
