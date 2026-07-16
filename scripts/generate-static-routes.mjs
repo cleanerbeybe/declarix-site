@@ -36,6 +36,8 @@ function routeLinks() {
     ['SCOPE', '/supported-scope/'],
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
+    ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
+    ['REGISTRATION 2026', '/customs-intermediary-registration-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
@@ -64,6 +66,26 @@ function renderSection(section, index) {
   </section>`
 }
 
+function renderSources(route) {
+  if (!route.sources?.length) return ''
+  const sourceId = `sources-${route.path.split('/').filter(Boolean).join('-')}`
+  return `<section class="source-register" aria-labelledby="${sourceId}">
+    <header>
+      <span class="section-label">PRIMARY SOURCE REGISTER</span>
+      <h2 id="${sourceId}">Check the record behind this page.</h2>
+      <p>Publisher facts and Declarix interpretation are kept separate. Links below are the source register checked for this edition.</p>
+    </header>
+    <ol>${route.sources
+      .map(
+        (source) => `<li>
+          <a href="${escapeHtml(source.url)}">${escapeHtml(source.title)}</a>
+          <span>${escapeHtml(source.publisher)} · CHECKED ${escapeHtml(source.checked)}</span>
+        </li>`,
+      )
+      .join('')}</ol>
+  </section>`
+}
+
 function jsonLd(route) {
   return JSON.stringify({
     '@context': 'https://schema.org',
@@ -78,14 +100,20 @@ function jsonLd(route) {
         identifier: site.companyNumber,
       },
       {
-        '@type': 'WebPage',
+        '@type': route.schemaType || 'WebPage',
         '@id': `${site.origin}${route.path}#webpage`,
         url: `${site.origin}${route.path}`,
         name: route.title,
+        headline: route.h1,
         description: route.description,
+        datePublished: route.publishedOn,
         dateModified: site.reviewedOn,
         isPartOf: { '@id': `${site.origin}/#website` },
         about: { '@id': `${site.origin}/#organization` },
+        author: { '@id': `${site.origin}/#organization` },
+        publisher: { '@id': `${site.origin}/#organization` },
+        image: `${site.origin}/og.jpg`,
+        citation: route.sources?.map((source) => source.url),
       },
       {
         '@type': 'WebSite',
@@ -158,6 +186,7 @@ function renderRoute(route) {
         </header>
         <p class="limitations">LIMITATION · ${escapeHtml(route.limitations)}</p>
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
+        ${renderSources(route)}
         <div class="source-stamp">SOURCE AND CORRECTIONS · PUBLIC CLAIMS MANIFEST ${site.claimsVersion} · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
           <div><h2>Put one workflow on the table.</h2><p>Bring a representative week’s volume and a synthetic or properly anonymised pack shape. Do not send live documents until the transfer channel is agreed.</p></div>
@@ -285,6 +314,11 @@ for (const route of routes) {
   if (titles.has(route.title)) throw new Error(`Duplicate title: ${route.title}`)
   if (headings.has(route.h1)) throw new Error(`Duplicate H1: ${route.h1}`)
   if (route.sections.length < 4) throw new Error(`Thin route: ${route.path}`)
+  if (route.sources && route.sources.length < 2) throw new Error(`Authority route needs at least two sources: ${route.path}`)
+  if (route.schemaType === 'Article' && !route.publishedOn) throw new Error(`Article is missing publication date: ${route.path}`)
+  if (route.expiresOn && Date.now() > Date.parse(`${route.expiresOn}T23:59:59Z`)) {
+    throw new Error(`Time-sensitive route requires review: ${route.path} expired ${route.expiresOn}`)
+  }
   paths.add(route.path)
   titles.add(route.title)
   headings.add(route.h1)

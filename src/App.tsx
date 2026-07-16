@@ -1174,6 +1174,8 @@ function Footer() {
         <a href={appPath('/pricing-policy/')}>PRICING POLICY</a>
         <a href={appPath('/how-it-works/')}>HOW IT WORKS</a>
         <a href={appPath('/customs-declaration-software/')}>CUSTOMS SOFTWARE</a>
+        <a href={appPath('/customs-clearance-software/')}>CLEARANCE SOFTWARE</a>
+        <a href={appPath('/customs-intermediary-registration-2026/')}>REGISTRATION 2026</a>
         <a href={appPath('/pilot/')}>PILOT</a>
         <a href={appPath('/about/')}>ABOUT</a>
         <a href={appPath('/terms/')}>TERMS</a>
