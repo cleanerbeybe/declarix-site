@@ -580,9 +580,9 @@ function AssemblyScene({ mailto, source }: { mailto: string; source: string }) {
             <div className="evidence-copy" id="evidence">
               <h3>Each proposed value in this worked example shows its working.</h3>
               <p>
-                Tap any value in the pack and its source lights up — document, page, line. Checking
-                an entry becomes the fast part, not the job. We don't ask you to trust it. We make it
-                quick to check.
+                In this worked example, tap a proposed value and its source lights up — document,
+                page, line. The broker can inspect the evidence rather than relying on an unsupported
+                confidence claim.
               </p>
             </div>
             <div className="handover-card">
@@ -652,7 +652,7 @@ function AnyFile({ mailto, source }: { mailto: string; source: string }) {
             forwarded email chains, the 300-line packing list. A pilot records what can be structured,
             what needs review, and what remains unsupported.
           </p>
-          <h3>Send us your worst.</h3>
+          <h3>Bring the real edge cases.</h3>
           <a className="text-link" href={mailto} onClick={() => track('cta_pack_mailto', { source })}>
             scope a secure pack review →
           </a>
@@ -662,7 +662,7 @@ function AnyFile({ mailto, source }: { mailto: string; source: string }) {
             {[...specimens, ...specimens].map((item, index) => (
               <article className={`specimen ${item.includes('D6 · FROM THE JOB ABOVE') ? 'specimen-from-job' : ''}`} key={`${item}-${index}`}>
                 <span>{item}</span>
-                <p>DECLARIX INTAKE · ANY FILE</p>
+                <p>DECLARIX INTAKE · DOCUMENT MIX</p>
               </article>
             ))}
           </div>

@@ -197,7 +197,7 @@ export const questions = [
   },
   {
     q: "We're a forwarder, not a broker.",
-    a: "Same desk, same keying. If entries clear through your own badge — or you want them to — Declarix feeds whatever you file through. The pack doesn't care whose letterhead the invoice arrived on.",
+    a: "A pilot can assess the document-preparation workflow for a forwarder that files under its own permissions or hands work to a broker. Review, legal judgment, and submission remain with the appropriately authorised firm.",
   },
   {
     q: 'Our jobs are messy.',
