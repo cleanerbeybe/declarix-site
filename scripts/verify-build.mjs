@@ -148,7 +148,20 @@ if (
 }
 
 const robots = await readFile(join(root, 'dist/robots.txt'), 'utf8')
-for (const crawler of ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot']) {
+for (const crawler of [
+  'GPTBot',
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'ClaudeBot',
+  'PerplexityBot',
+  'Applebot-Extended',
+  'Google-Extended',
+  'CCBot',
+  'anthropic-ai',
+  'Bytespider',
+  'Amazonbot',
+  'FacebookBot',
+]) {
   if (!robots.includes(`User-agent: ${crawler}`)) throw new Error(`robots.txt does not explicitly manage ${crawler}`)
 }
 if (!robots.includes(`Sitemap: ${site.origin}/sitemap.xml`)) throw new Error('robots.txt does not advertise the sitemap')
