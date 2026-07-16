@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { routes, site } from './routes.mjs'
+import { renderTool, tools } from './tools.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const dist = join(root, 'dist')
@@ -36,6 +37,7 @@ function routeLinks() {
     ['SCOPE', '/supported-scope/'],
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
+    ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION 2026', '/customs-intermediary-registration-2026/'],
     ['SECURITY', '/security/'],
@@ -328,15 +330,43 @@ for (const route of routes) {
   await writeFile(target, renderRoute(route))
 }
 
+for (const tool of tools) {
+  if (!tool.path.startsWith('/') || !tool.path.endsWith('/')) throw new Error(`Tool must use a trailing slash: ${tool.path}`)
+  if (paths.has(tool.path)) throw new Error(`Duplicate route: ${tool.path}`)
+  if (titles.has(tool.title)) throw new Error(`Duplicate title: ${tool.title}`)
+  if (headings.has(tool.h1)) throw new Error(`Duplicate H1: ${tool.h1}`)
+  if (tool.groups.length < 4 || tool.groups.some((group) => group.prompts.length < 3)) {
+    throw new Error(`Tool has an incomplete prompt model: ${tool.path}`)
+  }
+  if (tool.sources.length < 2) throw new Error(`Tool needs at least two primary sources: ${tool.path}`)
+  paths.add(tool.path)
+  titles.add(tool.title)
+  headings.add(tool.h1)
+
+  const target = join(dist, tool.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderTool(tool, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+}
+
+const indexableRoutes = [...routes, ...tools]
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${site.origin}/</loc><lastmod>${site.reviewedOn}</lastmod></url>
-${routes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${site.reviewedOn}</lastmod></url>`).join('\n')}
+${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${site.reviewedOn}</lastmod></url>`).join('\n')}
 </urlset>
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)
 
-const llmsRoutes = routes
+const llmsRoutes = indexableRoutes
   .map((route) => `- [${route.title}](${site.origin}${route.path}): ${route.description}`)
   .join('\n')
 const llms = `# Declarix
