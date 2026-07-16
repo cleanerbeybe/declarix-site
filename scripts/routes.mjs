@@ -553,6 +553,187 @@ export const routes = [
     ],
   },
   {
+    path: '/customs-clearance-software/',
+    ref: 'BUYER FILE 12 · CLEARANCE SOFTWARE',
+    title: 'Customs clearance software for broker workflows | Declarix',
+    description:
+      'How customs brokers can compare filing software and document-preparation software while keeping review, evidence, exceptions, and HMRC submission boundaries clear.',
+    eyebrow: 'CUSTOMS CLEARANCE SOFTWARE · BUY THE RIGHT LAYER',
+    h1: 'Customs clearance software starts before the filing screen.',
+    standfirst:
+      'A customs broker may need a filing system, a preparation layer, or both. Declarix prepares source-linked draft data and unresolved questions for review; it does not submit declarations to HMRC.',
+    stamp: 'PREPARE\nTHEN REVIEW',
+    limitations:
+      'Declarix is not represented on this page as an HMRC submission system. Current H1 scope is review-only, legal coverage is incomplete, and every named-system handoff requires its own evidence.',
+    sections: [
+      {
+        label: '01 · DIRECT ANSWER',
+        title: 'What does customs clearance software need to cover?',
+        paragraphs: [
+          'Customs clearance software is an umbrella term. One product may transmit declarations to the Customs Declaration Service, manage authorisations, receive responses, and retain the filing record. Another may organise the work before submission: reading customer documents, structuring proposed values, exposing gaps, and preparing evidence for a broker to review. A buyer should identify which layer is creating the operational bottleneck before comparing vendors.',
+          'Declarix addresses the preparation layer. It keeps the broker’s existing customs system and filing permissions in place. The current product boundary is a source-linked draft pack and unresolved questions for broker review. It does not turn incomplete legal coverage into a ready outcome, and it does not submit to HMRC.',
+        ],
+      },
+      {
+        label: '02 · THE TWO LAYERS',
+        title: 'Filing and preparation are different jobs.',
+        facts: [
+          ['Filing layer', 'Creates, submits, amends, or cancels declarations through supported CDS services'],
+          ['Preparation layer', 'Structures source evidence and questions before a broker filing decision'],
+          ['Broker responsibility', 'Review, legal judgment, approval, and filing remain with the authorised firm'],
+          ['Declarix boundary', 'Review-only draft preparation; no HMRC submission'],
+        ],
+        paragraphs: [
+          'HMRC publishes a list of software developers supplying declaration software, while its developer guidance describes APIs and assurance for software that communicates with CDS. That is a distinct technical and regulatory role from preparing source material in front of the filing system.',
+        ],
+      },
+      {
+        label: '03 · EVIDENCE',
+        title: 'A draft should show its working.',
+        list: [
+          'Keep the source document, page, line, or evidence reference beside each proposed value.',
+          'Present missing, conflicting, stale, unsupported, or unevaluated facts as review work—not completed data.',
+          'Separate document preparation, customer chase, broker review, correction, and filing time.',
+          'Retain the broker’s change and approval path for the agreed workflow.',
+          'Describe output and handoff formats only to the level actually tested.',
+        ],
+      },
+      {
+        label: '04 · COMPATIBILITY',
+        title: 'Ask what “integrates” means.',
+        paragraphs: [
+          'A named customs-system claim should identify the vendor and version, the fixture used, the output or transport, field mapping, error behaviour, supported declaration profile, and observed result. A logo strip or generic export claim is not evidence that a production handoff works for your procedure, authorisations, and exception pattern.',
+          'For a Declarix pilot, the target-system handoff is scoped and observed alongside the source pack. Until that evidence exists, the website describes the intended boundary without presenting the system as tested.',
+        ],
+      },
+      {
+        label: '05 · BUYING FILE',
+        title: 'Compare the same ugly pack.',
+        list: [
+          'Use a synthetic or properly anonymised representative pack with scans, spreadsheets, long line tables, and real conflicts.',
+          'Record the current manual baseline with agreed start and stop points.',
+          'Count unsupported cases, questions, retries, and corrections—not only successful rows.',
+          'Review security, data location, access, retention, deletion, and support for the proposed deployment.',
+          'Keep commercial units, minimums, corrections, service expectations, and exit terms in the written quote.',
+        ],
+      },
+      {
+        label: '06 · DECLARIX FIT',
+        title: 'Use the call to locate the bottleneck.',
+        paragraphs: [
+          'Bring one week’s approximate volume, the current customs system, representative document mix, and the exceptions that create work. The workflow call maps where preparation ends, where broker judgment begins, what a pilot could measure, and which facts are still needed for a written proposal. Do not send live customer documents through the public website.',
+        ],
+      },
+    ],
+    sources: [
+      {
+        title: 'Software developers providing customs declaration software',
+        publisher: 'HM Revenue & Customs',
+        url: 'https://www.gov.uk/guidance/list-of-software-developers-providing-customs-declaration-support',
+        checked: '2026-07-16',
+      },
+      {
+        title: 'Customs Declarations end-to-end service guide',
+        publisher: 'HMRC Developer Hub',
+        url: 'https://developer.service.hmrc.gov.uk/guides/customs-declarations-end-to-end-service-guide/',
+        checked: '2026-07-16',
+      },
+      {
+        title: 'Declarix supported scope and current limitations',
+        publisher: 'Declarix Limited',
+        url: 'https://getdeclarix.com/supported-scope/',
+        checked: '2026-07-16',
+      },
+    ],
+  },
+  {
+    path: '/customs-intermediary-registration-2026/',
+    ref: 'POLICY FILE 13 · OPEN CONSULTATION',
+    title: 'Customs intermediary registration 2026: HMRC consultation',
+    description:
+      'A dated workpaper for the 2026 HMRC consultation on proposed mandatory customs-intermediary registration, including scope, evidence questions, and the response deadline.',
+    eyebrow: 'CUSTOMS INTERMEDIARY REGISTRATION 2026 · PROPOSAL TRACKER',
+    h1: 'Registration is proposed. Prepare the operating evidence now.',
+    standfirst:
+      'HMRC is consulting on mandatory registration for customs intermediaries. The consultation closes on 21 September 2026. These are proposals, not a statement that a new registration duty is already in force.',
+    stamp: 'PROPOSAL\nOPEN',
+    limitations:
+      'This page summarises an open consultation and provides an operational response workpaper. It is not legal advice, not HMRC guidance, and not proof that any proposal will become law in its current form.',
+    schemaType: 'Article',
+    publishedOn: '2026-07-16',
+    expiresOn: '2026-09-21',
+    sections: [
+      {
+        label: '01 · DIRECT ANSWER',
+        title: 'What is HMRC proposing?',
+        paragraphs: [
+          'HMRC opened a 13-week consultation on proposed mandatory registration for customs intermediaries that interact with HMRC on behalf of traders. It was published on 23 June 2026 and closes on 21 September 2026. The consultation asks about scope, exclusions, minimum requirements, checks, enforcement, and proportionate implementation. HMRC says respondents may answer only the questions relevant to them.',
+          'The proposal is not the same as a live registration scheme. HMRC says it will consider responses, refine the policy where appropriate, and confirm next steps on legislation and implementation. Customs brokers, agents, freight forwarders, express operators, traders, professional bodies, and software providers therefore have a current opportunity to document how the proposed design would work on real operating models.',
+        ],
+      },
+      {
+        label: '02 · PROPOSED SCOPE',
+        title: 'Which operating models are in the consultation?',
+        facts: [
+          ['Consultation status', 'Open proposal; not a current registration duty'],
+          ['Published', '23 June 2026'],
+          ['Response deadline', 'Monday 21 September 2026'],
+          ['Proposed coverage', 'UK-wide; imports and exports; customs activity across declaration types'],
+          ['Proposed focus', 'Intermediaries interacting with HMRC for traders'],
+          ['Proposed exclusions', 'Advice-only work, specified carrier activity, and trader self-representation'],
+        ],
+      },
+      {
+        label: '03 · EVIDENCE WORKPAPER',
+        title: 'Map the firm before drafting the response.',
+        list: [
+          'List every legal entity, brand, branch, and subcontracted operating model involved in intermediary work.',
+          'Separate declaration submission, amendment, advice-only, carrier, warehousing, and self-representation activities.',
+          'Record the HMRC services, EORIs, badges, authorisations, systems, and permissions used by each role.',
+          'Name who owns professional standards, staff competence, supervision, complaints, errors, and corrective action.',
+          'Estimate implementation work for evidence collection, registration, periodic checks, changes, and appeals.',
+          'Identify where a proportionate rule needs distinctions by size, service, risk, or operating model.',
+        ],
+      },
+      {
+        label: '04 · RESPONSE FILE',
+        title: 'Turn opinion into an auditable example.',
+        paragraphs: [
+          'For each consultation point, record the proposal, the affected workflow, a concrete example, the likely benefit or burden, supporting evidence, and a practical alternative. Separate facts about the current operation from forecasts about a future scheme. If a requirement would duplicate an existing control, name the control and explain how HMRC could rely on or align with it.',
+          'HMRC invites partial responses. A focused response on the parts your firm understands well can be more useful than an answer that guesses across every question. Responses and enquiries go to the address published in the consultation; check the official page before sending because the source controls the process.',
+        ],
+      },
+      {
+        label: '05 · STANDARD',
+        title: 'Registration and the industry Standard are related, not identical.',
+        paragraphs: [
+          'HMRC published the Standard for Customs Intermediaries in June 2026. It describes expectations for professional conduct, capability, and service delivery. The mandatory-registration consultation proposes a legal registration framework and minimum requirements. Firms should track both workstreams without presenting voluntary good-practice material as if it were already a statutory registration test.',
+        ],
+      },
+      {
+        label: '06 · EXPIRY RULE',
+        title: 'This page changes when the source changes.',
+        paragraphs: [
+          'Declarix will review this resource when HMRC updates the consultation, closes responses, publishes a response summary, or announces legislation and implementation. After 21 September 2026, the page must not continue to describe the consultation as open. It will be updated into an outcome tracker or redirected to a current resource after the official next step is known.',
+        ],
+      },
+    ],
+    sources: [
+      {
+        title: 'Introduction of Mandatory Registration for Customs Intermediaries',
+        publisher: 'HM Revenue & Customs',
+        url: 'https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration',
+        checked: '2026-07-16',
+      },
+      {
+        title: 'Standard for Customs Intermediaries',
+        publisher: 'HM Revenue & Customs',
+        url: 'https://www.gov.uk/government/publications/standard-for-customs-intermediaries',
+        checked: '2026-07-16',
+      },
+    ],
+  },
+  {
     path: '/editorial-policy/',
     ref: 'REGISTER 11 · SOURCES',
     title: 'Editorial, sources, and corrections policy | Declarix',

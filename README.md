@@ -20,7 +20,7 @@ npm run build
 npm run preview
 ```
 
-`npm run build` generates 11 static routes plus the homepage, a noindex booking receipt, sitemap,
+`npm run build` generates 13 static routes plus the homepage, a noindex booking receipt, sitemap,
 `llms.txt`, `llms-full.txt`, and a real noindex 404. It then checks unique titles, H1s,
 self-canonicals, descriptions, sitemap membership, explicit AI crawler policy, IndexNow ownership,
 and the pinned public claims contract in `contracts/public-claims.v1.0.0.json`.

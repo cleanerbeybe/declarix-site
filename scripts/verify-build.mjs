@@ -67,6 +67,15 @@ for (const route of expected) {
   const heading = h1s[0][1].replace(/<[^>]*>/g, '').trim()
   if (headings.has(heading)) throw new Error(`Duplicate H1: ${heading}`)
   if (route.path !== '/' && /<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} loads route JavaScript`)
+  if (route.sources) {
+    if (!html.includes('class="source-register"')) throw new Error(`${route.path} is missing its source register`)
+    for (const source of route.sources) {
+      if (!html.includes(source.url)) throw new Error(`${route.path} is missing source ${source.url}`)
+    }
+  }
+  if (route.schemaType === 'Article' && !html.includes('"@type":"Article"')) {
+    throw new Error(`${route.path} is missing Article structured data`)
+  }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
