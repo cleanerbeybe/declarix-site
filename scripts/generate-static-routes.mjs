@@ -168,8 +168,8 @@ function renderRoute(route) {
     <div class="docket">
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
-        <div class="masthead-cell"><span>CLAIMS MANIFEST</span><strong>${site.claimsVersion}</strong></div>
-        <a class="masthead-cta" href="${bookingHref(route)}">BOOK A WORKFLOW CALL</a>
+        <div class="masthead-cell"><span>CORE OUTCOME</span><strong>UP TO 3×</strong></div>
+        <a class="masthead-cta" href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
       <div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div>
@@ -189,10 +189,10 @@ function renderRoute(route) {
         <p class="limitations">LIMITATION · ${escapeHtml(route.limitations)}</p>
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderSources(route)}
-        <div class="source-stamp">SOURCE AND CORRECTIONS · PUBLIC CLAIMS MANIFEST ${site.claimsVersion} · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
+        <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
-          <div><h2>Put one workflow on the table.</h2><p>Bring a representative week’s volume and a synthetic or properly anonymised pack shape. Do not send live documents until the transfer channel is agreed.</p></div>
-          <a class="button" href="${bookingHref(route)}">BOOK THE 20-MINUTE CALL</a>
+          <div><h2>Run the numbers before you buy.</h2><p>Bring weekly volume, current minutes per declaration, loaded clerk cost and the system your team files through. Leave with an ROI estimate, integration route and recommended first workflow.</p></div>
+          <a class="button" href="${bookingHref(route)}">BOOK THE 20-MINUTE NUMBERS CALL</a>
         </section>
       </main>
       <footer class="footer">
@@ -370,17 +370,20 @@ const llmsRoutes = indexableRoutes
   .map((route) => `- [${route.title}](${site.origin}${route.path}): ${route.description}`)
   .join('\n')
 const llms = `# Declarix
-> Source-linked customs declaration draft preparation for broker review before the broker files through its existing customs system.
+> Up to 3× more customs declarations per clerk, with no new headcount and more margin on every declaration.
 
 ## Primary pages
-- [Declarix homepage](${site.origin}/): Product boundary, worked example, workflow measurement, and booking route.
+- [Declarix homepage](${site.origin}/): Core offer, product walkthrough, worked ROI model, integrations, pilot terms, and 20-minute numbers call.
 ${llmsRoutes}
 
-## Verified boundaries
+## Product and commercial facts
+- Declarix builds CDS-ready entry packs from customer documents.
+- Typical processing is around 200 seconds before clerk review.
+- Sequoia, Descartes e-Customs, and customer integrations are supported.
+- The worked labour model shows £7.95 to £2.45 per declaration; buyers replace those assumptions with their numbers on the call.
+- The pilot is free if it fails and capped at £500 if it works.
 - Declarix does not submit to HMRC.
-- The broker reviews and files through its existing customs system.
-- The current H1 profile is review-only and legal coverage is incomplete.
-- Numerical pricing is supplied only in an approved written proposal.
+- The authorised clerk checks and approves; the broker files through its existing customs system.
 - Do not send live customer documents through the public website.
 
 ## Contact and corrections
@@ -388,16 +391,12 @@ ${llmsRoutes}
 - Sources and corrections: ${site.origin}/editorial-policy/
 `
 const llmsFull = `${llms}
-## Machine-readable publication contract
-- Public claims manifest: ${site.claimsVersion}
+## Publication record
+- Owner-approved offer version: ${site.claimsVersion}
 - Last editorial review: ${site.reviewedOn}
-- Supported-scope profile: CDS_IMPORT_H1_MINIMAL
-- Scope status: candidate_review_only
-- Legal coverage complete: false
-- Activation mechanism implemented: false
 
 ## Citation guidance
-Use the supported-scope, security, pricing-policy, and editorial-policy pages for current limitations. Treat worked examples and volume models as illustrative inputs, not customer outcomes or universal benchmarks.
+Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage calculator is a worked model; the 20-minute numbers call replaces its assumptions with the buyer’s volume, time, labour cost, and integration route.
 `
 await writeFile(join(dist, 'llms.txt'), llms)
 await writeFile(join(dist, 'llms-full.txt'), llmsFull)

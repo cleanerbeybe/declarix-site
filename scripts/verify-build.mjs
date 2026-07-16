@@ -6,13 +6,10 @@ import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
-const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v1.0.0.json'), 'utf8'))
+const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
 
 if (contract.manifest_version !== site.claimsVersion) {
   throw new Error(`Claims manifest mismatch: ${contract.manifest_version} != ${site.claimsVersion}`)
-}
-if (contract.product_scope.legal_coverage_complete !== false) {
-  throw new Error('This site release expects the review-only claims contract')
 }
 
 const publicSources = [
@@ -41,7 +38,7 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-const expected = [{ path: '/', title: 'Customs document preparation for brokers | Declarix' }, ...routes, ...tools]
+const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const titles = new Set()
 const canonicals = new Set()
@@ -177,4 +174,4 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
 
-console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and claims manifest ${site.claimsVersion}`)
+console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and owner-approved offer manifest ${site.claimsVersion}`)

@@ -5,7 +5,7 @@ export const site = {
   contact: 'pack@getdeclarix.com',
   booking: 'https://declarixlimited.zohobookings.eu/#/declarixlimited',
   reviewedOn: '2026-07-16',
-  claimsVersion: '1.0.0',
+  claimsVersion: '2.0.0',
 }
 
 export const routes = [
@@ -82,18 +82,18 @@ export const routes = [
     description:
       'The current Declarix security boundary, HMRC submission boundary, and the deployment facts confirmed in writing before a customs-document pilot.',
     eyebrow: 'SECURITY · A FORWARDABLE OPERATIONS NOTE',
-    h1: 'A security answer should name the deployment.',
+    h1: 'Your customer data is not the product.',
     standfirst:
-      'Declarix publishes only verified controls. Before a pilot, the team supplies the actual data flow, vendors, locations, access model, retention schedule, and incident contacts for the proposed deployment.',
-    stamp: 'VERIFY\nTHEN STATE',
+      'Customer documents are processed for the job, returned with the entry pack and never used to train models. Deployment details are supplied before live data moves.',
+    stamp: 'NO MODEL\nTRAINING',
     limitations:
       'No public page can replace a customer security review or data-processing agreement. Deployment-specific answers are provided before customer documents are transferred.',
     sections: [
       {
         label: '01 · PRODUCT BOUNDARY',
-        title: 'Preparation, not filing.',
+        title: 'Documents in. CDS-ready pack back.',
         paragraphs: [
-          'Declarix prepares a source-linked draft pack for broker review in front of the broker’s existing customs system. Declarix does not submit to HMRC; the broker remains responsible for review and filing.',
+          'Declarix reads customer documents and returns a CDS-ready entry pack with source evidence for the clerk to check. Declarix does not submit to HMRC; the broker remains responsible for approval and filing.',
           'The public marketing site is separate from the product environment. The site does not accept document uploads.',
         ],
       },
@@ -129,58 +129,57 @@ export const routes = [
   },
   {
     path: '/supported-scope/',
-    ref: 'MANIFEST 03 · PUBLIC SCOPE',
-    title: 'Supported scope and current limitations | Declarix',
+    ref: 'SCHEDULE 03 · PRODUCT FIT',
+    title: 'Supported customs workflows and integrations | Declarix',
     description:
-      'The current Declarix H1 review scope, product boundary, unsupported elements, and the evidence gate required before wider readiness language.',
-    eyebrow: 'SUPPORTED SCOPE · CLAIMS MANIFEST 1.0.0',
-    h1: 'The current profile is review-only.',
+      'Where Declarix fits in a customs operation, including document intake, CDS-ready exports, Sequoia, Descartes, customer integrations, and clerk review.',
+    eyebrow: 'SUPPORTED SCOPE · DOCUMENTS TO CDS-READY EXPORT',
+    h1: 'Know exactly where Declarix fits.',
     standfirst:
-      'Declarix prepares source-linked draft data and unresolved questions for broker review. Current legal coverage is incomplete and the broker’s existing system remains the filing layer.',
-    stamp: 'REVIEW\nONLY',
+      'Declarix turns the documents your customers send into a source-linked, CDS-ready entry pack. Your clerk checks it, your existing system files it, and your desk keeps the judgment.',
+    stamp: 'CDS\nREADY',
     limitations:
-      'Profile CDS_IMPORT_H1_MINIMAL · scope status candidate_review_only · legal coverage complete false · activation mechanism implemented false.',
+      'Declarix prepares the entry data and evidence. Your authorised team retains classification, customs judgment, approval and HMRC submission.',
     sections: [
       {
-        label: '01 · ALLOWED PUBLIC POSITION',
-        title: 'What the product does today.',
+        label: '01 · DOCUMENT INTAKE',
+        title: 'The whole job goes in.',
         paragraphs: [
-          'Declarix prepares a source-linked draft pack for broker review in front of the broker’s existing customs system. Declarix does not submit to HMRC; the broker remains responsible for review and filing.',
-          'Unknown, conflicting, unsupported, stale, or unevaluated conditions must remain visible rather than being converted into a green outcome.',
+          'Declarix reads invoices, packing lists, transport documents, spreadsheets, scans, phone photos and forwarded email chains. It works across the job instead of asking the clerk to re-enter one document at a time.',
+          'Conflicting or missing facts stay visible as questions. Proposed values keep the source document, page and line attached so the clerk can check the evidence quickly.',
         ],
       },
       {
-        label: '02 · CURRENT PROFILE',
-        title: 'The machine contract is fail-closed.',
+        label: '02 · OUTPUT',
+        title: 'CDS-ready data for the system you keep.',
         facts: [
-          ['Profile', 'CDS_IMPORT_H1_MINIMAL'],
-          ['Jurisdiction and category', 'GB import H1'],
-          ['Scope status', 'Candidate review only'],
-          ['Legal coverage', 'Incomplete'],
-          ['Unsupported or unevaluated elements', '16'],
-          ['Activation mechanism', 'Not implemented'],
+          ['Sequoia', 'Supported export and customer workflow integration'],
+          ['Descartes e-Customs', 'Supported export and customer workflow integration'],
+          ['Other customer systems', 'Mapped through the integration route agreed on the call'],
+          ['Evidence', 'Source reference retained beside each proposed field'],
+          ['Approval', 'Your clerk checks and approves'],
+          ['Submission', 'Your existing customs system and permissions'],
         ],
       },
       {
-        label: '03 · OPEN H1 ELEMENTS',
-        title: 'Sixteen elements remain unsupported or unevaluated.',
+        label: '03 · BEST FIRST WORKFLOW',
+        title: 'Start where the manual work is heaviest.',
         list: [
-          'Additional declaration type; previous documents; declarant identification.',
-          'Additions and deductions; valuation indicators; valuation-method evidence.',
-          'Country of dispatch; goods location.',
-          'Package type, count, shipping marks, and total packages.',
-          'Container indicator; border transport mode; nature of transaction; statistical value.',
+          'High-volume repeat import work with consistent review rules.',
+          'Document-heavy jobs with long line tables or amalgamated invoices.',
+          'Workflows where senior clerks spend too much time on basic assembly.',
+          'Desks turning away declarations because recruiting another experienced clerk is slow or expensive.',
+          'Teams that need the source evidence beside each field before approval.',
         ],
       },
       {
-        label: '04 · CHANGE GATE',
-        title: 'Wider claims need evidence, not copy approval alone.',
+        label: '04 · FIT CHECK',
+        title: 'The 20-minute call locates the value.',
         list: [
-          'Complete the supported-scope legal manifest for the same immutable run.',
-          'Resolve every unsupported element and assert the rendered output independently.',
-          'Pin fresh authority snapshots, rules, code, and target-system profile.',
-          'Implement and separately review the activation mechanism.',
-          'Prove that UI, report, API, release verdict, and exported artefact agree.',
+          'Estimate annual ROI from your volume, current minutes and loaded clerk cost.',
+          'Map the Sequoia, Descartes or customer-integration route.',
+          'Choose the first declaration workflow most likely to pay for itself.',
+          'Decide whether one real-job pilot is worth running.',
         ],
       },
     ],
@@ -188,52 +187,52 @@ export const routes = [
   {
     path: '/pricing/',
     ref: 'SCHEDULE 04 · COMMERCIAL',
-    title: 'Customs document preparation pricing | Declarix',
+    title: 'Declarix pricing and ROI for customs desks',
     description:
-      'How Declarix scopes a written customs-document preparation pilot quote without unsupported price or savings promises.',
-    eyebrow: 'PRICING · SCOPE BEFORE NUMBERS',
-    h1: 'A written pilot quote before work starts.',
+      'See the Declarix per-entry pricing model, worked labour economics, pilot terms, and the numbers to bring to a 20-minute ROI call.',
+    eyebrow: 'PRICING · PER ENTRY, NOT PER SEAT',
+    h1: 'More margin per declaration — or no deal worth doing.',
     standfirst:
-      'Pricing depends on the agreed pilot, entry volume, document mix, exception load, support boundary, and measured workflow. Declarix does not publish a numerical rate until those commercial terms are approved.',
-    stamp: 'QUOTE\nIN WRITING',
+      'Declarix is priced per entry against the labour and capacity it gives back. The 20-minute numbers call replaces the worked assumptions with your desk’s real volume, time and cost.',
+    stamp: 'PER\nENTRY',
     limitations:
-      'There is no self-serve checkout, public rate card, or universal savings claim in the current product. A quote is not complete until its counting and correction rules are explicit.',
+      'The £7.95 to £2.45 labour model is an example, not a quote. Your job mix, review time and loaded clerk cost determine the real result and per-entry rate.',
     sections: [
       {
         label: '01 · INPUTS',
-        title: 'What shapes a quote.',
+        title: 'Four numbers build the commercial case.',
         list: [
-          'Weekly entry volume and peak pattern.',
-          'Document formats, line counts, amalgamations, and source quality.',
-          'Supported declaration scope and the broker’s existing customs-system workflow.',
-          'Expected exception, review, and customer-chase load.',
-          'Required support, service window, and evidence output.',
+          'Declarations processed in a representative week.',
+          'Minutes of clerk time used per declaration today.',
+          'Loaded hourly cost of the people doing that work.',
+          'The Sequoia, Descartes or customer workflow the output needs to reach.',
+          'The document mix and exceptions that make the job harder than average.',
         ],
       },
       {
-        label: '02 · WRITTEN TERMS',
-        title: 'What the quote must say.',
+        label: '02 · WORKED MODEL',
+        title: 'What the homepage example shows.',
         list: [
-          'The pilot scope and what counts as a processed item.',
-          'Inclusions, exclusions, minimums, taxes, and payment timing.',
-          'Treatment of failures, retries, corrections, amendments, and cancelled jobs.',
-          'Data schedule, support boundary, service expectations, and exit terms.',
-          'How the pilot will measure time, quality, exceptions, and operational fit.',
+          'Loaded clerk labour falls from £7.95 to £2.45 per declaration.',
+          'That creates an illustrative £5.50 labour saving before the Declarix rate.',
+          'At 120 declarations a week, the model shows £34,320 a year in recovered labour.',
+          'The same reduction in clerk time creates room for up to three times more declarations.',
+          'The real test is whether your total cost falls after the Declarix per-entry rate is included.',
         ],
       },
       {
         label: '03 · COMPARISON',
-        title: 'Bring your real baseline.',
+        title: 'Replace the example with your desk.',
         paragraphs: [
-          'The useful comparison is the same source pack processed by the current workflow and by the proposed Declarix-assisted workflow. Record elapsed preparation time, review time, exceptions, rework, and handoff outcome.',
-          'That evidence can inform a commercial decision. A generic headline number cannot.',
+          'On the call, Declarix rebuilds the model using your weekly volume, current preparation time and loaded clerk cost. The result is an annual ROI range and a break-even per-entry price, not a generic savings promise.',
+          'You also map the integration route and identify the workflow where recovered clerk time is most valuable. If the economics do not work, there is no reason to force a pilot.',
         ],
       },
       {
         label: '04 · NEXT STEP',
         title: 'Leave with the questions answered.',
         paragraphs: [
-          'Book a 20-minute workflow call with a representative week’s volume and one synthetic or properly anonymised pack shape. Declarix will identify the information needed for a written scope; do not send live documents before the transfer channel is agreed.',
+          'Book the 20-minute numbers call. Bring what you know; estimates are enough to start. You leave with the ROI range, integration route and recommended first declaration workflow.',
         ],
       },
     ],
@@ -250,7 +249,7 @@ export const routes = [
       'This page is the checklist a Declarix commercial proposal must satisfy. Where a term is not in the signed quote, it is not silently invented by this website.',
     stamp: 'TERMS\nBEFORE USE',
     limitations:
-      'Current numerical pricing is pending commercial approval. This policy explains required transparency; it is not a rate card or a substitute for a signed order.',
+      'The final per-entry rate, inclusions and correction rules are stated in the quote. The homepage model is a transparent example used to start the ROI conversation.',
     sections: [
       {
         label: '01 · VALUE METRIC',
@@ -280,7 +279,7 @@ export const routes = [
           'Use the same source pack and agreed start/stop points.',
           'Separate preparation, broker review, customer chase, rework, and filing time.',
           'Record exceptions and unsupported cases, not only successful runs.',
-          'Treat any capacity scenario as illustrative until measured on the buyer’s desk.',
+          'Replace the worked capacity model with the buyer’s volume, time and cost on the numbers call.',
         ],
       },
     ],
@@ -288,57 +287,57 @@ export const routes = [
   {
     path: '/how-it-works/',
     ref: 'FORM 06 · OPERATING FLOW',
-    title: 'How Declarix prepares customs declaration drafts',
+    title: 'How Declarix builds CDS-ready customs entry packs',
     description:
-      'A five-step view of how customer paperwork becomes a source-linked draft pack for broker review before filing in the existing customs system.',
-    eyebrow: 'HOW IT WORKS · PAPERWORK TO BROKER REVIEW',
-    h1: 'The broker keeps the filing decision.',
+      'See how Declarix reads customs documents, links every field to its source, and returns CDS-ready output for Sequoia, Descartes or customer integrations.',
+    eyebrow: 'HOW IT WORKS · PAPERWORK TO CDS-READY OUTPUT',
+    h1: 'Your clerk checks the entry instead of building it.',
     standfirst:
-      'Declarix sits between customer evidence and the broker’s existing customs system. It structures evidence, exposes missing facts, and prepares a draft for human review.',
-    stamp: 'BROKER\nREVIEW',
+      'Send the whole job. Declarix reads the documents, assembles the entry data, links every proposed field to its evidence and returns it to the customs workflow your team already uses.',
+    stamp: 'CHECK\nNOT KEY',
     limitations:
-      'Declarix does not submit to HMRC. Current H1 scope is review-only and legal coverage is incomplete. Unsupported cases stay visible.',
+      'Your authorised clerk retains customs judgment and approval. Declarix prepares CDS-ready output; your existing system and permissions handle submission.',
     sections: [
       {
         label: '01 · INTAKE',
-        title: 'Agree the pack and channel.',
+        title: 'Forward the job as it arrived.',
         paragraphs: [
-          'The pilot starts by defining the source documents, supported case shape, approved transfer channel, and data schedule. Do not send live documents through the public website.',
+          'Invoices, packing lists, transport documents, spreadsheets, scans, phone photos and the email chain arrive together. Declarix reads across the job instead of forcing the clerk to open and re-enter each file.',
         ],
       },
       {
         label: '02 · STRUCTURE',
-        title: 'Extract values with source references.',
+        title: 'Build the entry and pin the evidence.',
         paragraphs: [
-          'Declarix maps proposed values into a structured draft while keeping the document, page, line, and other evidence references available for checking.',
+          'Exporter, importer, values, weights, packages, previous documents, origin and line data move into their entry rows. Each proposed value keeps its document, page and line reference for checking.',
         ],
       },
       {
         label: '03 · EXCEPTIONS',
-        title: 'Surface what cannot be safely inferred.',
+        title: 'Flag the conflicts instead of hiding them.',
         paragraphs: [
-          'Missing, conflicting, unsupported, stale, or ambiguous facts are surfaced for the right owner. The product boundary does not permit an unknown to become a completed fact.',
+          'If an invoice says CIF and the email says CIP, the conflict is shown beside the sources. Missing or ambiguous facts become a short review question rather than a silent guess.',
         ],
       },
       {
         label: '04 · REVIEW',
-        title: 'The broker checks and decides.',
+        title: 'The clerk checks the working.',
         paragraphs: [
-          'The broker reviews the source-linked draft, resolves questions, and retains the judgment over classification, origin, valuation, procedure, licences, and release.',
+          'The clerk opens any field, sees its source and makes the customs judgment. Typical Declarix processing is around 200 seconds before this review begins.',
         ],
       },
       {
         label: '05 · FILING',
-        title: 'The existing customs system remains in charge.',
+        title: 'The CDS-ready export reaches your system.',
         paragraphs: [
-          'After broker review, the broker uses its own Customs Management System and permissions to file. Any system-specific handoff is described as tested only when the corresponding evidence exists.',
+          'Declarix supports Sequoia, Descartes e-Customs and customer integrations. Your team keeps the filing screen, badge, permissions and submission process it already knows.',
         ],
       },
       {
-        label: '06 · MEASURE',
-        title: 'Compare the same job side by side.',
+        label: '06 · COMMERCIAL FIT',
+        title: 'Run the desk economics.',
         paragraphs: [
-          'A useful pilot records preparation time, broker-review time, exceptions, rework, unsupported cases, and handoff outcome for the same source pack. The result informs the buying decision without pretending to be a universal benchmark.',
+          'The 20-minute numbers call uses your weekly volume, current minutes and loaded clerk cost to estimate annual ROI. It also maps the integration route and chooses the best first declaration workflow.',
         ],
       },
     ],
@@ -348,49 +347,50 @@ export const routes = [
     ref: 'DOCKET 07 · PILOT',
     title: 'Declarix customs-document preparation pilot',
     description:
-      'Scope a side-by-side Declarix pilot using a synthetic or properly anonymised customs-document pack, written data terms, and explicit success measures.',
-    eyebrow: 'PILOT · ONE PACK, SIDE BY SIDE',
-    h1: 'Measure it on your workflow.',
+      'After the 20-minute numbers call, prove Declarix on one anonymised customs job. The pilot is free if it fails and capped at £500 if it works.',
+    eyebrow: 'PILOT · THE STEP AFTER THE NUMBERS WORK',
+    h1: 'Prove it on one ugly job.',
     standfirst:
-      'A pilot should answer whether Declarix reduces preparation work while preserving broker review, your existing customs system, and a defensible evidence trail.',
-    stamp: 'MEASURED\nNOT PROMISED',
+      'First run the ROI and map the integration. If the commercial case makes sense, send one anonymised job and let your clerk compare the CDS-ready pack with the manual run.',
+    stamp: '£0 FAIL\n£500 CAP',
     limitations:
-      'Pilot pricing, caps, service levels, data handling, and exit terms are confirmed in a written proposal. No public headline overrides those terms.',
+      'If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.',
     sections: [
       {
         label: '01 · PREPARE',
-        title: 'Choose a representative pack.',
+        title: 'Choose the job your team hates.',
         list: [
-          'Use a synthetic pack or properly anonymise a real pack.',
+          'Properly anonymise one real job.',
           'Include the document mess that creates real work, not a perfect demo bundle.',
-          'State the current customs system, declaration type, weekly volume, and peak pattern.',
-          'Do not transfer documents until the approved channel and data schedule are agreed.',
+          'Include the scans, spreadsheets, long line tables and conflicts that create the manual work.',
+          'Use the system and declaration workflow mapped on the numbers call.',
         ],
       },
       {
         label: '02 · BASELINE',
-        title: 'Define start, stop, and exceptions.',
+        title: 'Compare the same job side by side.',
         paragraphs: [
-          'Agree what counts as preparation, customer chase, broker review, correction, and filing. Record the manual baseline on the same pack rather than relying on memory or an industry average.',
+          'Record the manual build and review time, then let Declarix process the same job. Your clerk checks the resulting pack, its evidence and the target-system handoff.',
         ],
       },
       {
         label: '03 · RUN',
-        title: 'Review the draft beside the source.',
+        title: 'Get the CDS-ready pack back.',
         paragraphs: [
-          'Declarix prepares a source-linked draft pack and unresolved questions. The broker reviews the proposed fields and retains every judgment and filing decision.',
+          'Declarix returns the pack within one working day. Every proposed field keeps its source and every conflict stays visible for your clerk to resolve before approval.',
         ],
       },
       {
         label: '04 · DECIDE',
-        title: 'Keep the evidence, including the misses.',
+        title: 'Let the result make the decision.',
         facts: [
           ['Preparation time', 'Measured on the agreed pack'],
           ['Review time', 'Recorded separately'],
           ['Exceptions and unsupported cases', 'Counted, not hidden'],
           ['Corrections and rework', 'Assigned to their cause'],
           ['System handoff', 'Observed for the agreed target'],
-          ['Commercial next step', 'Written only after the evidence review'],
+          ['Pilot cost if the agreed job fails', '£0'],
+          ['Initial pilot cap if it works', '£500 total'],
         ],
       },
     ],
@@ -398,16 +398,16 @@ export const routes = [
   {
     path: '/about/',
     ref: 'REGISTER 08 · COMPANY',
-    title: 'About Declarix | UK customs-document preparation',
+    title: 'About Declarix | More declarations, same customs desk',
     description:
-      'Declarix Limited builds source-linked customs-document preparation software for broker and freight-forwarder teams that keep their existing filing system.',
-    eyebrow: 'ABOUT · THE COMPANY AND THE BOUNDARY',
-    h1: 'Built for the work before filing.',
+      'Declarix Limited builds customs automation for broker and freight-forwarder teams that need more declarations per clerk without replacing their filing system.',
+    eyebrow: 'ABOUT · BUILT FOR THE CUSTOMS DESK',
+    h1: 'More declarations. Same experienced team.',
     standfirst:
-      'Declarix is a UK company building a preparation and evidence layer for customs brokers and freight forwarders. The broker’s own system remains the filing layer.',
-    stamp: 'UK BUILT\nBROKER LED',
+      'Declarix is a UK company turning customs paperwork into CDS-ready entry packs for Sequoia, Descartes and customer integrations. Clerks keep the judgment; the manual build goes away.',
+    stamp: 'UK BUILT\nDESK FIRST',
     limitations:
-      'Declarix is early-stage. The current H1 profile is review-only, pricing is scoped in writing, and the public site does not claim customer outcomes that have not been independently measured.',
+      'The up-to-3× outcome depends on document mix and review time. The 20-minute numbers call replaces worked assumptions with the buyer’s real desk economics.',
     sections: [
       {
         label: '01 · COMPANY',
@@ -422,10 +422,10 @@ export const routes = [
       },
       {
         label: '02 · PRODUCT THESIS',
-        title: 'Preserve the broker’s system and judgment.',
+        title: 'Preserve the system and the judgment. Remove the keying.',
         paragraphs: [
-          'Customer paperwork creates a preparation problem before it becomes a filing problem. Declarix focuses on structuring that evidence, attaching sources, and closing exceptions without pretending to own the broker’s legal judgment.',
-          'The product is designed to sit in front of existing Customs Management Systems rather than ask a broker to abandon them.',
+          'Experienced customs clerks should spend their time checking the job and making customs decisions, not copying values from invoices, packing lists, emails and spreadsheets into entry fields.',
+          'Declarix reads the whole job, builds the CDS-ready data and pins every proposed value to its source. The product works with the Customs Management System the broker already runs.',
         ],
       },
       {
@@ -437,9 +437,9 @@ export const routes = [
       },
       {
         label: '04 · EVIDENCE',
-        title: 'Public claims have a version.',
+        title: 'The commercial claim is testable.',
         paragraphs: [
-          'The marketing site is pinned to public-claims manifest 1.0.0 from the product repository. Readiness, pricing, security, privacy, CMS, and outcome language remains gated by the named evidence owner.',
+          'The offer is simple: up to three times more declarations per clerk, no new headcount and more margin on each declaration. The 20-minute numbers call estimates the buyer’s ROI; one real-job pilot tests the workflow before a wider commitment.',
         ],
       },
     ],
@@ -499,23 +499,23 @@ export const routes = [
   {
     path: '/customs-declaration-software/',
     ref: 'GUIDE 10 · CATEGORY',
-    title: 'Customs declaration preparation software | Declarix',
+    title: 'Customs declaration automation for Sequoia and Descartes',
     description:
-      'How source-linked customs declaration preparation software supports broker review before the existing Customs Management System files to HMRC.',
-    eyebrow: 'CUSTOMS DECLARATION SOFTWARE · THE PREPARATION LAYER',
-    h1: 'Less rekeying before the customs system.',
+      'How Declarix turns customer paperwork into CDS-ready customs entry packs for Sequoia, Descartes and customer integrations, with source evidence attached.',
+    eyebrow: 'CUSTOMS DECLARATION SOFTWARE · CHECK, DO NOT REBUILD',
+    h1: 'Build up to 3× more declarations with the same clerk.',
     standfirst:
-      'Customs declaration work starts before a filing screen: documents arrive, values conflict, evidence is missing, and someone must resolve it. Declarix focuses on that preparation layer.',
-    stamp: 'PREPARE\nTHEN REVIEW',
+      'Declarix reads the emails, invoices, packing lists, scans and spreadsheets, then builds the CDS-ready entry pack. Your clerk checks the evidence in minutes instead of building the job field by field.',
+    stamp: 'CDS\nREADY',
     limitations:
-      'Declarix is not a direct-filing service. System-specific handoffs are described as tested only when vendor documentation, fixtures, error mapping, and pilot evidence exist.',
+      'Your clerk retains customs judgment and approval. Your existing customs system and permissions handle HMRC submission.',
     sections: [
       {
         label: '01 · THE JOB',
-        title: 'Preparation is a distinct customs-software problem.',
+        title: 'The expensive work happens before the filing screen.',
         paragraphs: [
-          'A Customs Management System records and files a declaration. Before that, broker teams still reconcile invoices, packing lists, transport evidence, emails, codes, weights, values, parties, and missing information.',
-          'Declarix prepares a source-linked draft pack for broker review in front of the broker’s existing customs system.',
+          'A Customs Management System records and files a declaration. Before that, the clerk still opens the invoices, packing lists, transport evidence, emails and spreadsheets, then builds the entry one field at a time.',
+          'Declarix does that assembly across the whole job and returns a CDS-ready pack with the evidence beside every proposed field.',
         ],
       },
       {
@@ -529,13 +529,13 @@ export const routes = [
         ],
       },
       {
-        label: '03 · THE DRAFT',
-        title: 'What a useful preparation layer should expose.',
+        label: '03 · THE OUTPUT',
+        title: 'What reaches the clerk.',
         list: [
-          'A structured draft connected to the source document, page, line, or evidence.',
+          'CDS-ready entry data connected to the source document, page, line, or evidence.',
           'Missing and conflicting facts presented as questions rather than guesses.',
-          'A versioned supported scope and visible unsupported cases.',
-          'A clear handoff boundary for the target customs system.',
+          'Visible questions wherever the documents conflict or a fact is missing.',
+          'Sequoia, Descartes e-Customs or a mapped customer-integration handoff.',
           'An audit trail of what the broker reviewed and changed.',
         ],
       },
@@ -545,9 +545,9 @@ export const routes = [
         list: [
           'Use representative scans, amalgamated invoices, long line tables, and email conflicts.',
           'Measure preparation, review, chase, rework, and handoff separately.',
-          'Ask which claims are measured outcomes and which are scenarios.',
+          'Run the supplier’s numbers against your weekly volume, clerk time and loaded cost.',
           'Confirm data handling, retention, vendors, locations, and deletion in writing.',
-          'Require explicit evidence for any named customs-system compatibility claim.',
+          'Confirm the exact Sequoia, Descartes or customer-integration route.',
         ],
       },
     ],
@@ -555,23 +555,23 @@ export const routes = [
   {
     path: '/customs-clearance-software/',
     ref: 'BUYER FILE 12 · CLEARANCE SOFTWARE',
-    title: 'Customs clearance software for broker workflows | Declarix',
+    title: 'Customs clearance automation for broker workflows | Declarix',
     description:
-      'How customs brokers can compare filing software and document-preparation software while keeping review, evidence, exceptions, and HMRC submission boundaries clear.',
-    eyebrow: 'CUSTOMS CLEARANCE SOFTWARE · BUY THE RIGHT LAYER',
-    h1: 'Customs clearance software starts before the filing screen.',
+      'How customs brokers can automate document-heavy declaration work, keep Sequoia or Descartes, and increase declarations per clerk with CDS-ready entry packs.',
+    eyebrow: 'CUSTOMS CLEARANCE SOFTWARE · AUTOMATE THE MANUAL BUILD',
+    h1: 'Keep the filing system. Remove the bottleneck before it.',
     standfirst:
-      'A customs broker may need a filing system, a preparation layer, or both. Declarix prepares source-linked draft data and unresolved questions for review; it does not submit declarations to HMRC.',
-    stamp: 'PREPARE\nTHEN REVIEW',
+      'Declarix turns the documents your customers send into CDS-ready output for Sequoia, Descartes and customer integrations. Your clerk checks the job instead of building every field.',
+    stamp: 'MORE JOBS\nSAME DESK',
     limitations:
-      'Declarix is not represented on this page as an HMRC submission system. Current H1 scope is review-only, legal coverage is incomplete, and every named-system handoff requires its own evidence.',
+      'Declarix supports the work before submission. Your authorised team retains customs judgment, approval, filing permissions and the HMRC submission process.',
     sections: [
       {
         label: '01 · DIRECT ANSWER',
         title: 'What does customs clearance software need to cover?',
         paragraphs: [
           'Customs clearance software is an umbrella term. One product may transmit declarations to the Customs Declaration Service, manage authorisations, receive responses, and retain the filing record. Another may organise the work before submission: reading customer documents, structuring proposed values, exposing gaps, and preparing evidence for a broker to review. A buyer should identify which layer is creating the operational bottleneck before comparing vendors.',
-          'Declarix addresses the preparation layer. It keeps the broker’s existing customs system and filing permissions in place. The current product boundary is a source-linked draft pack and unresolved questions for broker review. It does not turn incomplete legal coverage into a ready outcome, and it does not submit to HMRC.',
+          'Declarix automates the document-heavy build before submission. It keeps the broker’s existing customs system and permissions in place, returns CDS-ready output and makes conflicts visible for the clerk who approves the job.',
         ],
       },
       {
@@ -579,9 +579,9 @@ export const routes = [
         title: 'Filing and preparation are different jobs.',
         facts: [
           ['Filing layer', 'Creates, submits, amends, or cancels declarations through supported CDS services'],
-          ['Preparation layer', 'Structures source evidence and questions before a broker filing decision'],
+          ['Document automation', 'Builds CDS-ready entry data and keeps source evidence attached'],
           ['Broker responsibility', 'Review, legal judgment, approval, and filing remain with the authorised firm'],
-          ['Declarix boundary', 'Review-only draft preparation; no HMRC submission'],
+          ['Declarix role', 'CDS-ready entry pack with source evidence; no HMRC submission'],
         ],
         paragraphs: [
           'HMRC publishes a list of software developers supplying declaration software, while its developer guidance describes APIs and assurance for software that communicates with CDS. That is a distinct technical and regulatory role from preparing source material in front of the filing system.',
@@ -589,28 +589,28 @@ export const routes = [
       },
       {
         label: '03 · EVIDENCE',
-        title: 'A draft should show its working.',
+        title: 'The entry pack should show its working.',
         list: [
           'Keep the source document, page, line, or evidence reference beside each proposed value.',
           'Present missing, conflicting, stale, unsupported, or unevaluated facts as review work—not completed data.',
           'Separate document preparation, customer chase, broker review, correction, and filing time.',
           'Retain the broker’s change and approval path for the agreed workflow.',
-          'Describe output and handoff formats only to the level actually tested.',
+          'Map the Sequoia, Descartes or customer-integration handoff before live volume.',
         ],
       },
       {
         label: '04 · COMPATIBILITY',
         title: 'Ask what “integrates” means.',
         paragraphs: [
-          'A named customs-system claim should identify the vendor and version, the fixture used, the output or transport, field mapping, error behaviour, supported declaration profile, and observed result. A logo strip or generic export claim is not evidence that a production handoff works for your procedure, authorisations, and exception pattern.',
-          'For a Declarix pilot, the target-system handoff is scoped and observed alongside the source pack. Until that evidence exists, the website describes the intended boundary without presenting the system as tested.',
+          'Declarix supports CDS-ready exports for Sequoia, Descartes e-Customs and customer integrations. The 20-minute call maps which route fits the buyer’s current workflow, including how the clerk receives, checks and hands off the entry data.',
+          'The pilot then runs the agreed route on one real-shaped job so the desk can see the fields, evidence, conflicts and handoff together before committing to wider volume.',
         ],
       },
       {
         label: '05 · BUYING FILE',
         title: 'Compare the same ugly pack.',
         list: [
-          'Use a synthetic or properly anonymised representative pack with scans, spreadsheets, long line tables, and real conflicts.',
+          'Use one properly anonymised job with scans, spreadsheets, long line tables, and real conflicts.',
           'Record the current manual baseline with agreed start and stop points.',
           'Count unsupported cases, questions, retries, and corrections—not only successful rows.',
           'Review security, data location, access, retention, deletion, and support for the proposed deployment.',
@@ -621,7 +621,7 @@ export const routes = [
         label: '06 · DECLARIX FIT',
         title: 'Use the call to locate the bottleneck.',
         paragraphs: [
-          'Bring one week’s approximate volume, the current customs system, representative document mix, and the exceptions that create work. The workflow call maps where preparation ends, where broker judgment begins, what a pilot could measure, and which facts are still needed for a written proposal. Do not send live customer documents through the public website.',
+          'Bring one week’s approximate volume, current minutes per declaration, loaded clerk cost and the customs system the team runs. The numbers call estimates ROI, maps the integration route and chooses the first workflow most likely to pay for itself.',
         ],
       },
     ],

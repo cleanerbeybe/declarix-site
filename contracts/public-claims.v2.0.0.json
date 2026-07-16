@@ -1,0 +1,30 @@
+{
+  "manifest_version": "2.0.0",
+  "authority": "Direct owner approval",
+  "effective_on": "2026-07-16",
+  "approved_public_facts": [
+    "Up to 3× more declarations per clerk",
+    "No new headcount",
+    "More margin on every declaration",
+    "Typical processing is around 200 seconds before clerk review",
+    "CDS-ready exports",
+    "Sequoia support",
+    "Descartes e-Customs support",
+    "Customer integrations",
+    "Illustrative labour model of £7.95 to £2.45 per declaration",
+    "Pilot is free if it fails and capped at £500 if it works"
+  ],
+  "required_product_language": [
+    "up to 3× more declarations per clerk",
+    "CDS-ready",
+    "Sequoia",
+    "20-minute numbers call"
+  ],
+  "prohibited_phrases": [
+    "guaranteed HMRC acceptance",
+    "HMRC-approved",
+    "zero rejections",
+    "eliminates all customs errors",
+    "works with every customs system"
+  ]
+}
