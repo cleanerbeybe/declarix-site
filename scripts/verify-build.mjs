@@ -2,6 +2,7 @@ import { access, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
+import { calculators } from './calculators.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
 
@@ -20,6 +21,7 @@ const publicSources = [
   'public/og.html',
   'scripts/routes.mjs',
   'scripts/tools.mjs',
+  'scripts/calculators.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -38,7 +40,7 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools]
+const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools, ...calculators]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
 const titles = new Set()
@@ -117,6 +119,40 @@ for (const route of expected) {
       }
       await access(join(root, 'dist', asset.href.slice(1)))
     }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+  if (calculators.includes(route)) {
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must not collect document data, identifiers, or free text`)
+    }
+    for (const phrase of [
+      'LABOUR COST / ENTRY = MINUTES / ENTRY × LOADED HOURLY COST ÷ 60',
+      'No Declarix rate is assumed',
+      'tool_started',
+      'tool_completed',
+      'tool_result_copied',
+      'tool_result_printed',
+      'tool_booking_clicked',
+    ]) {
+      if (!html.toLowerCase().includes(phrase.toLowerCase())) {
+        throw new Error(`${route.path} is missing calculator contract: ${phrase}`)
+      }
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    if (!html.includes('"@type":"FAQPage"') || (html.match(/class="calculator-faq"/g) || []).length < 3) {
+      throw new Error(`${route.path} is missing visible FAQ structured-data support`)
+    }
+    for (const outputId of [
+      'annual-entries', 'current-hours', 'current-cost', 'target-hours', 'target-cost',
+      'recoverable-hours', 'capacity-entries', 'labour-headroom', 'break-even',
+    ]) {
+      if (!html.includes(`id="${outputId}"`)) throw new Error(`${route.path} is missing output ${outputId}`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {

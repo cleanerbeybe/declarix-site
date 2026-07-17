@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { calculators, renderCalculator } from './calculators.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
 
@@ -37,6 +38,7 @@ function routeLinks() {
     ['SCOPE', '/supported-scope/'],
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
+    ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
@@ -418,12 +420,38 @@ for (const tool of tools) {
   )
 }
 
-const indexableRoutes = [...routes, ...tools]
+for (const calculator of calculators) {
+  if (!calculator.path.startsWith('/') || !calculator.path.endsWith('/')) {
+    throw new Error(`Calculator must use a trailing slash: ${calculator.path}`)
+  }
+  if (paths.has(calculator.path)) throw new Error(`Duplicate route: ${calculator.path}`)
+  if (titles.has(calculator.title)) throw new Error(`Duplicate title: ${calculator.title}`)
+  if (headings.has(calculator.h1)) throw new Error(`Duplicate H1: ${calculator.h1}`)
+  if (calculator.faqs.length < 3) throw new Error(`Calculator needs visible FAQ support: ${calculator.path}`)
+  if (calculator.sources.length < 2) throw new Error(`Calculator needs two context sources: ${calculator.path}`)
+  paths.add(calculator.path)
+  titles.add(calculator.title)
+  headings.add(calculator.h1)
+
+  const target = join(dist, calculator.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderCalculator(calculator, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+}
+
+const indexableRoutes = [...routes, ...tools, ...calculators]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${site.origin}/</loc><lastmod>${site.reviewedOn}</lastmod></url>
-${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${site.reviewedOn}</lastmod></url>`).join('\n')}
+${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${route.reviewedOn || site.reviewedOn}</lastmod></url>`).join('\n')}
 </urlset>
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)
@@ -458,7 +486,7 @@ const llmsFull = `${llms}
 - Last editorial review: ${site.reviewedOn}
 
 ## Citation guidance
-Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage calculator is a worked model; the 20-minute numbers call replaces its assumptions with the buyer’s volume, time, labour cost, and integration route.
+Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and proposed per-entry rate.
 `
 await writeFile(join(dist, 'llms.txt'), llms)
 await writeFile(join(dist, 'llms-full.txt'), llmsFull)
