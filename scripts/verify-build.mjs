@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
+import { aggregateCsv, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
 
@@ -22,6 +23,7 @@ const publicSources = [
   'scripts/routes.mjs',
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
+  'scripts/reports.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -40,7 +42,7 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools, ...calculators]
+const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools, ...calculators, ...reports]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
 const titles = new Set()
@@ -153,6 +155,55 @@ for (const route of expected) {
       'recoverable-hours', 'capacity-entries', 'labour-headroom', 'break-even',
     ]) {
       if (!html.includes(`id="${outputId}"`)) throw new Error(`${route.path} is missing output ${outputId}`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+  if (reports.includes(route)) {
+    for (const phrase of [
+      '1,203 LEDGER DECISIONS',
+      '50 PRIORITY-GRADE SIGNALS',
+      '397 CMS-PRESERVATION FITS',
+      '25% pain + 25% product fit + 20% timing + 15% reachability + 15% evidence quality',
+      'operations_report_downloaded',
+      'operations_report_booking_clicked',
+      'operations_report_related_clicked',
+      'operations_report_methodology_viewed',
+      'operations_report_shared',
+    ]) {
+      if (!html.toLowerCase().includes(phrase.toLowerCase())) {
+        throw new Error(`${route.path} is missing report contract: ${phrase}`)
+      }
+    }
+    if (!html.includes('"@type":"Report"') || !html.includes('"@type":"Dataset"')) {
+      throw new Error(`${route.path} is missing Report and Dataset structured data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html) || /<form/i.test(html)) {
+      throw new Error(`${route.path} must not collect prospect, document, or newsletter data`)
+    }
+    if ((html.match(/<table>/g) || []).length < 3 || !html.includes('id="methodology"')) {
+      throw new Error(`${route.path} is missing visible accessible data tables or methodology`)
+    }
+    for (const asset of route.downloads) {
+      if (!html.includes(`href="${asset.href}"`) || !html.includes(`data-report-download="${asset.id}"`)) {
+        throw new Error(`${route.path} is missing report download ${asset.id}`)
+      }
+      await access(join(root, 'dist', asset.href.slice(1)))
+    }
+    const csv = await readFile(join(root, 'dist', route.downloads[0].href.slice(1)), 'utf8')
+    if (csv !== aggregateCsv(route)) throw new Error(`${route.path} aggregate CSV differs from the deterministic data model`)
+    if (!csv.startsWith('"group","metric_id","label","count","denominator","percent","definition","snapshot_date"')) {
+      throw new Error(`${route.path} aggregate CSV has an unexpected publication schema`)
+    }
+    for (const privateField of ['company_name', 'prospect_name', 'candidate_id', 'source_url', 'website_url', 'email_address', 'phone_number', 'http://', 'https://', '@']) {
+      if (csv.toLowerCase().includes(privateField)) throw new Error(`${route.path} aggregate CSV exposes prohibited field ${privateField}`)
+    }
+    const svg = await readFile(join(root, 'dist', route.downloads[1].href.slice(1)), 'utf8')
+    if (!svg.includes('<title') || !svg.includes('<desc') || !svg.includes('402') || !svg.includes('279')) {
+      throw new Error(`${route.path} press chart is missing accessible aggregate context`)
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
