@@ -2,6 +2,11 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { calculators, renderCalculator } from './calculators.mjs'
+import {
+  eoriChecker,
+  renderEoriChecker,
+  resolvePublicEoriReleaseConfig,
+} from './eori-checker.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -11,6 +16,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const dist = join(root, 'dist')
 const posthogKey = process.env.VITE_POSTHOG_KEY || ''
 const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
+const publicEori = resolvePublicEoriReleaseConfig()
 
 const escapeHtml = (value) =>
   String(value)
@@ -42,6 +48,7 @@ function routeLinks() {
     ['PILOT', '/pilot/'],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
+    ...(publicEori.enabled ? [['GB EORI CHECK', eoriChecker.path]] : []),
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
@@ -513,7 +520,38 @@ for (const workpaper of valueDutyWorkpapers) {
   )
 }
 
-const indexableRoutes = [...routes, ...tools, ...calculators, ...reports, ...valueDutyWorkpapers]
+if (publicEori.enabled) {
+  if (paths.has(eoriChecker.path)) throw new Error(`Duplicate route: ${eoriChecker.path}`)
+  if (titles.has(eoriChecker.title)) throw new Error(`Duplicate title: ${eoriChecker.title}`)
+  if (headings.has(eoriChecker.h1)) throw new Error(`Duplicate H1: ${eoriChecker.h1}`)
+  if (eoriChecker.questions.length < 4) throw new Error('EORI checker needs visible question support')
+  if (eoriChecker.sources.length < 3) throw new Error('EORI checker needs official source coverage')
+  paths.add(eoriChecker.path)
+  titles.add(eoriChecker.title)
+  headings.add(eoriChecker.h1)
+
+  const target = join(dist, eoriChecker.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderEoriChecker(eoriChecker, site, {
+      apiOrigin: publicEori.apiOrigin,
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+}
+
+const indexableRoutes = [
+  ...routes,
+  ...tools,
+  ...calculators,
+  ...reports,
+  ...valueDutyWorkpapers,
+  ...(publicEori.enabled ? [eoriChecker] : []),
+]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

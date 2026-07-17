@@ -48,6 +48,12 @@ The anonymous identifier is session-scoped.
 | `tool_booking_clicked` | Does the value and duty scenario assist a numbers call? | tool_id, customs_value_band, non_unit_fx, has_adjustments, has_duty_rate, has_vat_rate, source | Visitor selects the workpaper booking CTA |
 | `registration_kit_downloaded` | Which consultation asset delivers value? | page_path, asset_id, asset_format | Visitor downloads an editable response-kit file |
 | `registration_kit_booking_clicked` | Does the response kit assist a workflow call? | page_path, placement | Visitor selects a kit booking CTA |
+| `eori_check_started` | Do search visitors use the single-value GB registry check? | tool_id, checker_scope, source, medium, campaign, content, term, page_path | Visitor submits one candidate to the checker |
+| `eori_check_completed` | Which useful registry outcome did the checker return? | tool_id, outcome, public_company_details, source, medium, campaign, content, term, page_path | A typed valid, invalid, format-invalid, or unsupported response renders |
+| `eori_check_unavailable` | Is provider or edge reliability losing useful checks? | tool_id, reason, source, medium, campaign, content, term, page_path | Rate limit, upstream unavailable, network, or contract failure renders |
+| `eori_result_booking_clicked` | Does an EORI result assist a workflow call? | tool_id, outcome, placement, source, medium, campaign, content, term, page_path | Visitor selects an EORI-page booking CTA |
+| `eori_result_pack_checker_clicked` | Does EORI traffic continue into the document handoff tool? | tool_id, outcome, placement, source, medium, campaign, content, term, page_path | Visitor opens the pack checker from the EORI page |
+| `eori_eu_handoff_clicked` | Does the GB boundary correctly route XI/EU intent? | tool_id, placement, source, medium, campaign, content, term, page_path | Visitor opens the official European Commission checker |
 
 ## Attribution
 
@@ -72,6 +78,11 @@ The customs value and duty workpaper records only a coarse customs-value band an
 for non-unit FX, adjustments, duty rate, and VAT rate. It does not transmit raw goods values, exchange
 rates, charges, percentage rates, calculated outputs, the share URL, identifiers, or free text. A share
 link is created only after the visitor asks for one and contains the ten visible numerical inputs.
+
+The GB EORI checker records only enum-like outcome, reliability reason, CTA placement, checker scope,
+and whether HMRC returned public company details. It never transmits the entered or normalized EORI,
+trader name, address, provider message, raw response, or timestamps to analytics. The EORI is sent
+only in the POST body to the configured Declarix proxy and never appears in a page URL.
 
 ## Deployment closure
 

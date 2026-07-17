@@ -28,6 +28,8 @@ jobs:
           VITE_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
           VITE_GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
           VITE_BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
+          VITE_PUBLIC_EORI_RELEASE_ENABLED: ${{ vars.PUBLIC_EORI_RELEASE_ENABLED }}
+          VITE_PUBLIC_EORI_API_ORIGIN: ${{ vars.PUBLIC_EORI_API_ORIGIN }}
       - name: Publish gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
