@@ -20,7 +20,7 @@ npm run build
 npm run preview
 ```
 
-`npm run build` generates 13 content routes, two client-side free tools, two reusable response-kit downloads, and the homepage, plus a noindex booking receipt, sitemap,
+`npm run build` generates the acquisition, trust, research, free-tool, Incoterms, and customs-workflow route set plus the homepage, downloadable workpapers, a noindex booking receipt, sitemap,
 `llms.txt`, `llms-full.txt`, and a real noindex 404. It then checks unique titles, H1s,
 self-canonicals, descriptions, sitemap membership, explicit AI crawler policy, IndexNow ownership,
 and the pinned public claims contract in `contracts/public-claims.v2.0.0.json`.
@@ -55,6 +55,7 @@ contract.
 
 - Edit static route content in `scripts/routes.mjs` and layout in `public/static-routes.css`.
 - Edit free-tool content and interaction in `scripts/tools.mjs` and its layout in `public/tool.css`.
+- Edit the Incoterms atlas, HMRC burden explorer, and workflow library in `scripts/authority-library.mjs` and their layout in `public/authority-library.css`.
 - `scripts/generate-static-routes.mjs` writes the production HTML and sitemap into `dist/`.
 - `scripts/verify-build.mjs` is the fail-closed publication gate.
 - Update the pinned claims contract only after the corresponding version is merged in

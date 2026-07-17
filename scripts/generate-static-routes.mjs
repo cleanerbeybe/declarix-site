@@ -8,6 +8,7 @@ import {
   resolvePublicEoriReleaseConfig,
 } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
+import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -55,6 +56,9 @@ function routeLinks() {
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
     ['RESEARCH', '/research/uk-customs-operations-signal-report-2026/'],
     ['RADAR', '/research/cds-operations-radar/'],
+    ['INCOTERMS', '/customs-reference/incoterms/'],
+    ['WORKFLOWS', '/customs-workflows/gmr-gvms-checklist/'],
+    ['HMRC BURDEN', '/research/hmrc-customs-administrative-burden-explorer-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
@@ -588,6 +592,39 @@ await mkdir(join(dist, 'downloads'), { recursive: true })
 await writeFile(join(dist, 'downloads/cds-operations-radar-v1.json'), radarJson())
 await writeFile(join(dist, 'downloads/cds-operations-radar-v1.csv'), radarCsv())
 
+for (const authorityRoute of authorityRoutes) {
+  if (!authorityRoute.path.startsWith('/') || !authorityRoute.path.endsWith('/')) {
+    throw new Error(`Authority route must use a trailing slash: ${authorityRoute.path}`)
+  }
+  if (paths.has(authorityRoute.path)) throw new Error(`Duplicate route: ${authorityRoute.path}`)
+  if (titles.has(authorityRoute.title)) throw new Error(`Duplicate title: ${authorityRoute.title}`)
+  if (headings.has(authorityRoute.h1)) throw new Error(`Duplicate H1: ${authorityRoute.h1}`)
+  if (authorityRoute.sources.length < 2) {
+    throw new Error(`Authority route needs at least two primary sources: ${authorityRoute.path}`)
+  }
+  paths.add(authorityRoute.path)
+  titles.add(authorityRoute.title)
+  headings.add(authorityRoute.h1)
+
+  const target = join(dist, authorityRoute.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderAuthorityRoute(authorityRoute, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+  const assets = authorityAssets(authorityRoute)
+  for (const asset of assets) {
+    const assetTarget = join(dist, asset.href.slice(1))
+    await mkdir(dirname(assetTarget), { recursive: true })
+    await writeFile(assetTarget, asset.content)
+  }
+}
+
 const indexableRoutes = [
   ...routes,
   ...tools,
@@ -596,6 +633,7 @@ const indexableRoutes = [
   ...valueDutyWorkpapers,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
+  ...authorityRoutes,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

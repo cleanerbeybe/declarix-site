@@ -54,6 +54,10 @@ The anonymous identifier is session-scoped.
 | `eori_result_booking_clicked` | Does an EORI result assist a workflow call? | tool_id, outcome, placement, source, medium, campaign, content, term, page_path | Visitor selects an EORI-page booking CTA |
 | `eori_result_pack_checker_clicked` | Does EORI traffic continue into the document handoff tool? | tool_id, outcome, placement, source, medium, campaign, content, term, page_path | Visitor opens the pack checker from the EORI page |
 | `eori_eu_handoff_clicked` | Does the GB boundary correctly route XI/EU intent? | tool_id, placement, source, medium, campaign, content, term, page_path | Visitor opens the official European Commission checker |
+| `authority_chooser_completed` | Which Incoterms handoff attracts deeper use? | result_code, asset_family, source, medium, campaign, page_path | Visitor completes the four-question chooser |
+| `authority_asset_downloaded` | Which linkable workpapers earn off-site use? | asset_type, asset_format, source, medium, campaign, page_path | Visitor downloads an operational map, workflow diagram, data file, or press chart |
+| `authority_related_clicked` | Which authority page moves readers into another useful tool or cluster page? | target, asset_family, source, medium, campaign, page_path | Visitor follows a related workpaper, calculator, term sheet, or workflow |
+| `authority_booking_clicked` | Which authority assets assist a numbers call? | placement, asset_family, source, medium, campaign, page_path | Visitor selects the masthead or bottom numbers-call CTA |
 
 ## Attribution
 
@@ -83,6 +87,10 @@ The GB EORI checker records only enum-like outcome, reliability reason, CTA plac
 and whether HMRC returned public company details. It never transmits the entered or normalized EORI,
 trader name, address, provider message, raw response, or timestamps to analytics. The EORI is sent
 only in the POST body to the configured Declarix proxy and never appears in a page URL.
+
+Authority-library events contain enum-like page, placement, result-code, asset-type, format, and
+related-target properties only. They do not transmit customs values, declaration references, account
+identifiers, document contents, names, email addresses, or free text. Downloads are ungated.
 
 ## Deployment closure
 
