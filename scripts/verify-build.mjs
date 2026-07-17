@@ -172,6 +172,7 @@ for (const route of expected) {
       'operations_report_related_clicked',
       'operations_report_methodology_viewed',
       'operations_report_shared',
+      'data-report-related="value_duty_workpaper"',
       "sessionStorage.getItem(key)",
       "config.posthogHost + '/capture/'",
     ]) {
@@ -226,9 +227,11 @@ for (const route of expected) {
       throw new Error(`${route.path} must expose exactly ten explicit numerical inputs`)
     }
     for (const phrase of [
+      'CONVERTED GOODS = GOODS AMOUNT ÷ CURRENCY UNITS PER £1',
       'CUSTOMS VALUE = CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS',
-      'CUSTOMS DUTY',
+      'AD VALOREM DUTY',
       'IMPORT VAT VALUE',
+      'does not calculate a specific or compound tariff',
       'No input is fetched or inferred',
       'does not perform a tariff lookup',
       'tool_started',
@@ -236,6 +239,7 @@ for (const route of expected) {
       'tool_result_shared',
       'tool_result_printed',
       'tool_booking_clicked',
+      '/research/uk-customs-operations-signal-report-2026/',
     ]) {
       if (!html.toLowerCase().includes(phrase.toLowerCase())) {
         throw new Error(`${route.path} is missing value and duty contract: ${phrase}`)
@@ -284,7 +288,7 @@ for (const route of expected) {
 
 const formulaFixture = calculateValueDutyScenario({
   goodsAmount: 10000,
-  fxRate: 0.8,
+  fxRate: 1.25,
   freight: 500,
   insurance: 100,
   additions: 400,
@@ -324,6 +328,39 @@ const clampedFixture = calculateValueDutyScenario({
 })
 if (clampedFixture.customsValueBeforeClamp !== -10 || clampedFixture.customsValue !== 0) {
   throw new Error('Value and duty negative-value formula boundary drifted')
+}
+
+const precisionFixture = calculateValueDutyScenario({
+  goodsAmount: 100000000,
+  fxRate: 0.0001,
+  freight: 0,
+  insurance: 0,
+  additions: 0.01,
+  deductions: 0,
+  dutyRate: 0,
+  otherImportCharges: 0,
+  incidentalExpenses: 0,
+  vatRate: 0,
+})
+if (Math.round(precisionFixture.customsValue * 100) !== 100000000000001) {
+  throw new Error('Value and duty supported boundary no longer preserves the added penny')
+}
+try {
+  calculateValueDutyScenario({
+    goodsAmount: 100000000.01,
+    fxRate: 1,
+    freight: 0,
+    insurance: 0,
+    additions: 0,
+    deductions: 0,
+    dutyRate: 0,
+    otherImportCharges: 0,
+    incidentalExpenses: 0,
+    vatRate: 0,
+  })
+  throw new Error('Value and duty amount above supported bounds was accepted')
+} catch (error) {
+  if (!String(error.message).includes('supported planning range')) throw error
 }
 
 for (const [path, count] of inbound) {

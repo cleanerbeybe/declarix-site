@@ -1,20 +1,20 @@
-# Customs value, import duty and VAT planning workpaper
+# Customs value, ad valorem duty and VAT planning workpaper
 
-Status: implemented on a temporary branch from `origin/main` at `78100b9`, including the commercial-site
-FAQ-schema eligibility hotfix.
+Status: implemented on a temporary branch from `origin/main` at `bd7b6fc`, including the live
+Operations Signal Report and commercial-site FAQ-schema eligibility hotfix.
 
 Public route: `/tools/customs-value-import-duty-vat-calculator/`
 
 ## Outcome
 
-This release adds an ungated, browser-only workpaper for a user-controlled UK customs value, duty,
-import VAT value, and import VAT planning scenario. It is an acquisition asset first: the useful
-calculation leads, the result is shareable and printable, and the next step connects the number to
-desk economics and a 20-minute numbers call.
+This release adds an ungated, browser-only workpaper for a user-controlled UK customs value, ad
+valorem duty, import VAT value, and import VAT planning scenario. It is an acquisition asset first:
+the useful calculation leads, the result is shareable and printable, and the next step connects the
+number to desk economics and a 20-minute numbers call.
 
 The tool does not choose a valuation method, exchange rate, commodity code, origin, preference,
 relief, tariff measure, duty rate, or VAT rate. Those decisions stay with the user and current
-official sources.
+official sources. Specific and compound tariff measures are explicitly outside this version.
 
 ## Durable records
 

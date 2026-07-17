@@ -53,8 +53,15 @@
 .official-checkpoints > div,
 .related-workpapers nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   border-bottom: 1.5px solid var(--ink);
+}
+
+.official-checkpoints > div {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.related-workpapers nav {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .official-checkpoints a,
@@ -72,6 +79,10 @@
 
 .official-checkpoints a:last-child,
 .related-workpapers nav a:last-child {
+  border-right: 0;
+}
+
+.related-workpapers nav a:nth-child(2n) {
   border-right: 0;
 }
 

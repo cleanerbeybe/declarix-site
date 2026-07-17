@@ -2,8 +2,11 @@
 
 | Decision | Choice | Reason |
 |---|---|---|
-| Primary job | Cross-foot a user-established customs value, duty, and import VAT scenario. | A useful, linkable bottom/mid-funnel asset without pretending to replace tariff or valuation work. |
+| Primary job | Cross-foot a user-established customs value, ad valorem duty, and import VAT scenario. | A useful, linkable bottom/mid-funnel asset without pretending to replace tariff or valuation work. |
 | Input model | Ten required, explicit fields with no populated defaults. | Prevents implied rates or hidden factual assumptions. |
+| FX direction | Invoice-currency units per £1; converted goods = amount ÷ rate. | Matches HMRC's published monthly exchange-rate table and prevents reciprocal-entry errors. |
+| Duty scope | Ad valorem percentage only; specific and compound measures are excluded in the hero, result, question, and limitations. | Keeps the search promise aligned with the engine rather than implying a universal tariff calculation. |
+| Numerical bounds | Amounts up to 100,000,000 and FX from 0.0001 to 1,000,000 units per £1. | Preserves penny-level output precision throughout the supported percentage scenario. |
 | Result hierarchy | Duties and taxes leads; valuation ledger and planning total follow. | Gives an immediate decision number while preserving the full audit trail. |
 | Conversion | Result → related tools → 20-minute numbers call. | Value precedes the ask and bridges naturally into Declarix workflow economics. |
 | Gating | None. | Search value, utility, links, sharing, and trust are more valuable than an email wall. |

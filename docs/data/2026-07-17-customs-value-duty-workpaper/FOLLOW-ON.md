@@ -3,11 +3,11 @@
 ## Merge-sensitive files
 
 The static generator, build verifier, primary static navigation, and tracking plan are shared release
-surfaces. Rebase after the Operations Signal Report release and resolve those files by retaining both
-route collections and both guard sets. The workpaper module and stylesheet are isolated.
+surfaces. The branch was rebased onto the merged Operations Signal Report release at `bd7b6fc`, and
+the integration retains both route collections and both guard sets.
 
-If the Operations Signal Report introduces a stable public route, add it to the related-workpapers
-section after rebase; do not guess its URL before that route exists.
+The stable report and value/duty routes now cross-link: the report sends readers into the workpaper,
+and the workpaper returns readers to the original research and the rest of the free workbench.
 
 ## Post-build distribution
 
