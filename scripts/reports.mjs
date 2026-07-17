@@ -160,8 +160,7 @@ function jsonLd(report, site) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: 'Research', item: `${site.origin}${report.path}` },
-          { '@type': 'ListItem', position: 3, name: report.h1, item: `${site.origin}${report.path}` },
+          { '@type': 'ListItem', position: 2, name: report.h1, item: `${site.origin}${report.path}` },
         ],
       },
     ],
@@ -231,35 +230,59 @@ function downloads(report) {
   </section>`
 }
 
-function analytics(report) {
+function analytics(report, posthogKey, posthogHost) {
+  const config = JSON.stringify({ posthogKey, posthogHost }).replaceAll('<', '\\u003c')
   return `<script>
     (() => {
-      const push = (event, properties = {}) => {
+      const config = ${config};
+      const get = (key) => { try { return sessionStorage.getItem(key) || ''; } catch { return ''; } };
+      const set = (key, value) => { try { sessionStorage.setItem(key, value); } catch {} };
+      const attribution = () => {
+        const params = new URLSearchParams(location.search);
+        const incoming = {
+          source: params.get('utm_source') || params.get('src') || '',
+          medium: params.get('utm_medium') || '',
+          campaign: params.get('utm_campaign') || '',
+          content: params.get('utm_content') || '',
+          term: params.get('utm_term') || '',
+        };
+        Object.entries(incoming).forEach(([key, value]) => { if (value && !get('dclrx-' + key)) set('dclrx-' + key, value); });
+        return Object.fromEntries(Object.keys(incoming).map((key) => [key, get('dclrx-' + key) || (key === 'source' ? 'direct' : 'none')]));
+      };
+      const distinctId = get('dclrx-distinct-id') || crypto.randomUUID();
+      set('dclrx-distinct-id', distinctId);
+      const track = (event, properties = {}) => {
+        const payload = { ...attribution(), ...properties, page_path: location.pathname, report_id: '${report.id}' };
         window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ event, page_path: location.pathname, report_id: '${report.id}', ...properties });
+        window.dataLayer.push({ event, ...payload });
+        if (!config.posthogKey) return;
+        const body = JSON.stringify({ api_key: config.posthogKey, event, distinct_id: distinctId, properties: payload });
+        if (navigator.sendBeacon && navigator.sendBeacon(config.posthogHost + '/capture/', body)) return;
+        fetch(config.posthogHost + '/capture/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => null);
       };
       document.querySelectorAll('[data-report-download]').forEach((link) => link.addEventListener('click', () => {
-        push('operations_report_downloaded', { asset_id: link.dataset.reportDownload, asset_format: link.dataset.reportFormat });
+        track('operations_report_downloaded', { asset_id: link.dataset.reportDownload, asset_format: link.dataset.reportFormat });
       }));
       document.querySelectorAll('[data-report-booking]').forEach((link) => link.addEventListener('click', () => {
-        push('operations_report_booking_clicked', { placement: link.dataset.reportBooking });
+        track('operations_report_booking_clicked', { placement: link.dataset.reportBooking });
       }));
       document.querySelectorAll('[data-report-related]').forEach((link) => link.addEventListener('click', () => {
-        push('operations_report_related_clicked', { destination_id: link.dataset.reportRelated });
+        track('operations_report_related_clicked', { destination_id: link.dataset.reportRelated });
       }));
       const methodLink = document.querySelector('[data-report-methodology]');
-      methodLink?.addEventListener('click', () => push('operations_report_methodology_viewed', { placement: 'hero_action' }));
+      methodLink?.addEventListener('click', () => track('operations_report_methodology_viewed', { placement: 'hero_action' }));
       const share = document.querySelector('[data-report-share]');
       share?.addEventListener('click', async () => {
         try {
           if (navigator.share) await navigator.share({ title: document.title, url: location.href });
           else await navigator.clipboard.writeText(location.href);
-          push('operations_report_shared', { method: navigator.share ? 'native' : 'clipboard' });
+          track('operations_report_shared', { method: navigator.share ? 'native' : 'clipboard' });
           share.textContent = navigator.share ? 'SHARED' : 'LINK COPIED';
         } catch (error) {
           if (error?.name !== 'AbortError') share.textContent = 'COPY THE URL';
         }
       });
+      attribution();
     })();
   </script>`
 }
@@ -462,7 +485,7 @@ export function renderReport(report, site, options) {
         <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
       </footer>
     </div>
-    ${analytics(report)}
+    ${analytics(report, options.posthogKey, options.posthogHost)}
   </body>
 </html>`
 }

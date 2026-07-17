@@ -476,6 +476,8 @@ for (const report of reports) {
     renderReport(report, site, {
       navHtml: routeLinks(),
       webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
     }),
   )
   await mkdir(join(dist, 'downloads'), { recursive: true })

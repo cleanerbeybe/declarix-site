@@ -47,6 +47,9 @@ Evidence screenshots were written to untracked `output/playwright/` during QA an
 - [x] CSV and SVG return successful responses with expected content types.
 - [x] Related calculator, pack-check, and registration routes resolve.
 - [x] Booking CTA preserves the report source parameter and reaches the homepage booking section.
+- [x] First-touch UTM attribution persists for the session and is included in every report event.
+- [x] Report events use the configured PostHog capture path when enabled and remain testable in `window.dataLayer` without an account.
+- [x] Breadcrumb schema contains two distinct levels: Home and the report.
 - [x] Full build re-run after the optical headline correction.
 
 ## Source-link check

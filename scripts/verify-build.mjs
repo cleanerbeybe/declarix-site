@@ -170,6 +170,8 @@ for (const route of expected) {
       'operations_report_related_clicked',
       'operations_report_methodology_viewed',
       'operations_report_shared',
+      "sessionStorage.getItem(key)",
+      "config.posthogHost + '/capture/'",
     ]) {
       if (!html.toLowerCase().includes(phrase.toLowerCase())) {
         throw new Error(`${route.path} is missing report contract: ${phrase}`)
@@ -177,6 +179,11 @@ for (const route of expected) {
     }
     if (!html.includes('"@type":"Report"') || !html.includes('"@type":"Dataset"')) {
       throw new Error(`${route.path} is missing Report and Dataset structured data`)
+    }
+    const reportSchema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const breadcrumbs = reportSchema['@graph']?.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (breadcrumbs.length !== 2 || new Set(breadcrumbs.map((item) => item.item)).size !== 2) {
+      throw new Error(`${route.path} must expose a two-level, non-duplicated breadcrumb trail`)
     }
     if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
       throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
