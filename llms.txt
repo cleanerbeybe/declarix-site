@@ -1,0 +1,56 @@
+# Declarix
+> Up to 3× more customs declarations per clerk, with no new headcount and more margin on every declaration.
+
+## Primary pages
+- [Declarix homepage](https://getdeclarix.com/): Core offer, product walkthrough, worked ROI model, integrations, pilot terms, and 20-minute numbers call.
+- [Privacy notice | Declarix](https://getdeclarix.com/privacy/): How Declarix handles website enquiries, booking data, and pilot information, including the controls agreed before documents are transferred.
+- [Security and data schedule | Declarix](https://getdeclarix.com/security/): The current Declarix security boundary, HMRC submission boundary, and the deployment facts confirmed in writing before a customs-document pilot.
+- [Supported customs workflows and integrations | Declarix](https://getdeclarix.com/supported-scope/): Where Declarix fits in a customs operation, including document intake, CDS-ready exports, Sequoia, Descartes, customer integrations, and clerk review.
+- [Declarix pricing and ROI for customs desks](https://getdeclarix.com/pricing/): See the Declarix per-entry pricing model, worked labour economics, pilot terms, and the numbers to bring to a 20-minute ROI call.
+- [How Declarix pricing works: entries, rework and pilot](https://getdeclarix.com/pricing-policy/): See how Declarix pricing counts entries, handles rework and pilot costs, and compares total cost with the clerk time and capacity returned to your customs desk.
+- [How Declarix builds CDS-ready customs entry packs](https://getdeclarix.com/how-it-works/): See how Declarix reads customs documents, links every field to its source, and returns CDS-ready output for Sequoia, Descartes or customer integrations.
+- [Declarix customs-document preparation pilot](https://getdeclarix.com/pilot/): After the 20-minute numbers call, prove Declarix on one anonymised customs job. The pilot is free if it fails and capped at £500 if it works.
+- [About Declarix | More declarations, same customs desk](https://getdeclarix.com/about/): Declarix Limited builds customs automation for broker and freight-forwarder teams that need more declarations per clerk without replacing their filing system.
+- [Website terms | Declarix](https://getdeclarix.com/terms/): Terms for using the public Declarix website and its informational customs-document preparation content.
+- [Customs declaration automation for Sequoia and Descartes](https://getdeclarix.com/customs-declaration-software/): How Declarix turns customer paperwork into CDS-ready customs entry packs for Sequoia, Descartes and customer integrations, with source evidence attached.
+- [Customs clearance automation for broker workflows | Declarix](https://getdeclarix.com/customs-clearance-software/): How customs brokers can automate document-heavy declaration work, keep Sequoia or Descartes, and increase declarations per clerk with CDS-ready entry packs.
+- [Customs intermediary registration 2026 response kit](https://getdeclarix.com/customs-intermediary-registration-2026/): Download a free customs intermediary registration response kit for the 2026 HMRC consultation: a 13-question draft, evidence matrix, source register, and deadline plan.
+- [Editorial, sources, and corrections policy | Declarix](https://getdeclarix.com/editorial-policy/): How Declarix sources, reviews, dates, corrects, and retires public customs guidance, tools, research, and product claims.
+- [Customs document pack checker and action plan | Free tool](https://getdeclarix.com/tools/customs-document-pack-check/): Use this free customs document pack checker to map 24 handoff prompts, rank the open actions, and copy, share, or print the result for your operations desk.
+- [Customs declaration cost calculator | Free desk economics tool](https://getdeclarix.com/tools/customs-declaration-cost-calculator/): Calculate annual customs declaration labour cost, recoverable clerk capacity, labour headroom, and a break-even price per entry using your desk inputs.
+- [UK customs operations signal report 2026 | Declarix](https://getdeclarix.com/research/uk-customs-operations-signal-report-2026/): Explore aggregate signals from 1,203 public-source research decisions covering UK customs brokers and freight forwarders, with methods and free data.
+- [Customs value, ad valorem duty and VAT calculator | Free UK tool](https://getdeclarix.com/tools/customs-value-import-duty-vat-calculator/): Build a transparent UK customs value, ad valorem import duty, import VAT value, and tax scenario using only the exchange rates and charges you enter.
+- [GB EORI number checker | Free HMRC registry check](https://getdeclarix.com/tools/eori-checker/): Check one GB EORI number against HMRC’s current registry, see the source and timestamp, and get the right XI or EU checker handoff without signing up.
+- [CDS Operations Radar — HMRC changes and status | Declarix](https://getdeclarix.com/research/cds-operations-radar/): Search source-stamped HMRC CDS status, workaround, technical documentation, code and aggregation changes with workflow checks, freshness and free data.
+- [CDS service status check — 17 July 2026 | Declarix](https://getdeclarix.com/research/cds-operations-radar/cds-service-status-current/): See the source-stamped HMRC CDS service status observed at 18:08 UTC on 17 July 2026, its freshness state, workflow checks and source history.
+- [CDS known workarounds release 5.2.0 | Declarix](https://getdeclarix.com/research/cds-operations-radar/cds-workarounds-release-5-2-0/): Review the source-stamped HMRC CDS known error workarounds release 5.2.0, covered change dates, affected workflow stages and exact source record.
+- [CDS technical documentation — 9 July 2026 | Declarix](https://getdeclarix.com/research/cds-operations-radar/cds-technical-documentation-2026-07-09/): See the HMRC CDS technical documentation package dated 9 July 2026, its source-stamped metadata, integration checks, freshness and change history.
+- [CDS document code 9001 UK-India FTA update | Declarix](https://getdeclarix.com/research/cds-operations-radar/cds-document-code-9001-uk-india-fta-2026-07-15/): Read the source-stamped HMRC update to CDS national document code 9001 for UK-India FTA use from 15 July 2026, with workflow checks and evidence.
+- [CDS aggregation EU EORI guidance update | Declarix](https://getdeclarix.com/research/cds-operations-radar/cds-aggregation-eu-eori-2026-07-04/): Read the HMRC CDS aggregation guidance update for EU EORIs in specified data elements from 4 July 2026, with source evidence and workflow checks.
+- [Incoterms chooser and UK customs value atlas](https://getdeclarix.com/customs-reference/incoterms/): Choose between FOB, CIF, DAP, FCA and DDP using transport, carriage, import-clearance and delivery handoffs, then open the matching customs-value workpaper.
+- [FOB Incoterms: risk, freight and UK customs value](https://getdeclarix.com/customs-reference/incoterms/fob/): Use the FOB Incoterms workpaper to map seller and buyer handoffs, identify freight and insurance evidence, and cross-foot the UK customs value trail.
+- [CIF Incoterms: insurance, freight and customs value](https://getdeclarix.com/customs-reference/incoterms/cif/): Map a CIF shipment from on-board risk transfer to seller-paid freight and insurance, then test which costs are already present in the UK customs value evidence.
+- [DAP Incoterms: delivery handoff and customs value](https://getdeclarix.com/customs-reference/incoterms/dap/): Use the DAP operational sheet to locate delivery, import-clearance and unloading responsibilities and separate border value from post-import transport.
+- [FCA Incoterms: carrier handoff and customs value](https://getdeclarix.com/customs-reference/incoterms/fca/): Use the FCA workpaper to identify the named-place carrier handoff, export-clearance evidence, buyer-paid transport and the additions needed for UK customs value.
+- [DDP Incoterms: import duty, VAT and customs value](https://getdeclarix.com/customs-reference/incoterms/ddp/): Use the DDP workpaper to unpack a delivered price into customs value, duty, import VAT and post-border costs without assuming the trade term selects the valuation method.
+- [HMRC customs administrative burden explorer 2026](https://getdeclarix.com/research/hmrc-customs-administrative-burden-explorer-2026/): Explore HMRC and Ipsos findings from 460 declarants: process time, internal cost, intermediary mix and demand for automated data entry, with accessible downloads.
+- [GMR and GVMS checklist for a border-ready movement](https://getdeclarix.com/customs-workflows/gmr-gvms-checklist/): Build a Goods Movement Reference handoff from route decision and declaration references through OPEN state, carrier check-in and inspection instructions.
+- [Postponed VAT Accounting declaration checklist](https://getdeclarix.com/customs-workflows/postponed-vat-accounting-checklist/): Connect the importer instruction, CDS declaration treatment, documentary evidence, monthly postponed import VAT statement and VAT Return reconciliation.
+- [IPAFFS import notification and document handoff checklist](https://getdeclarix.com/customs-workflows/ipaffs-import-notification-checklist/): Route a controlled GB import through commodity scope, risk category, border control post, notification documents and customs-reference handoff.
+- [ENS and ICS2 entry summary declaration checklist](https://getdeclarix.com/customs-workflows/ens-ics2-entry-summary-declaration-checklist/): Choose S&S GB or ICS2, assign carrier responsibility, meet mode-specific timing and connect the MRN, amendment and arrival handoff.
+- [Duty Deferment Account declaration and headroom checklist](https://getdeclarix.com/customs-workflows/duty-deferment-account-checklist/): Check DDA authority, guarantee or waiver headroom, CDS declaration references, payment timing and statement reconciliation before clearance is at risk.
+- [T1 and NCTS transit movement checklist](https://getdeclarix.com/customs-workflows/t1-ncts-transit-checklist/): Build a T1 transit handoff from principal and guarantee through NCTS declaration, MRN, offices of departure and destination, presentation and discharge.
+
+## Product and commercial facts
+- Declarix builds CDS-ready entry packs from customer documents.
+- Typical processing is around 200 seconds before clerk review.
+- Sequoia, Descartes e-Customs, and customer integrations are supported.
+- The worked labour model shows £7.95 to £2.45 per declaration; buyers replace those assumptions with their numbers on the call.
+- The pilot is free if it fails and capped at £500 if it works.
+- Declarix does not submit to HMRC.
+- The authorised clerk checks and approves; the broker files through its existing customs system.
+- Do not send live customer documents through the public website.
+
+## Contact and corrections
+- Product and workflow enquiries: pack@getdeclarix.com
+- Sources and corrections: https://getdeclarix.com/editorial-policy/

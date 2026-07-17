@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Search source-stamped HMRC CDS status, workaround, technical documentation, code and aggregation changes with workflow checks, freshness and free data." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#16313d" />
+    
+    <link rel="canonical" href="https://getdeclarix.com/research/cds-operations-radar/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/static-routes.css" />
+    <link rel="stylesheet" href="/report.css" />
+    <link rel="stylesheet" href="/radar.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Declarix" />
+    <meta property="og:title" content="CDS Operations Radar — HMRC changes and status | Declarix" />
+    <meta property="og:description" content="Search source-stamped HMRC CDS status, workaround, technical documentation, code and aggregation changes with workflow checks, freshness and free data." />
+    <meta property="og:url" content="https://getdeclarix.com/research/cds-operations-radar/" />
+    <meta property="og:image" content="https://getdeclarix.com/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CDS Operations Radar — HMRC changes and status | Declarix" />
+    <meta name="twitter:description" content="Search source-stamped HMRC CDS status, workaround, technical documentation, code and aggregation changes with workflow checks, freshness and free data." />
+    <meta name="twitter:image" content="https://getdeclarix.com/og.jpg" />
+    <title>CDS Operations Radar — HMRC changes and status | Declarix</title>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://getdeclarix.com/#organization","name":"Declarix Limited","url":"https://getdeclarix.com/"},{"@type":"CollectionPage","@id":"https://getdeclarix.com/research/cds-operations-radar/#collection","url":"https://getdeclarix.com/research/cds-operations-radar/","name":"CDS Operations Radar — HMRC changes and status | Declarix","headline":"CDS changes, translated into the next check.","description":"Search source-stamped HMRC CDS status, workaround, technical documentation, code and aggregation changes with workflow checks, freshness and free data.","datePublished":"2026-07-17","dateModified":"2026-07-17","isAccessibleForFree":true,"image":"https://getdeclarix.com/og.jpg","publisher":{"@id":"https://getdeclarix.com/#organization"},"mainEntity":{"@type":"ItemList","numberOfItems":5,"itemListElement":[{"@type":"ListItem","position":1,"name":"HMRC showed no listed CDS downtime or service issues at 18:08 UTC on 17 July","url":"https://getdeclarix.com/research/cds-operations-radar/cds-service-status-current/"},{"@type":"ListItem","position":2,"name":"HMRC published CDS consolidated workarounds release 5.2.0","url":"https://getdeclarix.com/research/cds-operations-radar/cds-workarounds-release-5-2-0/"},{"@type":"ListItem","position":3,"name":"HMRC linked a CDS technical documentation package dated 9 July 2026","url":"https://getdeclarix.com/research/cds-operations-radar/cds-technical-documentation-2026-07-09/"},{"@type":"ListItem","position":4,"name":"CDS document code 9001 updated for UK-India FTA use from 15 July","url":"https://getdeclarix.com/research/cds-operations-radar/cds-document-code-9001-uk-india-fta-2026-07-15/"},{"@type":"ListItem","position":5,"name":"HMRC updated CDS aggregation guidance for EU EORIs in specified data elements","url":"https://getdeclarix.com/research/cds-operations-radar/cds-aggregation-eu-eori-2026-07-04/"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://getdeclarix.com/"},{"@type":"ListItem","position":2,"name":"CDS Operations Radar","item":"https://getdeclarix.com/research/cds-operations-radar/"}]}]}</script>
+  </head>
+  <body>
+    <div class="docket radar-docket"><header class="masthead">
+    <a class="wordmark" href="/">DECLARIX</a>
+    <div class="masthead-cell"><span>RADAR EDITION</span><strong>17 JUL 2026</strong></div>
+    <a class="masthead-cta" data-radar-booking="masthead" href="/?src=research_cds_operations_radar_hub#book">BOOK THE NUMBERS CALL</a>
+  </header>
+  <nav class="route-nav" aria-label="Primary"><a href="/how-it-works/">HOW IT WORKS</a><a href="/supported-scope/">SCOPE</a><a href="/pricing/">PRICING</a><a href="/pilot/">PILOT</a><a href="/tools/customs-declaration-cost-calculator/">FREE COST CALCULATOR</a><a href="/tools/customs-value-import-duty-vat-calculator/">VALUE + DUTY</a><a href="/tools/eori-checker/">GB EORI CHECK</a><a href="/tools/customs-document-pack-check/">FREE PACK CHECK</a><a href="/customs-clearance-software/">CLEARANCE SOFTWARE</a><a href="/customs-intermediary-registration-2026/">REGISTRATION KIT</a><a href="/research/uk-customs-operations-signal-report-2026/">RESEARCH</a><a href="/research/cds-operations-radar/">RADAR</a><a href="/customs-reference/incoterms/">INCOTERMS</a><a href="/customs-workflows/gmr-gvms-checklist/">WORKFLOWS</a><a href="/research/hmrc-customs-administrative-burden-explorer-2026/">HMRC BURDEN</a><a href="/security/">SECURITY</a><a href="/about/">ABOUT</a></nav>
+    <div class="breadcrumbs"><a href="/">HOME</a> → CDS OPERATIONS RADAR</div>
+    <main>
+      <header class="hero radar-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">HMRC CDS CHANGE WATCH · SOURCE-STAMPED · FREE</p>
+          <h1>CDS changes, translated into the next check.</h1>
+          <p>Search 5 source records across service status, known workarounds, technical documentation, document codes and aggregation. Each record leads with the change, the workflow it may touch and the next check.</p>
+        </div>
+        <aside class="hero-ledger radar-hero-ledger">
+          <span class="route-ref">OPERATIONS RADAR · EDITION 01</span>
+          <div class="radar-hero-count"><strong>5</strong><span>OFFICIAL SOURCE RECORDS</span></div>
+          <div class="review-cell"><span>EXACT RESPONSES RECHECKED</span><strong>17 JUL 2026</strong></div>
+        </aside>
+      </header>
+      <div class="hero-value-strip"><strong>5 EXACT RESPONSES RETAINED</strong><strong>5 NARROW SOURCE FACTS</strong><strong>0 AUTO-PUBLISHED DIFFS</strong></div>
+      <section class="radar-intro">
+        <span class="section-label">USE THE CHANGE, THEN CHECK THE SOURCE</span>
+        <h2>One operational register. No hunting across update histories.</h2>
+        <div><p>The Radar consolidates substantive CDS changes that have a durable operator use. It does not create one thin page per error code or turn a source byte-change into an automatic claim.</p><p>Freshness is calculated in your browser from the retained observation. A stale or expired record stays useful as history, but it cannot present itself as a green live status.</p></div>
+      </section>
+      <section class="radar-register" aria-labelledby="radar-register-heading">
+        <header><span class="section-label">SEARCH THE REGISTER</span><h2 id="radar-register-heading">Find the change in your workflow.</h2></header>
+        <form class="radar-filters" data-radar-filters role="search">
+          <label><span>SEARCH</span><input type="search" name="q" placeholder="Code, workaround, EORI, status…" autocomplete="off" /></label>
+          <label><span>TOPIC</span><select name="topic"><option value="all">ALL TOPICS</option><option value="aggregation">AGGREGATION</option><option value="cds">CDS</option><option value="data-element-2-1">DATA-ELEMENT-2-1</option><option value="data-element-2-3">DATA-ELEMENT-2-3</option><option value="document-codes">DOCUMENT-CODES</option><option value="eori">EORI</option><option value="known-errors">KNOWN-ERRORS</option><option value="service-status">SERVICE-STATUS</option><option value="software-integration">SOFTWARE-INTEGRATION</option><option value="technical-documentation">TECHNICAL-DOCUMENTATION</option><option value="uk-india-fta">UK-INDIA-FTA</option><option value="workarounds">WORKAROUNDS</option></select></label>
+          <label><span>WORKFLOW</span><select name="stage"><option value="all">ALL STAGES</option><option value="declaration_completion">DECLARATION COMPLETION</option><option value="document_codes">DOCUMENT CODES</option><option value="notifications">NOTIFICATIONS</option><option value="party_identification">PARTY IDENTIFICATION</option><option value="reference_data">REFERENCE DATA</option><option value="service_access">SERVICE ACCESS</option><option value="software_integration">SOFTWARE INTEGRATION</option><option value="submission">SUBMISSION</option><option value="supplementary_declarations">SUPPLEMENTARY DECLARATIONS</option></select></label>
+          <label><span>FRESHNESS</span><select name="state"><option value="all">ALL STATES</option><option value="current">CURRENT OBSERVATION</option><option value="stale">SOURCE RECHECK DUE</option><option value="expired">EXPIRED POINT-IN-TIME</option><option value="not_yet_effective">NOT YET EFFECTIVE</option></select></label>
+          <button type="button" data-radar-clear>CLEAR FILTERS</button>
+        </form>
+        <div class="radar-result-count"><output data-radar-result-count aria-live="polite">5 RECORDS</output><span>UPDATED 17 JULY 2026</span></div>
+        <div class="radar-results"><article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="current" data-effective-from="2026-07-17T18:08:43Z" data-expires-at="2026-07-18T18:08:43Z" data-fresh-until="2026-07-18T18:08:43Z" data-topics="cds service-status" data-stages="service_access submission" data-search="hmrc showed no listed cds downtime or service issues at 18:08 utc on 17 july at 18:08 utc on 17 july 2026, hmrc's cds availability page showed no planned downtime and no service issues. the page's latest recorded update was 9 july 2026. cds service-status service_access hmrc listed no active access issue at the observation time. submission hmrc listed no planned cds submission downtime at the observation time.">
+        <div class="radar-result-meta"><span>SERVICE STATUS · POINT-IN-TIME</span><strong data-freshness-label>CURRENT OBSERVATION</strong></div>
+        <div class="radar-result-copy">
+          <h2><a href="/research/cds-operations-radar/cds-service-status-current/" data-radar-record-link="cds-service-status-current">HMRC showed no listed CDS downtime or service issues at 18:08 UTC on 17 July</a></h2>
+          <p>At 18:08 UTC on 17 July 2026, HMRC's CDS availability page showed no planned downtime and no service issues. The page's latest recorded update was 9 July 2026.</p>
+        </div>
+        <div class="radar-result-action"><span>OBSERVED 17 July 2026 at 18:08 UTC</span><b aria-hidden="true">OPEN RECORD →</b></div>
+      </article><article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="current" data-effective-from="" data-expires-at="" data-fresh-until="2026-07-24T18:08:43Z" data-topics="cds known-errors workarounds" data-stages="declaration_completion submission" data-search="hmrc published cds consolidated workarounds release 5.2.0 hmrc's 4 july update identifies consolidated workaround document 5.2.0 and says its known error log changes cover additions, amendments, and resolutions through 25 june 2026. cds known-errors workarounds declaration_completion the consolidated release may change which hmrc workaround applies to a known rejection or completion mismatch. submission resolved or amended workaround entries can change the correct resubmission path.">
+        <div class="radar-result-meta"><span>KNOWN ERRORS · WORKAROUND RELEASE</span><strong data-freshness-label>CURRENT OBSERVATION</strong></div>
+        <div class="radar-result-copy">
+          <h2><a href="/research/cds-operations-radar/cds-workarounds-release-5-2-0/" data-radar-record-link="cds-workarounds-release-5-2-0">HMRC published CDS consolidated workarounds release 5.2.0</a></h2>
+          <p>HMRC's 4 July update identifies consolidated workaround document 5.2.0 and says its Known Error Log changes cover additions, amendments, and resolutions through 25 June 2026.</p>
+        </div>
+        <div class="radar-result-action"><span>OBSERVED 17 July 2026 at 18:08 UTC</span><b aria-hidden="true">OPEN RECORD →</b></div>
+      </article><article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="current" data-effective-from="" data-expires-at="" data-fresh-until="2026-07-24T18:08:43Z" data-topics="cds software-integration technical-documentation" data-stages="notifications software_integration" data-search="hmrc linked a cds technical documentation package dated 9 july 2026 hmrc's developer guide linked a 54.4 mb cds technical documentation package dated 9 july 2026 for community system providers and third-party software developers. cds software-integration technical-documentation notifications package changes may affect notification or status-query implementation details. software_integration the dated package is the latest technical-documentation bundle linked by hmrc at capture time.">
+        <div class="radar-result-meta"><span>SOFTWARE INTEGRATION · TECHNICAL RELEASE</span><strong data-freshness-label>CURRENT OBSERVATION</strong></div>
+        <div class="radar-result-copy">
+          <h2><a href="/research/cds-operations-radar/cds-technical-documentation-2026-07-09/" data-radar-record-link="cds-technical-documentation-2026-07-09">HMRC linked a CDS technical documentation package dated 9 July 2026</a></h2>
+          <p>HMRC's developer guide linked a 54.4 MB CDS technical documentation package dated 9 July 2026 for Community System Providers and third-party software developers.</p>
+        </div>
+        <div class="radar-result-action"><span>OBSERVED 17 July 2026 at 18:08 UTC</span><b aria-hidden="true">OPEN RECORD →</b></div>
+      </article><article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="current" data-effective-from="2026-07-15T00:00:00Z" data-expires-at="" data-fresh-until="2026-07-20T18:08:43Z" data-topics="cds data-element-2-3 document-codes uk-india-fta" data-stages="document_codes reference_data" data-search="cds document code 9001 updated for uk-india fta use from 15 july hmrc updated national document code 9001 on 13 july to reflect use under the uk-india free trade agreement from 15 july 2026. cds data-element-2-3 document-codes uk-india-fta document_codes the stated use of national document code 9001 changed for declarations from 15 july 2026. reference_data internal code lists or cms mappings may not yet reflect the 13 july source update.">
+        <div class="radar-result-meta"><span>DOCUMENT CODES · REFERENCE DATA</span><strong data-freshness-label>CURRENT OBSERVATION</strong></div>
+        <div class="radar-result-copy">
+          <h2><a href="/research/cds-operations-radar/cds-document-code-9001-uk-india-fta-2026-07-15/" data-radar-record-link="cds-document-code-9001-uk-india-fta-2026-07-15">CDS document code 9001 updated for UK-India FTA use from 15 July</a></h2>
+          <p>HMRC updated national document code 9001 on 13 July to reflect use under the UK-India Free Trade Agreement from 15 July 2026.</p>
+        </div>
+        <div class="radar-result-action"><span>OBSERVED 17 July 2026 at 18:08 UTC</span><b aria-hidden="true">OPEN RECORD →</b></div>
+      </article><article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="current" data-effective-from="2026-07-04T00:00:00Z" data-expires-at="" data-fresh-until="2026-07-24T18:08:43Z" data-topics="aggregation cds data-element-2-1 eori" data-stages="party_identification supplementary_declarations" data-search="hmrc updated cds aggregation guidance for eu eoris in specified data elements hmrc's 1 july update says data element 2/1 was changed to reflect that eu eoris can be declared in certain data elements from 4 july 2026. aggregation cds data-element-2-1 eori party_identification specified aggregated-declaration references can now include an eu eori from the stated effective date. supplementary_declarations aggregation templates and validation paths may need a dated eu-eori case.">
+        <div class="radar-result-meta"><span>AGGREGATION · PARTY IDENTIFICATION</span><strong data-freshness-label>CURRENT OBSERVATION</strong></div>
+        <div class="radar-result-copy">
+          <h2><a href="/research/cds-operations-radar/cds-aggregation-eu-eori-2026-07-04/" data-radar-record-link="cds-aggregation-eu-eori-2026-07-04">HMRC updated CDS aggregation guidance for EU EORIs in specified data elements</a></h2>
+          <p>HMRC's 1 July update says Data Element 2/1 was changed to reflect that EU EORIs can be declared in certain data elements from 4 July 2026.</p>
+        </div>
+        <div class="radar-result-action"><span>OBSERVED 17 July 2026 at 18:08 UTC</span><b aria-hidden="true">OPEN RECORD →</b></div>
+      </article></div>
+        <div class="radar-empty" data-radar-empty hidden><strong>NO MATCHING RECORD</strong><p>Clear one or more filters to return to the full source register.</p></div>
+      </section>
+      <section class="radar-downloads" id="downloads">
+        <header><span class="section-label">UNGATED DATA</span><h2>Take the Radar into your change review.</h2><p>Download the 5 public records with source URLs, observation windows, workflow stages, snapshot hashes and correction state. No email wall.</p></header>
+        <div><a href="/downloads/cds-operations-radar-v1.json" download data-radar-download="json"><span>JSON</span><strong>MACHINE-READABLE RECORDS</strong><b>DOWNLOAD ↓</b></a><a href="/downloads/cds-operations-radar-v1.csv" download data-radar-download="csv"><span>CSV</span><strong>CHANGE-REVIEW TABLE</strong><b>DOWNLOAD ↓</b></a></div>
+      </section>
+      <section class="radar-method" id="method">
+        <span class="section-label">HOW THIS REGISTER EARNS TRUST</span><h2>Exact bytes retained. Changes queued. Claims reviewed.</h2>
+        <ol><li><strong>01 · OBSERVE</strong><span>Fetch the official primary source at its registered cadence and retain the exact response by SHA-256.</span></li><li><strong>02 · COMPARE</strong><span>Byte-identical responses produce a verified no-change observation. Any difference becomes a candidate, never public copy.</span></li><li><strong>03 · VERIFY</strong><span>Publish only narrow, source-faithful facts that pass the explicit review and owner-authorization fields.</span></li><li><strong>04 · CORRECT</strong><span>Keep the old event in history and show the correction, supersession or withdrawal on the durable permalink.</span></li></ol>
+      </section>
+      <section class="next-actions radar-next-actions">
+        <header><span class="section-label">FROM CHANGE TO WORKFLOW</span><h2>Check the pack. Then check the numbers.</h2><p>Use the free pack checker for the declaration in front of you, or bring your current minutes, volumes and exception path to a 20-minute workflow call.</p></header>
+        <div class="radar-action-grid"><a data-radar-related="pack_checker" href="/tools/customs-document-pack-check/"><span>FREE OPERATOR TOOL</span><strong>RUN THE DOCUMENT PACK CHECK</strong><b>OPEN TOOL →</b></a><a class="radar-action-primary" data-radar-booking="bottom_cta" href="/?src=research_cds_operations_radar_hub#book"><span>20-MINUTE WORKFLOW CALL</span><strong>MAP THE CHANGE TO YOUR DESK</strong><b>BOOK THE CALL →</b></a></div>
+      </section>
+    </main>
+    <footer class="footer"><span>DECLARIX LIMITED · COMPANY 17288258 · LEICESTER, ENGLAND</span><nav><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a></nav></footer></div>
+    <script>
+    (() => {
+      const config = {"posthogKey":"","posthogHost":"https://eu.i.posthog.com"};
+      const get = (key) => { try { return sessionStorage.getItem(key) || ''; } catch { return ''; } };
+      const set = (key, value) => { try { sessionStorage.setItem(key, value); } catch {} };
+      const params = new URLSearchParams(location.search);
+      const incoming = { source: params.get('utm_source') || params.get('src') || '', medium: params.get('utm_medium') || '', campaign: params.get('utm_campaign') || '', content: params.get('utm_content') || '', term: params.get('utm_term') || '' };
+      Object.entries(incoming).forEach(([key, value]) => { if (value && !get('dclrx-' + key)) set('dclrx-' + key, value); });
+      const attribution = Object.fromEntries(Object.keys(incoming).map((key) => [key, get('dclrx-' + key) || (key === 'source' ? 'direct' : 'none')]));
+      const distinctId = get('dclrx-distinct-id') || crypto.randomUUID();
+      set('dclrx-distinct-id', distinctId);
+      const track = (event, properties = {}) => {
+        const payload = { ...attribution, ...properties, page_path: location.pathname, radar_record_id: 'hub' };
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event, ...payload });
+        if (!config.posthogKey) return;
+        const body = JSON.stringify({ api_key: config.posthogKey, event, distinct_id: distinctId, properties: payload });
+        if (navigator.sendBeacon && navigator.sendBeacon(config.posthogHost + '/capture/', body)) return;
+        fetch(config.posthogHost + '/capture/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => null);
+      };
+      const stateAt = (node) => {
+        const now = Date.now();
+        const effective = node.dataset.effectiveFrom ? Date.parse(node.dataset.effectiveFrom) : null;
+        const expires = node.dataset.expiresAt ? Date.parse(node.dataset.expiresAt) : null;
+        const fresh = Date.parse(node.dataset.freshUntil);
+        if (effective && now < effective) return 'not_yet_effective';
+        if (expires && now >= expires) return 'expired';
+        if (now > fresh) return 'stale';
+        return 'current';
+      };
+      const labels = { current: 'CURRENT OBSERVATION', stale: 'SOURCE RECHECK DUE', expired: 'POINT-IN-TIME RECORD EXPIRED', not_yet_effective: 'NOT YET EFFECTIVE' };
+      document.querySelectorAll('[data-radar-freshness]').forEach((node) => {
+        const state = stateAt(node);
+        node.dataset.freshnessState = state;
+        const label = node.querySelector('[data-freshness-label]');
+        if (label) label.textContent = labels[state];
+      });
+      document.querySelectorAll('[data-radar-download]').forEach((link) => link.addEventListener('click', () => track('radar_downloaded', { asset_format: link.dataset.radarDownload })));
+      document.querySelectorAll('[data-radar-source]').forEach((link) => link.addEventListener('click', () => track('radar_source_opened', { source_id: link.dataset.radarSource })));
+      document.querySelectorAll('[data-radar-related]').forEach((link) => link.addEventListener('click', () => track('radar_related_clicked', { destination_id: link.dataset.radarRelated })));
+      document.querySelectorAll('[data-radar-booking]').forEach((link) => link.addEventListener('click', () => track('radar_booking_clicked', { placement: link.dataset.radarBooking })));
+      document.querySelectorAll('[data-radar-record-link]').forEach((link) => link.addEventListener('click', () => track('radar_record_opened', { destination_id: link.dataset.radarRecordLink })));
+      const share = document.querySelector('[data-radar-share]');
+      share?.addEventListener('click', async () => {
+        try {
+          if (navigator.share) await navigator.share({ title: document.title, url: location.href });
+          else await navigator.clipboard.writeText(location.href);
+          track('radar_shared', { method: navigator.share ? 'native' : 'clipboard' });
+          share.textContent = navigator.share ? 'SHARED' : 'LINK COPIED';
+        } catch (error) { if (error?.name !== 'AbortError') share.textContent = 'COPY THE URL'; }
+      });
+      const filterForm = document.querySelector('[data-radar-filters]');
+      if (filterForm) {
+        const search = filterForm.querySelector('[name="q"]');
+        const topic = filterForm.querySelector('[name="topic"]');
+        const stage = filterForm.querySelector('[name="stage"]');
+        const state = filterForm.querySelector('[name="state"]');
+        const count = document.querySelector('[data-radar-result-count]');
+        const empty = document.querySelector('[data-radar-empty]');
+        const url = new URL(location.href);
+        search.value = url.searchParams.get('q') || '';
+        topic.value = url.searchParams.get('topic') || 'all';
+        stage.value = url.searchParams.get('stage') || 'all';
+        state.value = url.searchParams.get('state') || 'all';
+        const apply = (shouldTrack = false) => {
+          const query = search.value.trim().toLowerCase();
+          let visible = 0;
+          document.querySelectorAll('[data-radar-result]').forEach((row) => {
+            const freshness = row.dataset.freshnessState || stateAt(row);
+            const matches = (!query || row.dataset.search.includes(query)) &&
+              (topic.value === 'all' || row.dataset.topics.split(' ').includes(topic.value)) &&
+              (stage.value === 'all' || row.dataset.stages.split(' ').includes(stage.value)) &&
+              (state.value === 'all' || freshness === state.value);
+            row.hidden = !matches;
+            if (matches) visible += 1;
+          });
+          count.textContent = visible + (visible === 1 ? ' RECORD' : ' RECORDS');
+          empty.hidden = visible !== 0;
+          const next = new URL(location.href);
+          for (const [key, value] of [['q', search.value.trim()], ['topic', topic.value], ['stage', stage.value], ['state', state.value]]) {
+            if (!value || value === 'all') next.searchParams.delete(key); else next.searchParams.set(key, value);
+          }
+          history.replaceState({}, '', next);
+          if (shouldTrack) track('radar_filter_changed', { topic: topic.value, stage: stage.value, freshness_state: state.value, has_query: Boolean(query) });
+        };
+        filterForm.addEventListener('input', () => apply(true));
+        filterForm.addEventListener('change', () => apply(true));
+        filterForm.addEventListener('submit', (event) => { event.preventDefault(); apply(true); });
+        filterForm.querySelector('[data-radar-clear]').addEventListener('click', () => { search.value = ''; topic.value = 'all'; stage.value = 'all'; state.value = 'all'; apply(true); search.focus(); });
+        apply(false);
+      }
+    })();
+  </script>
+  </body>
+</html>

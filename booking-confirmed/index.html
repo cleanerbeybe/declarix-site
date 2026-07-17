@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Your Declarix workflow call has been booked. Return to the site or review what to bring to the conversation." />
+    <meta name="robots" content="noindex,follow" />
+    <meta name="theme-color" content="#16313d" />
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/static-routes.css" />
+    <title>Workflow call booked | Declarix</title>
+  </head>
+  <body>
+    <div class="docket">
+      <header class="masthead">
+        <a class="wordmark" href="/">DECLARIX</a>
+        <div class="masthead-cell"><span>FORM STATUS</span><strong>BOOKED</strong></div>
+        <a class="masthead-cta" href="/pilot/">REVIEW THE PILOT</a>
+      </header>
+      <nav class="route-nav" aria-label="Primary"><a href="/how-it-works/">HOW IT WORKS</a><a href="/supported-scope/">SCOPE</a><a href="/pricing/">PRICING</a><a href="/pilot/">PILOT</a><a href="/tools/customs-declaration-cost-calculator/">FREE COST CALCULATOR</a><a href="/tools/customs-value-import-duty-vat-calculator/">VALUE + DUTY</a><a href="/tools/eori-checker/">GB EORI CHECK</a><a href="/tools/customs-document-pack-check/">FREE PACK CHECK</a><a href="/customs-clearance-software/">CLEARANCE SOFTWARE</a><a href="/customs-intermediary-registration-2026/">REGISTRATION KIT</a><a href="/research/uk-customs-operations-signal-report-2026/">RESEARCH</a><a href="/research/cds-operations-radar/">RADAR</a><a href="/customs-reference/incoterms/">INCOTERMS</a><a href="/customs-workflows/gmr-gvms-checklist/">WORKFLOWS</a><a href="/research/hmrc-customs-administrative-burden-explorer-2026/">HMRC BURDEN</a><a href="/security/">SECURITY</a><a href="/about/">ABOUT</a></nav>
+      <main>
+        <header class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">BOOKING RECEIPT · WORKFLOW REVIEW</p>
+            <h1>Your workflow call is in the diary.</h1>
+            <p>Bring the approximate weekly volume, current customs system, representative document mix, and the exceptions that create work. Do not send live customer documents before a transfer channel is agreed.</p>
+          </div>
+          <aside class="hero-ledger">
+            <span class="route-ref">CONVERSION · BOOKING COMPLETE</span>
+            <div class="stamp">CALL<br />BOOKED</div>
+          </aside>
+        </header>
+        <section class="cta-band">
+          <div><h2>Prepare the useful facts.</h2><p>The call will define supported scope, the side-by-side measurement, and the information needed for a written pilot proposal.</p></div>
+          <a class="button" href="/pilot/">READ THE PILOT DOCKET</a>
+        </section>
+      </main>
+      <footer class="footer"><span>DECLARIX LIMITED · COMPANY 17288258</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a></nav></footer>
+    </div>
+    <script>
+      (() => {
+        const config = {"posthogKey":"","posthogHost":"https://eu.i.posthog.com"};
+        const source = sessionStorage.getItem('dclrx-source') || 'direct';
+        const campaign = sessionStorage.getItem('dclrx-campaign') || 'none';
+        const distinctId = sessionStorage.getItem('dclrx-distinct-id') || crypto.randomUUID();
+        sessionStorage.setItem('dclrx-distinct-id', distinctId);
+        const properties = { source, campaign, page_path: '/booking-confirmed/', provider: 'zoho' };
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'booking_completed', ...properties });
+        if (!config.posthogKey) return;
+        const body = JSON.stringify({ api_key: config.posthogKey, event: 'booking_completed', distinct_id: distinctId, properties });
+        if (navigator.sendBeacon && navigator.sendBeacon(config.posthogHost + '/capture/', body)) return;
+        fetch(config.posthogHost + '/capture/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => undefined);
+      })();
+    </script>
+  </body>
+</html>
