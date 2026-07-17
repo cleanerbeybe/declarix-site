@@ -142,8 +142,11 @@ for (const route of expected) {
     if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
       throw new Error(`${route.path} is missing truthful WebApplication structured data`)
     }
-    if (!html.includes('"@type":"FAQPage"') || (html.match(/class="calculator-faq"/g) || []).length < 3) {
-      throw new Error(`${route.path} is missing visible FAQ structured-data support`)
+    if ((html.match(/class="calculator-faq"/g) || []).length < 3) {
+      throw new Error(`${route.path} is missing visible question-and-answer support`)
+    }
+    if (html.includes('"@type":"FAQPage"')) {
+      throw new Error(`${route.path} must not use restricted FAQPage schema on a commercial site`)
     }
     for (const outputId of [
       'annual-entries', 'current-hours', 'current-cost', 'target-hours', 'target-cost',

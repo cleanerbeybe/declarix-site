@@ -12,5 +12,5 @@
 | Share state | Explicit copy action | Avoids placing commercial inputs into the URL unless the visitor chooses to share. |
 | Navigation | Additive top-level free cost calculator link | Gives the route inbound internal links and discovery without changing existing page copy. |
 | Styling | Dedicated `calculator.css` using locked Paper World tokens | Minimises regression risk and preserves the site’s customs-workpaper visual language. |
-| Schema | `WebApplication` plus visible `FAQPage` | Describes the free browser tool and only marks up questions rendered on the page. |
+| Schema | `WebApplication` plus visible questions | Describes the free browser tool without using restricted commercial-site `FAQPage` rich-result markup. |
 | Sources | Official customs context only | GOV.UK pages do not support labour benchmarks, so the page explicitly says the arithmetic comes from buyer inputs. |

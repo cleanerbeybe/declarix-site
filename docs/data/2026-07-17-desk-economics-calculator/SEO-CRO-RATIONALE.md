@@ -13,7 +13,7 @@ enough to the commercial problem to produce warm discovery-call traffic.
 - A direct-answer paragraph and copyable formula high on the page.
 - Complete static HTML for crawlability; JavaScript enhances only the arithmetic.
 - Canonical, description, social metadata, sitemap entry, `llms` entries, breadcrumb markup,
-  `WebApplication`, and visible FAQ content with matching `FAQPage` schema.
+  `WebApplication`, and visible question-and-answer content without restricted `FAQPage` schema.
 - Internal navigation links from every generated static route.
 
 ## Conversion sequence

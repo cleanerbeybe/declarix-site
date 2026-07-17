@@ -6,7 +6,7 @@
 - `npm run lint`
 - `npm run build`
 - Static verifier confirms one H1, unique title/canonical, valid description, route discovery,
-  sitemap and LLM entries, WebApplication and visible FAQ schema, formula/boundary phrases, required
+  sitemap and LLM entries, WebApplication schema and visible question-and-answer content, formula/boundary phrases, required
   outputs, no text/email/file/free-text input, and parseable inline JavaScript.
 
 ## Required interaction checks
@@ -43,7 +43,7 @@ booking component is changed by this release.
 - `window.dataLayer` inspection confirmed aggregate bands only and no raw input/output properties.
 - Share-link control copied the explicit-input URL and emitted `tool_result_copied`.
 - Chromium 390 × 844: document and body scroll widths both equalled 390; no horizontal overflow.
-- Chromium 1440 × 1000: one H1; Organization, WebApplication, FAQPage, and BreadcrumbList schema;
+- Chromium 1440 × 1000: one H1; Organization, WebApplication, and BreadcrumbList schema;
   no `transition: all`; no console errors or warnings.
 - Desktop hero, desktop result, full mobile, and two-page print renders were visually inspected. The
   first print pass exposed low contrast when print backgrounds were suppressed; print-only CSS was
