@@ -35,7 +35,7 @@ Edit `src/config.ts` before a branded launch:
 - `companyLegal` and `companyNo`: legal footer and pilot copy
 - `linkedin`: company LinkedIn URL
 - `posthogKey`: read from the `VITE_POSTHOG_KEY` deployment variable; empty disables network capture
-- `founderLine`: approved founder wording
+- `founderPortrait` and `founderName`: optional founder exhibit and accessible image label
 
 The site is configured for `getdeclarix.com`, with `public/CNAME` included in the GitHub Pages artifact and the deploy workflow building with `VITE_BASE_PATH=/`.
 

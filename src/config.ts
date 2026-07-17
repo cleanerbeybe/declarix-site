@@ -12,8 +12,6 @@ export const CONFIG = {
   posthogKey: import.meta.env.VITE_POSTHOG_KEY ?? '',
   posthogHost: import.meta.env.VITE_POSTHOG_HOST ?? 'https://eu.i.posthog.com',
   multimodalBarUntil: '2026-07-31',
-  founderLine:
-    'Ihusan Adam, a PhD engineer who builds document-reading systems for regulated industries',
   founderName: 'Ihusan Adam',
   // v2.5 B1.2 — real duotone portrait path once approved; empty renders no exhibit
   founderPortrait: '',

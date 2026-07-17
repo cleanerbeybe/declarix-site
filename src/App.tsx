@@ -980,13 +980,9 @@ function PilotSection() {
             </figure>
           ) : null}
           <p>
-            Declarix is built in the UK by{' '}
-            {isConfigured(CONFIG.linkedin) ? (
-              <a href={CONFIG.linkedin}>{CONFIG.founderLine}</a>
-            ) : (
-              CONFIG.founderLine
-            )}
-            . We'd rather prove it on your paperwork than pitch it on ours.
+            Declarix is built in the UK by a team of PhD engineers focused on document-reading
+            systems for regulated industries. We'd rather prove it on your paperwork than pitch it
+            on ours.
           </p>
           <p className="mono-note">
             {isConfigured(CONFIG.companyNo)
