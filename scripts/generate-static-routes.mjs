@@ -39,7 +39,7 @@ function routeLinks() {
     ['PILOT', '/pilot/'],
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
-    ['REGISTRATION 2026', '/customs-intermediary-registration-2026/'],
+    ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
@@ -86,6 +86,66 @@ function renderSources(route) {
       )
       .join('')}</ol>
   </section>`
+}
+
+function renderHeroStrip(route) {
+  if (route.heroStrip?.length) {
+    return `<div class="hero-value-strip">${route.heroStrip.map((item) => `<strong>${escapeHtml(item)}</strong>`).join('')}</div>`
+  }
+  const boundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
+  return boundaryRoutes.has(route.path) && route.limitations
+    ? `<p class="limitations">LIMITATION · ${escapeHtml(route.limitations)}</p>`
+    : ''
+}
+
+function renderResourceKit(route) {
+  if (!route.resourceKit) return ''
+  const kit = route.resourceKit
+  return `<section class="resource-kit" aria-labelledby="registration-kit-heading">
+    <header class="resource-kit-header">
+      <span class="section-label">${escapeHtml(kit.label)}</span>
+      <h2 id="registration-kit-heading">${escapeHtml(kit.title)}</h2>
+      <p>${escapeHtml(kit.intro)}</p>
+    </header>
+    <div class="resource-downloads">${kit.assets
+      .map(
+        (asset) => `<a class="resource-download" href="${escapeHtml(asset.href)}" download data-kit-download="${escapeHtml(asset.id)}" data-kit-format="${escapeHtml(asset.format.toLowerCase())}">
+          <span class="resource-format">${escapeHtml(asset.format)}</span>
+          <strong>${escapeHtml(asset.title)}</strong>
+          <p>${escapeHtml(asset.description)}</p>
+          <small>${escapeHtml(asset.meta)}</small>
+          <b aria-hidden="true">DOWNLOAD ↓</b>
+        </a>`,
+      )
+      .join('')}</div>
+    <ol class="resource-steps">${kit.steps
+      .map(
+        ([number, title, copy]) => `<li><span>${escapeHtml(number)}</span><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`,
+      )
+      .join('')}</ol>
+    <aside class="resource-boundary"><strong>Keep the official source open.</strong><span>${escapeHtml(route.boundary)}</span></aside>
+  </section>`
+}
+
+function routeAnalyticsScript(route) {
+  if (!route.resourceKit) return ''
+  return `<script>
+    (() => {
+      const push = (event, properties = {}) => {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event, page_path: location.pathname, ...properties });
+      };
+      document.querySelectorAll('[data-kit-download]').forEach((link) => link.addEventListener('click', () => {
+        push('registration_kit_downloaded', {
+          asset_id: link.dataset.kitDownload,
+          asset_format: link.dataset.kitFormat,
+        });
+      }));
+      document.querySelectorAll('[data-kit-booking]').forEach((link) => link.addEventListener('click', () => {
+        push('registration_kit_booking_clicked', { placement: link.dataset.kitBooking });
+      }));
+    })();
+  </script>`
 }
 
 function jsonLd(route) {
@@ -169,7 +229,7 @@ function renderRoute(route) {
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
         <div class="masthead-cell"><span>CORE OUTCOME</span><strong>UP TO 3×</strong></div>
-        <a class="masthead-cta" href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
+        <a class="masthead-cta" ${route.resourceKit ? 'data-kit-booking="masthead"' : ''} href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
       <div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div>
@@ -186,13 +246,14 @@ function renderRoute(route) {
             <div class="review-cell"><span>LAST REVIEWED</span><strong>${site.reviewedOn}</strong></div>
           </aside>
         </header>
-        <p class="limitations">LIMITATION · ${escapeHtml(route.limitations)}</p>
+        ${renderHeroStrip(route)}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
+        ${renderResourceKit(route)}
         ${renderSources(route)}
         <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
-          <div><h2>Run the numbers before you buy.</h2><p>Bring weekly volume, current minutes per declaration, loaded clerk cost and the system your team files through. Leave with an ROI estimate, integration route and recommended first workflow.</p></div>
-          <a class="button" href="${bookingHref(route)}">BOOK THE 20-MINUTE NUMBERS CALL</a>
+          <div><h2>${escapeHtml(route.cta?.title || 'Run the numbers before you buy.')}</h2><p>${escapeHtml(route.cta?.copy || 'Bring weekly volume, current minutes per declaration, loaded clerk cost and the system your team files through. Leave with an ROI estimate, integration route and recommended first workflow.')}</p></div>
+          <a class="button" ${route.resourceKit ? 'data-kit-booking="bottom_cta"' : ''} href="${bookingHref(route)}">${escapeHtml(route.cta?.label || 'BOOK THE 20-MINUTE NUMBERS CALL')}</a>
         </section>
       </main>
       <footer class="footer">
@@ -200,6 +261,7 @@ function renderRoute(route) {
         <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
       </footer>
     </div>
+    ${routeAnalyticsScript(route)}
   </body>
 </html>`
 }

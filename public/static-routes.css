@@ -415,6 +415,173 @@ a:focus-visible {
   background: var(--manifest);
 }
 
+.hero-value-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1.5px solid var(--ink);
+  color: var(--paper);
+  background: var(--manifest);
+}
+
+.hero-value-strip strong {
+  padding: 14px 18px;
+  border-right: 1px solid rgb(247 246 241 / 0.5);
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.07em;
+  text-align: center;
+}
+
+.hero-value-strip strong:last-child {
+  border-right: 0;
+}
+
+.resource-kit {
+  border-bottom: 2px solid var(--ink);
+  background: var(--field);
+}
+
+.resource-kit-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.45fr) minmax(280px, 0.8fr) minmax(300px, 1fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: end;
+  padding: clamp(36px, 6vw, 72px);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.resource-kit-header h2 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 0.98;
+}
+
+.resource-kit-header p {
+  max-width: 58ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.resource-downloads {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.resource-download {
+  position: relative;
+  display: grid;
+  min-height: 340px;
+  align-content: start;
+  padding: clamp(32px, 5vw, 58px);
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.resource-download:last-child {
+  border-right: 0;
+}
+
+.resource-download:hover,
+.resource-download:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.resource-format,
+.resource-download small,
+.resource-download b {
+  font: 600 9px/1.5 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+}
+
+.resource-format {
+  width: max-content;
+  margin-bottom: 42px;
+  padding: 8px 10px;
+  border: 1px solid currentColor;
+}
+
+.resource-download > strong {
+  max-width: 16ch;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1;
+}
+
+.resource-download p {
+  max-width: 55ch;
+  margin: 18px 0;
+  line-height: 1.55;
+}
+
+.resource-download small {
+  color: var(--muted);
+}
+
+.resource-download:hover small,
+.resource-download:focus-visible small {
+  color: rgb(247 246 241 / 0.7);
+}
+
+.resource-download b {
+  margin-top: auto;
+  padding-top: 34px;
+}
+
+.resource-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resource-steps li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 12px;
+  padding: clamp(28px, 4vw, 44px);
+  border-right: 1.5px solid var(--ink);
+}
+
+.resource-steps li:last-child {
+  border-right: 0;
+}
+
+.resource-steps li > span {
+  color: var(--manifest);
+  font: 600 10px/1.5 'IBM Plex Mono', monospace;
+}
+
+.resource-steps strong {
+  font-size: 19px;
+}
+
+.resource-steps p {
+  margin: 10px 0 0;
+  line-height: 1.55;
+}
+
+.resource-boundary {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.45fr) minmax(0, 1.55fr);
+  gap: 28px;
+  padding: 20px clamp(22px, 4vw, 48px);
+  border-top: 1.5px solid var(--ink);
+  color: var(--muted);
+  background: var(--paper);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.resource-boundary strong {
+  color: var(--ink);
+}
+
 @media (max-width: 760px) {
   .docket {
     width: min(100% - 16px, 1180px);
@@ -437,8 +604,44 @@ a:focus-visible {
   .hero,
   .content-grid,
   .cta-band,
-  .source-register {
+  .source-register,
+  .resource-kit-header,
+  .resource-downloads,
+  .resource-steps,
+  .resource-boundary {
     grid-template-columns: 1fr;
+  }
+
+  .hero-value-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-value-strip strong,
+  .hero-value-strip strong:last-child {
+    border-right: 0;
+    border-bottom: 1px solid rgb(247 246 241 / 0.5);
+  }
+
+  .hero-value-strip strong:last-child {
+    border-bottom: 0;
+  }
+
+  .resource-download,
+  .resource-download:last-child,
+  .resource-steps li,
+  .resource-steps li:last-child {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .resource-download b {
+    margin-top: 28px;
+    padding-top: 0;
+  }
+
+  .resource-steps li:last-child {
+    border-bottom: 0;
   }
 
   .hero-copy {
@@ -491,7 +694,8 @@ a:focus-visible {
 
   .masthead-cta,
   .route-nav,
-  .cta-band {
+  .cta-band,
+  .resource-downloads {
     display: none;
   }
 
