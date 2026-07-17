@@ -5,6 +5,7 @@ import { calculators, renderCalculator } from './calculators.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
+import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const dist = join(root, 'dist')
@@ -40,6 +41,7 @@ function routeLinks() {
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
+    ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
@@ -485,7 +487,33 @@ for (const report of reports) {
   await writeFile(join(dist, report.downloads[1].href.slice(1)), pressChartSvg(report))
 }
 
-const indexableRoutes = [...routes, ...tools, ...calculators, ...reports]
+for (const workpaper of valueDutyWorkpapers) {
+  if (!workpaper.path.startsWith('/') || !workpaper.path.endsWith('/')) {
+    throw new Error(`Value and duty workpaper must use a trailing slash: ${workpaper.path}`)
+  }
+  if (paths.has(workpaper.path)) throw new Error(`Duplicate route: ${workpaper.path}`)
+  if (titles.has(workpaper.title)) throw new Error(`Duplicate title: ${workpaper.title}`)
+  if (headings.has(workpaper.h1)) throw new Error(`Duplicate H1: ${workpaper.h1}`)
+  if (workpaper.questions.length < 3) throw new Error(`Workpaper needs visible question support: ${workpaper.path}`)
+  if (workpaper.sources.length < 4) throw new Error(`Workpaper needs primary source coverage: ${workpaper.path}`)
+  paths.add(workpaper.path)
+  titles.add(workpaper.title)
+  headings.add(workpaper.h1)
+
+  const target = join(dist, workpaper.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderValueDutyWorkpaper(workpaper, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+}
+
+const indexableRoutes = [...routes, ...tools, ...calculators, ...reports, ...valueDutyWorkpapers]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

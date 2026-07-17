@@ -6,6 +6,7 @@ import { calculators } from './calculators.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
+import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
@@ -24,6 +25,7 @@ const publicSources = [
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
   'scripts/reports.mjs',
+  'scripts/value-duty-workpapers.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -42,7 +44,7 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools, ...calculators, ...reports]
+const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools, ...calculators, ...reports, ...valueDutyWorkpapers]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
 const titles = new Set()
@@ -216,6 +218,45 @@ for (const route of expected) {
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
+  if (valueDutyWorkpapers.includes(route)) {
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must not collect document data, identifiers, email, or free text`)
+    }
+    if ((html.match(/type="number"/g) || []).length !== 10) {
+      throw new Error(`${route.path} must expose exactly ten explicit numerical inputs`)
+    }
+    for (const phrase of [
+      'CUSTOMS VALUE = CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS',
+      'CUSTOMS DUTY',
+      'IMPORT VAT VALUE',
+      'No input is fetched or inferred',
+      'does not perform a tariff lookup',
+      'tool_started',
+      'tool_completed',
+      'tool_result_shared',
+      'tool_result_printed',
+      'tool_booking_clicked',
+    ]) {
+      if (!html.toLowerCase().includes(phrase.toLowerCase())) {
+        throw new Error(`${route.path} is missing value and duty contract: ${phrase}`)
+      }
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit restricted FAQPage or HowTo structured data`)
+    }
+    for (const outputId of [
+      'converted-goods', 'net-adjustments', 'customs-value', 'customs-duty',
+      'import-vat-value', 'import-vat', 'tax-duty-total', 'planning-total',
+    ]) {
+      if (!html.includes(`id="${outputId}"`)) throw new Error(`${route.path} is missing output ${outputId}`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
@@ -239,6 +280,50 @@ for (const route of expected) {
   titles.add(title)
   canonicals.add(canonical)
   headings.add(heading)
+}
+
+const formulaFixture = calculateValueDutyScenario({
+  goodsAmount: 10000,
+  fxRate: 0.8,
+  freight: 500,
+  insurance: 100,
+  additions: 400,
+  deductions: 200,
+  dutyRate: 5,
+  otherImportCharges: 60,
+  incidentalExpenses: 200,
+  vatRate: 20,
+})
+const formulaExpected = {
+  convertedGoods: 8000,
+  netAdjustments: 200,
+  customsValueBeforeClamp: 8800,
+  customsValue: 8800,
+  customsDuty: 440,
+  importVatValue: 9500,
+  importVat: 1900,
+  taxDutyTotal: 2400,
+  planningTotal: 11400,
+}
+for (const [key, expectedValue] of Object.entries(formulaExpected)) {
+  if (Math.abs(formulaFixture[key] - expectedValue) > 1e-9) {
+    throw new Error(`Value and duty formula drift at ${key}: ${formulaFixture[key]} != ${expectedValue}`)
+  }
+}
+const clampedFixture = calculateValueDutyScenario({
+  goodsAmount: 100,
+  fxRate: 1,
+  freight: 0,
+  insurance: 0,
+  additions: 0,
+  deductions: 110,
+  dutyRate: 10,
+  otherImportCharges: 0,
+  incidentalExpenses: 0,
+  vatRate: 20,
+})
+if (clampedFixture.customsValueBeforeClamp !== -10 || clampedFixture.customsValue !== 0) {
+  throw new Error('Value and duty negative-value formula boundary drifted')
 }
 
 for (const [path, count] of inbound) {

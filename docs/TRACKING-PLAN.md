@@ -41,6 +41,11 @@ The anonymous identifier is session-scoped.
 | `operations_report_related_clicked` | Which free workbench route does report traffic choose? | report_id, destination_id, source, medium, campaign, content, term, page_path | Visitor opens a related tool or kit |
 | `operations_report_methodology_viewed` | Do readers inspect the research method? | report_id, placement, source, medium, campaign, content, term, page_path | Visitor selects the methodology action |
 | `operations_report_shared` | Is the report useful enough to distribute? | report_id, method, source, medium, campaign, content, term, page_path | Visitor completes native share or copies the report link |
+| `tool_started` | Do visitors engage with the customs value and duty workpaper? | tool_id, source, page_path | First value, rate, or charge input change |
+| `tool_completed` | Do visitors produce a customs value and duty planning scenario? | tool_id, customs_value_band, non_unit_fx, has_adjustments, has_duty_rate, has_vat_rate, source | Visitor builds a valid scenario |
+| `tool_result_shared` | Is the value and duty scenario useful enough to pass to a colleague? | tool_id, customs_value_band, non_unit_fx, has_adjustments, has_duty_rate, has_vat_rate, method, source | Visitor explicitly shares or copies a scenario link |
+| `tool_result_printed` | Is the value and duty workpaper used in a review? | tool_id, customs_value_band, non_unit_fx, has_adjustments, has_duty_rate, has_vat_rate, source | Visitor prints or saves the scenario |
+| `tool_booking_clicked` | Does the value and duty scenario assist a numbers call? | tool_id, customs_value_band, non_unit_fx, has_adjustments, has_duty_rate, has_vat_rate, source | Visitor selects the workpaper booking CTA |
 | `registration_kit_downloaded` | Which consultation asset delivers value? | page_path, asset_id, asset_format | Visitor downloads an editable response-kit file |
 | `registration_kit_booking_clicked` | Does the response kit assist a workflow call? | page_path, placement | Visitor selects a kit booking CTA |
 
@@ -62,6 +67,11 @@ the visitor asks for one and contains the five model inputs shown on the page.
 The operations report records report ID plus enum-only asset, placement, destination, and share-method
 properties with the documented attribution fields. It does not transmit research rows, company or
 contact data, domains, candidate IDs, evidence excerpts, or download contents.
+
+The customs value and duty workpaper records only a coarse customs-value band and boolean indicators
+for non-unit FX, adjustments, duty rate, and VAT rate. It does not transmit raw goods values, exchange
+rates, charges, percentage rates, calculated outputs, the share URL, identifiers, or free text. A share
+link is created only after the visitor asks for one and contains the ten visible numerical inputs.
 
 ## Deployment closure
 
