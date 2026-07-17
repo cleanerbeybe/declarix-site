@@ -1,6 +1,6 @@
 # Declarix website tracking plan
 
-Updated: 2026-07-16
+Updated: 2026-07-17
 
 ## Decision contract
 
@@ -26,10 +26,18 @@ The anonymous identifier is session-scoped.
 | `volume_model_change` | Is the measurement model used? | entries, annual_entries, preset, source | Visitor changes the workload input |
 | `scene_complete` | Does the long-form product explanation retain attention? | source, page_path | Desktop evidence scene completes |
 | `tool_started` | Do visitors engage with the pack workpaper? | tool_id, source, page_path | First checklist interaction |
-| `tool_completed` | How far do visitors map the handoff? | tool_id, present_count, total_count, attention_groups, source | Visitor reviews the workpaper |
-| `tool_result_copied` | Is the open-prompt output useful? | tool_id, unmapped_count, source | Visitor copies unmapped prompts |
+| `tool_completed` | How far do visitors map the handoff? | tool_id, mapped_count, open_count, attention_groups, priority_one_open_count, source | Visitor reviews the workpaper |
+| `tool_result_copied` | Is the prioritised output useful? | tool_id, open_count, source | Visitor copies the action plan |
+| `tool_result_shared` | Is the checker useful enough to pass to a colleague? | tool_id, open_count, method, source | Visitor shares the checker or copies its link |
 | `tool_result_printed` | Is the workpaper used off-site? | tool_id, mapped_count, source | Visitor prints or saves the workpaper |
 | `tool_booking_clicked` | Does the tool assist a workflow call? | tool_id, mapped_count, source | Visitor selects the tool booking CTA |
+| `tool_started` | Do visitors engage with the desk economics calculator? | tool_id, source, page_path | First calculator input change |
+| `tool_completed` | Do visitors produce a buyer-controlled desk model? | tool_id, weekly_volume_band, current_minutes_band, target_reduces_minutes, source | Visitor updates the model |
+| `tool_result_copied` | Is the calculator useful enough to share? | tool_id, result_type, source | Visitor copies a share link |
+| `tool_result_printed` | Is the calculator used in an internal decision? | tool_id, result_type, source | Visitor prints or saves the model |
+| `tool_booking_clicked` | Does the calculator assist a numbers call? | tool_id, weekly_volume_band, target_reduces_minutes, source | Visitor selects the calculator booking CTA |
+| `registration_kit_downloaded` | Which consultation asset delivers value? | page_path, asset_id, asset_format | Visitor downloads an editable response-kit file |
+| `registration_kit_booking_clicked` | Does the response kit assist a workflow call? | page_path, placement | Visitor selects a kit booking CTA |
 
 ## Attribution
 
@@ -40,6 +48,11 @@ internal `src` or UTM value never overwrites an attribution value already stored
 
 The customs document pack workpaper records aggregate counts only. It does not transmit individual
 checkbox selections, prompt text, document data, names, EORIs, values, or any free-text response.
+
+The customs declaration cost calculator records coarse volume and time bands plus whether the target
+reduces the current minutes. It does not transmit the raw weekly volume, minutes, hourly cost,
+calculated financial outputs, share URL, names, EORIs, or free text. A share link is created only after
+the visitor asks for one and contains the five model inputs shown on the page.
 
 ## Deployment closure
 
