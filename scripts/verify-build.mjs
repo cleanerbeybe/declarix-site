@@ -5,6 +5,7 @@ import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
+import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
@@ -29,6 +30,7 @@ const publicSources = [
   'scripts/calculators.mjs',
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
+  'scripts/authority-library.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
 ]
@@ -75,6 +77,7 @@ const expected = [
   ...valueDutyWorkpapers,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
+  ...authorityRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -116,7 +119,9 @@ for (const route of expected) {
     }
   }
   if (route.sources) {
-    if (!html.includes('class="source-register"')) throw new Error(`${route.path} is missing its source register`)
+    if (!html.includes('class="source-register"') && !html.includes('class="authority-sources"')) {
+      throw new Error(`${route.path} is missing its source register`)
+    }
     for (const source of route.sources) {
       if (!html.includes(source.url)) throw new Error(`${route.path} is missing source ${source.url}`)
     }
@@ -414,6 +419,89 @@ for (const route of expected) {
         }
       }
     }
+  }
+
+  if (authorityRoutes.includes(route)) {
+    if (/<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} must stay self-contained`)
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must not collect prospect, document, or newsletter data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    for (const phrase of [
+      'authority_asset_downloaded',
+      'authority_related_clicked',
+      'authority_booking_clicked',
+      "sessionStorage.getItem(key)",
+      "config.posthogHost + '/capture/'",
+      'PRIMARY SOURCE REGISTER',
+      'BOOK THE 20-MINUTE NUMBERS CALL',
+    ]) {
+      if (!html.toLowerCase().includes(phrase.toLowerCase())) {
+        throw new Error(`${route.path} is missing authority contract: ${phrase}`)
+      }
+    }
+    for (const source of route.sources) {
+      if (!html.includes(source.url)) throw new Error(`${route.path} is missing source ${source.url}`)
+    }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const graph = schema['@graph'] || []
+    const requiredType = route.kind === 'burden-report' ? 'Report' : route.kind === 'incoterms-hub' ? 'CollectionPage' : 'Article'
+    if (!graph.some((item) => item['@type'] === requiredType)) {
+      throw new Error(`${route.path} is missing ${requiredType} structured data`)
+    }
+    if (route.kind === 'burden-report' && !graph.some((item) => item['@type'] === 'Dataset')) {
+      throw new Error(`${route.path} is missing Dataset structured data`)
+    }
+    const breadcrumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (breadcrumbs.length !== 2 || new Set(breadcrumbs.map((item) => item.item)).size !== 2) {
+      throw new Error(`${route.path} must expose a two-level, non-duplicated breadcrumb trail`)
+    }
+    for (const asset of authorityAssets(route)) {
+      if (!html.includes(`href="${asset.href}"`) || !html.includes('data-authority-download=')) {
+        throw new Error(`${route.path} is missing downloadable authority asset ${asset.href}`)
+      }
+      const assetPath = join(root, 'dist', asset.href.slice(1))
+      await access(assetPath)
+      const publishedAsset = await readFile(assetPath, 'utf8')
+      if (publishedAsset !== asset.content) throw new Error(`${route.path} authority asset drifted: ${asset.href}`)
+      if (asset.href.endsWith('.svg') && (!publishedAsset.includes('<title>') || !publishedAsset.includes('<desc>') || !publishedAsset.includes('viewBox='))) {
+        throw new Error(`${route.path} authority SVG is missing accessible, responsive metadata: ${asset.href}`)
+      }
+    }
+    if (route.kind === 'incoterms-hub') {
+      for (const code of ['fob', 'cif', 'dap', 'fca', 'ddp']) {
+        if (!html.includes(`/customs-reference/incoterms/${code}/`)) throw new Error(`${route.path} is missing ${code.toUpperCase()} sheet`)
+      }
+      if ((html.match(/type="radio"/g) || []).length !== 8 || !html.includes('authority_chooser_completed')) {
+        throw new Error(`${route.path} is missing the four-question chooser contract`)
+      }
+    }
+    if (route.kind === 'incoterm-term') {
+      if (!html.includes('/tools/customs-value-import-duty-vat-calculator/')) {
+        throw new Error(`${route.path} is missing the value-and-duty bridge`)
+      }
+      if ((html.match(/class="handoff-map"/g) || []).length !== 1 || (html.match(/class="value-checks"/g) || []).length !== 1) {
+        throw new Error(`${route.path} is missing its handoff map or value checks`)
+      }
+    }
+    if (route.kind === 'burden-report') {
+      for (const phrase of ['460', '19–28', '£5–£7', '≈70%', 'At most 1 in 5', '402 qualified accounts']) {
+        if (!html.includes(phrase)) throw new Error(`${route.path} is missing source-faithful burden finding ${phrase}`)
+      }
+      const csv = await readFile(join(root, 'dist/downloads/hmrc-customs-burden-wave-2-summary.csv'), 'utf8')
+      if (!csv.includes('upper bound') || !csv.includes('Do not convert weighted percentage')) {
+        throw new Error(`${route.path} burden CSV lost an interpretation boundary`)
+      }
+    }
+    if (route.kind === 'workflow') {
+      if ((html.match(/class="workflow-path"/g) || []).length !== 1 || !html.includes('FIVE-CHECK HANDOFF')) {
+        throw new Error(`${route.path} is missing its five-step workflow`)
+      }
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
