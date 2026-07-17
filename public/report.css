@@ -297,7 +297,7 @@
 
 .ledger-strip .ledger-unresolved {
   color: var(--ink);
-  background: var(--manifest);
+  background: #d4882f;
 }
 
 .ledger-strip .ledger-duplicate_alias {

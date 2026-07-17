@@ -50,6 +50,7 @@ Evidence screenshots were written to untracked `output/playwright/` during QA an
 - [x] First-touch UTM attribution persists for the session and is included in every report event.
 - [x] Report events use the configured PostHog capture path when enabled and remain testable in `window.dataLayer` without an account.
 - [x] Breadcrumb schema contains two distinct levels: Home and the report.
+- [x] The smallest ledger labels meet WCAG AA contrast, including ink on the unresolved-cell orange (4.78:1).
 - [x] Full build re-run after the optical headline correction.
 
 ## Source-link check
