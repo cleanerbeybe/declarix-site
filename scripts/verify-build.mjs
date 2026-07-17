@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
+import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
@@ -10,6 +11,7 @@ import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-wo
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
+const publicEori = resolvePublicEoriReleaseConfig()
 
 if (contract.manifest_version !== site.claimsVersion) {
   throw new Error(`Claims manifest mismatch: ${contract.manifest_version} != ${site.claimsVersion}`)
@@ -24,6 +26,7 @@ const publicSources = [
   'scripts/routes.mjs',
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
+  'scripts/eori-checker.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
 ]
@@ -44,7 +47,15 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools, ...calculators, ...reports, ...valueDutyWorkpapers]
+const expected = [
+  { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
+  ...routes,
+  ...tools,
+  ...calculators,
+  ...reports,
+  ...valueDutyWorkpapers,
+  ...(publicEori.enabled ? [eoriChecker] : []),
+]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
 const titles = new Set()
@@ -261,6 +272,66 @@ for (const route of expected) {
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
+  if (route === eoriChecker) {
+    if ((html.match(/type="text"/g) || []).length !== 1 || /type="(?:email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must collect exactly one EORI value and no email, file or free text`)
+    }
+    for (const phrase of [
+      'HMRC confirms this GB EORI is valid',
+      'HMRC does not confirm this GB EORI as valid',
+      'No registry answer',
+      'European Commission checker',
+      '/public/v1/eori/check',
+      "method: 'POST'",
+      "credentials: 'omit'",
+      "cache: 'no-store'",
+      'new AbortController()',
+      "payload.registry.provider !== 'HMRC Check an EORI Number API'",
+      'eori_check_started',
+      'eori_check_completed',
+      'eori_check_unavailable',
+      'eori_result_booking_clicked',
+      'eori_result_pack_checker_clicked',
+      'data-eori-pack="result"',
+      'data-eori-booking="result"',
+      'public_company_details',
+      "sessionStorage.getItem(key)",
+    ]) {
+      if (!html.toLowerCase().includes(phrase.toLowerCase())) {
+        throw new Error(`${route.path} is missing EORI release contract: ${phrase}`)
+      }
+    }
+    for (const prohibited of [
+      'eori: candidate, outcome',
+      'properties: { eori',
+      'format is valid',
+      'business is verified',
+      'HMRC approved',
+      'HMRC accredited',
+    ]) {
+      if (html.toLowerCase().includes(prohibited.toLowerCase())) {
+        throw new Error(`${route.path} contains prohibited EORI copy or analytics shape: ${prohibited}`)
+      }
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit restricted FAQPage or HowTo structured data`)
+    }
+    if ((html.match(/class="eori-question"/g) || []).length < 4) {
+      throw new Error(`${route.path} is missing visible question-and-answer support`)
+    }
+    const configMatch = html.match(/const config = (\{"apiUrl"[^;]+\});/)
+    if (!configMatch) throw new Error(`${route.path} is missing the EORI browser endpoint configuration`)
+    const browserConfig = JSON.parse(configMatch[1])
+    if (browserConfig.apiUrl !== `${publicEori.apiOrigin}/public/v1/eori/check`) {
+      throw new Error(`${route.path} EORI API endpoint differs from the release origin`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
@@ -374,6 +445,9 @@ for (const route of expected) {
 const sitemapLocations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1])
 if (sitemapLocations.length !== expected.length || new Set(sitemapLocations).size !== expected.length) {
   throw new Error('Sitemap route count or uniqueness mismatch')
+}
+if (!publicEori.enabled && sitemap.includes(eoriChecker.path)) {
+  throw new Error('Dormant EORI checker must not appear in the sitemap before its release gates are enabled')
 }
 
 const notFound = await readFile(join(root, 'dist/404.html'), 'utf8')
