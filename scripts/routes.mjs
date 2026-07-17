@@ -4,7 +4,7 @@ export const site = {
   companyNumber: '17288258',
   contact: 'pack@getdeclarix.com',
   booking: 'https://declarixlimited.zohobookings.eu/#/declarixlimited',
-  reviewedOn: '2026-07-16',
+  reviewedOn: '2026-07-17',
   claimsVersion: '2.0.0',
 }
 
@@ -239,47 +239,47 @@ export const routes = [
   },
   {
     path: '/pricing-policy/',
-    ref: 'SCHEDULE 05 · COUNTING RULES',
-    title: 'Pricing policy and pilot questions | Declarix',
+    ref: 'BUYER SHEET 05 · PRICING RULES',
+    title: 'How Declarix pricing works: entries, rework and pilot',
     description:
-      'The pricing, counting, correction, pilot, tax, support, and cancellation questions a Declarix quote must answer in writing.',
-    eyebrow: 'PRICING POLICY · NO HIDDEN COUNTING RULES',
-    h1: 'Define the edge cases before the invoice.',
+      'See how Declarix pricing counts entries, handles rework and pilot costs, and compares total cost with the clerk time and capacity returned to your customs desk.',
+    eyebrow: 'PRICING EXPLAINED · WHAT COUNTS AND WHAT TO ASK',
+    h1: 'Know what you pay for before the pilot starts.',
     standfirst:
-      'This page is the checklist a Declarix commercial proposal must satisfy. Where a term is not in the signed quote, it is not silently invented by this website.',
-    stamp: 'TERMS\nBEFORE USE',
+      'Define the unit, separate genuine rework from changed jobs, then test the total cost against the clerk time and declaration capacity returned to your desk.',
+    stamp: 'CLEAR\nCOUNT',
     limitations:
       'The final per-entry rate, inclusions and correction rules are stated in the quote. The homepage model is a transparent example used to start the ROI conversation.',
     sections: [
       {
-        label: '01 · VALUE METRIC',
-        title: 'What is counted?',
+        label: '01 · PER-ENTRY MODEL',
+        title: 'Pay for declaration work, not another seat.',
         paragraphs: [
-          'The written quote must identify whether the commercial unit is a reviewed entry, a source pack, a declaration line, a fixed pilot, or another defined unit. It must also explain how split shipments and amalgamated invoices are treated.',
+          'Declarix is priced against the entries and workflow it helps the desk process. Your quote names the unit being counted and shows how split shipments, amalgamated invoices, or unusual line volumes are treated, so the comparison uses the work you actually run.',
         ],
       },
       {
         label: '02 · REWORK',
-        title: 'What happens to retries and corrections?',
+        title: 'Separate a failed run from a changed job.',
         paragraphs: [
-          'The quote must distinguish a Declarix processing failure, customer-supplied correction, broker amendment, duplicate job, and scope change. The price and service treatment for each must be explicit.',
+          'A processing failure, customer correction, broker amendment, duplicate submission, and expanded scope are different events. The quote explains which ones count and which do not, so a correction does not quietly become an unexplained second charge.',
         ],
       },
       {
-        label: '03 · COMMERCIAL TERMS',
-        title: 'Minimums, tax, support, and cancellation.',
+        label: '03 · TOTAL COST',
+        title: 'Compare the full desk cost, not a headline rate.',
         paragraphs: [
-          'Any minimum commitment, VAT treatment, payment period, support entitlement, service window, pilot cap, renewal, and cancellation right must appear in the written proposal. This website makes no default promise for an omitted term.',
+          'Put any minimum volume, VAT, payment timing, support, service window, pilot cap, renewal, and cancellation alongside the per-entry rate. Then compare that total with current preparation time, loaded clerk cost, customer chasing, and the declarations the team cannot take on today.',
         ],
       },
       {
-        label: '04 · MEASUREMENT',
-        title: 'What makes the pilot decision useful?',
+        label: '04 · PILOT TEST',
+        title: 'Remove the assumptions with one real workflow.',
         list: [
-          'Use the same source pack and agreed start/stop points.',
-          'Separate preparation, broker review, customer chase, rework, and filing time.',
-          'Record exceptions and unsupported cases, not only successful runs.',
-          'Replace the worked capacity model with the buyer’s volume, time and cost on the numbers call.',
+          'Use the same representative source pack and agreed start and stop points.',
+          'Measure preparation, broker review, customer chase, rework, and filing time separately.',
+          'Count the exceptions and unsupported cases as well as the clean runs.',
+          'Replace the homepage example with your weekly volume, current time, and loaded clerk cost.',
         ],
       },
     ],
@@ -648,27 +648,28 @@ export const routes = [
   },
   {
     path: '/customs-intermediary-registration-2026/',
-    ref: 'POLICY FILE 13 · OPEN CONSULTATION',
-    title: 'Customs intermediary registration 2026: HMRC consultation',
+    ref: 'RESPONSE KIT 13 · OPEN CONSULTATION',
+    title: 'Customs intermediary registration 2026 response kit',
     description:
-      'A dated workpaper for the 2026 HMRC consultation on proposed mandatory customs-intermediary registration, including scope, evidence questions, and the response deadline.',
-    eyebrow: 'CUSTOMS INTERMEDIARY REGISTRATION 2026 · PROPOSAL TRACKER',
-    h1: 'Registration is proposed. Prepare the operating evidence now.',
+      'Download a free customs intermediary registration response kit for the 2026 HMRC consultation: a 13-question draft, evidence matrix, source register, and deadline plan.',
+    eyebrow: 'FREE RESPONSE KIT · CUSTOMS INTERMEDIARY REGISTRATION 2026',
+    h1: 'Build the response before the deadline.',
     standfirst:
-      'HMRC is consulting on mandatory registration for customs intermediaries. The consultation closes on 21 September 2026. These are proposals, not a statement that a new registration duty is already in force.',
-    stamp: 'PROPOSAL\nOPEN',
-    limitations:
-      'This page summarises an open consultation and provides an operational response workpaper. It is not legal advice, not HMRC guidance, and not proof that any proposal will become law in its current form.',
+      'Download a question-by-question draft and evidence matrix, map the operating examples that matter, and give your reviewer a clean working file before 21 September 2026.',
+    stamp: 'KIT\nREADY',
+    heroStrip: ['13 QUESTIONS MAPPED', '2 EDITABLE FILES', 'DEADLINE 21 SEP 2026'],
+    boundary:
+      'This resource organises a response to an open HMRC consultation. It does not predict the final policy or replace the current consultation page and submission instructions.',
     schemaType: 'Article',
     publishedOn: '2026-07-16',
     expiresOn: '2026-09-21',
     sections: [
       {
         label: '01 · DIRECT ANSWER',
-        title: 'What is HMRC proposing?',
+        title: 'What is HMRC proposing—and what can you do now?',
         paragraphs: [
           'HMRC opened a 13-week consultation on proposed mandatory registration for customs intermediaries that interact with HMRC on behalf of traders. It was published on 23 June 2026 and closes on 21 September 2026. The consultation asks about scope, exclusions, minimum requirements, checks, enforcement, and proportionate implementation. HMRC says respondents may answer only the questions relevant to them.',
-          'The proposal is not the same as a live registration scheme. HMRC says it will consider responses, refine the policy where appropriate, and confirm next steps on legislation and implementation. Customs brokers, agents, freight forwarders, express operators, traders, professional bodies, and software providers therefore have a current opportunity to document how the proposed design would work on real operating models.',
+          'The practical job now is to turn operational experience into evidence: which entities and activities are affected, what the proposed checks would change, where a rule could duplicate an existing control, and what a proportionate alternative could look like. The free files below give that work a structure before drafting begins.',
         ],
       },
       {
@@ -685,7 +686,7 @@ export const routes = [
       },
       {
         label: '03 · EVIDENCE WORKPAPER',
-        title: 'Map the firm before drafting the response.',
+        title: 'Map the firm once. Reuse the evidence across the response.',
         list: [
           'List every legal entity, brand, branch, and subcontracted operating model involved in intermediary work.',
           'Separate declaration submission, amendment, advice-only, carrier, warehousing, and self-representation activities.',
@@ -697,7 +698,7 @@ export const routes = [
       },
       {
         label: '04 · RESPONSE FILE',
-        title: 'Turn opinion into an auditable example.',
+        title: 'Give every material view an operating example.',
         paragraphs: [
           'For each consultation point, record the proposal, the affected workflow, a concrete example, the likely benefit or burden, supporting evidence, and a practical alternative. Separate facts about the current operation from forecasts about a future scheme. If a requirement would duplicate an existing control, name the control and explain how HMRC could rely on or align with it.',
           'HMRC invites partial responses. A focused response on the parts your firm understands well can be more useful than an answer that guesses across every question. Responses and enquiries go to the address published in the consultation; check the official page before sending because the source controls the process.',
@@ -718,18 +719,53 @@ export const routes = [
         ],
       },
     ],
+    resourceKit: {
+      label: 'DOWNLOAD THE FREE WORKING FILES',
+      title: 'Start with the evidence, not a blank page.',
+      intro:
+        'The Markdown draft maps all 13 consultation questions. The CSV matrix gives each answer an owner, evidence trail, impact, and practical alternative. Both are editable, ungated, and ready to use in your normal working environment.',
+      assets: [
+        {
+          id: 'response_draft_markdown',
+          format: 'MARKDOWN',
+          title: '13-question response draft',
+          description: 'A clean drafting file with organisation context, all consultation questions, evidence prompts, and a final submission check.',
+          href: '/downloads/customs-intermediary-registration-response-draft-2026.md',
+          meta: 'EDITABLE · 13 QUESTIONS · 7 KB',
+        },
+        {
+          id: 'evidence_matrix_csv',
+          format: 'CSV',
+          title: 'Question-by-question evidence matrix',
+          description: 'A spreadsheet-ready matrix for owners, examples, quantified impact, supporting evidence, alternatives, review status, and next action.',
+          href: '/downloads/customs-intermediary-registration-evidence-matrix-2026.csv',
+          meta: 'SPREADSHEET READY · 13 ROWS · 2 KB',
+        },
+      ],
+      steps: [
+        ['01', 'Map the operating model', 'List the entities, intermediary roles, services, systems, permissions, and movement mix behind the response.'],
+        ['02', 'Add evidence to the material questions', 'Use real workflows, implementation estimates, volumes, errors, controls, and practical alternatives where they strengthen the answer.'],
+        ['03', 'Review and submit from the official page', 'Confirm the current deadline and submission instructions, then send only the questions your organisation is equipped to answer.'],
+      ],
+    },
+    cta: {
+      title: 'Turn the evidence work into a better customs desk.',
+      copy:
+        'If mapping the response exposes repeated document chasing, manual re-keying, or senior-clerk bottlenecks, bring the workflow and your weekly volume to the 20-minute numbers call.',
+      label: 'BOOK THE 20-MINUTE WORKFLOW CALL',
+    },
     sources: [
       {
         title: 'Introduction of Mandatory Registration for Customs Intermediaries',
         publisher: 'HM Revenue & Customs',
         url: 'https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration',
-        checked: '2026-07-16',
+        checked: '2026-07-17',
       },
       {
         title: 'Standard for Customs Intermediaries',
         publisher: 'HM Revenue & Customs',
         url: 'https://www.gov.uk/government/publications/standard-for-customs-intermediaries',
-        checked: '2026-07-16',
+        checked: '2026-07-17',
       },
     ],
   },
@@ -784,7 +820,7 @@ export const routes = [
       },
       {
         label: '06 · CLAIMS CONTRACT',
-        title: 'The site is pinned to manifest 1.0.0.',
+        title: 'The site is pinned to manifest 2.0.0.',
         paragraphs: [
           'The publishing build checks public source files against a pinned product-claims contract. Current scope, prohibited wording, pending commercial and security facts, and evidence ownership are versioned in the main Declarix repository.',
         ],

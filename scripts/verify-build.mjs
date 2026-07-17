@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
@@ -40,6 +40,7 @@ for (const phrase of contract.required_product_language) {
 
 const expected = [{ path: '/', title: 'Up to 3× more declarations per clerk | Declarix' }, ...routes, ...tools]
 const expectedPaths = new Set(expected.map((route) => route.path))
+const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
 const titles = new Set()
 const canonicals = new Set()
 const headings = new Set()
@@ -67,6 +68,16 @@ for (const route of expected) {
   const heading = h1s[0][1].replace(/<[^>]*>/g, '').trim()
   if (headings.has(heading)) throw new Error(`Duplicate H1: ${heading}`)
   if (route.path !== '/' && /<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} loads route JavaScript`)
+  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path)) {
+    const heroStart = html.indexOf('<header class="hero')
+    const heroEnd = html.indexOf('</header>', heroStart)
+    const heroAdjacentMarkup = html.slice(heroEnd + 9).trimStart()
+    const rendersLimitationStrip = /^<p\s+class="limitations"/i.test(heroAdjacentMarkup)
+    const valueStrip = heroAdjacentMarkup.match(/^<div\s+class="hero-value-strip">([\s\S]*?)<\/div>/i)?.[1] || ''
+    if (rendersLimitationStrip || /\b(?:LIMITATION|LEGAL|GOVERNANCE)\b/i.test(valueStrip.replace(/<[^>]*>/g, ' '))) {
+      throw new Error(`${route.path} puts legal or governance language directly under its acquisition hero`)
+    }
+  }
   if (route.sources) {
     if (!html.includes('class="source-register"')) throw new Error(`${route.path} is missing its source register`)
     for (const source of route.sources) {
@@ -82,7 +93,7 @@ for (const route of expected) {
     if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
       throw new Error(`${route.path} must not collect document data, identifiers, or free text`)
     }
-    for (const phrase of ['not a legal completeness check', 'not a readiness verdict', 'tool_started', 'tool_completed', 'tool_booking_clicked']) {
+    for (const phrase of ['not a legal completeness check', 'not a readiness verdict', 'tool_started', 'tool_completed', 'tool_result_shared', 'tool_booking_clicked']) {
       if (!html.toLowerCase().includes(phrase.toLowerCase())) throw new Error(`${route.path} is missing tool contract: ${phrase}`)
     }
     if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
@@ -91,12 +102,29 @@ for (const route of expected) {
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
+  if (route.resourceKit) {
+    if (
+      !html.includes('class="resource-kit"') ||
+      !html.includes("event, page_path: location.pathname") ||
+      !html.includes('data-kit-booking="masthead"') ||
+      !html.includes('data-kit-booking="bottom_cta"')
+    ) {
+      throw new Error(`${route.path} is missing the response kit or its privacy-safe dataLayer events`)
+    }
+    for (const asset of route.resourceKit.assets) {
+      if (!html.includes(`href="${asset.href}"`) || !html.includes(`data-kit-download="${asset.id}"`)) {
+        throw new Error(`${route.path} is missing downloadable kit asset ${asset.id}`)
+      }
+      await access(join(root, 'dist', asset.href.slice(1)))
+    }
+  }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
     const url = new URL(href, site.origin)
     if (url.origin !== site.origin) continue
+    if (url.pathname.startsWith('/downloads/')) continue
     if (!expectedPaths.has(url.pathname)) throw new Error(`${route.path} links to unknown route ${url.pathname}`)
     inbound.set(url.pathname, inbound.get(url.pathname) + 1)
   }

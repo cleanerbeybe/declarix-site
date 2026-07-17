@@ -20,10 +20,10 @@ npm run build
 npm run preview
 ```
 
-`npm run build` generates 13 content routes, one client-side free tool, and the homepage, plus a noindex booking receipt, sitemap,
+`npm run build` generates 13 content routes, one client-side free tool, two reusable response-kit downloads, and the homepage, plus a noindex booking receipt, sitemap,
 `llms.txt`, `llms-full.txt`, and a real noindex 404. It then checks unique titles, H1s,
 self-canonicals, descriptions, sitemap membership, explicit AI crawler policy, IndexNow ownership,
-and the pinned public claims contract in `contracts/public-claims.v1.0.0.json`.
+and the pinned public claims contract in `contracts/public-claims.v2.0.0.json`.
 
 ## Launch configuration
 
