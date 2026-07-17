@@ -36,6 +36,11 @@ The anonymous identifier is session-scoped.
 | `tool_result_copied` | Is the calculator useful enough to share? | tool_id, result_type, source | Visitor copies a share link |
 | `tool_result_printed` | Is the calculator used in an internal decision? | tool_id, result_type, source | Visitor prints or saves the model |
 | `tool_booking_clicked` | Does the calculator assist a numbers call? | tool_id, weekly_volume_band, target_reduces_minutes, source | Visitor selects the calculator booking CTA |
+| `operations_report_downloaded` | Which report asset earns downstream use? | report_id, asset_id, asset_format, source, medium, campaign, content, term, page_path | Visitor downloads the aggregate CSV or press chart |
+| `operations_report_booking_clicked` | Does original research assist a numbers call? | report_id, placement, source, medium, campaign, content, term, page_path | Visitor selects a report booking CTA |
+| `operations_report_related_clicked` | Which free workbench route does report traffic choose? | report_id, destination_id, source, medium, campaign, content, term, page_path | Visitor opens a related tool or kit |
+| `operations_report_methodology_viewed` | Do readers inspect the research method? | report_id, placement, source, medium, campaign, content, term, page_path | Visitor selects the methodology action |
+| `operations_report_shared` | Is the report useful enough to distribute? | report_id, method, source, medium, campaign, content, term, page_path | Visitor completes native share or copies the report link |
 | `registration_kit_downloaded` | Which consultation asset delivers value? | page_path, asset_id, asset_format | Visitor downloads an editable response-kit file |
 | `registration_kit_booking_clicked` | Does the response kit assist a workflow call? | page_path, placement | Visitor selects a kit booking CTA |
 
@@ -53,6 +58,10 @@ The customs declaration cost calculator records coarse volume and time bands plu
 reduces the current minutes. It does not transmit the raw weekly volume, minutes, hourly cost,
 calculated financial outputs, share URL, names, EORIs, or free text. A share link is created only after
 the visitor asks for one and contains the five model inputs shown on the page.
+
+The operations report records report ID plus enum-only asset, placement, destination, and share-method
+properties with the documented attribution fields. It does not transmit research rows, company or
+contact data, domains, candidate IDs, evidence excerpts, or download contents.
 
 ## Deployment closure
 

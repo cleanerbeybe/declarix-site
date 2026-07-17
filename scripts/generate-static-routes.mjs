@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { calculators, renderCalculator } from './calculators.mjs'
+import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
 
@@ -42,6 +43,7 @@ function routeLinks() {
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
+    ['RESEARCH', '/research/uk-customs-operations-signal-report-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
@@ -446,7 +448,44 @@ for (const calculator of calculators) {
   )
 }
 
-const indexableRoutes = [...routes, ...tools, ...calculators]
+for (const report of reports) {
+  if (!report.path.startsWith('/') || !report.path.endsWith('/')) {
+    throw new Error(`Report must use a trailing slash: ${report.path}`)
+  }
+  if (paths.has(report.path)) throw new Error(`Duplicate route: ${report.path}`)
+  if (titles.has(report.title)) throw new Error(`Duplicate title: ${report.title}`)
+  if (headings.has(report.h1)) throw new Error(`Duplicate H1: ${report.h1}`)
+  if (report.sources.length < 3) throw new Error(`Report needs a documented source universe: ${report.path}`)
+  if (report.tiers.reduce((sum, row) => sum + row.count, 0) !== report.qualifiedTotal) {
+    throw new Error(`Report tier total does not reconcile: ${report.path}`)
+  }
+  if (report.ledger.reduce((sum, row) => sum + row.count, 0) !== report.totalDecisions) {
+    throw new Error(`Report ledger total does not reconcile: ${report.path}`)
+  }
+  if (report.websiteDiscovery.reduce((sum, row) => sum + row.count, 0) !== report.websiteUniverse) {
+    throw new Error(`Report website-discovery total does not reconcile: ${report.path}`)
+  }
+  paths.add(report.path)
+  titles.add(report.title)
+  headings.add(report.h1)
+
+  const target = join(dist, report.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderReport(report, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+  await mkdir(join(dist, 'downloads'), { recursive: true })
+  await writeFile(join(dist, report.downloads[0].href.slice(1)), aggregateCsv(report))
+  await writeFile(join(dist, report.downloads[1].href.slice(1)), pressChartSvg(report))
+}
+
+const indexableRoutes = [...routes, ...tools, ...calculators, ...reports]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
