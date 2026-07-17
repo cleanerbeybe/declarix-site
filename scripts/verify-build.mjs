@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
+import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
@@ -27,6 +28,7 @@ const publicSources = [
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
   'scripts/eori-checker.mjs',
+  'scripts/radar.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
 ]
@@ -47,6 +49,23 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
+if (radarRecords.length !== 5) throw new Error(`Radar must release exactly five source-verified records, found ${radarRecords.length}`)
+for (const record of radarRecords) {
+  if (
+    !record.review.publicationReady ||
+    record.review.state !== 'agent_source_verified' ||
+    record.review.reviewerKind !== 'agent' ||
+    !record.review.reviewerIdentity ||
+    record.review.publicationScope !== 'narrow_primary_source_fact' ||
+    record.review.editorialAuthorization !== 'owner_authorized_build'
+  ) {
+    throw new Error(`Radar publication gate failed closed for ${record.id}`)
+  }
+  if (!/^[a-f0-9]{64}$/.test(record.source.sha256) || record.source.bytes < 1 || record.impacts.length < 2) {
+    throw new Error(`Radar source or workflow evidence is incomplete for ${record.id}`)
+  }
+}
+
 const expected = [
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
@@ -55,6 +74,7 @@ const expected = [
   ...reports,
   ...valueDutyWorkpapers,
   ...(publicEori.enabled ? [eoriChecker] : []),
+  ...radarRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -332,6 +352,70 @@ for (const route of expected) {
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
+  if (radarRoutes.includes(route)) {
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    if (!html.includes('radar_booking_clicked') || !html.includes('radar_source_opened') || !html.includes('data-radar-booking="masthead"')) {
+      throw new Error(`${route.path} is missing privacy-safe Radar conversion or source events`)
+    }
+    if (!html.includes('<meta property="og:image:width" content="1200"') || !html.includes('<meta name="twitter:image" content="https://getdeclarix.com/og.jpg"')) {
+      throw new Error(`${route.path} is missing complete social-preview metadata`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+
+    if (route.path === radarHub.path) {
+      if (
+        (html.match(/data-radar-result(?:\s|>)/g) || []).length !== 5 ||
+        !html.includes('data-radar-filters') ||
+        !html.includes('name="q"') ||
+        !html.includes('name="topic"') ||
+        !html.includes('name="stage"') ||
+        !html.includes('name="state"') ||
+        !html.includes('history.replaceState') ||
+        !html.includes("not_yet_effective: 'NOT YET EFFECTIVE'") ||
+        !html.includes('data-radar-download="json"') ||
+        !html.includes('data-radar-download="csv"') ||
+        !html.includes('"@type":"CollectionPage"') ||
+        !html.includes('"@type":"ItemList"') ||
+        !html.includes('<meta property="og:type" content="website"')
+      ) {
+        throw new Error('Radar hub is missing search, filters, live freshness, downloads, or collection schema')
+      }
+      if (/type="(?:email|file)"/i.test(html) || /<textarea/i.test(html)) {
+        throw new Error('Radar hub must not collect prospect or operational data')
+      }
+    } else {
+      const record = radarRecords.find((candidate) => candidate.path === route.path)
+      if (!record) throw new Error(`Unknown Radar record route: ${route.path}`)
+      for (const required of [
+        record.source.url,
+        record.source.sha256,
+        record.review.reviewerIdentity,
+        'WHY THIS MAY MATTER',
+        'WORKFLOW IMPACT',
+        'FRESHNESS + CORRECTION',
+        'PRIMARY SOURCE PROOF',
+        'APPEND-ONLY HISTORY',
+        'data-radar-booking="after_value"',
+        '"@type":"Article"',
+        `"mainEntityOfPage":"${site.origin}${record.path}"`,
+        '<meta property="og:type" content="article"',
+      ]) {
+        if (!html.includes(required)) throw new Error(`${route.path} is missing Radar record evidence: ${required}`)
+      }
+      if (/human[- ]reviewed|reviewed by (?:an?|the) human/i.test(html)) {
+        throw new Error(`${route.path} falsely represents agent source verification as human review`)
+      }
+      for (const impact of record.impacts) {
+        if (!html.includes(impact.impact) || !html.includes(impact.action)) {
+          throw new Error(`${route.path} is missing bounded workflow impact ${impact.stage}`)
+        }
+      }
+    }
+  }
+
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
@@ -356,6 +440,14 @@ for (const route of expected) {
   canonicals.add(canonical)
   headings.add(heading)
 }
+
+const radarJsonDownload = await readFile(join(root, 'dist/downloads/cds-operations-radar-v1.json'), 'utf8')
+const radarCsvDownload = await readFile(join(root, 'dist/downloads/cds-operations-radar-v1.csv'), 'utf8')
+if (radarJsonDownload !== radarJson()) throw new Error('Radar JSON download differs from its deterministic data model')
+if (radarCsvDownload !== radarCsv()) throw new Error('Radar CSV download differs from its deterministic data model')
+if (radarCsvDownload.trim().split('\n').length !== 6) throw new Error('Radar CSV must contain one header and five records')
+const parsedRadar = JSON.parse(radarJsonDownload)
+if (parsedRadar.record_count !== 5 || parsedRadar.records.length !== 5) throw new Error('Radar JSON record count drifted')
 
 const formulaFixture = calculateValueDutyScenario({
   goodsAmount: 10000,
