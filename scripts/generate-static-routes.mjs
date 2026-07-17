@@ -7,6 +7,7 @@ import {
   renderEoriChecker,
   resolvePublicEoriReleaseConfig,
 } from './eori-checker.mjs'
+import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -53,6 +54,7 @@ function routeLinks() {
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
     ['RESEARCH', '/research/uk-customs-operations-signal-report-2026/'],
+    ['RADAR', '/research/cds-operations-radar/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
@@ -544,6 +546,48 @@ if (publicEori.enabled) {
   )
 }
 
+if (paths.has(radarHub.path)) throw new Error(`Duplicate route: ${radarHub.path}`)
+if (titles.has(radarHub.title)) throw new Error(`Duplicate title: ${radarHub.title}`)
+if (headings.has(radarHub.h1)) throw new Error(`Duplicate H1: ${radarHub.h1}`)
+paths.add(radarHub.path)
+titles.add(radarHub.title)
+headings.add(radarHub.h1)
+const radarOptions = {
+  navHtml: routeLinks(),
+  webmasterHtml: webmasterTags(),
+  posthogKey,
+  posthogHost,
+}
+const radarHubTarget = join(dist, radarHub.path.slice(1), 'index.html')
+await mkdir(dirname(radarHubTarget), { recursive: true })
+await writeFile(radarHubTarget, renderRadarHub(site, radarOptions))
+
+for (const record of radarRecords) {
+  if (!record.path.startsWith('/') || !record.path.endsWith('/')) {
+    throw new Error(`Radar record must use a trailing slash: ${record.path}`)
+  }
+  if (paths.has(record.path)) throw new Error(`Duplicate route: ${record.path}`)
+  if (titles.has(record.pageTitle)) throw new Error(`Duplicate title: ${record.pageTitle}`)
+  if (headings.has(record.title)) throw new Error(`Duplicate H1: ${record.title}`)
+  if (!record.review.publicationReady) throw new Error(`Unpublished Radar record reached the production renderer: ${record.id}`)
+  if (
+    record.review.reviewerKind === 'agent' &&
+    (record.review.state !== 'agent_source_verified' || record.review.publicationScope !== 'narrow_primary_source_fact')
+  ) {
+    throw new Error(`Agent-reviewed Radar record exceeds its publication scope: ${record.id}`)
+  }
+  paths.add(record.path)
+  titles.add(record.pageTitle)
+  headings.add(record.title)
+  const target = join(dist, record.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderRadarRecord(record, site, radarOptions))
+}
+
+await mkdir(join(dist, 'downloads'), { recursive: true })
+await writeFile(join(dist, 'downloads/cds-operations-radar-v1.json'), radarJson())
+await writeFile(join(dist, 'downloads/cds-operations-radar-v1.csv'), radarCsv())
+
 const indexableRoutes = [
   ...routes,
   ...tools,
@@ -551,6 +595,7 @@ const indexableRoutes = [
   ...reports,
   ...valueDutyWorkpapers,
   ...(publicEori.enabled ? [eoriChecker] : []),
+  ...radarRoutes,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
