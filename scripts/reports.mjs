@@ -468,8 +468,9 @@ export function renderReport(report, site, options) {
           </header>
           <div class="next-action-grid">
             <a data-report-related="desk_calculator" href="/tools/customs-declaration-cost-calculator/"><span>01 · ECONOMICS</span><strong>Model the desk cost per declaration.</strong><b>OPEN CALCULATOR →</b></a>
-            <a data-report-related="pack_checker" href="/tools/customs-document-pack-check/"><span>02 · HANDOFF</span><strong>Turn a document pack into an action list.</strong><b>OPEN PACK CHECK →</b></a>
-            <a data-report-related="registration_kit" href="/customs-intermediary-registration-2026/"><span>03 · RESPONSE KIT</span><strong>Structure the 2026 registration consultation response.</strong><b>GET THE KIT →</b></a>
+            <a data-report-related="value_duty_workpaper" href="/tools/customs-value-import-duty-vat-calculator/"><span>02 · VALUE + DUTY</span><strong>Cross-foot customs value, ad valorem duty and VAT.</strong><b>OPEN WORKPAPER →</b></a>
+            <a data-report-related="pack_checker" href="/tools/customs-document-pack-check/"><span>03 · HANDOFF</span><strong>Turn a document pack into an action list.</strong><b>OPEN PACK CHECK →</b></a>
+            <a data-report-related="registration_kit" href="/customs-intermediary-registration-2026/"><span>04 · RESPONSE KIT</span><strong>Structure the 2026 registration consultation response.</strong><b>GET THE KIT →</b></a>
           </div>
         </section>
 
