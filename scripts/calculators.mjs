@@ -92,15 +92,6 @@ function jsonLd(calculator, site) {
         publisher: { '@id': `${site.origin}/#organization` },
       },
       {
-        '@type': 'FAQPage',
-        '@id': `${site.origin}${calculator.path}#faq`,
-        mainEntity: calculator.faqs.map((faq) => ({
-          '@type': 'Question',
-          name: faq.question,
-          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
-        })),
-      },
-      {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
