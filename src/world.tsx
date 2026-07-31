@@ -376,11 +376,13 @@ export function PaperWorld({ source }: { source: string }) {
         for (let j = index; !f && j < frames.length; j++) f = frames[j]
         if (f) {
           drawCover(canvas, f)
+          canvas.classList.add('is-painted')
           return
         }
       }
       if (posterCache.get(scene)) {
         drawCover(canvas, posterCache.get(scene)!)
+        canvas.classList.add('is-painted')
       }
     }
 
@@ -524,7 +526,7 @@ export function PaperWorld({ source }: { source: string }) {
             loadScene(scene.id) // deep links land mid-journey
             loadScene(scene.id + 1)
             // v2.4 seam grammar — a hard paper-rule wipe, never a crossfade
-            if (wipe) {
+            if (wipe && !document.body.classList.contains('is-anchor-riding')) {
               gsap.fromTo(
                 wipe,
                 { clipPath: 'inset(0 0 0 0)' },
@@ -655,6 +657,15 @@ export function PaperWorld({ source }: { source: string }) {
           {scenes.map((scene) => (
             <div className="world-scene" data-world-scene={scene.id} key={scene.id}>
               <div className="world-stage">
+                <img
+                  className="world-poster"
+                  src={posterUrl(scene.id)}
+                  alt=""
+                  aria-hidden="true"
+                  loading="eager"
+                  fetchPriority="low"
+                  decoding="async"
+                />
                 <canvas
                   className="world-canvas"
                   data-world-canvas={scene.id}
