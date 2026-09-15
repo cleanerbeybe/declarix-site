@@ -10,6 +10,7 @@ import {
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
+import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
@@ -48,6 +49,7 @@ function routeLinks() {
     ['SCOPE', '/supported-scope/'],
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
+    ['PREPARATION OPTIONS', economicsRoute.path],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
     ...(publicEori.enabled ? [['GB EORI CHECK', eoriChecker.path]] : []),
@@ -625,7 +627,13 @@ for (const authorityRoute of authorityRoutes) {
   }
 }
 
+if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
+const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
+await mkdir(dirname(economicsTarget), { recursive: true })
+await writeFile(economicsTarget, renderPreparationEconomics(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
+
 const indexableRoutes = [
+  economicsRoute,
   ...routes,
   ...tools,
   ...calculators,

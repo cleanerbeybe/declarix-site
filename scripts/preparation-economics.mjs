@@ -1,0 +1,111 @@
+// P34: arithmetic from user assumptions, not a price or performance benchmark.
+export const economicsRoute = {
+  path: '/compare/automation-vs-outsourcing/',
+  title: 'Customs preparation: automation or outsourcing cost model | Declarix',
+  h1: 'Compare the cost of two preparation workflows.',
+  description: 'Compare in-house assisted preparation and outsourced data preparation using your own fees, time and review assumptions. No default savings or provider rates.',
+  reviewedOn: '2026-09-15',
+}
+
+export const economicsFields = [
+  ['cases', 'Cases per month', '1', '1000000', '1'],
+  ['hourlyCost', 'Fully loaded staff cost (£ per hour)', '0', '100000', '0.01'],
+  ['months', 'Months over which to spread setup costs', '1', '120', '1'],
+  ['internalMinutes', 'In-house preparation and review (minutes per case)', '0', '100000', '0.01'],
+  ['internalRework', 'In-house rework, averaged across ALL cases (minutes per case)', '0', '100000', '0.01'],
+  ['softwareMonthly', 'In-house software and other fixed costs (£ per month)', '0', '100000000', '0.01'],
+  ['internalSetup', 'In-house one-off setup cost (£)', '0', '100000000', '0.01'],
+  ['providerPerCase', 'Outsourced preparation fee (£ per case)', '0', '1000000', '0.01'],
+  ['providerMonthly', 'Provider fixed fee (£ per month)', '0', '100000000', '0.01'],
+  ['providerSetup', 'Provider one-off setup cost (£)', '0', '100000000', '0.01'],
+  ['oversightMinutes', 'Your staff: handoff, checking and review of provider work (minutes per case)', '0', '100000', '0.01'],
+  ['providerRework', 'Your staff: provider rework, averaged across ALL cases (minutes per case)', '0', '100000', '0.01'],
+]
+
+export function calculatePreparationEconomics(input) {
+  const limits = {
+    cases: [1, 1000000, true], hourlyCost: [0, 100000, false], months: [1, 120, true],
+    internalMinutes: [0, 100000, false], internalRework: [0, 100000, false],
+    softwareMonthly: [0, 100000000, false], internalSetup: [0, 100000000, false],
+    providerPerCase: [0, 1000000, false], providerMonthly: [0, 100000000, false],
+    providerSetup: [0, 100000000, false], oversightMinutes: [0, 100000, false], providerRework: [0, 100000, false],
+  }
+  const values = {}, errors = {}
+  for (const [key, [min, max, integer]] of Object.entries(limits)) {
+    const raw = input?.[key]
+    if (raw == null || (typeof raw === 'string' && raw.trim() === '')) {
+      errors[key] = 'Enter an assumption. Use 0 only if this cost or time is genuinely zero.'
+      continue
+    }
+    const number = typeof raw === 'number' || typeof raw === 'string' ? Number(raw) : NaN
+    if (!Number.isFinite(number) || number < min || number > max || (integer && !Number.isInteger(number))) {
+      errors[key] = `Enter ${integer ? 'a whole number' : 'a number'} from ${min} to ${max}.`
+    } else values[key] = number
+  }
+  if (Object.keys(errors).length) return { status: 'incomplete', errors, result: null }
+  const inHouseVariable = (values.internalMinutes + values.internalRework) * values.hourlyCost / 60
+  const outsourcedVariable = values.providerPerCase + (values.oversightMinutes + values.providerRework) * values.hourlyCost / 60
+  const inHouseFixed = values.softwareMonthly + values.internalSetup / values.months
+  const outsourcedFixed = values.providerMonthly + values.providerSetup / values.months
+  const scenario = (cases) => {
+    const inHouseMonthly = cases * inHouseVariable + inHouseFixed
+    const outsourcedMonthly = cases * outsourcedVariable + outsourcedFixed
+    return { cases, inHouseMonthly, outsourcedMonthly, inHousePerCase: inHouseMonthly / cases,
+      outsourcedPerCase: outsourcedMonthly / cases, difference: outsourcedMonthly - inHouseMonthly }
+  }
+  return { status: 'complete', values, result: scenario(values.cases),
+    sensitivity: [...new Set([Math.max(1, Math.floor(values.cases / 2)), values.cases, Math.min(1000000, Math.ceil(values.cases * 1.5))])].map(scenario) }
+}
+
+export function economicsCsv(model) {
+  if (model?.status !== 'complete') throw new Error('Complete assumptions are required before export.')
+  const rows = [['Planning model only', 'User assumptions; not measured results'], ['Assumption', 'Value']]
+  for (const [name, value] of Object.entries(model.values)) rows.push([name, value])
+  rows.push(['Formula: in-house monthly', 'cases * (internalMinutes + internalRework) * hourlyCost / 60 + softwareMonthly + internalSetup / months'])
+  rows.push(['Formula: outsourced monthly', 'cases * (providerPerCase + (oversightMinutes + providerRework) * hourlyCost / 60) + providerMonthly + providerSetup / months'])
+  rows.push(['Scenario cases', 'In-house monthly GBP', 'Outsourced monthly GBP', 'Outsourced minus in-house GBP'])
+  for (const row of model.sensitivity) rows.push([row.cases, row.inHouseMonthly.toFixed(2), row.outsourcedMonthly.toFixed(2), row.difference.toFixed(2)])
+  return rows.map(row => row.map(value => '"' + String(value).replaceAll('"', '""') + '"').join(',')).join('\r\n') + '\r\n'
+}
+
+export function renderPreparationEconomics(site, { navHtml = '', webmasterHtml = '' } = {}) {
+  const route = economicsRoute
+  const inputs = economicsFields.map(([key, label, min, max, step]) => `<div class="field"><label for="${key}">${label}</label><input id="${key}" name="${key}" type="number" min="${min}" max="${max}" step="${step}" required inputmode="decimal" aria-describedby="${key}-error"><span class="error" id="${key}-error"></span></div>`)
+  return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${route.title}</title><meta name="description" content="${route.description}"><link rel="canonical" href="${site.origin}${route.path}"><meta name="robots" content="index,follow">${webmasterHtml}
+<style>
+:root{font-family:Arial,sans-serif;color:#18251e;background:#f5f3ec;line-height:1.6}*{box-sizing:border-box}body{margin:0}a{color:#145b38}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #2557d6;outline-offset:3px}.skip{position:absolute;top:-100px}.skip:focus{top:0;background:white;padding:1rem}header,main,footer{max-width:1100px;margin:auto;padding:1.5rem}header{border-bottom:1px solid #aab5ae}nav{display:flex;flex-wrap:wrap;gap:1rem}nav a{font-size:.8rem}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.15;max-width:20ch}h2{line-height:1.25}.lede{font-size:1.2rem;max-width:70ch}.notice{padding:1rem;border-left:4px solid #1b7a4b;background:#e4eee7}fieldset,section{margin:1.5rem 0;padding:1.25rem;border:1px solid #aab5ae;background:#fff}fieldset{min-width:0}legend{font-weight:bold;padding:0 .4rem}.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1.25rem}.field{display:flex;flex-direction:column}label{font-weight:bold}input{width:100%;padding:.75rem;font:inherit;margin-top:.4rem;border:1px solid #52665a;border-radius:3px;min-height:48px}.error{color:#9c2020;min-height:1.5rem;font-size:.9rem}[aria-invalid=true]{border:2px solid #9c2020}button{font:inherit;font-weight:bold;padding:.8rem 1.2rem;min-height:48px;border:1px solid #1b7a4b;background:#1b7a4b;color:white;border-radius:3px;cursor:pointer;margin:.3rem .5rem .3rem 0}button:disabled{opacity:.55;cursor:not-allowed}button[type=reset]{background:white;color:#145b38}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;text-align:left}th,td{border-bottom:1px solid #bec9c1;padding:.6rem;vertical-align:top}caption{text-align:left;font-weight:bold;padding:.5rem 0}code{overflow-wrap:anywhere}footer{border-top:1px solid #aab5ae}[hidden]{display:none!important}@media print{header,button,.skip,footer{display:none}body{background:white}section,fieldset{break-inside:avoid}main{padding:0}}
+</style></head><body><a class="skip" href="#main">Skip to cost model</a><header><a href="/" aria-label="Declarix home"><strong>DECLARIX</strong></a><nav aria-label="Main navigation">${navHtml}</nav></header><main id="main"><p>WORKFLOW ECONOMICS · YOUR INPUTS · NO SIGN-UP</p><h1>${route.h1}</h1><p class="lede">Keep preparation in-house with software, or buy a preparation service. Enter your own quotes and staff time to compare the monthly cost. Neither option is assumed to win.</p><p class="notice">This is a planning model, not a benchmark, quote or promise of savings. Outsourced data preparation is not the same as appointing a customs representative. Filing fees, taxes, duties and legal liability are not calculated here.</p><p>No figures are prefilled. Enter 0 only when you know an item is zero. Use the same currency, case scope and VAT basis for both options. Unknown quotes must stay blank.</p><noscript><p class="notice">JavaScript is needed to calculate and download. The formulas and responsibility checklist below remain available.</p></noscript>
+<form id="economics" novalidate autocomplete="off"><fieldset><legend>1. Shared assumptions</legend><div class="fields">${inputs.slice(0,3).join('')}</div></fieldset><fieldset><legend>2. Assisted in-house preparation</legend><div class="fields">${inputs.slice(3,7).join('')}</div></fieldset><fieldset><legend>3. Outsourced data preparation</legend><div class="fields">${inputs.slice(7).join('')}</div></fieldset><button type="submit">Compare my assumptions</button><button type="reset">Clear all inputs</button><button type="button" id="download" disabled>Download assumptions and results (CSV)</button></form><p id="status" role="status" aria-live="polite">Complete all inputs to calculate. No costs have been assumed.</p><section id="results" hidden aria-labelledby="result-title"><h2 id="result-title" tabindex="-1">Your model, not measured savings</h2><p id="summary"></p><div class="table-wrap"><table><caption>Monthly volume sensitivity. Time and fees per case stay constant.</caption><thead><tr><th scope="col">Cases/month</th><th scope="col">In-house/month</th><th scope="col">Outsourced/month</th><th scope="col">Outsourced minus in-house</th></tr></thead><tbody id="scenario-rows"></tbody></table></div><p>Actual prices can change with volume. Check minimum fees and quote bands before using these scenarios. Setup costs are spread over your selected months, not shown as cash payment timing.</p></section>
+<section><h2>Every formula is visible</h2><p><strong>In-house monthly cost</strong> = cases × (preparation/review minutes + average rework minutes) × hourly staff cost ÷ 60 + monthly software/fixed costs + one-off setup ÷ selected months.</p><p><strong>Outsourced monthly cost</strong> = cases × (provider fee per case + (your oversight minutes + average rework minutes) × hourly staff cost ÷ 60) + provider monthly fee + provider setup ÷ selected months.</p><p><strong>Difference</strong> = outsourced monthly cost − in-house monthly cost. Positive means the outsourced model costs more under your assumptions. Negative means the in-house model costs more. Per-case cost = monthly total ÷ cases.</p><p>Rework is an average across all cases. For example, if you estimate that 10% need 20 minutes, enter 2 minutes. That example is arithmetic, not an observed error rate.</p></section>
+<section><h2>Cost does not decide who is responsible</h2><div class="table-wrap"><table><caption>Questions to settle with your team and provider</caption><thead><tr><th scope="col">Step</th><th scope="col">In-house assisted workflow</th><th scope="col">Outsourced preparation workflow</th></tr></thead><tbody><tr><th scope="row">Collect missing information</th><td>Name the person who asks and tracks the reply.</td><td>Agree who contacts the customer and how evidence returns.</td></tr><tr><th scope="row">Resolve exceptions</th><td>Keep a named reviewer and source evidence.</td><td>Agree how the provider escalates uncertain facts to your reviewer.</td></tr><tr><th scope="row">Approve the work</th><td>Record the authorised approval.</td><td>Agree review responsibilities. Do not assume a quote transfers them.</td></tr><tr><th scope="row">File the declaration</th><td>Use the agreed filing system and authorised declarant.</td><td>Confirm whether the service prepares data only or also acts as a representative under a separate agreement.</td></tr><tr><th scope="row">Protect customer data</th><td>Check access, storage and retention.</td><td>Check access, processing locations, onward transfers, retention and return/deletion terms before sharing.</td></tr></tbody></table></div><p>Variable volumes or limited staff may favour a preparation service. Repeat work, reviewer availability and control needs may favour an in-house workflow. Test turnaround, exception handling and evidence quality as well as the cost.</p></section>
+<section><h2>Connect the whole case, not just data entry</h2><p>Follow intake, common case data, checks, missing-information replies, review, approval and controlled handoff. A cost model should include that complete workflow.</p><ul><li><a href="/how-it-works/">See the case workflow</a></li><li><a href="/supported-scope/">Check current product scope</a></li><li><a href="/pilot/">Discuss a representative workflow test</a></li></ul><p>Declarix does not file directly to HMRC. This calculator does not test an integration or accept case documents.</p></section><section><h2>Privacy and method</h2><p>The calculation runs in this page. Inputs are not sent to Declarix, stored in browser storage or placed in the URL. The CSV is created on your device. This page adds no analytics script and sends no input events. Hosting may still receive normal page requests. <a href="/privacy/">Read the privacy notice</a>.</p><p>Method reviewed: ${route.reviewedOn}. There are no market prices, vendor ratings or customer outcome statistics in this model.</p></section></main><footer><a href="/">Declarix</a> · <a href="/security/">Security</a> · <a href="/privacy/">Privacy</a></footer>
+<script>
+const calculate = ${calculatePreparationEconomics.toString()};
+const csv = ${economicsCsv.toString()};
+const form = document.getElementById('economics');
+const results = document.getElementById('results');
+const status = document.getElementById('status');
+const download = document.getElementById('download');
+let model = null;
+const money = new Intl.NumberFormat('en-GB', {style:'currency', currency:'GBP'});
+function invalidate(message) { model = null; results.hidden = true; download.disabled = true; status.textContent = message; }
+form.addEventListener('input', () => invalidate('Inputs changed. Compare again to update the result.'));
+form.addEventListener('reset', () => { invalidate('All inputs cleared. No costs have been assumed.'); form.querySelectorAll('input').forEach(input => { input.removeAttribute('aria-invalid'); document.getElementById(input.id + '-error').textContent = ''; }); });
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  model = calculate(Object.fromEntries(new FormData(form)));
+  for (const input of form.querySelectorAll('input')) {
+    const error = model.errors?.[input.id] || '';
+    input.setAttribute('aria-invalid', error ? 'true' : 'false');
+    document.getElementById(input.id + '-error').textContent = error;
+  }
+  if (model.status !== 'complete') { results.hidden = true; download.disabled = true; status.textContent = 'Complete or correct the marked inputs. No comparison has been calculated.'; form.querySelector('[aria-invalid=true]')?.focus(); return; }
+  const r = model.result;
+  document.getElementById('summary').textContent = 'At ' + r.cases + ' cases per month: in-house ' + money.format(r.inHouseMonthly) + ' (' + money.format(r.inHousePerCase) + '/case); outsourced ' + money.format(r.outsourcedMonthly) + ' (' + money.format(r.outsourcedPerCase) + '/case). Difference: ' + money.format(r.difference) + ' (outsourced minus in-house).';
+  const body = document.getElementById('scenario-rows'); body.replaceChildren();
+  for (const row of model.sensitivity) { const tr = document.createElement('tr'); for (const value of [String(row.cases), money.format(row.inHouseMonthly), money.format(row.outsourcedMonthly), money.format(row.difference)]) { const td = document.createElement('td'); td.textContent = value; tr.append(td); } body.append(tr); }
+  results.hidden = false; download.disabled = false; status.textContent = 'Calculated using your assumptions only. Results are below.'; document.getElementById('result-title').focus();
+});
+download.addEventListener('click', () => { if (model?.status !== 'complete') return; const url = URL.createObjectURL(new Blob([csv(model)], {type:'text/csv;charset=utf-8'})); const link = document.createElement('a'); link.href = url; link.download = 'customs-preparation-assumptions.csv'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
+</script></body></html>`
+}
