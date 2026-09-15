@@ -7,6 +7,7 @@ import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
+import { economicsRoute } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
@@ -28,6 +29,7 @@ const publicSources = [
   'scripts/routes.mjs',
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
+  'scripts/preparation-economics.mjs',
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
   'scripts/authority-library.mjs',
@@ -69,6 +71,7 @@ for (const record of radarRecords) {
 }
 
 const expected = [
+  economicsRoute,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
   ...tools,
