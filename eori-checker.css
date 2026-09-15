@@ -1,0 +1,596 @@
+.eori-hero .hero-copy {
+  align-content: end;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.eori-hero h1 {
+  max-width: 11ch;
+  text-wrap: balance;
+}
+
+.eori-hero-trust {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 32px;
+  border: 1.5px solid var(--ink);
+}
+
+.eori-hero-trust strong {
+  padding: 12px;
+  border-right: 1px solid var(--ink);
+  font: 600 9px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.eori-hero-trust strong:last-child {
+  border-right: 0;
+}
+
+.eori-check-panel {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.eori-check-panel > header,
+.eori-check-panel > form {
+  padding: clamp(38px, 6vw, 72px);
+}
+
+.eori-check-panel > header {
+  border-right: 1.5px solid var(--ink);
+}
+
+.eori-check-panel h2,
+.eori-explainer h2,
+.eori-related h2,
+.eori-questions h2 {
+  max-width: 13ch;
+  margin: 12px 0 18px;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.eori-check-panel p,
+.eori-explainer p,
+.eori-related p,
+.eori-questions p {
+  max-width: 66ch;
+  line-height: 1.6;
+}
+
+#eori-form {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  background: rgb(255 255 255 / 0.42);
+}
+
+#eori-form label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+}
+
+#eori-form label small {
+  color: var(--muted);
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.eori-input-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+
+.eori-input-line:focus-within {
+  box-shadow: inset 0 0 0 3px var(--manifest);
+}
+
+.eori-input-line input {
+  width: 100%;
+  min-width: 0;
+  padding: 17px 18px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  color: var(--ink);
+  background: transparent;
+  font: 700 clamp(20px, 3vw, 31px)/1 'IBM Plex Mono', monospace;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.eori-input-line input::placeholder {
+  color: rgb(92 110 118 / 0.62);
+}
+
+.eori-input-line .button {
+  min-width: 170px;
+  justify-content: center;
+  border-width: 0 0 0 1.5px;
+  cursor: pointer;
+}
+
+.eori-input-line .button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.eori-input-line .button:focus-visible {
+  outline: 3px solid var(--manifest);
+  outline-offset: 3px;
+}
+
+#eori-form > p {
+  margin: 0;
+  color: var(--muted);
+  font: 500 10px/1.5 'IBM Plex Mono', monospace;
+}
+
+.eori-eu-handoff {
+  display: grid;
+  grid-template-columns: 0.42fr 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 18px clamp(22px, 4vw, 48px);
+  border-bottom: 1.5px solid var(--ink);
+  color: var(--ink);
+  background: var(--manifest);
+}
+
+.eori-eu-handoff span,
+.eori-eu-handoff a {
+  font: 600 10px/1.45 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+}
+
+.eori-eu-handoff a {
+  text-underline-offset: 4px;
+}
+
+.eori-result {
+  border-bottom: 2px solid var(--ink);
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.eori-result[hidden],
+.eori-company-details[hidden],
+.eori-result-eu[hidden],
+.eori-result-actions[hidden] {
+  display: none;
+}
+
+.eori-result > header {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.45fr) minmax(0, 1.55fr);
+  gap: clamp(28px, 7vw, 92px);
+  padding: clamp(42px, 7vw, 84px);
+  border-bottom: 1px solid rgb(247 246 241 / 0.34);
+}
+
+.eori-result > header > span,
+.eori-company-details > span,
+.eori-result-actions span {
+  color: rgb(247 246 241 / 0.68);
+  font: 600 10px/1.45 'IBM Plex Mono', monospace;
+  letter-spacing: 0.07em;
+}
+
+.eori-result.is-registry_valid > header > span {
+  color: #8ed2aa;
+}
+
+.eori-result.is-registry_invalid > header > span,
+.eori-result.is-format_invalid > header > span,
+.eori-result.is-unsupported > header > span,
+.eori-result.is-unavailable > header > span {
+  color: #efbd81;
+}
+
+.eori-result h2 {
+  max-width: 17ch;
+  margin: 0 0 16px;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.eori-result header p {
+  max-width: 66ch;
+  margin: 0;
+  color: rgb(247 246 241 / 0.78);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.eori-result-ledger {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+
+.eori-result-ledger > div {
+  display: grid;
+  min-height: 160px;
+  align-content: space-between;
+  gap: 22px;
+  padding: clamp(25px, 4vw, 44px);
+  border-right: 1px solid rgb(247 246 241 / 0.34);
+  border-bottom: 1px solid rgb(247 246 241 / 0.34);
+}
+
+.eori-result-ledger > div:nth-child(2n) {
+  border-right: 0;
+}
+
+.eori-result-ledger dt {
+  color: rgb(247 246 241 / 0.62);
+  font: 600 9px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.07em;
+}
+
+.eori-result-ledger dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font: 600 clamp(15px, 2vw, 22px)/1.35 'IBM Plex Mono', monospace;
+}
+
+.eori-result-ledger a {
+  text-underline-offset: 4px;
+}
+
+.eori-company-details {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.45fr) minmax(0, 0.65fr) minmax(0, 0.9fr);
+  gap: 26px;
+  align-items: start;
+  padding: clamp(28px, 5vw, 52px);
+  border-bottom: 1px solid rgb(247 246 241 / 0.34);
+  background: #0f242d;
+}
+
+.eori-company-details strong {
+  font-size: clamp(21px, 3vw, 32px);
+  line-height: 1.1;
+}
+
+.eori-company-details p {
+  margin: 0;
+  color: rgb(247 246 241 / 0.78);
+  line-height: 1.55;
+}
+
+.eori-result-eu {
+  padding: clamp(28px, 5vw, 52px);
+  border-bottom: 1px solid rgb(247 246 241 / 0.34);
+}
+
+.eori-result-actions {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto auto;
+  gap: 22px;
+  align-items: center;
+  padding: clamp(30px, 5vw, 58px);
+  background: #0f242d;
+}
+
+.eori-result-actions h3 {
+  max-width: 22ch;
+  margin: 10px 0 0;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.05;
+}
+
+.eori-secondary-action {
+  min-height: 48px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--paper);
+  color: var(--paper);
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.eori-explainer > header,
+.eori-related > header,
+.eori-questions > header {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.42fr) minmax(250px, 0.75fr) minmax(260px, 0.83fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: start;
+  padding: clamp(38px, 6vw, 72px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.eori-explainer > header h2,
+.eori-related > header h2,
+.eori-questions > header h2,
+.eori-explainer > header p,
+.eori-related > header p,
+.eori-questions > header p {
+  margin-top: 0;
+}
+
+.eori-explainer > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.eori-explainer article {
+  min-height: 275px;
+  padding: clamp(30px, 5vw, 58px);
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  background: rgb(255 255 255 / 0.42);
+}
+
+.eori-explainer article:nth-child(2n) {
+  border-right: 0;
+}
+
+.eori-explainer article:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.eori-explainer article > span,
+.eori-related nav span,
+.eori-related nav b {
+  color: var(--muted);
+  font: 600 9px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.07em;
+}
+
+.eori-explainer h3 {
+  max-width: 17ch;
+  margin: 16px 0;
+  font-size: clamp(24px, 3.2vw, 38px);
+  line-height: 1.02;
+}
+
+.eori-related nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.eori-related nav a {
+  display: grid;
+  min-height: 235px;
+  align-content: space-between;
+  gap: 26px;
+  padding: clamp(28px, 4vw, 46px);
+  border-right: 1.5px solid var(--ink);
+  color: var(--ink);
+  background: var(--paper);
+  text-decoration: none;
+}
+
+.eori-related nav a:nth-child(2) {
+  background: var(--field);
+}
+
+.eori-related nav a:last-child {
+  border-right: 0;
+}
+
+.eori-related nav a:hover,
+.eori-related nav a:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.eori-related nav a:hover span,
+.eori-related nav a:hover b,
+.eori-related nav a:focus-visible span,
+.eori-related nav a:focus-visible b {
+  color: rgb(247 246 241 / 0.7);
+}
+
+.eori-related nav strong {
+  max-width: 18ch;
+  font-size: clamp(21px, 2.7vw, 32px);
+  line-height: 1.05;
+}
+
+.eori-questions > div {
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.eori-question {
+  border-bottom: 1px solid rgb(22 49 61 / 0.42);
+  background: rgb(255 255 255 / 0.42);
+}
+
+.eori-question:last-child {
+  border-bottom: 0;
+}
+
+.eori-question summary {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  padding: 24px clamp(26px, 5vw, 58px);
+  cursor: pointer;
+  font-size: clamp(18px, 2.3vw, 27px);
+  font-weight: 900;
+  list-style: none;
+}
+
+.eori-question summary::-webkit-details-marker {
+  display: none;
+}
+
+.eori-question summary span {
+  color: var(--manifest);
+  font: 600 10px/1 'IBM Plex Mono', monospace;
+}
+
+.eori-question p {
+  margin: 0;
+  padding: 0 clamp(26px, 5vw, 58px) 28px calc(clamp(26px, 5vw, 58px) + 58px);
+}
+
+@media (max-width: 900px) {
+  .eori-result-actions {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+}
+
+@media (max-width: 760px) {
+  .eori-hero-trust,
+  .eori-check-panel,
+  .eori-input-line,
+  .eori-eu-handoff,
+  .eori-result > header,
+  .eori-result-ledger,
+  .eori-company-details,
+  .eori-explainer > header,
+  .eori-related > header,
+  .eori-questions > header,
+  .eori-explainer > div,
+  .eori-related nav {
+    grid-template-columns: 1fr;
+  }
+
+  .eori-hero-trust strong,
+  .eori-hero-trust strong:last-child {
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .eori-hero-trust strong:last-child {
+    border-bottom: 0;
+  }
+
+  .eori-check-panel > header {
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .eori-check-panel > header,
+  .eori-check-panel > form {
+    padding: 34px 20px;
+  }
+
+  .eori-input-line .button {
+    min-height: 58px;
+    border-width: 1.5px 0 0;
+  }
+
+  .eori-eu-handoff {
+    align-items: start;
+  }
+
+  .eori-result-ledger > div,
+  .eori-result-ledger > div:nth-child(2n) {
+    min-height: 135px;
+    border-right: 0;
+  }
+
+  .eori-company-details {
+    gap: 14px;
+  }
+
+  .eori-explainer article,
+  .eori-explainer article:nth-child(2n),
+  .eori-explainer article:nth-last-child(-n + 2) {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .eori-explainer article:last-child {
+    border-bottom: 0;
+  }
+
+  .eori-related nav a,
+  .eori-related nav a:last-child {
+    min-height: 190px;
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .eori-related nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .eori-question summary {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding-inline: 20px;
+  }
+
+  .eori-question p {
+    padding-right: 20px;
+    padding-left: 66px;
+  }
+}
+
+@media print {
+  .masthead-cta,
+  .route-nav,
+  .breadcrumbs,
+  .eori-check-panel,
+  .eori-eu-handoff,
+  .eori-result-actions,
+  .eori-explainer,
+  .eori-related,
+  .eori-questions,
+  .source-register,
+  .eori-bottom-cta,
+  .source-stamp,
+  .footer {
+    display: none !important;
+  }
+
+  .eori-hero {
+    min-height: 0;
+  }
+
+  .eori-result:not([hidden]) {
+    display: block !important;
+    color: var(--ink);
+    background: white;
+  }
+
+  .eori-result > header,
+  .eori-result-ledger > div,
+  .eori-company-details {
+    color: var(--ink);
+    border-color: rgb(22 49 61 / 0.4);
+    background: white;
+  }
+
+  .eori-result > header > span,
+  .eori-result header p,
+  .eori-result-ledger dt,
+  .eori-company-details > span,
+  .eori-company-details p {
+    color: var(--ink) !important;
+  }
+}

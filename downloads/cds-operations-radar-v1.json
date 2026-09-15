@@ -1,0 +1,318 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-17T18:08:43Z",
+  "record_count": 5,
+  "records": [
+    {
+      "record_id": "cds-service-status-current",
+      "record_type": "service_status",
+      "status": "current",
+      "title": "HMRC showed no listed CDS downtime or service issues at 18:08 UTC on 17 July",
+      "summary": "At 18:08 UTC on 17 July 2026, HMRC's CDS availability page showed no planned downtime and no service issues. The page's latest recorded update was 9 July 2026.",
+      "why_it_matters": "This is a useful point-in-time operating signal, not an uptime promise. A later HMRC update can change the position quickly.",
+      "operator_action": "Check HMRC's live status page before time-critical submissions and keep normal queue, response, and retry monitoring in place.",
+      "topics": [
+        "cds",
+        "service-status"
+      ],
+      "workflow_impacts": [
+        {
+          "stage": "service_access",
+          "impact": "HMRC listed no active access issue at the observation time.",
+          "action": "Continue normal access monitoring and recheck the live source if access fails."
+        },
+        {
+          "stage": "submission",
+          "impact": "HMRC listed no planned CDS submission downtime at the observation time.",
+          "action": "Use normal submission controls and confirm the live status before a time-critical run."
+        }
+      ],
+      "timing": {
+        "effective_from": "2026-07-17T18:08:43Z",
+        "expires_at": "2026-07-18T18:08:43Z"
+      },
+      "freshness": {
+        "observed_at": "2026-07-17T18:08:43Z",
+        "fresh_until": "2026-07-18T18:08:43Z",
+        "poll_interval_hours": 6
+      },
+      "correction": {
+        "status": "none",
+        "note": null,
+        "correctionOf": null
+      },
+      "review": {
+        "state": "agent_source_verified",
+        "reviewedAt": "2026-07-17T18:12:00Z",
+        "reviewerIdentity": "codex-radar-source-verifier",
+        "reviewerKind": "agent",
+        "reviewerRole": "primary-source verification agent",
+        "publicationScope": "narrow_primary_source_fact",
+        "editorialAuthorization": "owner_authorized_build",
+        "publicationReady": true
+      },
+      "provenance": {
+        "id": "hmrc_cds_service_status",
+        "publisher": "HM Revenue & Customs",
+        "url": "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues",
+        "locator": "Service availability; Planned downtime; Service issues",
+        "updatedAt": "2026-07-09T15:20:58Z",
+        "sha256": "f121063188b125cf1fe4f1153d0387a5b51f51862832a1e85024b7e8f382f338",
+        "bytes": 42974,
+        "mediaType": "application/json",
+        "licence": "Open Government Licence v3.0"
+      },
+      "path": "/research/cds-operations-radar/cds-service-status-current/"
+    },
+    {
+      "record_id": "cds-workarounds-release-5-2-0",
+      "record_type": "workaround_release",
+      "status": "current",
+      "title": "HMRC published CDS consolidated workarounds release 5.2.0",
+      "summary": "HMRC's 4 July update identifies consolidated workaround document 5.2.0 and says its Known Error Log changes cover additions, amendments, and resolutions through 25 June 2026.",
+      "why_it_matters": "Teams troubleshooting a rejected declaration may otherwise rely on an older workaround, a resolved item, or an incomplete change list.",
+      "operator_action": "Use the current 5.2.0 artifact and its individual change-log tabs to verify the specific error or difference before changing a declaration workflow.",
+      "topics": [
+        "cds",
+        "known-errors",
+        "workarounds"
+      ],
+      "workflow_impacts": [
+        {
+          "stage": "declaration_completion",
+          "impact": "The consolidated release may change which HMRC workaround applies to a known rejection or completion mismatch.",
+          "action": "Match the exact error or known-difference entry and read its current status and change log."
+        },
+        {
+          "stage": "submission",
+          "impact": "Resolved or amended workaround entries can change the correct resubmission path.",
+          "action": "Confirm the entry remains current before resubmitting or changing mapped data."
+        }
+      ],
+      "timing": {
+        "effective_from": null,
+        "expires_at": null
+      },
+      "freshness": {
+        "observed_at": "2026-07-17T18:08:43Z",
+        "fresh_until": "2026-07-24T18:08:43Z",
+        "poll_interval_hours": 24
+      },
+      "correction": {
+        "status": "none",
+        "note": null,
+        "correctionOf": null
+      },
+      "review": {
+        "state": "agent_source_verified",
+        "reviewedAt": "2026-07-17T18:12:00Z",
+        "reviewerIdentity": "codex-radar-source-verifier",
+        "reviewerKind": "agent",
+        "reviewerRole": "primary-source verification agent",
+        "publicationScope": "narrow_primary_source_fact",
+        "editorialAuthorization": "owner_authorized_build",
+        "publicationReady": true
+      },
+      "provenance": {
+        "id": "hmrc_cds_known_workarounds",
+        "publisher": "HM Revenue & Customs",
+        "url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+        "locator": "Updates to this page: 4 July 2026; consolidated document 5.2.0",
+        "updatedAt": "2026-07-03T23:15:05Z",
+        "sha256": "55a064c2be678320d766859771ef1cf1966eeb705c3d2c78c45b9e589a2c3373",
+        "bytes": 33903,
+        "mediaType": "application/json",
+        "licence": "Open Government Licence v3.0"
+      },
+      "path": "/research/cds-operations-radar/cds-workarounds-release-5-2-0/"
+    },
+    {
+      "record_id": "cds-technical-documentation-2026-07-09",
+      "record_type": "technical_release",
+      "status": "current",
+      "title": "HMRC linked a CDS technical documentation package dated 9 July 2026",
+      "summary": "HMRC's developer guide linked a 54.4 MB CDS technical documentation package dated 9 July 2026 for Community System Providers and third-party software developers.",
+      "why_it_matters": "A new package can change specifications or test expectations across the CDS declaration lifecycle even when a user-facing status page is green.",
+      "operator_action": "Diff the package against the previously approved version and route material specification changes through integration tests before release.",
+      "topics": [
+        "cds",
+        "software-integration",
+        "technical-documentation"
+      ],
+      "workflow_impacts": [
+        {
+          "stage": "notifications",
+          "impact": "Package changes may affect notification or status-query implementation details.",
+          "action": "Include notification and query journeys in the package-diff review and regression suite."
+        },
+        {
+          "stage": "software_integration",
+          "impact": "The dated package is the latest technical-documentation bundle linked by HMRC at capture time.",
+          "action": "Record the artifact version and compare technical files before changing an integration."
+        }
+      ],
+      "timing": {
+        "effective_from": null,
+        "expires_at": null
+      },
+      "freshness": {
+        "observed_at": "2026-07-17T18:08:43Z",
+        "fresh_until": "2026-07-24T18:08:43Z",
+        "poll_interval_hours": 24
+      },
+      "correction": {
+        "status": "none",
+        "note": null,
+        "correctionOf": null
+      },
+      "review": {
+        "state": "agent_source_verified",
+        "reviewedAt": "2026-07-17T18:12:00Z",
+        "reviewerIdentity": "codex-radar-source-verifier",
+        "reviewerKind": "agent",
+        "reviewerRole": "primary-source verification agent",
+        "publicationScope": "narrow_primary_source_fact",
+        "editorialAuthorization": "owner_authorized_build",
+        "publicationReady": true
+      },
+      "provenance": {
+        "id": "hmrc_cds_technical_documentation",
+        "publisher": "HM Revenue & Customs",
+        "url": "https://developer.service.hmrc.gov.uk/guides/customs-declarations-end-to-end-service-guide/",
+        "locator": "Technical Documentation; CDS Technical Documentation package metadata",
+        "updatedAt": "2026-07-09T00:00:00Z",
+        "sha256": "042d6f4f8f711e0371d159421d1d483a6bde808a67bfe6c092a7a9ed893f6128",
+        "bytes": 28765,
+        "mediaType": "text/html",
+        "licence": "Open Government Licence v3.0"
+      },
+      "path": "/research/cds-operations-radar/cds-technical-documentation-2026-07-09/"
+    },
+    {
+      "record_id": "cds-document-code-9001-uk-india-fta-2026-07-15",
+      "record_type": "code_change",
+      "status": "current",
+      "title": "CDS document code 9001 updated for UK-India FTA use from 15 July",
+      "summary": "HMRC updated national document code 9001 on 13 July to reflect use under the UK-India Free Trade Agreement from 15 July 2026.",
+      "why_it_matters": "Document-code mappings and declaration templates using the new agreement may need a dated update before the code is selected.",
+      "operator_action": "Review HMRC's current code instruction and the relevant tariff measure before updating templates or selecting code 9001 for a consignment.",
+      "topics": [
+        "cds",
+        "data-element-2-3",
+        "document-codes",
+        "uk-india-fta"
+      ],
+      "workflow_impacts": [
+        {
+          "stage": "document_codes",
+          "impact": "The stated use of national document code 9001 changed for declarations from 15 July 2026.",
+          "action": "Update dated code reference data only after reviewing the current HMRC instruction."
+        },
+        {
+          "stage": "reference_data",
+          "impact": "Internal code lists or CMS mappings may not yet reflect the 13 July source update.",
+          "action": "Compare the maintained mapping with the official source and test the affected path."
+        }
+      ],
+      "timing": {
+        "effective_from": "2026-07-15T00:00:00Z",
+        "expires_at": null
+      },
+      "freshness": {
+        "observed_at": "2026-07-17T18:08:43Z",
+        "fresh_until": "2026-07-20T18:08:43Z",
+        "poll_interval_hours": 24
+      },
+      "correction": {
+        "status": "none",
+        "note": null,
+        "correctionOf": null
+      },
+      "review": {
+        "state": "agent_source_verified",
+        "reviewedAt": "2026-07-17T18:12:00Z",
+        "reviewerIdentity": "codex-radar-source-verifier",
+        "reviewerKind": "agent",
+        "reviewerRole": "primary-source verification agent",
+        "publicationScope": "narrow_primary_source_fact",
+        "editorialAuthorization": "owner_authorized_build",
+        "publicationReady": true
+      },
+      "provenance": {
+        "id": "hmrc_cds_de23_national_codes",
+        "publisher": "HM Revenue & Customs",
+        "url": "https://www.gov.uk/guidance/data-element-23-documents-and-other-reference-codes-national-of-the-customs-declaration-service-cds",
+        "locator": "Updates to this page: 13 July 2026; document code 9001",
+        "updatedAt": "2026-07-13T12:51:20Z",
+        "sha256": "38b1b44a8528754b5ef0598cd4d810baa8167b32baba950444e76bd7741ebf4e",
+        "bytes": 55302,
+        "mediaType": "application/json",
+        "licence": "Open Government Licence v3.0"
+      },
+      "path": "/research/cds-operations-radar/cds-document-code-9001-uk-india-fta-2026-07-15/"
+    },
+    {
+      "record_id": "cds-aggregation-eu-eori-2026-07-04",
+      "record_type": "guidance_change",
+      "status": "current",
+      "title": "HMRC updated CDS aggregation guidance for EU EORIs in specified data elements",
+      "summary": "HMRC's 1 July update says Data Element 2/1 was changed to reflect that EU EORIs can be declared in certain data elements from 4 July 2026.",
+      "why_it_matters": "Supplementary-declaration mappings that previously assumed only GB or XI identifiers may reject or mishandle an eligible EU EORI path.",
+      "operator_action": "Review the current Data Element 2/1 aggregation instruction and test the affected party-identifier mapping before changing production behaviour.",
+      "topics": [
+        "aggregation",
+        "cds",
+        "data-element-2-1",
+        "eori"
+      ],
+      "workflow_impacts": [
+        {
+          "stage": "party_identification",
+          "impact": "Specified aggregated-declaration references can now include an EU EORI from the stated effective date.",
+          "action": "Verify the exact eligible data element and identifier format in the current HMRC instruction."
+        },
+        {
+          "stage": "supplementary_declarations",
+          "impact": "Aggregation templates and validation paths may need a dated EU-EORI case.",
+          "action": "Add a source-backed EU-EORI test case without broadening unrelated EORI acceptance."
+        }
+      ],
+      "timing": {
+        "effective_from": "2026-07-04T00:00:00Z",
+        "expires_at": null
+      },
+      "freshness": {
+        "observed_at": "2026-07-17T18:08:43Z",
+        "fresh_until": "2026-07-24T18:08:43Z",
+        "poll_interval_hours": 24
+      },
+      "correction": {
+        "status": "none",
+        "note": null,
+        "correctionOf": null
+      },
+      "review": {
+        "state": "agent_source_verified",
+        "reviewedAt": "2026-07-17T18:12:00Z",
+        "reviewerIdentity": "codex-radar-source-verifier",
+        "reviewerKind": "agent",
+        "reviewerRole": "primary-source verification agent",
+        "publicationScope": "narrow_primary_source_fact",
+        "editorialAuthorization": "owner_authorized_build",
+        "publicationReady": true
+      },
+      "provenance": {
+        "id": "hmrc_cds_aggregation_rules",
+        "publisher": "HM Revenue & Customs",
+        "url": "https://www.gov.uk/guidance/customs-simplified-procedures-aggregation-rules-for-cds",
+        "locator": "Updates to this page: 1 July 2026; Data Element 2/1",
+        "updatedAt": "2026-06-30T23:15:04Z",
+        "sha256": "6d2a386563e9a6fe5c2e80ab18aac3ade34a291d0d35e68a18dbee8e0aeb9f5f",
+        "bytes": 36759,
+        "mediaType": "application/json",
+        "licence": "Open Government Licence v3.0"
+      },
+      "path": "/research/cds-operations-radar/cds-aggregation-eu-eori-2026-07-04/"
+    }
+  ]
+}
