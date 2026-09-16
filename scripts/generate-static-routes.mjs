@@ -15,6 +15,8 @@ import { routes, site } from './routes.mjs'
 import { discoveryEntry } from './discovery-entry.mjs'
 import { productScopeRoutes, validateProductScope } from './product-scope.mjs'
 validateProductScope()
+import { selectionRoutes, validateSelectionPages } from './selection-pages.mjs'
+validateSelectionPages()
 import { comparisonRoute, renderComparison } from './customaite-comparison.mjs'
 import { comparisons, renderVendorComparison, validateComparisons } from './vendor-comparisons.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -122,7 +124,7 @@ function renderHeroStrip(route) {
     return `<div class="hero-value-strip">${route.heroStrip.map((item) => `<strong>${escapeHtml(item)}</strong>`).join('')}</div>`
   }
   const boundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/', '/supported-scope/', '/how-it-works/'])
-  return boundaryRoutes.has(route.path) && route.limitations
+  return (route.claimContract || boundaryRoutes.has(route.path)) && route.limitations
     ? `<p class="limitations${route.claimContract ? " scope-boundary" : ""}">${route.claimContract ? "CURRENT SCOPE" : "LIMITATION"} · ${escapeHtml(route.limitations)}</p>`
     : ''
 }
@@ -680,7 +682,7 @@ await writeFile(join(dist, 'sitemap.xml'), sitemap)
 // Do not repeat legacy product claims through discovery files while their route copy awaits alignment.
 // The sitemap still lists every indexable route; this list contains only the reviewed claim-safe set.
 const discoveryRoutes = [
-  ...productScopeRoutes,
+  ...productScopeRoutes, ...selectionRoutes,
   comparisonRoute,
   ...comparisons,
   economicsRoute,

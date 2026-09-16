@@ -1,3 +1,5 @@
+import { selectionRoutes, validateSelectionPages } from './selection-pages.mjs'
+validateSelectionPages()
 import { access, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -129,7 +131,7 @@ for (const route of expected) {
   const heading = h1s[0][1].replace(/<[^>]*>/g, '').trim()
   if (headings.has(heading)) throw new Error(`Duplicate H1: ${heading}`)
   if (route.path !== '/' && /<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} loads route JavaScript`)
-  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path) && !productScopeRoutes.some(r => r.path === route.path)) {
+  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path) && ![...productScopeRoutes, ...selectionRoutes].some(r => r.path === route.path)) {
     const heroStart = html.indexOf('<header class="hero')
     const heroEnd = html.indexOf('</header>', heroStart)
     const heroAdjacentMarkup = html.slice(heroEnd + 9).trimStart()
@@ -690,7 +692,7 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
   for (const route of expected) {
     if (!content.includes(`${site.origin}${route.path}`)) throw new Error(`${filename} is missing ${route.path}`)
   }
-  const scopedPaths = new Set(productScopeRoutes.map(route => route.path))
+  const scopedPaths = new Set([...productScopeRoutes, ...selectionRoutes].map(route => route.path))
   verifyLegacyDiscovery(content, routes.filter(route => !scopedPaths.has(route.path)), site.origin)
   if (!content.includes('Declarix does not submit to HMRC')) throw new Error(`${filename} is missing the filing boundary`)
 }
@@ -701,12 +703,12 @@ if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is
 console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, legacy route manifest ${site.claimsVersion}, and draft home/discovery boundary contract`)
 
 // Scoped draft contract supplements (does not approve or replace) the legacy site manifest.
-for (const route of productScopeRoutes) {
+for (const route of [...productScopeRoutes, ...selectionRoutes]) {
   const html = await readFile(join(root, 'dist', route.path, 'index.html'), 'utf8')
-  if (/CDS.ready|3[×x]|200 seconds|£\d|every (?:proposed )?field|supported export|ready for Sequoia/i.test(html)) throw new Error('Unsupported built scope claim: '+route.path)
+  if (/CDS.ready|3[×x]|200 seconds|£\d|every (?:proposed )?field|every proposed value|three times more|no new headcount|more margin|supports Sequoia|supported export|ready for Sequoia/i.test(html)) throw new Error('Unsupported built scope claim: '+route.path)
   if (!html.includes(scopeBoundary) || !html.includes('class="limitations scope-boundary"')) throw new Error('Scope boundary not rendered: '+route.path)
   for (const expected of ['name="twitter:image" content="'+site.origin+route.ogImage, 'property="og:image" content="'+site.origin+route.ogImage, '"dateModified":"'+route.reviewedOn+'"']) if (!html.includes(expected)) throw new Error('Scope metadata missing: '+expected)
   if (html.includes(site.origin+'/og.jpg')) throw new Error('Legacy social claim leaked into scoped route')
 }
 await access(join(root, 'dist/product-scope.png'))
-console.log('Verified two draft product-scope routes; not a sitewide public-claim clearance')
+console.log('Verified five draft scope/selection routes; not a sitewide public-claim clearance')

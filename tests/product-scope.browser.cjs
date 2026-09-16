@@ -7,7 +7,9 @@ const root=path.resolve(__dirname,'../dist');const output=path.resolve(__dirname
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin=`http://127.0.0.1:${server.address().port}`;const browser=await chromium.launch({headless:true});
  try{
   const { productScopeRoutes, scopeBoundary } = await import('../scripts/product-scope.mjs');
-  for(const route of productScopeRoutes) for(const width of [1440,768,390,320]){
+  const { selectionRoutes } = await import('../scripts/selection-pages.mjs');
+  const scopedRoutes = [...productScopeRoutes, ...selectionRoutes];
+  for(const route of scopedRoutes) for(const width of [1440,768,390,320]){
    const context=await browser.newContext({viewport:{width,height:1000}});const page=await context.newPage();const requests=[];const errors=[];page.on('request',r=>requests.push(r.url()));page.on('pageerror',e=>errors.push(e.message));
    await page.goto(origin+route.path);await page.evaluate(()=>document.fonts.ready);
    const tag=route.path+' '+width;
@@ -28,7 +30,7 @@ const root=path.resolve(__dirname,'../dist');const output=path.resolve(__dirname
    await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const axe=await page.evaluate(()=>axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}));check(tag+' WCAG: '+JSON.stringify(axe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))),axe.violations.length===0);
    await page.screenshot({path:path.join(output,`${route.path.split('/')[1]}-${width}.png`),fullPage:true});await page.screenshot({path:path.join(output,`${route.path.split('/')[1]}-${width}-hero.png`)});await context.close();
   }
-  for(const route of productScopeRoutes){
+  for(const route of scopedRoutes){
    const context=await browser.newContext({javaScriptEnabled:false});const page=await context.newPage();await page.goto(origin+route.path);check(route.path+' no-JS scope and enquiry usable',await page.locator('.scope-boundary').isVisible()&&await page.locator('.cta-band a').isVisible());await context.close();
    check(route.path+' dated sitemap entry',fs.readFileSync(path.join(root,'sitemap.xml'),'utf8').includes('https://getdeclarix.com'+route.path+'</loc><lastmod>2026-09-16</lastmod>'));
    check(route.path+' current discovery description',fs.readFileSync(path.join(root,'llms.txt'),'utf8').includes(route.description));

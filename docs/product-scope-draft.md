@@ -1,36 +1,53 @@
-# Product-scope alignment: first draft slice
+# Product-scope alignment: draft PR21
 
-16 September 2026. Part of draft site PR21. This is **not a sitewide claims clearance, commercial change, or release approval**.
+16 September 2026. This is **not a sitewide claims clearance, commercial change, or release approval**.
 
-## Why this slice
+## Evidence and purpose
 
-The four new comparison routes direct buyers to supported scope. The old supported-scope and how-it-works pages asserted CDS-ready output, tested named connectors, every-field evidence and a processing benchmark. Those statements conflict with the 14 September product audit and product-claims contract (`deliverables/declarix-seo-v4-2026-09-14/requirements/02_PRODUCT_CLAIMS.md` in the operating workspace).
+The operating workspace's 14 September product audit and `deliverables/declarix-seo-v4-2026-09-14/requirements/02_PRODUCT_CLAIMS.md` distinguish case preparation from accepted filing data. Old pages asserted readiness, named connectors, complete source coverage and numerical outcomes. These draft slices replace those assertions without inventing accepted integrations, customer proof or owner approval.
 
-This slice replaces those two route definitions with case preparation and evidence-linked review. It states the incomplete, review-only H1 limit beside the hero. It separates generic handoff preparation from recipient acceptance, configured checks from complete legal coverage, and request/reply handling from live email delivery or a released customer portal. No price or measured result is introduced.
+## Completed draft surfaces
 
-## Surfaces covered
+- Four vendor comparisons: `/compare/declarix-vs-customaite/` (also owns alternatives), `/compare/declarix-vs-icustoms/`, `/compare/declarix-vs-flytta/`, `/compare/icustoms-vs-customaite/`. Dated evidence and distinct buyer decisions; separate contracts and tests in `contracts/comparisons/`.
+- `/supported-scope/` and `/how-it-works/`: preparation, review, configured checks, missing-information work and controlled handoff. `contracts/product-scope-draft-2026-09-16.json` records this two-route slice.
+- Homepage, synthetic walkthrough, metadata, no-JS fallback, shared `og.html`/`og.jpg`, global discovery: aligned in the preceding independently reviewed slice. Examples are not live product captures or customer results. Pilot price and turnaround are retained for separate owner decision. `contracts/home-discovery-draft-2026-09-16.json` records that scope.
+- **Current selection/About slice:** `/about/`, `/customs-declaration-software/`, `/customs-clearance-software/`. The first explains product purpose, the second separates preparation from filing, and the third maps work and responsibility across the desk. Current H1 limits, safe enquiry copy, title/description, social image, JSON-LD, sitemap and discovery all come from the route data. `contracts/selection-pages-draft-2026-09-16.json` is a dated draft, not publication approval.
+- All five scope/selection routes use `public/product-scope.png`, a text-only scope card, not a product screenshot. Regenerate with `node scripts/render-product-scope-card.mjs`.
+- Both generated discovery files preserve URLs for eight remaining legacy routes but replace their titles **and descriptions** with neutral labels. Do not infer the underlying pages are aligned from their discovery labels.
 
-- `/supported-scope/` and `/how-it-works/`: visible copy, limitations, CTA, title, description, canonical, JSON-LD and review date.
-- Shared renderer: optional per-route social image/review date and scope-safe masthead. Other routes retain their existing output.
-- Social preview: local 1200×630 text-only `public/product-scope.png`. Regenerate with `node scripts/render-product-scope-card.mjs`. Not a product screenshot or customer evidence.
-- Discovery: these two routes' descriptions and sitemap modification dates update from the same source. Global discovery prose is not cleared by that update.
-- Scoped readable boundary and breadcrumb contrast styles. No product runtime, account, telemetry, submission, or customer-access change.
+The historical `public-claims.v2.0.0.json` remains an old offer record, not current authority for these superseding draft surfaces. The separate dated contracts supplement it; they do not invent a sitewide owner-approved manifest.
 
-`contracts/product-scope-draft-2026-09-16.json` is a dated draft snapshot, not a fabricated owner approval. It supplements the legacy manifest for these two routes; it does not mark the unresolved whole-site manifest as current evidence. `validateProductScope`, mutation tests and the built-route verifier reject specific known unsupported claims and missing limits. Automated phrase tests do not replace semantic review.
+## Selection source refresh
 
-## Checks
+The declaration-software route uses these official pages, retrieved 16 September 2026:
 
-`npm run build` includes scope unit tests and rendered-route verification. `npm run test:scope:browser` checks both routes at 1440/768/390/320, no-JS access, local links, social metadata, current JSON-LD and automated WCAG. Rerun comparison and economics browser regressions because the shared renderer/navigation is touched. Inspect the social card and sampled page screenshots visually.
+1. HMRC software developer list: <https://www.gov.uk/guidance/list-of-software-developers-providing-customs-declaration-support>. HMRC lists developer contact details and explicitly disclaims recommendation or endorsement. No claim that Declarix appears on this list.
+2. HMRC end-to-end guide: <https://developer.service.hmrc.gov.uk/guides/customs-declarations-end-to-end-service-guide/>. Describes declaration APIs and end-to-end interaction, not acceptance of a Declarix connector.
 
-## Still required before publication
+## Tests and preservation
 
-The following **known legacy surfaces remain unresolved and block whole-PR publication**. Keeping the PR draft is intentional, not evidence that these claims are acceptable:
+`npm run build` runs economics, comparison, scope, selection and home unit tests, TypeScript, the production build and rendered-route verification. `npm run test:scope:browser` now checks all five scope/selection routes at 1440/768/390/320, local links, canonical/social metadata, current JSON-LD, no-JS, safe enquiry copy and automated WCAG. Comparison, economics and home browser suites are regression checks. Automated phrase checks and accessibility scans do not replace semantic or manual review.
 
-1. Homepage (`src/App.tsx`, `src/data.ts`, `src/world.tsx`, `index.html`) and its shared `og.jpg`/`og.html`: old 3×, 200-second, named-connector, every-field and economic/result language.
-2. Remaining route copy and mastheads, including security, pricing, pilot, pricing-policy, category and about pages. Review the full rendered site, not just route source.
-3. Global `llms.txt` and `llms-full.txt` statements generated by `scripts/generate-static-routes.mjs`. The route entries are current but surrounding old prose is not.
-4. The legacy `contracts/public-claims.v2.0.0.json` and verifier requirements. Replace these together only after the full alignment; do not disable validation to pass incompatible copy.
-5. Fixed pilot terms: owner must reconfirm free-on-failure / £500 total cap or approve another treatment. No term has changed in this slice.
-6. Historical screenshots, downloadable/PDF assets and social images need a visual/text sweep. Text searches do not inspect pixels or establish current evidence.
+`contracts/selection-preserved-routes.json` pins the ten non-selection route definitions to the preceding reviewed head. This includes pilot, pricing, pricing-policy, privacy, security and terms. Their preservation is **not approval of their content**. No booking, telemetry, product runtime, access or account behavior changes in this slice.
 
-Next coherent slice: homepage and global discovery alignment, followed by remaining route/manifest alignment and the owner commercial decision. Use existing draft PR21. Re-test and independently review each new head. Merge, deployment and live checks remain separate states.
+## Asset inventory, not clearance
+
+A path/size/digest inventory was recorded in the operating workspace as `reports/2026-09-16-build-trial/ASSET_INVENTORY.json` for `public/` and the local `dist/`. It covers 2,240 entries, counting source files and their built copies separately:
+
+- 2,214 historical motion/frame entries under `world/` or `exhibits/`.
+- 20 source or generated downloadable assets (CSV, Markdown and SVG).
+- Four entries for the two previously reviewed bounded social images and their built copies.
+- Two other image entries (favicon and its copy).
+
+No PDF exists in those two trees. This does not establish that no historical PDF exists elsewhere. Files outside those trees and full git history were not inventoried. No historical asset was removed or modified. Paths and hashes do not inspect pixels, video frames, historical text or legal currency. Asset visual/content review remains open.
+
+## Remaining publication gates
+
+Eight legacy route definitions remain unaligned: `/privacy/`, `/security/`, `/pricing/`, `/pricing-policy/`, `/pilot/`, `/terms/`, `/customs-intermediary-registration-2026/`, `/editorial-policy/`. Separate bounded product-copy fixes from commercial, legal and security commitments. Recheck time-sensitive registration material against current official sources.
+
+- Owner must reconfirm pilot terms (including £500 cap/free-on-failure) and the one-working-day commitment, or approve their replacement. Neither changed here.
+- Reconcile the historical site manifest without silently granting commercial/security approval.
+- Complete historical/downloadable asset review; no whole-site clearance from this inventory.
+- Obtain independent exact-head review of each material change. Draft, built, tested, reviewed, required approval, merged, deployed and live-verified are different states.
+
+Continue the same draft PR21. No merge, deployment or live result is claimed.

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:economics && npm run test:comparison && npm run test:scope && npm run test:home && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
+    "build": "npm run test:economics && npm run test:comparison && npm run test:scope && npm run test:selection && npm run test:home && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
     "lint": "oxlint",
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
@@ -17,7 +17,8 @@
     "test:scope": "node --test tests/product-scope.test.mjs",
     "test:scope:browser": "node tests/product-scope.browser.cjs",
     "test:home": "node --test tests/home-alignment.test.mjs",
-    "test:home:browser": "node tests/home-alignment.browser.cjs"
+    "test:home:browser": "node tests/home-alignment.browser.cjs",
+    "test:selection": "node --test tests/selection-pages.test.mjs"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",

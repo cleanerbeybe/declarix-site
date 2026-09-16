@@ -1,3 +1,4 @@
+import { selectionRoutes } from '../scripts/selection-pages.mjs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -57,7 +58,7 @@ test('global discovery uses the bounded entry renderer', () => {
   assert.match(read('scripts/verify-build.mjs'), /verifyLegacyDiscovery\(content,/)
 })
 test('all legacy routes suppress both title and description, keeping links', () => {
-  const reviewedPaths = new Set(productScopeRoutes.map(route => route.path))
+  const reviewedPaths = new Set([...productScopeRoutes, ...selectionRoutes].map(route => route.path))
   const legacy = routes.filter(route => !reviewedPaths.has(route.path))
   const content = legacy.map(route => discoveryEntry(route, site.origin, reviewedPaths)).join('\n')
   verifyLegacyDiscovery(content, legacy, site.origin)
