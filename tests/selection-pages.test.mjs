@@ -56,9 +56,9 @@ test('commercial homepage terms and lazy booking behavior remain unchanged',()=>
   const app=read('src/App.tsx');assert.match(app,/CAPPED AT £500/i);assert.match(app,/WITHIN ONE WORKING DAY/);assert.match(app,/if \(!revealed \|\| !configured\) return/);assert.match(app,/setRevealed\(true\)/)
 })
 
-test('all ten non-selection route definitions retain their baseline copy', async()=>{
+test('all six routes outside the selection and legacy-offer/product sets retain their baseline copy', async()=>{
   const {createHash}=await import('node:crypto')
   const snapshot=JSON.parse(read('contracts/selection-preserved-routes.json'))
-  assert.equal(snapshot.routes.length,10)
+  assert.equal(snapshot.routes.length,6)
   for(const item of snapshot.routes){const route=routes.find(r=>r.path===item.path);assert.ok(route);assert.equal(createHash('sha256').update(JSON.stringify(route)).digest('hex'),item.sha256,item.path)}
 })

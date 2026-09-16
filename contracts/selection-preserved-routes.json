@@ -1,22 +1,14 @@
 {
   "baseline": "f7ebcdee905c2fc49f45b3a8e7e9f1589ffcbdf4",
-  "scope": "Non-selection route data unchanged; preservation is not release approval.",
+  "scope": "Routes outside the selection and legacy-offer/product draft sets remain unchanged; preservation is not release approval.",
   "routes": [
     {
       "path": "/privacy/",
       "sha256": "7ded6c40c63fff0113b4bb4eede5b9efe8f86962a60fceb1181a46ef1e32e639"
     },
     {
-      "path": "/security/",
-      "sha256": "8f7a3546a61145061b69ab048f4d0b84bc3834759e1609d1a10134ed3e83e634"
-    },
-    {
       "path": "/supported-scope/",
       "sha256": "c4fd3458c07129ef4101aa5dde8a9eb22bb066cbc06b43808a0d8e93a0aaa0d2"
-    },
-    {
-      "path": "/pricing/",
-      "sha256": "1431a6b4dbb26ec04ac3baf2ca7afd7c3d87aec5bcf52527266357a9e645af5a"
     },
     {
       "path": "/pricing-policy/",
@@ -27,20 +19,12 @@
       "sha256": "10794dd8fb6079253553f29053c7d05e0366001a903f3d4676276f40bac59f3c"
     },
     {
-      "path": "/pilot/",
-      "sha256": "622a156908e791f5dc209a5a861da997bb59f1b01e198d016d8db0a20945798c"
-    },
-    {
       "path": "/terms/",
       "sha256": "a38cf6c891cfa93fc2f5d7d99e2ccad7c53631be881a6228624aac7703a70f8f"
     },
     {
       "path": "/customs-intermediary-registration-2026/",
       "sha256": "49e0105af55d548e455cf51cc2558158a6fd7401ebc91434e062a422282699e9"
-    },
-    {
-      "path": "/editorial-policy/",
-      "sha256": "c73e9caadcbc9b4b12a33d011229e6ed9ee89508d4f05940d8158367f254d183"
     }
   ]
 }

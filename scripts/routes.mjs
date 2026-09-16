@@ -94,9 +94,9 @@ export const routes = [
     sections: [
       {
         label: '01 · PRODUCT BOUNDARY',
-        title: 'Documents in. CDS-ready pack back.',
+        title: 'Documents in. Evidence-linked preparation pack back.',
         paragraphs: [
-          'Declarix reads customer documents and returns a CDS-ready entry pack with source evidence for the clerk to check. Declarix does not submit to HMRC; the broker remains responsible for approval and filing.',
+          'Declarix reads customer documents and returns a preparation pack with available source evidence for the clerk to check. The current H1 profile is incomplete and review-only. Declarix does not submit to HMRC; the broker remains responsible for approval and filing.',
           'The public marketing site is separate from the product environment. The site does not accept document uploads.',
         ],
       },
@@ -138,9 +138,9 @@ export const routes = [
     description:
       'See the Declarix per-entry pricing model, worked labour economics, pilot terms, and the numbers to bring to a 20-minute ROI call.',
     eyebrow: 'PRICING · PER ENTRY, NOT PER SEAT',
-    h1: 'More margin per declaration — or no deal worth doing.',
+    h1: 'Measure preparation cost before you price a pilot.',
     standfirst:
-      'Declarix is priced per entry against the labour and capacity it gives back. The 20-minute numbers call replaces the worked assumptions with your desk’s real volume, time and cost.',
+      'Declarix is priced per entry for the agreed workflow. The 20-minute numbers call replaces worked assumptions with your desk’s representative volume, preparation time, review time and cost.',
     stamp: 'PER\nENTRY',
     limitations:
       'The £7.95 to £2.45 labour model is an example, not a quote. Your job mix, review time and loaded clerk cost determine the real result and per-entry rate.',
@@ -152,7 +152,7 @@ export const routes = [
           'Declarations processed in a representative week.',
           'Minutes of clerk time used per declaration today.',
           'Loaded hourly cost of the people doing that work.',
-          'The Sequoia, Descartes or customer workflow the output needs to reach.',
+          'The target workflow and any named destination that needs a separate version, mapping and acceptance test.',
           'The document mix and exceptions that make the job harder than average.',
         ],
       },
@@ -163,7 +163,7 @@ export const routes = [
           'Loaded clerk labour falls from £7.95 to £2.45 per declaration.',
           'That creates an illustrative £5.50 labour saving before the Declarix rate.',
           'At 120 declarations a week, the model shows £34,320 a year in recovered labour.',
-          'The same reduction in clerk time creates room for up to three times more declarations.',
+          'Recovered clerk time is a scenario input, not a capacity guarantee.',
           'The real test is whether your total cost falls after the Declarix per-entry rate is included.',
         ],
       },
@@ -241,7 +241,7 @@ export const routes = [
     eyebrow: 'PILOT · THE STEP AFTER THE NUMBERS WORK',
     h1: 'Prove it on one ugly job.',
     standfirst:
-      'First run the ROI and map the integration. If the commercial case makes sense, send one anonymised job and let your clerk compare the CDS-ready pack with the manual run.',
+      'First run the ROI and map the target workflow. If the commercial case makes sense, send one anonymised job and let your clerk compare the evidence-linked preparation pack with the manual run.',
     stamp: '£0 FAIL\n£500 CAP',
     limitations:
       'If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.',
@@ -265,9 +265,9 @@ export const routes = [
       },
       {
         label: '03 · RUN',
-        title: 'Get the CDS-ready pack back.',
+        title: 'Get the preparation pack back.',
         paragraphs: [
-          'Declarix returns the pack within one working day. Every proposed field keeps its source and every conflict stays visible for your clerk to resolve before approval.',
+          'Declarix returns the pack within one working day. Proposed values retain available sources, and conflicts stay visible for your clerk to resolve before approval.',
         ],
       },
       {
@@ -514,9 +514,10 @@ export const routes = [
       },
       {
         label: '06 · CLAIMS CONTRACT',
-        title: 'The site is pinned to manifest 2.0.0.',
+        title: 'Each reviewed route names its contract.',
         paragraphs: [
-          'The publishing build checks public source files against a pinned product-claims contract. Current scope, prohibited wording, pending commercial and security facts, and evidence ownership are versioned in the main Declarix repository.',
+          'The publishing build checks public source files against versioned, route-specific claim contracts. Historical offer records remain visible as history; they do not approve newer route copy or publication.',
+          'Each draft contract records its reviewed paths, scope limits, prohibited wording, owner gates and publication state. A route outside that contract remains outside the reviewed set.',
         ],
       },
     ],

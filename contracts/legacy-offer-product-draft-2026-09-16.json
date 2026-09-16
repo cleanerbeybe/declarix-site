@@ -1,0 +1,36 @@
+{
+  "contract_id": "legacy-offer-product-draft-2026-09-16",
+  "status": "draft_only_not_publication_approval",
+  "purpose": "Align four legacy public routes to current preparation and review limits without changing commercial, legal, security, merge, deployment, or publication decisions.",
+  "reviewed_paths": ["/security/", "/pricing/", "/pilot/", "/editorial-policy/"],
+  "unreviewed_routes_remain_outside_scope": true,
+  "owner_gates": [
+    "Pilot £500 cap and free-on-failure term require owner reconfirmation before publication.",
+    "The one-working-day pilot commitment requires owner reconfirmation before publication.",
+    "Security, privacy, legal, merge, deployment and live claims remain separately gated."
+  ],
+  "required_boundaries": [
+    "incomplete and review-only",
+    "does not submit to HMRC",
+    "available source evidence",
+    "separate version, mapping and acceptance test",
+    "scenario input, not a capacity guarantee",
+    "Proposed values retain available sources",
+    "Historical offer records remain visible as history",
+    "A route outside that contract remains outside the reviewed set"
+  ],
+  "prohibited_product_claims": [
+    "CDS-ready",
+    "More margin",
+    "up to three times more declarations",
+    "Sequoia, Descartes or customer workflow",
+    "Every proposed field"
+  ],
+  "preserved_commercial_terms": [
+    "The pilot is free if it fails and capped at £500 if it works.",
+    "If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.",
+    "Declarix returns the pack within one working day.",
+    "Pilot cost if the agreed job fails",
+    "Initial pilot cap if it works"
+  ]
+}
