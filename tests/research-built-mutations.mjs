@@ -16,6 +16,7 @@ for(const [i,r]of [reports[0],authorityRoutes.find(x=>x.kind==='burden-report')]
  mutate(file,'invent human review',s=>s.replace('</main>','<p>directed human review</p></main>'))
  mutate(file,'wrong schema period',s=>s.replaceAll(i?'2024-10-21/2025-01-17':'2026-07-15','2026-09-16'))
  mutate(file,'wrong metadata claim',s=>s.replaceAll(r.description,'Verified customer results'))
+ if(i)mutate(file,'stale source-register date',s=>s.replace('source edition checked on 16 September 2026','source edition checked on 17 July 2026'))
  const assets=i?authorityAssets(r):r.downloads
  for(const a of assets){const f='dist'+a.href
   mutate(f,'wrong denominator',s=>s.replaceAll(i?'460':'402','999'))

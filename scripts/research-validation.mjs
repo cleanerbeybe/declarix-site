@@ -19,7 +19,7 @@ export function validateResearchHtml(html, route) {
   requireValue(dataset.description,notice,'schema reuse limits')
   requireValue(dataset.dateModified,'2026-09-16','schema reviewed date')
   for(const prefix of ['name="description"','property="og:description"'])if(!html.includes(prefix+' content="'+route.description+'"'))fail('metadata context')
-  if(!original){for(const phrase of ['366 intermediaries and 94 traders','15 qualitative interviews','not directly comparable to the 2023 wave',lineage.hmrcFullUrl])if(!visible.includes(phrase))fail('HMRC sample/source limit missing')}
+  if(!original){for(const phrase of ['366 intermediaries and 94 traders','15 qualitative interviews','not directly comparable to the 2023 wave','source edition checked on 16 September 2026',lineage.hmrcFullUrl])if(!visible.includes(phrase))fail('HMRC sample/source limit missing')}
   return true
 }
 export async function verifyResearchBuild(root) {

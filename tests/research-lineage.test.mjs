@@ -49,3 +49,11 @@ test('both SVGs carry visible sources, dates, methods, qualifiers and scaled geo
  const visible=svg.replace(/<title[^>]*>.*?<\/title>|<desc[^>]*>.*?<\/desc>/g,'');for(const p of phrases)assert.ok(visible.toLowerCase().includes(p.toLowerCase()),p);assert.ok(visible.includes(url));assert.match(svg,/viewBox="0 0 1200 900"/);assert.match(svg,/aria-labelledby="title desc"/)
  }
 })
+test('source-register intro follows each route review date; stale HMRC date rejected',()=>{
+ for(const route of authorityRoutes){
+  const html=renderAuthorityRoute(route,site,options)
+  assert.ok(html.includes('source edition checked on '+(route===burden?'16 September 2026':'17 July 2026')),route.path)
+ }
+ const html=renderAuthorityRoute(burden,site,options)
+ assert.throws(()=>validateResearchHtml(html.replace('source edition checked on 16 September 2026','source edition checked on 17 July 2026'),burden),/Research lineage/)
+})

@@ -465,8 +465,9 @@ function jsonLd(route, site) {
 }
 
 function renderSources(route) {
+  const reviewedDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${route.reviewedOn}T00:00:00Z`))
   return `<section class="authority-sources" aria-labelledby="${sourceId(route)}">
-    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>Facts above are traced to the source edition checked on 17 July 2026. Operational prompts organise the job; they do not replace the current official instruction.</p></header>
+    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>Facts above are traced to the source edition checked on ${escapeHtml(reviewedDate)}. Operational prompts organise the job; they do not replace the current official instruction.</p></header>
     <ol>${route.sources.map((item) => `<li><a href="${escapeHtml(item.url)}">${escapeHtml(item.title)}</a><span>${escapeHtml(item.publisher)} · CHECKED ${escapeHtml(item.checked)}</span></li>`).join('')}</ol>
   </section>`
 }
