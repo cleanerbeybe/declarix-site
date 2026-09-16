@@ -1,3 +1,6 @@
+import { registrationRoute } from './registration-kit.mjs'
+import { validateRegistrationRoute } from './registration-validation.mjs'
+validateRegistrationRoute(registrationRoute)
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -243,6 +246,7 @@ function renderRoute(route) {
     <link rel="canonical" href="${canonical}" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/static-routes.css" />
+    ${route.path === registrationRoute.path ? '<link rel="stylesheet" href="/registration-kit.css" />' : ''}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Declarix" />
     <meta property="og:title" content="${escapeHtml(route.title)}" />

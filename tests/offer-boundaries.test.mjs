@@ -28,9 +28,11 @@ for(const path of contract.reviewed_paths){
     assert.throws(()=>validateOfferHtml(html.replace('limitations scope-boundary','hidden'),path),/boundary missing/)
   })
 }
-test('nine unrelated route objects and six booking/visual source files are unchanged',()=>{
+test('offer preservation holds except explicitly superseded registration resource',()=>{
   assert.equal(contract.preserved_routes.length,9)
-  for(const r of contract.preserved_routes)assert.equal(hash(JSON.stringify(byPath(routes,r.path))),r.sha256,r.path)
+  const successor=JSON.parse(read('contracts/registration-kit-draft-2026-09-16.json'))
+  assert.deepEqual(successor.supersedes_preservation_paths,['/customs-intermediary-registration-2026/'])
+  for(const r of contract.preserved_routes.filter(r=>!successor.supersedes_preservation_paths.includes(r.path)))assert.equal(hash(JSON.stringify(byPath(routes,r.path))),r.sha256,r.path)
   for(const f of contract.preserved_source_files)assert.equal(hash(read(f.path)),f.sha256,f.path)
 })
 test('security promises and pricing-policy commercial provisions remain unchanged',()=>{

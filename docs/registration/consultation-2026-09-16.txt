@@ -1,0 +1,330 @@
+HM Revenue
+& Customs
+Open consultation
+Customs intermediaries: introduction of Mandatory Registration
+Published 23 June 2026
+Contents
+Summary
+Foreword
+Background
+1.
+The problem
+2.
+Strengthening customs intermediary registration
+3.
+Scope
+4.
+Mandatory requirements
+5.
+Enforcement approach
+6.
+Next steps
+7.
+Consultation questions
+Assessment of impacts
+The consultation process
+Annex: Glossary
+Print this page
+© Crown copyright 2026
+This publication is licensed under the terms of the Open Government Licence v3.0 except where otherwise stated. To view this licence, visit
+nationalarchives.gov.uk/doc/open-government-licence/version/3
+or write to the Information Policy Team, The National Archives, Kew, London TW9 4DU, or email:
+psi@nationalarchives.gov.uk
+.
+Where we have identified any third party copyright information you will need to obtain permission from the copyright holders concerned.
+This publication is available at https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration
+Summary
+Subject of this consultation
+This consultation seeks views on new mandatory registration for customs intermediaries who submit customs declarations on behalf of traders.
+Scope of this consultation
+This consultation seeks views on:
+the proposed scope of mandatory registration
+which intermediaries should be in scope or excluded
+the proposed mandatory requirements and associated checks
+the proposed enforcement approach
+how the proposals could be implemented proportionately
+Who should read this
+The government welcomes engagement from any individual or business with views on the proposed introduction of mandatory registration for customs intermediaries.
+This consultation is likely to be of particular interest to:
+customs intermediaries, including agents, brokers, freight forwarders and express operators
+traders who rely on intermediaries to fulfil their customs obligations
+professional and representative bodies
+software providers
+other stakeholders with an interest in, and understanding of, the customs intermediary sector
+Duration
+The consultation will run for 13 weeks starting on 22 June 2026 and ending on 21 September 2026.
+Lead official
+The responsible team is the Customs Intermediaries Policy Team of HM Revenue and Customs (
+HMRC
+).
+How to respond or enquire about this consultation
+Any responses or enquiries about this consultation should be sent to
+customsintermediariesconsultation@hmrc.gov.uk
+.
+Not all questions in this consultation will be relevant to everyone, and respondents may choose to answer some or all of the questions.
+HMRC
+welcomes partial responses, focussed on aspects of customs that are most relevant to the respondent.
+Additional ways to be involved
+HMRC
+will be holding several webinars to engage with interested parties on the consultation. Should you wish to attend, please email us at
+customsintermediariesconsultation@hmrc.gov.uk
+.
+After the consultation
+The government will aim to publish a summary of responses as soon as possible after the end of the consultation period.
+Getting to this stage and previous engagement
+In February 2022,
+HMRC
+and HM Treasury (HMT) published the call for evidence ‘An Independent Customs Regime’, which included a chapter seeking views on the customs intermediary sector. A summary of responses was published in July 2022.
+In June 2023,
+HMRC
+published a Consultation: Introducing a Voluntary Standard for customs intermediaries. A summary of responses was published in December 2023.
+Foreword
+The government is committed to making our customs system fairer and simpler. The majority of traders rely on customs intermediaries to submit customs declarations on their behalf, helping them pay the right customs duty at the right time.
+Most intermediaries who submit customs declarations are competent and provide good quality service; however, government’s call for evidence in 2022 followed by the consultation on introducing a Voluntary Standard for Customs Intermediaries (2023) has shown that the quality of service delivery across the sector is mixed, with variation in standards and instances of poor service which can lead to negative outcomes for traders.
+The government is committed to driving up standards in the customs intermediary sector, protecting revenue and maintaining trust in the customs system. That is why, informed by the evidence gathered during the above consultations,
+HMRC
+has taken recent action by working with industry to introduce a Standard for Customs Intermediaries that sets out clear, agreed expectations of good practice for customs intermediaries.
+Building on the Standard, I want to create a level playing field that supports compliant, high-quality customs intermediaries and stops harmful actors from operating. Traders should be able to trust the intermediaries they are working with to fulfil their customs obligations, so this consultation seeks views on introducing mandatory registration for customs intermediaries, with proportionate minimum requirements that the sector should meet.
+I look forward to working with the border industry to develop a robust and proportionate approach supporting high-quality customs intermediaries. I hope a wide range of traders and intermediaries will respond to this consultation, and work with the government to support the sector.
+Daniel Tomlinson MP
+Exchequer Secretary to the Treasury
+Background
+Customs intermediaries play a critical role in enabling goods to move across borders and in supporting businesses to meet their customs obligations. They normally complete customs declarations on behalf of traders, sometimes alongside other services, like paying tariffs or import duties and providing or arranging transportation of goods. They could be customs agents, brokers, freight forwarders or express operators.
+The government is committed to maintaining a customs intermediary sector that supports compliant trade, protects revenue, and provides a reliable service to traders. 80% of all international customs declarations cleared in 2025 were intermediated by a third party, and 99% of traders relied solely on the use of an intermediary to declare all of their trade (source:
+HMRC
+Trade Statistics and Customs Analysis).
+Following EU Exit, the government has taken steps to support building capacity and resilience in the customs intermediary sector to support increased declaration volumes and new border requirements. This has included sustained engagement with industry and targeted support for intermediaries.
+In June 2023, the government consulted on the introduction of a
+Voluntary Standard for customs intermediaries
+. This work has since progressed, and a Voluntary Standard developed with industry and the British Standards Institution was published on 3 June 2026 setting best practice for the industry.
+In November 2025, the government announced the introduction of a new legal requirement for tax advisers who interact with
+HMRC
+on behalf of their clients to register with
+HMRC
+and meet minimum requirements from May 2026. At present customs intermediaries are excluded from this requirement to register.
+This consultation seeks views on a proposal to complement the Standard, through the introduction of mandatory registration for customs intermediaries who submit customs declarations on behalf of traders. This would align customs with the approach already being taken for tax advisers, ensuring a consistent and proportionate framework across customs and tax.
+1. The problem
+Responses to the consultation on introducing a Voluntary Standard in 2023 highlighted support for raising quality and standards in the customs intermediary sector. A lack of barriers to entry means there is no minimum threshold to meet in order to practice. This contrasts with an expectation from traders and the wider border industry that customs intermediaries supporting traders to submit customs declarations ought themselves to be compliant with their own obligations.
+Government has worked collaboratively with industry to introduce a Standard for customs intermediaries, which sets best practice for what traders can expect from their service provider. The government reaffirmed its commitment to the Standard at Tax Update 2026 and confirmed our intention to work with industry on a voluntary certification scheme so intermediaries can prove their quality of service as a proportionate way to raise standards in the sector.
+Extensive engagement with industry has raised concerns that unscrupulous customs intermediaries continue to practice, often undercutting the high-quality customs intermediaries who are compliant. There are currently no general deterrents targeted at customs intermediaries to dissuade unscrupulous actors from joining or staying in the market. Poor practice creates a number of risks; to government through non-compliance and potential lost revenue; to traders who rely on their customs intermediaries to get declarations right; and to trust in the customs system and the wider border industry.
+The Standard for Customs Intermediaries and voluntary certification will support traders to find good quality customs intermediaries, but the government is consulting on going further by mandating customs intermediaries who are critical to the operation of the border are meeting a set of mandatory minimum requirements to act.
+2. Strengthening customs intermediary registration
+Customs intermediaries who submit customs declarations on behalf of traders must apply for and receive an Economic Operators Registration and Identification Number (
+EORI
+), if they do not already hold one for their own purposes, and subscribe to the relevant service (for example the Customs Declaration Service).
+At present, the process for obtaining an
+EORI
+and accessing these services is broadly the same for customs intermediaries acting in a professional capacity as it is for traders submitting declarations themselves. This means there are currently limited requirements specific to customs intermediaries at the point of registration which the proposed introduction of mandatory requirements seeks to address.
+Requirements for registration vary between
+HMRC
+services. As a result, there are instances where
+HMRC
+interacts with customs intermediaries without the ability to build a complete record of their behaviour across
+HMRC
+’s systems and services.
+The government is consulting on mandating registration for all customs intermediaries who wish to interact with
+HMRC
+on behalf of traders with a set of common minimum requirements for all customs intermediaries to meet. This new registration process will improve
+HMRC
+’s ability to proactively prevent and mitigate harm caused by bad actors.
+The government is committed to ensuring that any mandatory registration requirements introduced are proportionate, targeted and minimise unnecessary administrative burdens.
+HMRC
+will perform automated checks at the point of registration, and periodically after registration to ensure ongoing compliance.
+If the government proceeds with introducing mandatory registration, legislation will be introduced to require all customs intermediaries to register with
+HMRC
+and set out the criteria they must satisfy.
+3. Scope
+In scope
+The government is proposing that mandatory registration requirements should:
+apply UK wide for intermediaries who interact with
+HMRC
+apply to both imports and exports
+apply consistently across all customs activity, rather than being limited to specific declaration types
+Out of scope
+The government is proposing that mandatory registration should not apply to:
+intermediaries who provide advice only and do not interact with
+HMRC
+on behalf of traders
+hauliers and carriers as their interaction with
+HMRC
+is to fulfil their own legal obligations and does not involve making or amending customs declarations on behalf of traders
+self-representation to ensure the proposed policy targets customs intermediary related harm without creating unnecessary burdens for traders
+4. Mandatory requirements
+At the point of registration, the government is proposing that customs intermediaries would need to meet a number of mandatory requirements. The government is committed to ensuring that mandatory registration requirements introduced are proportionate, targeted and minimise unnecessary administrative burdens.
+The proposed requirements are intended to focus on a small number of essential checks to ensure that intermediaries meet standards of compliance and suitability, rather than introducing onerous or duplicative processes.
+The government will seek to align requirements with information and obligations that businesses already maintain (for example through existing tax or regulatory regimes) and will design the registration process to be straightforward and accessible.
+Government considers that minimum requirements for customs intermediaries should mirror those introduced for tax advisers in May 2026. This will ensure a consistent and proportionate approach, minimising administrative burdens for compliant intermediaries. These proposed requirements will enable
+HMRC
+to proactively prevent and mitigate harm caused by unscrupulous actors. These include:
+that their tax affairs are up to date
+are not subject to a decision by
+HMRC
+to refuse to deal with them
+are not disqualified to act as a director of a company
+do not have an insolvency practitioner acting in relation to them
+do not have unspent criminal conviction for relevant offences
+do not have a history of serious customs non-compliance
+5. Enforcement approach
+The government is considering an enforcement approach based on a graduated model and proportionate to the nature and severity of non‑compliance, closely aligned with the approach taken for tax adviser registration. This would include:
+working with industry to help businesses prepare for registration including guidance, webinars and appropriate communications
+registration as a prerequisite for interacting with
+HMRC
+systems
+a risk-based approach to monitoring compliance
+early engagement, including warnings and opportunities to remedy non‑compliance
+temporary suspension where issues are not resolved
+staged escalation to financial penalties in cases of persistent or serious non‑compliance
+as a last resort, remove or restrict an intermediary’s ability to submit declarations
+The government intends that this approach would be supported by appropriate safeguards, including clear guidance, opportunities to remediate, and rights of review and appeal.
+6. Next steps
+Following this consultation, the government intends to:
+consider responses carefully and publish a summary of feedback
+refine the policy design where appropriate
+confirm next steps on legislation and implementation
+7. Consultation questions
+Question 1: What is the name of your business/organisation?
+Question 2: What type of business are you? (such as clothes retailer, car manufacturer, freight forwarder, fast parcel operator, haulier)
+Question 3: If applicable, how many movements do you make per year? Are they imports, exports, or both?
+Question 4: If you selected ‘customs intermediary’, what type of intermediary are you? (Select all that apply)
+customs agent or broker
+express operator
+freight forwarder
+warehouse operator
+haulier
+other (please specify)
+Question 5: What is the size of your business?
+micro (1 to 9 employees)
+small (10 to 49 employees)
+medium (50 to 249 employees)
+large (over 250 employees)
+Question 6: If applicable, how long has your business been importing or exporting goods, or supporting traders to import/export if you are an intermediary?
+Question 7: What do you think the benefits and/or challenges are of the government introducing mandatory registration requirements that customs intermediaries must satisfy to submit customs declarations on behalf of traders?
+Question 8: What are your views on the proposed scope of the mandatory requirements?
+Question 9: Do you consider the proposed minimum requirements appropriate and proportionate, and are there specific requirements that should be added, removed or amended?
+Question 10:  What are your views on the proposed enforcement approach, including the use of a graduated and proportionate model?
+Question 11: The government intends to provide a transitional period to support implementation of the proposed requirements. What length of transitional period do you consider appropriate, and are there any specific factors that should be taken into account in determining its duration?
+Question 12: Do you foresee any broad unintended consequences, or impacts on trade arising from the implementation of these proposals?
+Question 13: Are there any other design considerations the government should take into account when developing mandatory registration requirements, including any additional steps it could take to support high-quality intermediaries and prevent non-compliant or harmful intermediaries from operating?
+Assessment of impacts
+Summary of impacts
+Year
+2022 to 2023
+2023 to 2024
+2024 to 2025
+2025 to 2026
+2026 to 2027
+2027 to 2028
+Exchequer impact (£m)
+Not applicable
+Not applicable
+Not applicable
+Not applicable
+Not applicable
+Not applicable
+Exchequer Impact Assessment
+No Exchequer Impact
+Impacts
+Comment
+Economic impact
+This measure is not expected to have any significant macroeconomic impacts.
+Impact on individuals, households and families
+Publication of the consultation document is not expected to have any impact on individuals, households or families. Any impacts of subsequent policy measures will be fully examined.
+Equalities impacts
+It is not anticipated that there will be impacts on those in groups sharing protected characteristics from publishing the consultation document. Any impacts of subsequent policy measures will be fully examined.
+Impact on businesses and Civil Society Organisations
+Publication of the consultation document is not expected to have any impact on businesses or civil society organisations. Any impacts of subsequent policy measures will be fully examined.
+Impact on
+HMRC
+or other public sector delivery organisations
+The publication of this consultation does not have any impact on
+HMRC
+or other public sector delivery organisations. Any impacts of subsequent policy measures will be fully examined.
+Other impacts
+Not applicable.
+The consultation process
+Tax Policy Making principles
+Tax Policy Making
+The following principles underpin the government’s approach to tax policy making:
+predictability and stability: the single major fiscal event cycle will provide a predictable and stable framework for the delivery of tax changes
+a smart and agile approach to consultation: the government will engage stakeholders fully and flexibly when developing tax policy, prioritising dynamic and frequent engagement with tax professionals at both ministerial and official levels — where formal consultation is required, it will be targeted and precise, only seeking information that is genuinely needed, and will last a proportionate amount of time
+transparency: the government is committed to transparency, and will make sure that its rationales for tax policy changes and assessments of policy impacts are clear
+These principles will enable the government to deliver change quickly, whilst making sure that the impacts of tax policy changes are fully understood.
+How to respond
+A summary of the questions in this consultation is included at chapter 7.
+Responses should be sent by Monday 21 September 2026, by email to
+customsintermediariesconsultation@hmrc.gov.uk
+. Any queries should also be sent to this address.
+Please do not send responses to the Consultation Coordinator.
+Paper copies of this document or copies in Welsh and alternative formats (large print, audio and Braille) may be obtained free of charge from the above address.
+When responding please say if you are a business, individual or representative body. In the case of representative bodies please provide information on the number and nature of people you represent.
+Confidentiality
+HMRC
+is committed to protecting the privacy and security of your personal information. This privacy notice describes how we collect and use personal information about you in accordance with data protection law, including the UK GDPR and the Data Protection Act (DPA) 2018.
+Information provided in response to this consultation, including personal information, may be published or disclosed in accordance with the access to information regimes. These are primarily the Freedom of Information Act 2000 (FOIA), the DPA 2018, UK GDPR and the Environmental Information Regulations 2004.
+If you want the information that you provide to be treated as confidential, please be aware that, under the Freedom of Information Act 2000, there is a statutory Code of Practice with which public authorities must comply and which deals with, amongst other things, obligations of confidence. In view of this it would be helpful if you could explain to us why you regard the information you have provided as confidential. If we receive a request for disclosure of the information we will take full account of your explanation, but we cannot give an assurance that confidentiality can be maintained in all circumstances. An automatic confidentiality disclaimer generated by your IT system will not, of itself, be regarded as binding on HM Revenue and Customs.
+Consultation Privacy Notice
+This notice sets out how we will use your personal data, and your rights. It is made under Articles 13 and 14 of the UK GDPR.
+Your data
+We will process the following personal data:
+Name
+Email address
+Postal address
+Phone number
+Job title
+Purpose
+The purpose for which we are processing your personal data is: Introduction of Mandatory Registration for Customs Intermediaries.
+Legal basis of processing
+The legal basis for processing your personal data is that the processing is necessary for the exercise of a function of a government department.
+Recipients
+Your personal data will be shared by us with HM Treasury.
+Retention
+Your personal data will be kept by us for 6 years and will then be deleted.
+Your rights
+You have the right to request information about how your personal data are processed, and to request a copy of that personal data.
+You have the right to request that any inaccuracies in your personal data are rectified without delay.
+You have the right to request that any incomplete personal data are completed, including by means of a supplementary statement.
+You have the right to request that your personal data are erased if there is no longer a justification for them to be processed.
+You have the right in certain circumstances (for example, where accuracy is contested) to request that the processing of your personal data is restricted.
+Complaints
+If you consider that your personal data has been misused or mishandled, you may make a complaint to the Information Commissioner, who is an independent regulator. The Information Commissioner can be contacted at:
+Information Commissioner’s Office
+Wycliffe House
+Water Lane
+Wilmslow
+Cheshire
+SK9 5AF
+0303 123 1113
+casework@ico.org.uk
+Any complaint to the Information Commissioner is without prejudice to your right to seek redress through the courts.
+Contact details
+The data controller for your personal data is
+HMRC
+. The contact details for the data controller are:
+HMRC
+100 Parliament Street
+Westminster
+London
+SW1A 2BQ
+The contact details for
+HMRC
+’s Data Protection Officer are:
+The Data Protection Officer
+HMRC
+14 Westfield Avenue
+Stratford
+London
+E20 1HZ
+advice.dpa@hmrc.gov.uk
+Consultation principles
+This consultation is being run in accordance with the government’s Consultation Principles.
+The Consultation Principles are available on the
+Cabinet Office website
+.
+If you have any comments or complaints about the consultation process, please contact the
+Consultation Coordinator
+.
+Please do not send responses to the consultation to this link.
+Annex: Glossary
+Customs Intermediary
+Customs Intermediaries help traders to move goods across borders. Most traders hire a person or business to deal with customs on their behalf. Examples of customs intermediaries include freight forwarders, customs agents, brokers or fast parcel operators.
+Back to top

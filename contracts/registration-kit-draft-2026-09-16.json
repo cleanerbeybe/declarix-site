@@ -1,0 +1,107 @@
+{
+  "contract_id": "registration-kit-draft-2026-09-16",
+  "status": "draft_only_not_publication_approval",
+  "baseline": "d9c1cd6304c6ca34366f86c8bd4a0412ba62c064",
+  "reviewed_paths": [
+    "/customs-intermediary-registration-2026/"
+  ],
+  "source_checked_on": "2026-09-16",
+  "deadline_recorded": "2026-09-21",
+  "freshness_strategy": "Dated source record; no live open/closed claim and no client-clock dependency. Official source must be checked before submission or reuse.",
+  "supersedes_preservation_paths": [
+    "/customs-intermediary-registration-2026/"
+  ],
+  "source_evidence": "docs/registration/source-check-2026-09-16.json",
+  "preserved_routes": [
+    {
+      "path": "/privacy/",
+      "sha256": "7ded6c40c63fff0113b4bb4eede5b9efe8f86962a60fceb1181a46ef1e32e639"
+    },
+    {
+      "path": "/security/",
+      "sha256": "a5ca3644af37007d4a0c42d5310946e11c0a8705aa5c1a66a0d8870a8e3e7e41"
+    },
+    {
+      "path": "/supported-scope/",
+      "sha256": "c4fd3458c07129ef4101aa5dde8a9eb22bb066cbc06b43808a0d8e93a0aaa0d2"
+    },
+    {
+      "path": "/pricing/",
+      "sha256": "da002a637558c47037e5644d41f656560f3139bb394221925a7940f0249fca56"
+    },
+    {
+      "path": "/pricing-policy/",
+      "sha256": "ae61d8ff490850b6608337bab1a06f4b161ae970845bf30aab8e12bab1a49377"
+    },
+    {
+      "path": "/how-it-works/",
+      "sha256": "10794dd8fb6079253553f29053c7d05e0366001a903f3d4676276f40bac59f3c"
+    },
+    {
+      "path": "/pilot/",
+      "sha256": "01e1f394dc6fb03293650f7fc69b850eb6778ba379fcb8b1740be4a2ae5fb556"
+    },
+    {
+      "path": "/about/",
+      "sha256": "58f50bf42abc1f481942f362b65cdf653765ea6fea5e59475f56addede356011"
+    },
+    {
+      "path": "/terms/",
+      "sha256": "a38cf6c891cfa93fc2f5d7d99e2ccad7c53631be881a6228624aac7703a70f8f"
+    },
+    {
+      "path": "/customs-declaration-software/",
+      "sha256": "7377dc2be9f4baad992ab0f82365971d827096b6d9ec5cb740621dfae93907fa"
+    },
+    {
+      "path": "/customs-clearance-software/",
+      "sha256": "5a514ec02a516042235da5a9d6a1ee9cd4111cf5d08a2fce624e70be6a6bbdb9"
+    },
+    {
+      "path": "/editorial-policy/",
+      "sha256": "b5a4214b01c2d2ffe7b3663c5fea26011b9ca43a0846f220c3dbfee5b89e0d1c"
+    }
+  ],
+  "preserved_source_files": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "9ae4d0f97972e5ddf986341e22add4a80525ac102d5261cc6f2e6e6ff71f9d75"
+    },
+    {
+      "path": "src/data.ts",
+      "sha256": "67d435ff2ddfb01e6ec1ac3d738f9cba70b6bb5a336a9990a24c856f1cbd192a"
+    },
+    {
+      "path": "src/world.tsx",
+      "sha256": "2402dc6f4ab0de574fcba15f2648237acee2f36da966a58e7e763522b9204688"
+    },
+    {
+      "path": "public/og.html",
+      "sha256": "0c25d954a38add88095df48410d0afe7bf3b5801f1cd67974187bb3fee52e485"
+    },
+    {
+      "path": "public/og.jpg",
+      "sha256": "12bfa75b1a02832e9a2e01793c9e691b5809938ad19c4a7ecf8446fa49a82c79"
+    },
+    {
+      "path": "public/static-routes.css",
+      "sha256": "ecfe91d13e1899d206e8cb72176acde5a1972b4f872b22e72eb0c9bbee04b7f2"
+    }
+  ],
+  "prohibited_current_claims": [
+    "open HMRC consultation",
+    "consultation is open",
+    "consultation is currently open",
+    "consultation remains open",
+    "Open proposal",
+    "before the deadline",
+    "closes on 21 September",
+    "DEADLINE 21 SEP 2026",
+    "OPEN CONSULTATION"
+  ],
+  "remaining_gates": [
+    "Independent exact-head review",
+    "No whole-site/legal/security/commercial approval",
+    "Existing draft PR21; no merge/deployment/live verification"
+  ]
+}

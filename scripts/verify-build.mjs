@@ -1,3 +1,5 @@
+import { registrationRoute } from './registration-kit.mjs'
+import { validateRegistrationHtml, validateRegistrationMarkdown, validateRegistrationCsv } from './registration-validation.mjs'
 import { selectionRoutes, validateSelectionPages } from './selection-pages.mjs'
 validateSelectionPages()
 import { access, readFile } from 'node:fs/promises'
@@ -37,6 +39,7 @@ const publicSources = [
   'src/world.tsx',
   'public/og.html',
   'scripts/routes.mjs',
+  'scripts/registration-kit.mjs',
   'scripts/product-scope.mjs',
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
@@ -717,3 +720,7 @@ console.log('Verified five draft scope/selection routes; not a sitewide public-c
 
 for (const path of offerContract.reviewed_paths) validateOfferHtml(await readFile(join(root, 'dist', path, 'index.html'), 'utf8'), path)
 console.log('Verified four per-route offer boundaries; commercial/security/legal and publication gates remain separate')
+
+validateRegistrationHtml(await readFile(join(root, "dist", registrationRoute.path, "index.html"), "utf8"), registrationRoute)
+validateRegistrationMarkdown(await readFile(join(root, "dist", registrationRoute.resourceKit.assets[0].href), "utf8"))
+validateRegistrationCsv(await readFile(join(root, "dist", registrationRoute.resourceKit.assets[1].href), "utf8"))

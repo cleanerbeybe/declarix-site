@@ -1,0 +1,6 @@
+/* Registration resource only. The shared grid needs room for three fixed minima. */
+@media (max-width: 1100px) {
+  .resource-kit-header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

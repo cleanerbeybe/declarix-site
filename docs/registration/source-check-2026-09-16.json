@@ -1,0 +1,103 @@
+{
+  "checked_on": "2026-09-16",
+  "captures": [
+    {
+      "id": "consultation",
+      "url": "https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration",
+      "final_url": "https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration",
+      "status": 200,
+      "fetched_at": "2026-09-16T13:43:26.653049+00:00",
+      "sha256": "722ddfa34236d9335ce8e5a95558805ec6d5a2ed4eb1648c61f9964249206e89",
+      "bytes": 140990,
+      "metadata": {
+        "govuk:first-published-at": "2026-06-23T14:19:01+01:00",
+        "govuk:updated-at": "2026-08-14T18:45:25+01:00",
+        "govuk:public-updated-at": "2026-06-23T14:19:01+01:00"
+      },
+      "text_snapshot": "docs/registration/consultation-2026-09-16.txt",
+      "text_sha256": "6f0090e622e45807ec4dbe27442c4c5520920ba3a6e51655bed0a90dac9f150f"
+    },
+    {
+      "id": "standard",
+      "url": "https://www.gov.uk/government/publications/standard-for-customs-intermediaries",
+      "final_url": "https://www.gov.uk/government/publications/standard-for-customs-intermediaries",
+      "status": 200,
+      "fetched_at": "2026-09-16T13:43:26.807865+00:00",
+      "sha256": "27610b2d62a0670bd0b49aa9c78342168c3e35d0d42506ab55164a67fc489f1c",
+      "bytes": 69173,
+      "metadata": {
+        "govuk:first-published-at": "2026-06-04T13:30:00+01:00",
+        "govuk:updated-at": "2026-08-14T19:01:02+01:00",
+        "govuk:public-updated-at": "2026-06-04T13:30:00+01:00"
+      },
+      "text_snapshot": "docs/registration/standard-2026-09-16.txt",
+      "text_sha256": "b107b7f3bccfa09513428b2d6163cbd33da00d18353541def00eb5b75a403118"
+    }
+  ],
+  "facts": {
+    "publication_date": "2026-06-23",
+    "consultation_start": "2026-06-22",
+    "deadline": "2026-09-21",
+    "standard_publication_date": "2026-06-04"
+  },
+  "duration_excerpt": "Duration\nThe consultation will run for 13 weeks starting on 22 June 2026 and ending on 21 September 2026.",
+  "scope_excerpt": "3. Scope\nIn scope\nThe government is proposing that mandatory registration requirements should:\napply UK wide for intermediaries who interact with\nHMRC\napply to both imports and exports\napply consistently across all customs activity, rather than being limited to specific declaration types\nOut of scope\nThe government is proposing that mandatory registration should not apply to:\nintermediaries who provide advice only and do not interact with\nHMRC\non behalf of traders\nhauliers and carriers as their interaction with\nHMRC\nis to fulfil their own legal obligations and does not involve making or amending customs declarations on behalf of traders\nself-representation to ensure the proposed policy targets customs intermediary related harm without creating unnecessary burdens for traders",
+  "next_steps_excerpt": "6. Next steps\nFollowing this consultation, the government intends to:\nconsider responses carefully and publish a summary of feedback\nrefine the policy design where appropriate\nconfirm next steps on legislation and implementation",
+  "partial_response_excerpt": "Not all questions in this consultation will be relevant to everyone, and respondents may choose to answer some or all of the questions. HMRC welcomes partial responses, focussed on aspects of customs that are most relevant to the respondent.",
+  "questions": [
+    {
+      "number": 1,
+      "text": "What is the name of your business/organisation?"
+    },
+    {
+      "number": 2,
+      "text": "What type of business are you? (such as clothes retailer, car manufacturer, freight forwarder, fast parcel operator, haulier)"
+    },
+    {
+      "number": 3,
+      "text": "If applicable, how many movements do you make per year? Are they imports, exports, or both?"
+    },
+    {
+      "number": 4,
+      "text": "If you selected \u2018customs intermediary\u2019, what type of intermediary are you? (Select all that apply)\ncustoms agent or broker\nexpress operator\nfreight forwarder\nwarehouse operator\nhaulier\nother (please specify)"
+    },
+    {
+      "number": 5,
+      "text": "What is the size of your business?\nmicro (1 to 9 employees)\nsmall (10 to 49 employees)\nmedium (50 to 249 employees)\nlarge (over 250 employees)"
+    },
+    {
+      "number": 6,
+      "text": "If applicable, how long has your business been importing or exporting goods, or supporting traders to import/export if you are an intermediary?"
+    },
+    {
+      "number": 7,
+      "text": "What do you think the benefits and/or challenges are of the government introducing mandatory registration requirements that customs intermediaries must satisfy to submit customs declarations on behalf of traders?"
+    },
+    {
+      "number": 8,
+      "text": "What are your views on the proposed scope of the mandatory requirements?"
+    },
+    {
+      "number": 9,
+      "text": "Do you consider the proposed minimum requirements appropriate and proportionate, and are there specific requirements that should be added, removed or amended?"
+    },
+    {
+      "number": 10,
+      "text": "What are your views on the proposed enforcement approach, including the use of a graduated and proportionate model?"
+    },
+    {
+      "number": 11,
+      "text": "The government intends to provide a transitional period to support implementation of the proposed requirements. What length of transitional period do you consider appropriate, and are there any specific factors that should be taken into account in determining its duration?"
+    },
+    {
+      "number": 12,
+      "text": "Do you foresee any broad unintended consequences, or impacts on trade arising from the implementation of these proposals?"
+    },
+    {
+      "number": 13,
+      "text": "Are there any other design considerations the government should take into account when developing mandatory registration requirements, including any additional steps it could take to support high-quality intermediaries and prevent non-compliant or harmful intermediaries from operating?"
+    }
+  ],
+  "limit": "Primary-source snapshot evidence for this dated resource, not live monitoring or legal advice. Raw capture hashes refer to operating-workspace captures; no claim of immutable remote content.",
+  "copyright": "HMRC source text: Crown copyright; Open Government Licence v3.0 (except where otherwise stated), https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+}

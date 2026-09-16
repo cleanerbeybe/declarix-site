@@ -56,11 +56,13 @@ test('commercial homepage terms and lazy booking behavior remain unchanged',()=>
   const app=read('src/App.tsx');assert.match(app,/CAPPED AT £500/i);assert.match(app,/WITHIN ONE WORKING DAY/);assert.match(app,/if \(!revealed \|\| !configured\) return/);assert.match(app,/setRevealed\(true\)/)
 })
 
-test('historical preservation remains enforced except the explicitly superseded pricing-policy route', async()=>{
+test('historical preservation remains enforced except explicitly superseded pricing-policy and registration routes', async()=>{
   const {createHash}=await import('node:crypto')
   const snapshot=JSON.parse(read('contracts/selection-preserved-routes.json'))
   assert.equal(snapshot.routes.length,6)
   const successor=JSON.parse(read('contracts/offer-boundaries-draft-2026-09-16.json'))
   assert.deepEqual(successor.supersedes_preservation_paths,['/pricing-policy/'])
-  for(const item of snapshot.routes.filter(r=>!successor.supersedes_preservation_paths.includes(r.path))){const route=routes.find(r=>r.path===item.path);assert.ok(route);assert.equal(createHash('sha256').update(JSON.stringify(route)).digest('hex'),item.sha256,item.path)}
+  const registration=JSON.parse(read('contracts/registration-kit-draft-2026-09-16.json'))
+  assert.deepEqual(registration.supersedes_preservation_paths,['/customs-intermediary-registration-2026/'])
+  for(const item of snapshot.routes.filter(r=>![...successor.supersedes_preservation_paths,...registration.supersedes_preservation_paths].includes(r.path))){const route=routes.find(r=>r.path===item.path);assert.ok(route);assert.equal(createHash('sha256').update(JSON.stringify(route)).digest('hex'),item.sha256,item.path)}
 })
