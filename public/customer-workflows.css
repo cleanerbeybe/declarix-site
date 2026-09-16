@@ -1,0 +1,37 @@
+/* Editorial shell uses the site's existing Archivo / paper / Cleared Green roles. */
+.skip-link { position: absolute; left: 1rem; top: -10rem; padding: 1rem; background: var(--field); color: var(--ink); z-index: 5; }
+.skip-link:focus { top: 1rem; }
+.customer-workflow [hidden] { display: none; }
+.customer-workflow h1 { max-width: 16ch; }
+.customer-workflow .hero-copy .button { margin-top: 1.5rem; justify-self: start; }
+.customer-workflow .hero-ledger p { max-width: 26ch; line-height: 1.7; }
+.workflow-intro, .workflow-example { padding: clamp(24px, 5vw, 64px); border-bottom: 1.5px solid var(--ink); }
+.workflow-intro h2, .workflow-example h2 { max-width: 29ch; font-size: clamp(25px, 3.2vw, 40px); line-height: 1.15; }
+.workflow-intro p, .workflow-example p { max-width: 75ch; font-size: 17px; line-height: 1.7; }
+.workflow-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 32px; }
+.workflow-cards article { border-top: 4px solid var(--cleared); padding-top: 12px; }
+.workflow-cards h3 { font-size: 21px; }
+.workflow-example { background: var(--field); scroll-margin-top: 1rem; }
+.example-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 24px 0; }
+.example-controls p { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+.example-controls button { min-height: 44px; padding: 12px 16px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); font: inherit; cursor: pointer; }
+.example-controls button:disabled { opacity: .5; cursor: default; }
+.example-steps { list-style: none; padding: 0; margin: 0; }
+.example-step { padding: clamp(18px, 3vw, 36px); margin: 20px 0; border: 1px solid var(--ink); background: var(--paper); }
+.step-meta { display: flex; flex-wrap: wrap; gap: 12px 24px; font: 12px/1.6 'IBM Plex Mono', monospace; }
+.step-meta strong { color: var(--cleared); }
+.example-step h3 { font-size: clamp(22px, 3vw, 32px); }
+.evidence-note { padding-left: 16px; border-left: 4px solid var(--cleared); }
+.workflow-intro details { padding: 18px 0; border-bottom: 1px solid var(--ink); }
+.workflow-intro summary { min-height: 24px; padding: 10px 0; font-size: 19px; font-weight: 700; cursor: pointer; }
+.customer-workflow .editorial-note { font-size: 14px; }
+.customer-workflow :focus-visible, .skip-link:focus-visible { outline: 3px solid var(--cleared); outline-offset: 5px; }
+.customer-workflow a, .customer-workflow p, .customer-workflow h1 { overflow-wrap: anywhere; }
+@media (max-width: 720px) { .workflow-cards { grid-template-columns: minmax(0, 1fr); } .example-controls { align-items: stretch; flex-direction: column; } .customer-workflow .hero-copy { padding: 32px 22px; } }
+@media (prefers-reduced-motion: reduce) { .customer-workflow *, .customer-workflow { scroll-behavior: auto; } }
+
+.customer-workflow .wordmark { white-space: nowrap; overflow-wrap: normal; }
+.customer-workflow .wordmark::before { flex-shrink: 0; }
+/* Keep small navigation and value-strip text at accessible contrast. */
+.customer-workflow .hero-value-strip { color: var(--paper); background: var(--cleared); }
+.customer-workflow .breadcrumbs { color: var(--ink); background: var(--paper); }

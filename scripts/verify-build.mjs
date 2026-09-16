@@ -1,3 +1,4 @@
+import { customerWorkflowRoutes } from './customer-workflows.mjs'
 import { access, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -30,6 +31,7 @@ const publicSources = [
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
   'scripts/preparation-economics.mjs',
+  'scripts/customer-workflows.mjs',
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
   'scripts/authority-library.mjs',
@@ -71,6 +73,7 @@ for (const record of radarRecords) {
 }
 
 const expected = [
+  ...customerWorkflowRoutes,
   economicsRoute,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
