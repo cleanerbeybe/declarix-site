@@ -1,4 +1,3 @@
-import { customerWorkflowRoutes, renderCustomerWorkflow } from './customer-workflows.mjs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -47,8 +46,6 @@ function bookingHref(route) {
 function routeLinks() {
   const links = [
     ['HOW IT WORKS', '/how-it-works/'],
-    ['DOCUMENT REQUESTS', customerWorkflowRoutes[0].path],
-    ['FOR IMPORTERS', customerWorkflowRoutes[1].path],
     ['SCOPE', '/supported-scope/'],
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
@@ -635,16 +632,7 @@ const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
 await writeFile(economicsTarget, renderPreparationEconomics(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
 
-for (const route of customerWorkflowRoutes) {
-  if (paths.has(route.path) || titles.has(route.title) || headings.has(route.h1)) throw new Error('Duplicate customer workflow route')
-  paths.add(route.path); titles.add(route.title); headings.add(route.h1)
-  const target = join(dist, route.path.slice(1), 'index.html')
-  await mkdir(dirname(target), { recursive: true })
-  await writeFile(target, renderCustomerWorkflow(route, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
-}
-
 const indexableRoutes = [
-  ...customerWorkflowRoutes,
   economicsRoute,
   ...routes,
   ...tools,
@@ -659,7 +647,7 @@ const indexableRoutes = [
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${site.origin}/</loc><lastmod>${site.reviewedOn}</lastmod></url>
-${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${route.updatedOn || route.reviewedOn || site.reviewedOn}</lastmod></url>`).join('\n')}
+${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${route.reviewedOn || site.reviewedOn}</lastmod></url>`).join('\n')}
 </urlset>
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)

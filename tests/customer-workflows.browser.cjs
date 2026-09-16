@@ -4,7 +4,7 @@ const http = require('node:http');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const axeSource = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
-const root = path.resolve(__dirname, '../dist');
+const root = path.resolve(__dirname, '../output/customer-preview');
 const output = path.resolve(__dirname, '../output/customer-workflows');
 fs.mkdirSync(output, {recursive:true});
 const paths = ['/use-cases/customer-document-requests/', '/use-cases/importers/'];
@@ -25,6 +25,7 @@ const paths = ['/use-cases/customer-document-requests/', '/use-cases/importers/'
    const response=await page.goto(origin+route);await page.evaluate(()=>document.fonts.ready);
    const key=`${route} ${width}`;
    record(key+' status 200',response.status()===200);
+   record(key+' preview noindex',await page.locator('meta[name=robots]').getAttribute('content')==='noindex,nofollow');
    record(key+' one H1',await page.locator('h1').count()===1);
    record(key+' logo on one line',await page.locator('.wordmark').evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length===1}));
    record(key+' initial draft only',await page.locator('.example-step:visible').count()===1 && (await page.locator('.example-step:visible').textContent()).includes('Draft'));

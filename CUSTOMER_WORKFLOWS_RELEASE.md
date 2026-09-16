@@ -6,7 +6,7 @@
 - `/use-cases/importers/`: how a customer understands and answers the broker’s exact request, with the broker’s responsibilities kept separate.
 - A six-step fictional walkthrough uses fixed synthetic facts. It is a public explanation, not the authenticated product screen. It accepts no input or file, sends no message, sets no browser storage and emits no telemetry.
 - The same complete explanation is in initial HTML with JavaScript disabled. The enhancement steps through it and moves focus to the selected heading.
-- Distinct metadata, self-canonicals, WebPage/BreadcrumbList data, sitemap/discovery links and existing pilot/scope/workflow destinations. Existing shared site rendering is reused; no new tracking or account flow.
+- Distinct metadata, intended self-canonicals, WebPage/BreadcrumbList data and existing pilot/scope/workflow destinations. Previews use noindex,nofollow. Neither route is generated in dist or included in production sitemap/discovery/navigation. A separate local preview command copies the current build to git-ignored output/customer-preview and adds only the two example pages there. The deployment workflow does not run that command.
 
 ## Claim evidence and limits
 
@@ -27,15 +27,15 @@ Editorial owner: Nadia. No expert credentials, customer interviews or customs ad
 
 - Clean locked dependency install.
 - 12 new static HTML/lifecycle/claim/script tests; the existing 32 economics tests also pass in the build.
-- Full production build and site verifier pass: 40 indexable routes in the local build, one conversion receipt, real 404 artifact.
+- Full production build and site verifier pass: 38 unchanged indexable routes, one conversion receipt, real 404 artifact. The verifier rejects either pending workflow page or any discovery entry for it. Five negative release-gate tests inject and then restore local generated artifacts to prove the checks reject leaked routes and discovery URLs.
 - Lint: zero errors and warnings.
-- 226 Chromium browser assertions pass across both pages at 1440, 390 and 320 pixels, plus no-JavaScript views: step navigation, keyboard skip/focus, first/last boundaries, all-step fallback, FAQ, narrow layout, all internal destinations, no interaction requests, no third-party requests, no storage and no runtime errors. Automated WCAG A/AA checks pass in all six enhanced layouts.
+- 232 Chromium browser assertions pass across both pages at 1440, 390 and 320 pixels, plus no-JavaScript views: step navigation, keyboard skip/focus, first/last boundaries, all-step fallback, FAQ, narrow layout, all internal destinations, no interaction requests, no third-party requests, no storage and no runtime errors, plus noindex on every preview. Automated WCAG A/AA checks pass in all six enhanced layouts.
 - Full screenshots generated. Inspection found a wrapped mobile wordmark and overlong inherited navigation; corrected with a compact route navigation and no-wrap wordmark, then all affected checks rerun. Automated accessibility checks also caught low contrast in inherited amber strips; these two new routes now use accessible paper/ink and Cleared Green roles.
 - Local tests are not production verification, field Core Web Vitals, importer validation, or a live authenticated product-to-database test. JSON-LD is locally parsed, not claimed externally certified.
 
 ## Review and release gate
 
-This is a draft. Do not merge merely because the static pages build. Main pushes trigger automatic public deployment. Independent exact-head code/copy review, product availability/claim review and an explicit P10 importer-validation decision remain required. API/UI customer-access release remains owner-gated. Do not claim those product routes live or mark B01 complete from this site PR.
+This is a local-only draft. The initial review found that indexable output conflicted with the missing importer-validation decision. The fix removes BOTH pages from the normal production generator; noindex alone is not treated as an access control. Two present-tense product statements now specify required pilot behavior rather than implying current availability. Do not publish either page merely because the preview builds. Main pushes trigger automatic public deployment. Independent exact-head code/copy review, product availability/claim review and an explicit P10 importer-validation decision remain required. API/UI customer-access release remains owner-gated. Do not claim those product routes live or mark B01 complete from this site PR.
 
 An eligible GitHub approval is a separate gate wherever repository policy requires it. No branch protection bypass, outbound send, customer data, account creation, paid tool, or production change is part of this build.
 
@@ -45,10 +45,13 @@ After authorised release: verify both live routes, canonical and sitemap members
 
 ```sh
 npm ci
-npm run build
+npm run preview:customer-workflows
+npm run test:customer-workflows:release
 npm run lint
 npx playwright install chromium
 npm run test:customer-workflows:browser
 ```
 
 Browser receipts are written to `output/customer-workflows/` (git-ignored). Internal work receipts are in Nadia’s `reports/2026-09-16-build-trial/PAGES_*.log`.
+
+The earlier 40-route draft was never merged or deployed and is superseded by this local-only output. A later publication change must explicitly add approved routes to the public renderer, navigation and discovery records after its gates are met.

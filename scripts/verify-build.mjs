@@ -73,7 +73,6 @@ for (const record of radarRecords) {
 }
 
 const expected = [
-  ...customerWorkflowRoutes,
   economicsRoute,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
@@ -682,3 +681,16 @@ const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).tr
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
 
 console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and owner-approved offer manifest ${site.claimsVersion}`)
+
+// Pending B01 pages must never leak through the normal deployment build.
+for (const route of customerWorkflowRoutes) {
+  const file = join(root, 'dist', route.path.slice(1), 'index.html')
+  let exists = false
+  try { await access(file); exists = true } catch (error) { if (error.code !== 'ENOENT') throw error }
+  if (exists) throw new Error(`Unreleased customer workflow in public build: ${route.path}`)
+  for (const name of ['sitemap.xml', 'llms.txt', 'llms-full.txt']) {
+    const text = await readFile(join(root, 'dist', name), 'utf8')
+    if (text.includes(route.path)) throw new Error(`Unreleased customer workflow in ${name}`)
+  }
+}
+console.log('B01 release gate passed: both workflow pages absent from production and discovery files')

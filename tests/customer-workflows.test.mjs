@@ -10,6 +10,8 @@ for (const route of customerWorkflowRoutes) {
     assert.ok(html.includes(`<title>${route.title}</title>`))
     assert.ok(html.includes(`href="${site.origin}${route.path}"`))
     assert.ok(html.includes(`content="${route.description}"`))
+    assert.ok(html.includes('content="noindex,nofollow"'))
+    assert.doesNotMatch(html, /content="index,follow"/)
     assert.equal((html.match(/data-example-step=/g) || []).length, 6)
   })
   test(`${route.audience}: no upload, auth, free text, persistence or telemetry path`, () => {

@@ -13,7 +13,9 @@
     "test:economics": "node --test tests/preparation-economics.test.mjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs",
     "test:customer-workflows": "node --test tests/customer-workflows.test.mjs",
-    "test:customer-workflows:browser": "node tests/customer-workflows.browser.cjs"
+    "test:customer-workflows:browser": "node tests/customer-workflows.browser.cjs",
+    "preview:customer-workflows": "npm run build && node scripts/preview-customer-workflows.mjs",
+    "test:customer-workflows:release": "node --test tests/customer-workflow-release.test.mjs"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",
