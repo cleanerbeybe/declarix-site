@@ -1,3 +1,6 @@
+import { freshnessState, freshnessLabel, radarNotice } from './radar-freshness.mjs'
+export { freshnessState } from './radar-freshness.mjs'
+
 const escapeHtml = (value) =>
   String(value)
     .replaceAll('&', '&amp;')
@@ -95,7 +98,7 @@ export const radarRecords = [
     whyItMatters:
       'Teams troubleshooting a rejected declaration may otherwise rely on an older workaround, a resolved item, or an incomplete change list.',
     operatorAction:
-      'Use the current 5.2.0 artifact and its individual change-log tabs to verify the specific error or difference before changing a declaration workflow.',
+      'Open the official source to find the latest release. The July observation recorded release 5.2.0; do not assume it is still current. Check the relevant error entry and change log before changing a declaration workflow.',
     topics: ['cds', 'known-errors', 'workarounds'],
     impacts: [
       {
@@ -286,15 +289,21 @@ export const radarRecords = [
     related: { href: '/supported-scope/', label: 'CHECK DECLARIX SCOPE', id: 'supported_scope' },
     review: sharedReview,
   },
-].map((record) => ({ ...record, path: recordPath(record.id), status: 'current' }))
+].map((record) => ({
+  ...record,
+  path: recordPath(record.id),
+  status: 'archived_observation',
+  pageTitle: record.pageTitle.replace(' | Declarix', ' — July 2026 archive | Declarix'),
+  description: 'July 2026 ' + record.type.replaceAll('_', ' ') + ' archive. Retained HMRC observation, not live status or current instructions. Check the official source before use.',
+}))
 
 export const radarHub = {
   path: '/research/cds-operations-radar/',
-  title: 'CDS Operations Radar — HMRC changes and status | Declarix',
+  title: 'CDS Operations Radar — July 2026 source archive | Declarix',
   description:
-    'Search source-stamped HMRC CDS status, workaround, technical documentation, code and aggregation changes with workflow checks, freshness and free data.',
-  h1: 'CDS changes, translated into the next check.',
-  reviewedOn: '2026-07-17',
+    'Search five HMRC CDS observations retained from 17 July 2026, not live status. Review historical workflow notes and check the official source before use.',
+  h1: 'July CDS observations. Your next source check.',
+  reviewedOn: '2026-09-16',
 }
 
 export const radarRoutes = [
@@ -304,26 +313,9 @@ export const radarRoutes = [
     title: record.pageTitle,
     description: record.description,
     h1: record.title,
-    reviewedOn: '2026-07-17',
+    reviewedOn: '2026-09-16',
   })),
 ]
-
-function freshnessState(record, at = new Date('2026-07-17T18:12:00Z')) {
-  const now = at.getTime()
-  if (record.effectiveFrom && now < Date.parse(record.effectiveFrom)) return 'not_yet_effective'
-  if (record.expiresAt && now >= Date.parse(record.expiresAt)) return 'expired'
-  if (now > Date.parse(record.freshUntil)) return 'stale'
-  return 'current'
-}
-
-function freshnessLabel(state) {
-  return {
-    current: 'CURRENT OBSERVATION',
-    stale: 'SOURCE RECHECK DUE',
-    expired: 'POINT-IN-TIME RECORD EXPIRED',
-    not_yet_effective: 'NOT YET EFFECTIVE',
-  }[state]
-}
 
 function jsonLdHub(site) {
   return JSON.stringify({
@@ -387,7 +379,7 @@ function jsonLdRecord(record, site) {
         headline: record.title,
         description: record.description,
         datePublished: '2026-07-17',
-        dateModified: '2026-07-17',
+        dateModified: '2026-09-16',
         inLanguage: 'en-GB',
         isAccessibleForFree: true,
         image: `${site.origin}/og.jpg`,
@@ -430,23 +422,17 @@ function analyticsScript(posthogKey, posthogHost, recordId = 'hub') {
         if (navigator.sendBeacon && navigator.sendBeacon(config.posthogHost + '/capture/', body)) return;
         fetch(config.posthogHost + '/capture/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => null);
       };
-      const stateAt = (node) => {
-        const now = Date.now();
-        const effective = node.dataset.effectiveFrom ? Date.parse(node.dataset.effectiveFrom) : null;
-        const expires = node.dataset.expiresAt ? Date.parse(node.dataset.expiresAt) : null;
-        const fresh = Date.parse(node.dataset.freshUntil);
-        if (effective && now < effective) return 'not_yet_effective';
-        if (expires && now >= expires) return 'expired';
-        if (now > fresh) return 'stale';
-        return 'current';
-      };
-      const labels = { current: 'CURRENT OBSERVATION', stale: 'SOURCE RECHECK DUE', expired: 'POINT-IN-TIME RECORD EXPIRED', not_yet_effective: 'NOT YET EFFECTIVE' };
-      document.querySelectorAll('[data-radar-freshness]').forEach((node) => {
+      const assessFreshness = ${freshnessState.toString()};
+      const labelFor = ${freshnessLabel.toString()};
+      const stateAt = (node) => assessFreshness({ observedAt: node.dataset.observedAt, effectiveFrom: node.dataset.effectiveFrom || null, expiresAt: node.dataset.expiresAt || null, freshUntil: node.dataset.freshUntil }, new Date());
+      const updateFreshness = () => document.querySelectorAll('[data-radar-freshness]').forEach((node) => {
         const state = stateAt(node);
-        node.dataset.freshnessState = state;
-        const label = node.querySelector('[data-freshness-label]');
-        if (label) label.textContent = labels[state];
+        node.dataset.clockState = state;
+        const label = node.querySelector('[data-clock-label]');
+        if (label) label.textContent = 'Browser-clock assessment: ' + labelFor(state) + '. Not a source recheck.';
       });
+      updateFreshness();
+      document.querySelectorAll('[data-js-control]').forEach(node => { node.hidden = false; node.disabled = false; });
       document.querySelectorAll('[data-radar-download]').forEach((link) => link.addEventListener('click', () => track('radar_downloaded', { asset_format: link.dataset.radarDownload })));
       document.querySelectorAll('[data-radar-source]').forEach((link) => link.addEventListener('click', () => track('radar_source_opened', { source_id: link.dataset.radarSource })));
       document.querySelectorAll('[data-radar-related]').forEach((link) => link.addEventListener('click', () => track('radar_related_clicked', { destination_id: link.dataset.radarRelated })));
@@ -475,10 +461,11 @@ function analyticsScript(posthogKey, posthogHost, recordId = 'hub') {
         stage.value = url.searchParams.get('stage') || 'all';
         state.value = url.searchParams.get('state') || 'all';
         const apply = (shouldTrack = false) => {
+          updateFreshness();
           const query = search.value.trim().toLowerCase();
           let visible = 0;
           document.querySelectorAll('[data-radar-result]').forEach((row) => {
-            const freshness = row.dataset.freshnessState || stateAt(row);
+            const freshness = stateAt(row);
             const matches = (!query || row.dataset.search.includes(query)) &&
               (topic.value === 'all' || row.dataset.topics.split(' ').includes(topic.value)) &&
               (stage.value === 'all' || row.dataset.stages.split(' ').includes(stage.value)) &&
@@ -499,6 +486,8 @@ function analyticsScript(posthogKey, posthogHost, recordId = 'hub') {
         filterForm.addEventListener('change', () => apply(true));
         filterForm.addEventListener('submit', (event) => { event.preventDefault(); apply(true); });
         filterForm.querySelector('[data-radar-clear]').addEventListener('click', () => { search.value = ''; topic.value = 'all'; stage.value = 'all'; state.value = 'all'; apply(true); search.focus(); });
+        window.addEventListener('pageshow', () => apply(false));
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) apply(false); });
         apply(false);
       }
     })();
@@ -554,12 +543,12 @@ function shell({ title, description, canonical, schema, css = '/radar.css', body
 function resultRows() {
   return radarRecords
     .map((record) => {
-      const state = freshnessState(record)
+      const state = 'archived_observation'
       const search = [record.title, record.summary, ...record.topics, ...record.impacts.flatMap((impact) => [impact.stage, impact.impact])]
         .join(' ')
         .toLowerCase()
-      return `<article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="${state}" data-effective-from="${record.effectiveFrom || ''}" data-expires-at="${record.expiresAt || ''}" data-fresh-until="${record.freshUntil}" data-topics="${record.topics.join(' ')}" data-stages="${record.impacts.map((impact) => impact.stage).join(' ')}" data-search="${escapeHtml(search)}">
-        <div class="radar-result-meta"><span>${escapeHtml(record.label)}</span><strong data-freshness-label>${freshnessLabel(state)}</strong></div>
+      return `<article class="radar-result" data-radar-result data-radar-freshness data-freshness-state="${state}" data-observed-at="${record.observedAt}" data-effective-from="${record.effectiveFrom || ''}" data-expires-at="${record.expiresAt || ''}" data-fresh-until="${record.freshUntil}" data-topics="${record.topics.join(' ')}" data-stages="${record.impacts.map((impact) => impact.stage).join(' ')}" data-search="${escapeHtml(search)}">
+        <div class="radar-result-meta"><span>${escapeHtml(record.label)}</span><strong data-freshness-label>JULY 2026 ARCHIVE</strong><span data-clock-label>Clock assessment unavailable. Check the official source.</span></div>
         <div class="radar-result-copy">
           <h2><a href="${record.path}" data-radar-record-link="${record.id}">${escapeHtml(record.title)}</a></h2>
           <p>${escapeHtml(record.summary)}</p>
@@ -578,9 +567,10 @@ export function renderRadarHub(site, options) {
   const body = `${masthead(site, options.navHtml, booking)}
     <div class="breadcrumbs"><a href="/">HOME</a> → CDS OPERATIONS RADAR</div>
     <main>
+      <section class="radar-archive-notice" aria-label="Archive and reuse notice"><strong>17 JULY 2026 SOURCE ARCHIVE</strong><p>${radarNotice}</p></section>
       <header class="hero radar-hero">
         <div class="hero-copy">
-          <p class="eyebrow">HMRC CDS CHANGE WATCH · SOURCE-STAMPED · FREE</p>
+          <p class="eyebrow">HMRC CDS SOURCE ARCHIVE · JULY 2026 · FREE</p>
           <h1>${radarHub.h1}</h1>
           <p>Search 5 source records across service status, known workarounds, technical documentation, document codes and aggregation. Each record leads with the change, the workflow it may touch and the next check.</p>
         </div>
@@ -594,15 +584,16 @@ export function renderRadarHub(site, options) {
       <section class="radar-intro">
         <span class="section-label">USE THE CHANGE, THEN CHECK THE SOURCE</span>
         <h2>One operational register. No hunting across update histories.</h2>
-        <div><p>The Radar consolidates substantive CDS changes that have a durable operator use. It does not create one thin page per error code or turn a source byte-change into an automatic claim.</p><p>Freshness is calculated in your browser from the retained observation. A stale or expired record stays useful as history, but it cannot present itself as a green live status.</p></div>
+        <div><p>The Radar consolidates substantive CDS changes that have a durable operator use. It does not create one thin page per error code or turn a source byte-change into an automatic claim.</p><p>The archive label never changes. An optional browser-clock assessment compares dates only. It cannot check HMRC or establish live status. Check the linked official source before relying on a record.</p></div>
       </section>
       <section class="radar-register" aria-labelledby="radar-register-heading">
         <header><span class="section-label">SEARCH THE REGISTER</span><h2 id="radar-register-heading">Find the change in your workflow.</h2></header>
-        <form class="radar-filters" data-radar-filters role="search">
+        <noscript><p class="radar-noscript">JavaScript is off. All five archive records are shown. Filters and sharing need JavaScript; use the record links and copy the page address. Downloads and source links still work.</p></noscript>
+        <form class="radar-filters" data-radar-filters role="search" data-js-control hidden>
           <label><span>SEARCH</span><input type="search" name="q" placeholder="Code, workaround, EORI, status…" autocomplete="off" /></label>
           <label><span>TOPIC</span><select name="topic"><option value="all">ALL TOPICS</option>${topics.map((topic) => `<option value="${topic}">${stageLabel(topic)}</option>`).join('')}</select></label>
           <label><span>WORKFLOW</span><select name="stage"><option value="all">ALL STAGES</option>${stages.map((stage) => `<option value="${stage}">${stageLabel(stage)}</option>`).join('')}</select></label>
-          <label><span>FRESHNESS</span><select name="state"><option value="all">ALL STATES</option><option value="current">CURRENT OBSERVATION</option><option value="stale">SOURCE RECHECK DUE</option><option value="expired">EXPIRED POINT-IN-TIME</option><option value="not_yet_effective">NOT YET EFFECTIVE</option></select></label>
+          <label><span>FRESHNESS</span><select name="state"><option value="all">ALL STATES</option><option value="within_recorded_window">WITHIN RECORDED WINDOW (NOT LIVE)</option><option value="stale">SOURCE RECHECK DUE</option><option value="expired">EXPIRED POINT-IN-TIME</option><option value="not_yet_effective">NOT YET EFFECTIVE</option><option value="before_observation">BEFORE OBSERVATION</option><option value="unknown">UNKNOWN DATES</option></select></label>
           <button type="button" data-radar-clear>CLEAR FILTERS</button>
         </form>
         <div class="radar-result-count"><output data-radar-result-count aria-live="polite">5 RECORDS</output><span>UPDATED 17 JULY 2026</span></div>
@@ -610,12 +601,12 @@ export function renderRadarHub(site, options) {
         <div class="radar-empty" data-radar-empty hidden><strong>NO MATCHING RECORD</strong><p>Clear one or more filters to return to the full source register.</p></div>
       </section>
       <section class="radar-downloads" id="downloads">
-        <header><span class="section-label">UNGATED DATA</span><h2>Take the Radar into your change review.</h2><p>Download the 5 public records with source URLs, observation windows, workflow stages, snapshot hashes and correction state. No email wall.</p></header>
-        <div><a href="/downloads/cds-operations-radar-v1.json" download data-radar-download="json"><span>JSON</span><strong>MACHINE-READABLE RECORDS</strong><b>DOWNLOAD ↓</b></a><a href="/downloads/cds-operations-radar-v1.csv" download data-radar-download="csv"><span>CSV</span><strong>CHANGE-REVIEW TABLE</strong><b>DOWNLOAD ↓</b></a></div>
+        <header><span class="section-label">UNGATED DATA</span><h2>Take the Radar into your change review.</h2><p>Download the 5 public records with source URLs, observation windows, workflow stages, snapshot hashes, correction state and a reuse notice in every row or record. Version 2 replaces the ambiguous current-status field with an archive state. No email wall.</p></header>
+        <div><a href="/downloads/cds-operations-radar-v2.json" download data-radar-download="json"><span>JSON</span><strong>MACHINE-READABLE RECORDS</strong><b>DOWNLOAD ↓</b></a><a href="/downloads/cds-operations-radar-v2.csv" download data-radar-download="csv"><span>CSV</span><strong>CHANGE-REVIEW TABLE</strong><b>DOWNLOAD ↓</b></a></div>
       </section>
       <section class="radar-method" id="method">
-        <span class="section-label">HOW THIS REGISTER EARNS TRUST</span><h2>Exact bytes retained. Changes queued. Claims reviewed.</h2>
-        <ol><li><strong>01 · OBSERVE</strong><span>Fetch the official primary source at its registered cadence and retain the exact response by SHA-256.</span></li><li><strong>02 · COMPARE</strong><span>Byte-identical responses produce a verified no-change observation. Any difference becomes a candidate, never public copy.</span></li><li><strong>03 · VERIFY</strong><span>Publish only narrow, source-faithful facts that pass the explicit review and owner-authorization fields.</span></li><li><strong>04 · CORRECT</strong><span>Keep the old event in history and show the correction, supersession or withdrawal on the durable permalink.</span></li></ol>
+        <span class="section-label">HOW THIS REGISTER EARNS TRUST</span><h2>Retained observations. No live monitoring promise.</h2>
+        <ol><li><strong>01 · OBSERVE</strong><span>This edition retains the five July observations and their snapshot hashes. No later source refresh is claimed.</span></li><li><strong>02 · COMPARE</strong><span>The recorded check intervals describe the original review policy, not an active poller or a service guarantee.</span></li><li><strong>03 · VERIFY</strong><span>The recorded verification applies to narrow facts at the observation time. Read the official source for current instructions.</span></li><li><strong>04 · CORRECT</strong><span>Retain the original events and correction state. Presentation changes do not count as a new source observation.</span></li></ol>
       </section>
       <section class="next-actions radar-next-actions">
         <header><span class="section-label">FROM CHANGE TO WORKFLOW</span><h2>Check the pack. Then check the numbers.</h2><p>Use the free pack checker for the declaration in front of you, or bring your current minutes, volumes and exception path to a 20-minute workflow call.</p></header>
@@ -627,12 +618,12 @@ export function renderRadarHub(site, options) {
 }
 
 function timingRows(record) {
-  const state = freshnessState(record)
-  return `<div class="radar-timing-grid" data-radar-freshness data-freshness-state="${state}" data-effective-from="${record.effectiveFrom || ''}" data-expires-at="${record.expiresAt || ''}" data-fresh-until="${record.freshUntil}">
+  const state = 'archived_observation'
+  return `<div class="radar-timing-grid" data-radar-freshness data-freshness-state="${state}" data-observed-at="${record.observedAt}" data-effective-from="${record.effectiveFrom || ''}" data-expires-at="${record.expiresAt || ''}" data-fresh-until="${record.freshUntil}">
     <div><span>OBSERVED</span><strong>${escapeHtml(displayDate(record.observedAt, true))}</strong></div>
     <div><span>EFFECTIVE</span><strong>${escapeHtml(displayDate(record.effectiveFrom))}</strong></div>
-    <div><span>FRESH UNTIL</span><strong>${escapeHtml(displayDate(record.freshUntil, true))}</strong></div>
-    <div><span>STATE</span><strong data-freshness-label>${freshnessLabel(state)}</strong></div>
+    <div><span>RECORDED FRESHNESS WINDOW ENDS</span><strong>${escapeHtml(displayDate(record.freshUntil, true))}</strong></div>
+    <div><span>STATE</span><strong data-freshness-label>JULY 2026 ARCHIVE</strong><span data-clock-label>Clock assessment unavailable. Check the official source.</span></div>
   </div>`
 }
 
@@ -643,7 +634,7 @@ export function renderRadarRecord(record, site, options) {
   }
   const canonical = `${site.origin}${record.path}`
   const booking = `/?src=radar_${record.id}#book`
-  const state = freshnessState(record)
+  const state = 'archived_observation'
   const siblingLinks = radarRecords
     .filter((candidate) => candidate.id !== record.id)
     .slice(0, 3)
@@ -652,17 +643,18 @@ export function renderRadarRecord(record, site, options) {
   const body = `${masthead(site, options.navHtml, booking)}
     <div class="breadcrumbs"><a href="/">HOME</a> → <a href="${radarHub.path}">CDS OPERATIONS RADAR</a> → ${escapeHtml(record.label)}</div>
     <main>
+      <section class="radar-archive-notice" aria-label="Archive and reuse notice"><strong>17 JULY 2026 SOURCE ARCHIVE</strong><p>${radarNotice}</p></section>
       <header class="hero radar-record-hero">
         <div class="hero-copy">
           <p class="eyebrow">${escapeHtml(record.label)} · HMRC SOURCE RECORD</p>
           <h1>${escapeHtml(record.title)}</h1>
           <p>${escapeHtml(record.summary)}</p>
-          <div class="report-actions"><a class="button" data-radar-source="${record.source.id}" href="${record.source.url}">OPEN THE HMRC SOURCE</a><button class="text-action" type="button" data-radar-share>SHARE RECORD</button></div>
+          <div class="report-actions"><a class="button" data-radar-source="${record.source.id}" href="${record.source.url}">OPEN THE HMRC SOURCE</a><button class="text-action" type="button" data-radar-share data-js-control hidden>SHARE RECORD</button></div>
         </div>
-        <aside class="hero-ledger radar-record-ledger" data-radar-freshness data-freshness-state="${state}" data-effective-from="${record.effectiveFrom || ''}" data-expires-at="${record.expiresAt || ''}" data-fresh-until="${record.freshUntil}">
+        <aside class="hero-ledger radar-record-ledger" data-radar-freshness data-freshness-state="${state}" data-observed-at="${record.observedAt}" data-effective-from="${record.effectiveFrom || ''}" data-expires-at="${record.expiresAt || ''}" data-fresh-until="${record.freshUntil}">
           <span class="route-ref">${escapeHtml(record.id.toUpperCase())}</span>
           <div class="radar-record-date"><strong>17</strong><span>JUL<br />2026</span></div>
-          <div class="review-cell"><span data-freshness-label>${freshnessLabel(state)}</span><strong>OBSERVED 18:08 UTC</strong></div>
+          <div class="review-cell"><span data-freshness-label>JULY 2026 ARCHIVE</span><strong>OBSERVED 18:08 UTC</strong><span data-clock-label>Clock assessment unavailable. Check the official source.</span></div>
         </aside>
       </header>
       <section class="radar-answer">
@@ -678,7 +670,7 @@ export function renderRadarRecord(record, site, options) {
         <div class="radar-action-grid"><a data-radar-related="${record.related.id}" href="${record.related.href}"><span>RELATED TOOL OR WORKFLOW</span><strong>${escapeHtml(record.related.label)}</strong><b>OPEN →</b></a><a class="radar-action-primary" data-radar-booking="after_value" href="${booking}"><span>20-MINUTE WORKFLOW CALL</span><strong>MAP THIS CHANGE TO YOUR DESK</strong><b>BOOK THE CALL →</b></a></div>
       </section>
       <section class="radar-evidence">
-        <header><span class="section-label">FRESHNESS + CORRECTION</span><h2>Know which observation you are using.</h2><p>The page remains available as a durable record when its observation becomes stale or expires. The state above changes in the browser; the official link remains the place to check current conditions.</p></header>
+        <header><span class="section-label">FRESHNESS + CORRECTION</span><h2>Know which observation you are using.</h2><p>The page remains available as a durable record when its observation becomes stale or expires. The archive label stays fixed. The separate browser-clock assessment is not a source recheck; use the official link for current conditions.</p></header>
         ${timingRows(record)}
         <div class="radar-correction"><span>CORRECTION STATE</span><strong>${record.correction.status === 'none' ? 'NO CORRECTION RECORDED' : escapeHtml(record.correction.status.toUpperCase())}</strong><p>${record.correction.note ? escapeHtml(record.correction.note) : 'If the source fact or our transcription needs correction, the old event stays in history and the corrected version is published here.'}</p><a href="/editorial-policy/">REPORT OR REVIEW A CORRECTION →</a></div>
       </section>
@@ -701,13 +693,16 @@ export function renderRadarRecord(record, site, options) {
 export function radarJson() {
   return `${JSON.stringify(
     {
-      schema_version: '1.0',
-      generated_at: '2026-07-17T18:08:43Z',
+      schema_version: '2.0',
+      source_edition_at: '2026-07-17T18:08:43Z',
+      presentation_updated_on: '2026-09-16',
+      reuse_notice: radarNotice,
       record_count: radarRecords.length,
       records: radarRecords.map((record) => ({
         record_id: record.id,
         record_type: record.type,
-        status: record.status,
+        record_state: record.status,
+        reuse_notice: radarNotice,
         title: record.title,
         summary: record.summary,
         why_it_matters: record.whyItMatters,
@@ -715,11 +710,12 @@ export function radarJson() {
         topics: record.topics,
         workflow_impacts: record.impacts,
         timing: { effective_from: record.effectiveFrom, expires_at: record.expiresAt },
-        freshness: { observed_at: record.observedAt, fresh_until: record.freshUntil, poll_interval_hours: record.pollHours },
+        freshness: { observed_at: record.observedAt, fresh_until: record.freshUntil, recorded_poll_interval_hours: record.pollHours, monitoring_active: false },
         correction: record.correction,
         review: record.review,
         provenance: record.source,
         path: record.path,
+        history: record.history,
       })),
     },
     null,
@@ -730,7 +726,7 @@ export function radarJson() {
 const csvEscape = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`
 
 export function radarCsv() {
-  const header = ['record_id', 'record_type', 'title', 'observed_at', 'fresh_until', 'effective_from', 'expires_at', 'topics', 'workflow_stages', 'source_url', 'snapshot_sha256', 'correction_status', 'review_state', 'publication_scope', 'path']
-  const rows = radarRecords.map((record) => [record.id, record.type, record.title, record.observedAt, record.freshUntil, record.effectiveFrom, record.expiresAt, record.topics.join('|'), record.impacts.map((impact) => impact.stage).join('|'), record.source.url, record.source.sha256, record.correction.status, record.review.state, record.review.publicationScope, record.path])
+  const header = ['schema_version', 'record_state', 'reuse_notice', 'record_id', 'record_type', 'title', 'observed_at', 'fresh_until', 'effective_from', 'expires_at', 'topics', 'workflow_stages', 'source_url', 'snapshot_sha256', 'correction_status', 'review_state', 'publication_scope', 'path']
+  const rows = radarRecords.map((record) => ['2.0', record.status, radarNotice, record.id, record.type, record.title, record.observedAt, record.freshUntil, record.effectiveFrom, record.expiresAt, record.topics.join('|'), record.impacts.map((impact) => impact.stage).join('|'), record.source.url, record.source.sha256, record.correction.status, record.review.state, record.review.publicationScope, record.path])
   return `${[header, ...rows].map((row) => row.map(csvEscape).join(',')).join('\n')}\n`
 }

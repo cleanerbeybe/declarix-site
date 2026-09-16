@@ -787,3 +787,30 @@
     padding: 24px;
   }
 }
+
+/* Archive context stays visible with no JavaScript and in saved/printed pages. */
+.radar-archive-notice { padding: 20px 28px; border-bottom: 2px solid var(--ink, #16313d); background: #f0e3c7; color: #16313d; }
+.radar-archive-notice p { margin: 8px 0 0; max-width: 100ch; line-height: 1.6; }
+.radar-archive-notice strong { font-family: var(--font-mono, monospace); font-size: 13px; }
+[data-clock-label] { display: block; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.radar-noscript { margin: 16px 0; }
+.radar-docket [hidden] { display: none !important; }
+.radar-result-meta, .radar-record-ledger, .radar-timing-grid > div { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 1100px) {
+ .radar-docket .masthead { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+ .radar-docket .masthead .wordmark { grid-column: 1 / -1; border-right: 0; border-bottom: 1px solid #16313d; }
+ .radar-docket .masthead-cell, .radar-docket .masthead-cta { min-width: 0; white-space: normal; padding: 12px; }
+}
+@media (max-width: 680px) { .radar-result-meta { grid-template-columns: 1fr; } .radar-archive-notice { padding: 18px; } }
+.radar-docket .hero-copy { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 680px) {
+ .radar-hero, .radar-record-hero { grid-template-columns: minmax(0, 1fr); }
+ .radar-docket .review-cell { flex-wrap: wrap; gap: 8px; }
+}
+@media (min-width: 681px) and (max-width: 1100px) {
+ .radar-hero h1, .radar-record-hero h1 { font-size: clamp(32px, 5.5vw, 52px); }
+}
+@media (max-width: 680px) {
+ .radar-hero h1, .radar-record-hero h1 { font-size: clamp(28px, 8vw, 44px); }
+ .radar-docket .masthead-cta { grid-column: 1 / -1; }
+}

@@ -608,8 +608,11 @@ for (const record of radarRecords) {
 }
 
 await mkdir(join(dist, 'downloads'), { recursive: true })
+// Legacy filenames serve the explicitly versioned v2 archive; see docs/radar/README.md.
 await writeFile(join(dist, 'downloads/cds-operations-radar-v1.json'), radarJson())
+await writeFile(join(dist, 'downloads/cds-operations-radar-v2.json'), radarJson())
 await writeFile(join(dist, 'downloads/cds-operations-radar-v1.csv'), radarCsv())
+await writeFile(join(dist, 'downloads/cds-operations-radar-v2.csv'), radarCsv())
 
 for (const authorityRoute of authorityRoutes) {
   if (!authorityRoute.path.startsWith('/') || !authorityRoute.path.endsWith('/')) {

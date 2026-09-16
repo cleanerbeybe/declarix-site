@@ -1,3 +1,4 @@
+import { validateRadarHtml, validateRadarJson, validateRadarCsv } from './radar-validation.mjs'
 import { registrationRoute } from './registration-kit.mjs'
 import { validateRegistrationHtml, validateRegistrationMarkdown, validateRegistrationCsv } from './registration-validation.mjs'
 import { selectionRoutes, validateSelectionPages } from './selection-pages.mjs'
@@ -398,6 +399,7 @@ for (const route of expected) {
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
 
+    validateRadarHtml(html, route)
     if (route.path === radarHub.path) {
       if (
         (html.match(/data-radar-result(?:\s|>)/g) || []).length !== 5 ||
@@ -562,6 +564,12 @@ const radarCsvDownload = await readFile(join(root, 'dist/downloads/cds-operation
 if (radarJsonDownload !== radarJson()) throw new Error('Radar JSON download differs from its deterministic data model')
 if (radarCsvDownload !== radarCsv()) throw new Error('Radar CSV download differs from its deterministic data model')
 if (radarCsvDownload.trim().split('\n').length !== 6) throw new Error('Radar CSV must contain one header and five records')
+for (const version of ['v1','v2']) {
+ const json = await readFile(join(root, `dist/downloads/cds-operations-radar-${version}.json`), 'utf8')
+ const csv = await readFile(join(root, `dist/downloads/cds-operations-radar-${version}.csv`), 'utf8')
+ validateRadarJson(json); validateRadarCsv(csv)
+ if (json !== radarJson() || csv !== radarCsv()) throw new Error('Radar download drift: '+version)
+}
 const parsedRadar = JSON.parse(radarJsonDownload)
 if (parsedRadar.record_count !== 5 || parsedRadar.records.length !== 5) throw new Error('Radar JSON record count drifted')
 
