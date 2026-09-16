@@ -12,6 +12,7 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { comparisonRoute, renderComparison } from './customaite-comparison.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -50,6 +51,7 @@ function routeLinks() {
     ['PRICING', '/pricing/'],
     ['PILOT', '/pilot/'],
     ['PREPARATION OPTIONS', economicsRoute.path],
+    ['CUSTOMAITE COMPARISON', comparisonRoute.path],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
     ...(publicEori.enabled ? [['GB EORI CHECK', eoriChecker.path]] : []),
@@ -632,7 +634,13 @@ const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
 await writeFile(economicsTarget, renderPreparationEconomics(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
 
+if (paths.has(comparisonRoute.path) || titles.has(comparisonRoute.title) || headings.has(comparisonRoute.h1)) throw new Error('Duplicate comparison route')
+const comparisonTarget = join(dist, comparisonRoute.path.slice(1), 'index.html')
+await mkdir(dirname(comparisonTarget), { recursive: true })
+await writeFile(comparisonTarget, renderComparison(site, { webmasterHtml: webmasterTags() }))
+
 const indexableRoutes = [
+  comparisonRoute,
   economicsRoute,
   ...routes,
   ...tools,

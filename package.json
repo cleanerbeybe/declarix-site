@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:economics && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
+    "build": "npm run test:economics && npm run test:comparison && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
     "lint": "oxlint",
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
     "submit:indexnow": "node scripts/submit-indexnow.mjs",
     "test:economics": "node --test tests/preparation-economics.test.mjs",
-    "test:economics:browser": "node tests/preparation-economics.browser.cjs"
+    "test:economics:browser": "node tests/preparation-economics.browser.cjs",
+    "test:comparison": "node --test tests/customaite-comparison.test.mjs",
+    "test:comparison:browser": "node tests/customaite-comparison.browser.cjs"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",
@@ -27,6 +29,7 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.5.2",
+    "axe-core": "4.12.1",
     "oxlint": "^1.71.0",
     "playwright": "1.61.1",
     "postcss": "^8.5.16",

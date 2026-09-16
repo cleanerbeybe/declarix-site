@@ -9,6 +9,7 @@ import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { comparisonRoute } from './customaite-comparison.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -30,6 +31,7 @@ const publicSources = [
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
   'scripts/preparation-economics.mjs',
+  'scripts/customaite-comparison.mjs',
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
   'scripts/authority-library.mjs',
@@ -71,6 +73,7 @@ for (const record of radarRecords) {
 }
 
 const expected = [
+  comparisonRoute,
   economicsRoute,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
