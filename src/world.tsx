@@ -16,26 +16,26 @@ const scenes = [
   {
     id: 2,
     tag: 'S2 · THE SCAN',
-    headline: 'DECLARIX READS ALL OF IT.',
-    body: 'Every format, every page, every line. Nothing rebuilt field by field.',
+    headline: 'BRING THE DOCUMENTS INTO ONE CASE.',
+    body: 'Agree document and field coverage. Keep missing evidence visible.',
   },
   {
     id: 3,
     tag: 'S3 · THE PORT',
     headline: 'WHILE YOUR GOODS CROSS THE WORLD…',
-    body: '…the CDS-ready entry pack is already being built, evidence pinned to every field.',
+    body: '…your team needs proposed shipment data and source references it can review.',
   },
   {
     id: 4,
     tag: 'S4 · THE ROAD',
-    headline: '…THE PACK IS ALREADY HOME.',
-    body: 'Ready for Sequoia, Descartes or your customer integration before the ship clears the strait.',
+    headline: '…THE HANDOFF STILL NEEDS A TEST.',
+    body: 'Confirm destination mapping and acceptance. Generic preparation does not prove a named connector.',
   },
   {
     id: 5,
     tag: 'S5 · THE STAMP',
     headline: 'YOUR CLERK CHECKS. YOUR NAME SIGNS.',
-    body: 'UP TO 3× MORE DECLARATIONS · NO NEW HEADCOUNT · MORE MARGIN',
+    body: 'H1: REVIEW-ONLY, INCOMPLETE. YOUR AUTHORISED TEAM APPROVES AND FILES.',
   },
 ]
 

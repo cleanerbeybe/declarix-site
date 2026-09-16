@@ -2,6 +2,10 @@
   "manifest_version": "2.0.0",
   "authority": "Direct owner approval",
   "effective_on": "2026-07-16",
+  "status": "legacy_record_superseded_for_home_and_discovery_only",
+  "superseded_for_home_and_discovery_on": "2026-09-16",
+  "superseding_draft_contract": "home-discovery-draft-2026-09-16",
+  "note": "This remains the historical offer record for legacy routes pending their separate alignment. It is not current approval for the homepage or generated discovery files.",
   "approved_public_facts": [
     "Up to 3× more declarations per clerk",
     "No new headcount",

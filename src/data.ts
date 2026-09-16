@@ -22,7 +22,7 @@ export const flights = [
     source: 'D1 total',
     row: 'INVOICE TOTAL',
     ref: 'D1 · P.2 · L.48',
-    note: 'JPY→GBP · HMRC MONTHLY RATE — APPLIED ✓',
+    note: 'SYNTHETIC CONVERSION · NOT A CURRENT HMRC RATE',
   },
   {
     value: '640 CARTONS / 16 PALLETS',
@@ -172,13 +172,13 @@ export const mobileMovements = [
   },
   {
     tag: 'MV-4 · THE EVIDENCE',
-    title: 'Every field shows its working.',
+    title: 'Check the available source references.',
     copy: 'Tap a row and the source document, page and line stay attached to the value your clerk checks.',
   },
   {
     tag: 'MV-5 · THE HANDOVER',
-    title: 'The pack is ready for your system.',
-    copy: 'The CDS-ready export moves into Sequoia, Descartes e-Customs or your customer integration.',
+    title: 'Define the destination acceptance test.',
+    copy: 'This generic example does not prove an accepted connector. H1 remains review-only and incomplete.',
   },
 ]
 
@@ -189,7 +189,7 @@ export const questions = [
   },
   {
     q: 'We already run Sequoia / Descartes.',
-    a: "Keep them. That's the point. Declarix produces CDS-ready exports for Sequoia, Descartes e-Customs and customer integrations. We sit in front of your filing system, not instead of it.",
+    a: "Keep your filing system. Generic preparation and export code do not prove an accepted connector. Confirm the destination version, mapping and acceptance test for your workflow.",
   },
   {
     q: "We're comparing capture platforms.",
@@ -201,7 +201,7 @@ export const questions = [
   },
   {
     q: 'Our jobs are messy.',
-    a: "Good. Messy is the product's home ground: amalgamated invoices, part shipments, scans, phone photos and spreadsheets that fight back. Bring the worst workflow to the call; that is usually where the ROI is easiest to find.",
+    a: "Bring a description of the document types, missing facts and review work to the call. Agree which layouts and cases to test; do not assume every format or field is covered.",
   },
   {
     q: 'Where does client data go?',
@@ -209,7 +209,7 @@ export const questions = [
   },
   {
     q: "What's the turnaround at 9am, not in a demo?",
-    a: 'Typical Declarix processing is around 200 seconds before clerk review. Live desk turnaround depends on queue, job mix and exceptions, so the call maps your peak volume and the pilot proves it under your conditions.',
+    a: 'Measure preparation, review and exceptions on representative cases at your expected load. There is no current processing-speed promise here; define the test and baseline before relying on a turnaround estimate.',
   },
   {
     q: 'What does it cost?',
@@ -217,11 +217,11 @@ export const questions = [
   },
   {
     q: 'Will my clerks need training?',
-    a: 'They keep the system they already know. Declarix changes the work arriving at their desk: instead of building the entry field by field, they check the CDS-ready pack and its linked evidence before approval.',
+    a: 'They keep their filing system. Agree training for preparation, evidence review and exception handling. The H1 profile is review-only and incomplete, not filing-ready output.',
   },
   {
     q: 'We outsource customs today.',
-    a: 'Declarix changes the maths of bringing declarations in-house: one experienced clerk can review far more jobs when the entry is already built. Bring the outsourced cost and expected volume to the numbers call and compare it properly.',
+    a: 'Compare outsourcing with your own preparation and review costs, skills, volume and exceptions. The preparation economics calculator uses your inputs; it does not assume a Declarix saving.',
   },
 ]
 

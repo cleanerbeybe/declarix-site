@@ -1,0 +1,36 @@
+{
+  "contract_id": "home-discovery-draft-2026-09-16",
+  "status": "draft_only_not_publication_approval",
+  "reviewed_on": "2026-09-16",
+  "surfaces": [
+    "index.html",
+    "src/App.tsx",
+    "src/data.ts",
+    "src/world.tsx",
+    "public/og.html",
+    "generated llms.txt and llms-full.txt"
+  ],
+  "required_language": [
+    "Customs preparation",
+    "Evidence-linked review",
+    "review-only",
+    "incomplete",
+    "not an accepted named connector",
+    "Do not attach live customer documents"
+  ],
+  "prohibited_result_claims": [
+    "Up to 3× more declarations",
+    "Typical processing: ~200 seconds",
+    "Every field linked to its source",
+    "No new headcount",
+    "More margin on every declaration",
+    "CDS-ready export"
+  ],
+  "boundaries": [
+    "The walkthrough is a synthetic illustration, not a live product capture.",
+    "H1 standard imports are review-only with incomplete coverage.",
+    "Generic preparation or export code does not prove an accepted named connector.",
+    "Calculators use buyer-entered inputs and do not state a measured customer result or Declarix quote.",
+    "Pilot commercial terms and turnaround remain unchanged in this slice and require a separate publication decision."
+  ]
+}

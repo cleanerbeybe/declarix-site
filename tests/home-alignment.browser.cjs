@@ -1,0 +1,24 @@
+const {chromium}=require('playwright');
+const {readFileSync,mkdirSync,writeFileSync,existsSync,statSync}=require('node:fs');
+const {join,extname}=require('node:path');const http=require('node:http');const assert=require('node:assert/strict');
+const root=join(__dirname,'..','dist');const output=join(__dirname,'..','output','home-alignment');mkdirSync(output,{recursive:true});
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webm':'video/webm','.mp4':'video/mp4','.woff2':'font/woff2','.xml':'application/xml','.txt':'text/plain'};
+const server=http.createServer((req,res)=>{let pathname=decodeURIComponent(new URL(req.url,'http://x').pathname);let file=join(root,pathname);if(pathname.endsWith('/'))file=join(file,'index.html');if(!existsSync(file)||statSync(file).isDirectory())file=join(root,'index.html');res.setHeader('content-type',types[extname(file)]||'application/octet-stream');res.end(readFileSync(file));});
+const checks=[];function check(name,value){checks.push(name);assert.ok(value,name)}
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin=`http://127.0.0.1:${server.address().port}`;const browser=await chromium.launch({headless:true});
+try{
+ for(const width of [1440,390]){
+  const context=await browser.newContext({viewport:{width,height:900},reducedMotion:width===390?'reduce':'no-preference'});const page=await context.newPage();const requests=[];const errors=[];page.on('request',r=>requests.push(r.url()));page.on('pageerror',e=>errors.push(String(e)));await page.goto(origin+'/',{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);const tag=`home ${width}`;const body=await page.locator('body').innerText();
+  check(tag+' one visible H1',await page.locator('h1').count()===1&&await page.locator('h1').isVisible());check(tag+' aligned H1',(await page.locator('h1').innerText()).includes('Customs preparation')&&(await page.locator('h1').innerText()).includes('Evidence-linked review'));
+  check(tag+' boundary visible',body.includes('H1 STANDARD IMPORTS: REVIEW-ONLY, INCOMPLETE'));check(tag+' synthetic disclosure visible',body.includes('SYNTHETIC ILLUSTRATION, NOT A LIVE PRODUCT CAPTURE'));
+  check(tag+' no unsupported home result claims',!(/3×|200 SECONDS|NO NEW HEADCOUNT|MORE MARGIN ON EVERY DECLARATION|£7\.95|£2\.45/.test(body)));
+  check(tag+' buyer-input calculator link',await page.locator('a[href="/compare/automation-vs-outsourcing/"]').isVisible());check(tag+' no page overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  check(tag+' canonical',(await page.locator('link[rel=canonical]').getAttribute('href'))==='https://getdeclarix.com/');check(tag+' metadata aligned',(await page.title()).includes('Customs preparation and evidence-linked review')&&(await page.locator('meta[name=description]').getAttribute('content')).includes('review-only'));
+  check(tag+' Zoho absent before action',!requests.some(u=>u.includes('nimbuspop.com')||u.includes('zohobookings')));check(tag+' no runtime errors',errors.length===0);
+  await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const axe=await page.evaluate(()=>axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}));check(tag+' WCAG '+JSON.stringify(axe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))),axe.violations.length===0);
+  await page.screenshot({path:join(output,`home-${width}-hero.png`)});await context.close();
+ }
+ const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:900}});const page=await context.newPage();await page.goto(origin+'/');const text=await page.locator('body').innerText();check('no-JS aligned copy',text.includes('Customs preparation. Evidence-linked review.')&&text.includes('REVIEW-ONLY, INCOMPLETE'));check('no-JS enquiry available',await page.locator('a[href^="mailto:pack@getdeclarix.com"]').first().isVisible());check('no-JS live-document warning',text.includes('Do not attach live customer documents'));await context.close();
+ const llms=readFileSync(join(root,'llms.txt'),'utf8');check('discovery current boundary',llms.includes('review-only with incomplete coverage')&&llms.includes('not prove an accepted named connector'));check('discovery no old result claims',!(/3×|200 seconds|£7\.95|£2\.45/.test(llms)));
+ writeFileSync(join(output,'BROWSER_TESTS.json'),JSON.stringify({status:'PASS',checks:checks.length,names:checks,environment:'Local Chromium 1440/390, reduced motion, no-JS, metadata, pre-action network and WCAG'},null,2));console.log(JSON.stringify({status:'PASS',checks:checks.length}));
+}finally{await browser.close();await new Promise(r=>server.close(r))}})().catch(e=>{console.error(e);process.exitCode=1});

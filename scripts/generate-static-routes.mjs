@@ -12,7 +12,7 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
-import { validateProductScope } from './product-scope.mjs'
+import { productScopeRoutes, validateProductScope } from './product-scope.mjs'
 validateProductScope()
 import { comparisonRoute, renderComparison } from './customaite-comparison.mjs'
 import { comparisons, renderVendorComparison, validateComparisons } from './vendor-comparisons.mjs'
@@ -256,7 +256,7 @@ function renderRoute(route) {
     <div class="docket">
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
-        <div class="masthead-cell"><span>${route.claimContract ? "WORKFLOW" : "CORE OUTCOME"}</span><strong>${route.claimContract ? "PREPARE · REVIEW" : "UP TO 3×"}</strong></div>
+        <div class="masthead-cell"><span>WORKFLOW</span><strong>PREPARE · REVIEW</strong></div>
         <a class="masthead-cta" ${route.resourceKit ? 'data-kit-booking="masthead"' : ''} href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${routeLinks(route)}</nav>
@@ -676,25 +676,47 @@ ${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)
 
+// Do not repeat legacy product claims through discovery files while their route copy awaits alignment.
+// The sitemap still lists every indexable route; this list contains only the reviewed claim-safe set.
+const discoveryRoutes = [
+  ...productScopeRoutes,
+  comparisonRoute,
+  ...comparisons,
+  economicsRoute,
+  ...tools,
+  ...calculators,
+  ...reports,
+  ...valueDutyWorkpapers,
+  ...(publicEori.enabled ? [eoriChecker] : []),
+  ...radarRoutes,
+  ...authorityRoutes,
+]
+const discoveryPaths = new Set(discoveryRoutes.map(route => route.path))
 const llmsRoutes = indexableRoutes
-  .map((route) => `- [${route.title}](${site.origin}${route.path}): ${route.description}`)
+  .map((route) => discoveryPaths.has(route.path)
+    ? `- [${route.title}](${site.origin}${route.path}): ${route.description}`
+    : `- [${route.title}](${site.origin}${route.path}): Indexed route; product or commercial copy awaits claim alignment and is omitted from this discovery summary.`)
   .join('\n')
 const llms = `# Declarix
-> Up to 3× more customs declarations per clerk, with no new headcount and more margin on every declaration.
+> Customs case preparation and evidence-linked review. H1 standard imports are review-only with incomplete coverage.
 
 ## Primary pages
-- [Declarix homepage](${site.origin}/): Core offer, product walkthrough, worked ROI model, integrations, pilot terms, and 20-minute numbers call.
+- [Declarix homepage](${site.origin}/): Preparation workflow, synthetic illustration, buyer-input economics and workflow enquiry.
 ${llmsRoutes}
 
-## Product and commercial facts
-- Declarix builds CDS-ready entry packs from customer documents.
-- Typical processing is around 200 seconds before clerk review.
-- Sequoia, Descartes e-Customs, and customer integrations are supported.
-- The worked labour model shows £7.95 to £2.45 per declaration; buyers replace those assumptions with their numbers on the call.
-- The pilot is free if it fails and capped at £500 if it works.
+## Current product boundary
+- Bring documents, proposed shipment data and review decisions into one case.
+- H1 standard imports are review-only with incomplete coverage.
+- Generic preparation and export code do not prove an accepted named connector.
+- Confirm destination version, mapping and acceptance before relying on a handoff.
+- Evidence coverage varies by field and source; missing facts require review.
+- Current-snapshot and approval gates still apply; incomplete H1 cannot bypass them.
+- No fixed capacity, processing-speed or labour-saving result is stated here.
+- The preparation economics calculator uses buyer-entered inputs, not measured customer results or a Declarix quote.
+- Pilot commercial terms and turnaround commitment remain under review; do not infer a current agreed offer from this discovery summary.
 - Declarix does not submit to HMRC.
-- The authorised clerk checks and approves; the broker files through its existing customs system.
-- Do not send live customer documents through the public website.
+- The authorised team approves and files through its existing customs system.
+- Do not send live customer documents through the public website or initial enquiry.
 
 ## Contact and corrections
 - Product and workflow enquiries: ${site.contact}
@@ -702,11 +724,12 @@ ${llmsRoutes}
 `
 const llmsFull = `${llms}
 ## Publication record
-- Owner-approved offer version: ${site.claimsVersion}
+- Legacy offer record: ${site.claimsVersion}; not current approval of the aligned draft
+- Homepage and discovery claim alignment: 2026-09-16; draft, not publication clearance
 - Last editorial review: ${site.reviewedOn}
 
 ## Citation guidance
-Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and proposed per-entry rate.
+Use supported-scope and how-it-works for preparation boundaries. The homepage walkthrough is a synthetic illustration, not a live product capture. Calculators use buyer-entered inputs and do not establish measured savings or a price. Some legacy route descriptions below still await claim alignment; pilot terms require a separate decision before publication.
 `
 await writeFile(join(dist, 'llms.txt'), llms)
 await writeFile(join(dist, 'llms-full.txt'), llmsFull)

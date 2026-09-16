@@ -18,6 +18,7 @@ import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-wo
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
+const homeContract = JSON.parse(await readFile(join(root, 'contracts/home-discovery-draft-2026-09-16.json'), 'utf8'))
 const publicEori = resolvePublicEoriReleaseConfig()
 
 if (contract.manifest_version !== site.claimsVersion) {
@@ -53,11 +54,18 @@ for (const source of publicSources) {
     }
   }
 }
-const claimSurface = publicSourceText.join('\n')
-for (const phrase of contract.required_product_language) {
-  if (!claimSurface.includes(phrase.toLowerCase())) {
-    throw new Error(`Required product boundary missing: ${phrase}`)
-  }
+// The July contract is retained as a historical offer record for legacy routes. Its required
+// phrases must not be forced back onto the aligned home/discovery surfaces.
+if (contract.status !== 'legacy_record_superseded_for_home_and_discovery_only') throw new Error('Legacy offer contract status is not explicit')
+if (contract.superseding_draft_contract !== homeContract.contract_id) throw new Error('Home contract succession mismatch')
+if (homeContract.status !== 'draft_only_not_publication_approval') throw new Error('Home alignment contract must remain draft-only')
+const homeSources = ['index.html', 'src/App.tsx', 'src/data.ts', 'src/world.tsx', 'public/og.html']
+const homeSurface = (await Promise.all(homeSources.map(source => readFile(join(root, source), 'utf8')))).join('\n').toLowerCase()
+for (const phrase of homeContract.required_language) {
+  if (!homeSurface.includes(phrase.toLowerCase())) throw new Error(`Required home boundary missing: ${phrase}`)
+}
+for (const phrase of homeContract.prohibited_result_claims) {
+  if (homeSurface.includes(phrase.toLowerCase())) throw new Error(`Unsupported home result claim found: ${phrase}`)
 }
 
 if (radarRecords.length !== 5) throw new Error(`Radar must release exactly five source-verified records, found ${radarRecords.length}`)
@@ -81,7 +89,7 @@ const expected = [
   ...comparisons,
   comparisonRoute,
   economicsRoute,
-  { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
+  { path: '/', title: 'Customs preparation and evidence-linked review | Declarix' },
   ...routes,
   ...tools,
   ...calculators,
@@ -687,7 +695,7 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
 
-console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and owner-approved offer manifest ${site.claimsVersion}`)
+console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, legacy route manifest ${site.claimsVersion}, and draft home/discovery boundary contract`)
 
 // Scoped draft contract supplements (does not approve or replace) the legacy site manifest.
 for (const route of productScopeRoutes) {
