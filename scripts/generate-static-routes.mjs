@@ -12,6 +12,8 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { validateOfferBoundaries } from './offer-boundaries.mjs'
+validateOfferBoundaries(routes)
 import { discoveryEntry } from './discovery-entry.mjs'
 import { productScopeRoutes, validateProductScope } from './product-scope.mjs'
 validateProductScope()
@@ -96,6 +98,7 @@ function renderSection(section, index) {
     <span class="section-label">${escapeHtml(section.label || String(index + 1).padStart(2, '0'))}</span>
     <h2>${escapeHtml(section.title)}</h2>
     ${paragraphs}${list}${facts}
+    ${(section.links || []).map(link => `<p><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></p>`).join('')}
   </section>`
 }
 

@@ -11,6 +11,8 @@ import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { offerContract, validateOfferBoundaries, validateOfferHtml } from './offer-boundaries.mjs'
+validateOfferBoundaries(routes)
 import { verifyLegacyDiscovery } from './discovery-entry.mjs'
 import { productScopeRoutes, scopeBoundary, validateProductScope } from './product-scope.mjs'
 validateProductScope()
@@ -131,7 +133,7 @@ for (const route of expected) {
   const heading = h1s[0][1].replace(/<[^>]*>/g, '').trim()
   if (headings.has(heading)) throw new Error(`Duplicate H1: ${heading}`)
   if (route.path !== '/' && /<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} loads route JavaScript`)
-  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path) && ![...productScopeRoutes, ...selectionRoutes].some(r => r.path === route.path)) {
+  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path) && !offerContract.reviewed_paths.includes(route.path) && ![...productScopeRoutes, ...selectionRoutes].some(r => r.path === route.path)) {
     const heroStart = html.indexOf('<header class="hero')
     const heroEnd = html.indexOf('</header>', heroStart)
     const heroAdjacentMarkup = html.slice(heroEnd + 9).trimStart()
@@ -712,3 +714,6 @@ for (const route of [...productScopeRoutes, ...selectionRoutes]) {
 }
 await access(join(root, 'dist/product-scope.png'))
 console.log('Verified five draft scope/selection routes; not a sitewide public-claim clearance')
+
+for (const path of offerContract.reviewed_paths) validateOfferHtml(await readFile(join(root, 'dist', path, 'index.html'), 'utf8'), path)
+console.log('Verified four per-route offer boundaries; commercial/security/legal and publication gates remain separate')

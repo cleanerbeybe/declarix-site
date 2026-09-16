@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:economics && npm run test:comparison && npm run test:scope && npm run test:selection && npm run test:legacy-offer && npm run test:home && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
+    "build": "npm run test:economics && npm run test:comparison && npm run test:scope && npm run test:selection && npm run test:legacy-offer && npm run test:offer-boundaries && npm run test:home && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
     "lint": "oxlint",
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
@@ -20,7 +20,9 @@
     "test:home:browser": "node tests/home-alignment.browser.cjs",
     "test:selection": "node --test tests/selection-pages.test.mjs",
     "test:legacy-offer": "node --test tests/legacy-offer-product.test.mjs",
-    "test:legacy-offer:browser": "node tests/legacy-offer-product.browser.cjs"
+    "test:legacy-offer:browser": "node tests/legacy-offer-product.browser.cjs",
+    "test:offer-boundaries": "node --test tests/offer-boundaries.test.mjs",
+    "test:offer-boundaries:browser": "node tests/offer-boundaries.browser.cjs"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",

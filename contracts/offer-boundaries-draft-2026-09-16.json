@@ -1,0 +1,192 @@
+{
+  "contract_id": "offer-boundaries-draft-2026-09-16",
+  "status": "draft_only_not_publication_approval",
+  "baseline": "c740990cbe8d2117c9d4c279da7e446ddc0d0cd0",
+  "reviewed_paths": [
+    "/security/",
+    "/pricing/",
+    "/pricing-policy/",
+    "/pilot/"
+  ],
+  "scope": "Per-route visible H1/output limits, buyer-entered economics, safe enquiry CTA. No legal/security/commercial approval or publication.",
+  "supersedes_preservation_paths": [
+    "/pricing-policy/"
+  ],
+  "required_per_route": [
+    "review-only",
+    "incomplete",
+    "does not submit directly to HMRC",
+    "not an accepted named connector"
+  ],
+  "prohibited_result_claims": [
+    "£7.95",
+    "£2.45",
+    "£5.50",
+    "£34,320",
+    "120 declarations",
+    "homepage example",
+    "homepage model",
+    "labour falls",
+    "capacity returned",
+    "Leave with an ROI estimate, integration route"
+  ],
+  "preserved_routes": [
+    {
+      "path": "/privacy/",
+      "sha256": "7ded6c40c63fff0113b4bb4eede5b9efe8f86962a60fceb1181a46ef1e32e639"
+    },
+    {
+      "path": "/supported-scope/",
+      "sha256": "c4fd3458c07129ef4101aa5dde8a9eb22bb066cbc06b43808a0d8e93a0aaa0d2"
+    },
+    {
+      "path": "/how-it-works/",
+      "sha256": "10794dd8fb6079253553f29053c7d05e0366001a903f3d4676276f40bac59f3c"
+    },
+    {
+      "path": "/about/",
+      "sha256": "58f50bf42abc1f481942f362b65cdf653765ea6fea5e59475f56addede356011"
+    },
+    {
+      "path": "/terms/",
+      "sha256": "a38cf6c891cfa93fc2f5d7d99e2ccad7c53631be881a6228624aac7703a70f8f"
+    },
+    {
+      "path": "/customs-declaration-software/",
+      "sha256": "7377dc2be9f4baad992ab0f82365971d827096b6d9ec5cb740621dfae93907fa"
+    },
+    {
+      "path": "/customs-clearance-software/",
+      "sha256": "5a514ec02a516042235da5a9d6a1ee9cd4111cf5d08a2fce624e70be6a6bbdb9"
+    },
+    {
+      "path": "/customs-intermediary-registration-2026/",
+      "sha256": "49e0105af55d548e455cf51cc2558158a6fd7401ebc91434e062a422282699e9"
+    },
+    {
+      "path": "/editorial-policy/",
+      "sha256": "b5a4214b01c2d2ffe7b3663c5fea26011b9ca43a0846f220c3dbfee5b89e0d1c"
+    }
+  ],
+  "preserved_source_files": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "9ae4d0f97972e5ddf986341e22add4a80525ac102d5261cc6f2e6e6ff71f9d75"
+    },
+    {
+      "path": "src/data.ts",
+      "sha256": "67d435ff2ddfb01e6ec1ac3d738f9cba70b6bb5a336a9990a24c856f1cbd192a"
+    },
+    {
+      "path": "src/world.tsx",
+      "sha256": "2402dc6f4ab0de574fcba15f2648237acee2f36da966a58e7e763522b9204688"
+    },
+    {
+      "path": "public/og.html",
+      "sha256": "0c25d954a38add88095df48410d0afe7bf3b5801f1cd67974187bb3fee52e485"
+    },
+    {
+      "path": "public/og.jpg",
+      "sha256": "12bfa75b1a02832e9a2e01793c9e691b5809938ad19c4a7ecf8446fa49a82c79"
+    },
+    {
+      "path": "public/static-routes.css",
+      "sha256": "ecfe91d13e1899d206e8cb72176acde5a1972b4f872b22e72eb0c9bbee04b7f2"
+    }
+  ],
+  "preserved_commercial_strings": [
+    "The pilot is free if it fails and capped at £500 if it works.",
+    "If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.",
+    "Declarix returns the pack within one working day.",
+    "Pilot cost if the agreed job fails",
+    "Initial pilot cap if it works"
+  ],
+  "preserved_security_fields": {
+    "standfirst": "Customer documents are processed for the job, returned with the entry pack and never used to train models. Deployment details are supplied before live data moves.",
+    "sections": [
+      {
+        "label": "01 · PRODUCT BOUNDARY",
+        "title": "Documents in. Evidence-linked preparation pack back.",
+        "paragraphs": [
+          "Declarix reads customer documents and returns a preparation pack with available source evidence for the clerk to check. The current H1 profile is incomplete and review-only. Declarix does not submit to HMRC; the broker remains responsible for approval and filing.",
+          "The public marketing site is separate from the product environment. The site does not accept document uploads."
+        ]
+      },
+      {
+        "label": "02 · BEFORE A PILOT",
+        "title": "The schedule names what matters.",
+        "facts": [
+          [
+            "Data categories and purpose",
+            "Recorded for the proposed pilot"
+          ],
+          [
+            "Approved transfer channel",
+            "Confirmed before documents move"
+          ],
+          [
+            "Access and authorised roles",
+            "Confirmed for the deployment"
+          ],
+          [
+            "Subprocessors and locations",
+            "Current inventory supplied in writing"
+          ],
+          [
+            "Retention and deletion",
+            "Defined by data class and legal basis"
+          ],
+          [
+            "Incident contacts",
+            "Named in the pilot schedule"
+          ]
+        ]
+      },
+      {
+        "label": "03 · WEBSITE",
+        "title": "Small public attack surface.",
+        "paragraphs": [
+          "The public site is static and served over enforced HTTPS through GitHub Pages. It has no login, payment form, or document-upload endpoint.",
+          "The booking provider is loaded only after a visitor chooses to view the diary. The live product and its controls are reviewed separately from this marketing surface."
+        ]
+      },
+      {
+        "label": "04 · EVIDENCE",
+        "title": "Ask for the deployment packet.",
+        "paragraphs": [
+          "Security questionnaires, data-processing terms, the current vendor inventory, processing locations, retention rules, deletion evidence, and technical architecture are supplied for the deployment being assessed.",
+          "Email pack@getdeclarix.com and identify your organisation, intended data, customs-system context, and security-review owner."
+        ]
+      }
+    ]
+  },
+  "preserved_pricing_policy_sections": [
+    {
+      "label": "01 · PER-ENTRY MODEL",
+      "title": "Pay for declaration work, not another seat.",
+      "paragraphs": [
+        "Declarix is priced against the entries and workflow it helps the desk process. Your quote names the unit being counted and shows how split shipments, amalgamated invoices, or unusual line volumes are treated, so the comparison uses the work you actually run."
+      ]
+    },
+    {
+      "label": "02 · REWORK",
+      "title": "Separate a failed run from a changed job.",
+      "paragraphs": [
+        "A processing failure, customer correction, broker amendment, duplicate submission, and expanded scope are different events. The quote explains which ones count and which do not, so a correction does not quietly become an unexplained second charge."
+      ]
+    },
+    {
+      "label": "03 · TOTAL COST",
+      "title": "Compare the full desk cost, not a headline rate.",
+      "paragraphs": [
+        "Put any minimum volume, VAT, payment timing, support, service window, pilot cap, renewal, and cancellation alongside the per-entry rate. Then compare that total with current preparation time, loaded clerk cost, customer chasing, and the declarations the team cannot take on today."
+      ]
+    }
+  ],
+  "remaining_gates": [
+    "Owner reconfirms £500/free-on-failure and one-working-day commitments.",
+    "Security, privacy, legal and time-sensitive registration content remains separately reviewed/gated.",
+    "Historical and downloadable assets require separate content review.",
+    "No merge, deployment, live acceptance or whole-site clearance."
+  ]
+}

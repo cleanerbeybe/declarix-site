@@ -1,5 +1,5 @@
 import { selectionRoutes } from './selection-pages.mjs'
-import { productScopeRoutes } from './product-scope.mjs'
+import { scopeBoundary, scopeCta, productScopeRoutes } from './product-scope.mjs'
 
 export const site = {
   origin: 'https://getdeclarix.com',
@@ -80,6 +80,7 @@ export const routes = [
   },
   {
     path: '/security/',
+    claimContract: 'offer-boundaries-draft-2026-09-16',
     ref: 'SCHEDULE 02 · SECURITY',
     title: 'Security and data schedule | Declarix',
     description:
@@ -90,7 +91,8 @@ export const routes = [
       'Customer documents are processed for the job, returned with the entry pack and never used to train models. Deployment details are supplied before live data moves.',
     stamp: 'NO MODEL\nTRAINING',
     limitations:
-      'No public page can replace a customer security review or data-processing agreement. Deployment-specific answers are provided before customer documents are transferred.',
+      scopeBoundary + ' No public page can replace a customer security review or data-processing agreement. Deployment-specific answers are provided before customer documents are transferred.',
+    cta: scopeCta,
     sections: [
       {
         label: '01 · PRODUCT BOUNDARY',
@@ -133,21 +135,23 @@ export const routes = [
   productScopeRoutes[0],
   {
     path: '/pricing/',
+    claimContract: 'offer-boundaries-draft-2026-09-16',
     ref: 'SCHEDULE 04 · COMMERCIAL',
     title: 'Declarix pricing and ROI for customs desks',
     description:
-      'See the Declarix per-entry pricing model, worked labour economics, pilot terms, and the numbers to bring to a 20-minute ROI call.',
+      'See the Declarix per-entry pricing approach. Use your own preparation, review and cost inputs to assess a pilot without a preset savings claim.',
     eyebrow: 'PRICING · PER ENTRY, NOT PER SEAT',
     h1: 'Measure preparation cost before you price a pilot.',
     standfirst:
-      'Declarix is priced per entry for the agreed workflow. The 20-minute numbers call replaces worked assumptions with your desk’s representative volume, preparation time, review time and cost.',
+      'Declarix is priced per entry for the agreed workflow. Use the 20-minute numbers call to set out your desk’s representative volume, preparation time, review time and costs.',
     stamp: 'PER\nENTRY',
     limitations:
-      'The £7.95 to £2.45 labour model is an example, not a quote. Your job mix, review time and loaded clerk cost determine the real result and per-entry rate.',
+      scopeBoundary + ' Your own time and cost inputs define a scenario, not a measured saving or a quote.',
+    cta: scopeCta,
     sections: [
       {
         label: '01 · INPUTS',
-        title: 'Four numbers build the commercial case.',
+        title: 'Bring the inputs that define the work.',
         list: [
           'Declarations processed in a representative week.',
           'Minutes of clerk time used per declaration today.',
@@ -157,46 +161,49 @@ export const routes = [
         ],
       },
       {
-        label: '02 · WORKED MODEL',
-        title: 'What the homepage example shows.',
+        label: '02 · YOUR SCENARIO',
+        title: 'Compare total cost using your own inputs.',
         list: [
-          'Loaded clerk labour falls from £7.95 to £2.45 per declaration.',
-          'That creates an illustrative £5.50 labour saving before the Declarix rate.',
-          'At 120 declarations a week, the model shows £34,320 a year in recovered labour.',
+          'Record preparation, checking, customer chasing and rework time for a representative job mix.',
+          'Use your loaded staff cost and include software, setup, provider fees and retained review work.',
+          'Enter your own assumptions in the preparation cost comparison. It has no default savings or provider rates.',
           'Recovered clerk time is a scenario input, not a capacity guarantee.',
           'The real test is whether your total cost falls after the Declarix per-entry rate is included.',
         ],
       },
       {
         label: '03 · COMPARISON',
-        title: 'Replace the example with your desk.',
+        title: 'Keep assumptions separate from observed results.',
+        links: [{ href: '/compare/automation-vs-outsourcing/', label: 'OPEN THE BUYER-INPUT PREPARATION COST COMPARISON' }],
         paragraphs: [
-          'On the call, Declarix rebuilds the model using your weekly volume, current preparation time and loaded clerk cost. The result is an annual ROI range and a break-even per-entry price, not a generic savings promise.',
-          'You also map the integration route and identify the workflow where recovered clerk time is most valuable. If the economics do not work, there is no reason to force a pilot.',
+          'Use the preparation cost comparison to compare in-house assisted work with outsourced preparation. It calculates from your inputs only; it does not predict Declarix performance or state a Declarix price.',
+          'Test the target workflow and any destination separately. Time released for other work is not automatically cash saved. If total cost rises, keep that result visible rather than assuming a saving.',
         ],
       },
       {
         label: '04 · NEXT STEP',
-        title: 'Leave with the questions answered.',
+        title: 'Agree what the pilot must measure.',
         paragraphs: [
-          'Book the 20-minute numbers call. Bring what you know; estimates are enough to start. You leave with the ROI range, integration route and recommended first declaration workflow.',
+          'Book the 20-minute numbers call. Bring what you know; estimates are enough to start. Agree a representative job, the measures to record and the acceptance test for the target workflow.',
         ],
       },
     ],
   },
   {
     path: '/pricing-policy/',
+    claimContract: 'offer-boundaries-draft-2026-09-16',
     ref: 'BUYER SHEET 05 · PRICING RULES',
     title: 'How Declarix pricing works: entries, rework and pilot',
     description:
-      'See how Declarix pricing counts entries, handles rework and pilot costs, and compares total cost with the clerk time and capacity returned to your customs desk.',
+      'See how Declarix pricing counts entries, handles rework and pilot costs, and compares total cost using your own time and cost inputs.',
     eyebrow: 'PRICING EXPLAINED · WHAT COUNTS AND WHAT TO ASK',
     h1: 'Know what you pay for before the pilot starts.',
     standfirst:
-      'Define the unit, separate genuine rework from changed jobs, then test the total cost against the clerk time and declaration capacity returned to your desk.',
+      'Define the unit, separate genuine rework from changed jobs, then measure preparation, review and rework costs for the agreed workflow.',
     stamp: 'CLEAR\nCOUNT',
     limitations:
-      'The final per-entry rate, inclusions and correction rules are stated in the quote. The homepage model is a transparent example used to start the ROI conversation.',
+      scopeBoundary + ' The final per-entry rate, inclusions and correction rules are stated in the quote. Use your own cost and time assumptions; this page promises no measured saving.',
+    cta: scopeCta,
     sections: [
       {
         label: '01 · PER-ENTRY MODEL',
@@ -226,7 +233,7 @@ export const routes = [
           'Use the same representative source pack and agreed start and stop points.',
           'Measure preparation, broker review, customer chase, rework, and filing time separately.',
           'Count the exceptions and unsupported cases as well as the clean runs.',
-          'Replace the homepage example with your weekly volume, current time, and loaded clerk cost.',
+          'Use your own volume, current time, proposed review time, fees and loaded clerk cost. A scenario is not a measured result.',
         ],
       },
     ],
@@ -234,6 +241,7 @@ export const routes = [
   productScopeRoutes[1],
   {
     path: '/pilot/',
+    claimContract: 'offer-boundaries-draft-2026-09-16',
     ref: 'DOCKET 07 · PILOT',
     title: 'Declarix customs-document preparation pilot',
     description:
@@ -244,7 +252,8 @@ export const routes = [
       'First run the ROI and map the target workflow. If the commercial case makes sense, send one anonymised job and let your clerk compare the evidence-linked preparation pack with the manual run.',
     stamp: '£0 FAIL\n£500 CAP',
     limitations:
-      'If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.',
+      scopeBoundary + ' If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.',
+    cta: scopeCta,
     sections: [
       {
         label: '01 · PREPARE',
