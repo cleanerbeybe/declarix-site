@@ -1,0 +1,5 @@
+.research-notice{margin:24px clamp(16px,4vw,48px);padding:20px;border:2px solid #1b7a4b;background:#f7f6f1;color:#16313d;overflow-wrap:anywhere}.research-notice strong{font-family:monospace;letter-spacing:.06em}.research-notice p{font-size:16px;line-height:1.55;margin:12px 0 0;max-width:85ch}
+@media(max-width:600px){.report-hero h1{font-size:clamp(32px,9vw,50px);overflow-wrap:anywhere}}
+/* Scoped to these two research pages; other authority routes keep their CSS. */
+.authority-bridge{background:#f4deb6;color:#16313d}.authority-bridge p,.authority-bridge span,.authority-bridge a{color:#16313d}
+@media(max-width:1000px){.report-hero{grid-template-columns:minmax(0,1fr)}.report-hero-ledger{min-width:0;border-left:0}.report-hero-number{min-width:0}.report-hero-number strong{font-size:clamp(80px,18vw,160px)}.authority-hero h1{overflow-wrap:anywhere}}

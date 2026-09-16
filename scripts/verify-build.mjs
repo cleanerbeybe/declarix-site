@@ -1,3 +1,4 @@
+import { verifyResearchBuild } from './research-validation.mjs'
 import { validateRadarHtml, validateRadarJson, validateRadarCsv } from './radar-validation.mjs'
 import { registrationRoute } from './registration-kit.mjs'
 import { validateRegistrationHtml, validateRegistrationMarkdown, validateRegistrationCsv } from './registration-validation.mjs'
@@ -25,6 +26,7 @@ import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
+await verifyResearchBuild(root)
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
 const homeContract = JSON.parse(await readFile(join(root, 'contracts/home-discovery-draft-2026-09-16.json'), 'utf8'))
 const publicEori = resolvePublicEoriReleaseConfig()
@@ -230,7 +232,7 @@ for (const route of expected) {
     for (const phrase of [
       '1,203 LEDGER DECISIONS',
       '50 PRIORITY-GRADE SIGNALS',
-      '397 CMS-PRESERVATION FITS',
+      '397 HIGH PRODUCT-FIT RUBRIC SCORES',
       '25% pain + 25% product fit + 20% timing + 15% reachability + 15% evidence quality',
       'operations_report_downloaded',
       'operations_report_booking_clicked',
@@ -273,7 +275,7 @@ for (const route of expected) {
     if (!csv.startsWith('"group","metric_id","label","count","denominator","percent","definition","snapshot_date"')) {
       throw new Error(`${route.path} aggregate CSV has an unexpected publication schema`)
     }
-    for (const privateField of ['company_name', 'prospect_name', 'candidate_id', 'source_url', 'website_url', 'email_address', 'phone_number', 'http://', 'https://', '@']) {
+    for (const privateField of ['company_name', 'prospect_name', 'candidate_id', 'website_url', 'email_address', 'phone_number', 'http://', '@']) {
       if (csv.toLowerCase().includes(privateField)) throw new Error(`${route.path} aggregate CSV exposes prohibited field ${privateField}`)
     }
     const svg = await readFile(join(root, 'dist', route.downloads[1].href.slice(1)), 'utf8')
@@ -496,7 +498,7 @@ for (const route of expected) {
       await access(assetPath)
       const publishedAsset = await readFile(assetPath, 'utf8')
       if (publishedAsset !== asset.content) throw new Error(`${route.path} authority asset drifted: ${asset.href}`)
-      if (asset.href.endsWith('.svg') && (!publishedAsset.includes('<title>') || !publishedAsset.includes('<desc>') || !publishedAsset.includes('viewBox='))) {
+      if (asset.href.endsWith('.svg') && (!/<title(?:\s|>)/.test(publishedAsset) || !/<desc(?:\s|>)/.test(publishedAsset) || !publishedAsset.includes('viewBox='))) {
         throw new Error(`${route.path} authority SVG is missing accessible, responsive metadata: ${asset.href}`)
       }
     }

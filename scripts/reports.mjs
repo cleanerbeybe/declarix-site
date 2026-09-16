@@ -1,3 +1,4 @@
+import { lineage, originalLineageSvg } from './research-lineage.mjs'
 const percent = (count, denominator) => Number(((count / denominator) * 100).toFixed(1))
 
 export const reports = [
@@ -7,12 +8,12 @@ export const reports = [
     ref: 'FIELD REPORT 01 · ORIGINAL RESEARCH',
     title: 'UK customs operations signal report 2026 | Declarix',
     description:
-      'Explore aggregate signals from 1,203 public-source research decisions covering UK customs brokers and freight forwarders, with methods and free data.',
+      'Explore historical, agent-assisted UK customs research: 1,203 ledger decisions and 402 accounts above the July 2026 rubric threshold. Not customer results.',
     eyebrow: 'ORIGINAL UK CUSTOMS RESEARCH · JULY 2026 · AGGREGATES ONLY',
-    h1: 'What 402 qualified customs operations reveal.',
+    h1: 'A July research snapshot of 402 accounts.',
     standfirst:
-      'A public-source census of customs brokers and freight forwarders found 50 priority-grade signals, 73 strong-fit operations, and 279 structurally qualified accounts. This report publishes the pattern—not a prospect directory.',
-    reviewedOn: '2026-07-17',
+      'Agent-assisted public-source research classified 50 accounts as priority, 73 as strong fit and 279 as structural fit in July 2026. These are research ratings, not verified customer demand. Only aggregates are published.',
+    reviewedOn: '2026-09-16',
     publishedOn: '2026-07-17',
     snapshotOn: '2026-07-15',
     schemaType: 'Report',
@@ -20,14 +21,14 @@ export const reports = [
     qualifiedTotal: 402,
     scoreThreshold: 65,
     tiers: [
-      { id: 'priority', label: 'Priority signal', range: '85–100', count: 50, meaning: 'Current hiring, expansion, volume, shift, or explicit process-improvement evidence.' },
+      { id: 'priority', label: 'Priority signal', range: '85–100', count: 50, meaning: 'Hiring, expansion, volume, shift or process-improvement evidence recorded in the July snapshot.' },
       { id: 'strong', label: 'Strong fit', range: '75–84', count: 73, meaning: 'Strong operational fit with better-than-structural timing evidence.' },
       { id: 'structural', label: 'Structural fit', range: '65–74', count: 279, meaning: 'Evidence threshold met; timing, volume, CMS, and workflow still need discovery.' },
     ],
     ledger: [
       { id: 'qualified', label: 'Qualified', count: 402, meaning: 'Canonical accounts at or above the evidence threshold.' },
       { id: 'excluded', label: 'Excluded', count: 309, meaning: 'Reviewed and found outside the target or evidence standard.' },
-      { id: 'unresolved', label: 'Unresolved', count: 489, meaning: 'Kept as explicit research gaps for later human review.' },
+      { id: 'unresolved', label: 'Unresolved', count: 489, meaning: 'Kept as explicit research gaps requiring further evidence review.' },
       { id: 'duplicate_alias', label: 'Duplicate alias', count: 3, meaning: 'Related identity retained in the ledger but suppressed as a separate account.' },
     ],
     websiteDiscovery: [
@@ -76,7 +77,7 @@ export const reports = [
         format: 'svg',
         href: '/downloads/uk-customs-operations-signal-report-2026-press-chart.svg',
         label: 'Press-ready chart',
-        description: 'A 1200 × 630 vector summary of the qualified tier distribution, with source and snapshot note.',
+        description: 'A 1200 × 900 vector summary of the historical research tiers, with method, source and reuse limits.',
       },
     ],
   },
@@ -128,7 +129,7 @@ function jsonLd(report, site) {
         '@type': 'Dataset',
         '@id': datasetId,
         name: 'UK customs operations signal aggregates, July 2026',
-        description: 'Aggregate-only counts from a documented public-source research census of UK customs broker and freight-forwarder operations.',
+        description: lineage.originalNotice,
         url: `${site.origin}${report.path}#downloads`,
         datePublished: report.publishedOn,
         dateModified: report.reviewedOn,
@@ -136,7 +137,7 @@ function jsonLd(report, site) {
         spatialCoverage: { '@type': 'Place', name: 'United Kingdom' },
         creator: { '@id': `${site.origin}/#organization` },
         isAccessibleForFree: true,
-        measurementTechnique: 'Documented public-source review with deterministic evidence scoring and human qualification.',
+        measurementTechnique: lineage.originalMethod,
         variableMeasured: [
           { '@type': 'PropertyValue', name: 'Coverage ledger decisions', value: report.totalDecisions },
           { '@type': 'PropertyValue', name: 'Qualified canonical accounts', value: report.qualifiedTotal },
@@ -306,6 +307,7 @@ export function renderReport(report, site, options) {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/report.css" />
+    <link rel="stylesheet" href="/research-lineage.css" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Declarix" />
     <meta property="og:title" content="${escapeHtml(report.title)}" />
@@ -333,10 +335,11 @@ export function renderReport(report, site, options) {
       <nav class="route-nav" aria-label="Primary">${options.navHtml}</nav>
       <div class="breadcrumbs"><a href="/">HOME</a> → RESEARCH → UK CUSTOMS OPERATIONS SIGNALS</div>
       <main>
+        <section class="research-notice" aria-label="Research method and reuse limits"><strong>JULY 2026 RESEARCH SNAPSHOT</strong><p>${lineage.originalMethod}</p><p>${lineage.originalNotice}</p></section>
         <header class="hero report-hero">
           <div class="hero-copy">
             <p class="eyebrow">${escapeHtml(report.eyebrow)}</p>
-            <h1>What <span class="report-number-word">402</span> qualified customs operations reveal.</h1>
+            <h1>${escapeHtml(report.h1)}</h1>
             <p>${escapeHtml(report.standfirst)}</p>
             <div class="report-actions">
               <a class="button" data-report-download="aggregate_csv" data-report-format="csv" href="${report.downloads[0].href}" download>DOWNLOAD THE DATA</a>
@@ -346,29 +349,29 @@ export function renderReport(report, site, options) {
           </div>
           <aside class="hero-ledger report-hero-ledger">
             <span class="route-ref">${escapeHtml(report.ref)}</span>
-            <div class="report-hero-number"><strong>${report.qualifiedTotal}</strong><span>qualified operations accounts</span></div>
+            <div class="report-hero-number"><strong>${report.qualifiedTotal}</strong><span>accounts above the research threshold</span></div>
             <div class="review-cell"><span>SNAPSHOT / PUBLISHED</span><strong>${report.snapshotOn} / ${report.publishedOn}</strong></div>
           </aside>
         </header>
         <div class="hero-value-strip">
           <strong>${report.totalDecisions.toLocaleString('en-GB')} LEDGER DECISIONS</strong>
           <strong>${priority.count} PRIORITY-GRADE SIGNALS</strong>
-          <strong>${report.cmsPreservationCount} CMS-PRESERVATION FITS</strong>
+          <strong>${report.cmsPreservationCount} HIGH PRODUCT-FIT RUBRIC SCORES</strong>
         </div>
 
         <section class="report-lede" aria-labelledby="read-heading">
           <span class="section-label">THE 90-SECOND READ</span>
-          <h2 id="read-heading">Hiring shows urgency. Operations evidence shows the larger market.</h2>
+          <h2 id="read-heading">Research signals guide the next discovery question.</h2>
           <div class="report-lede-copy">
-            <p><strong>${priority.count} of ${report.qualifiedTotal}</strong> qualified accounts carried priority-grade current signals. The other <strong>${nonPriority}</strong> were not dead ends: ${strong.count} had strong-fit evidence and ${structural.count} met the structural threshold but still need timing discovery.</p>
-            <p><strong>${report.cmsPreservationCount} of ${report.qualifiedTotal}</strong> qualified accounts scored 4 or 5 for product fit. Under this rubric, the credible wedge is preparing evidence-linked work in front of the customs management system the desk already uses—not asking the buyer to begin with a replacement migration.</p>
+            <p><strong>${priority.count} of ${report.qualifiedTotal}</strong> accounts carried priority-grade signals in the July research snapshot. The other <strong>${nonPriority}</strong> were not dead ends: ${strong.count} had strong-fit evidence and ${structural.count} met the structural threshold but still need timing discovery.</p>
+            <p><strong>${report.cmsPreservationCount} of ${report.qualifiedTotal}</strong> qualified accounts scored 4 or 5 for product fit. That historical rubric suggests a workflow to investigate alongside an existing customs system. It does not validate today’s product fit, current software use or buying intent.</p>
           </div>
         </section>
 
         <section class="report-figure-section" aria-labelledby="tier-heading">
           <header class="report-section-heading">
             <span class="section-label">FINDING 01 · QUALIFIED TIERS</span>
-            <h2 id="tier-heading">Priority is a first wave, not the whole addressable workflow.</h2>
+            <h2 id="tier-heading">Priority is a research tier, not a market-size estimate.</h2>
             <p>Every qualified account scored at least ${report.scoreThreshold} out of 100. The tier changes the next question: prove urgency now, or discover timing before pitching a pilot.</p>
           </header>
           <figure class="tier-figure">
@@ -406,8 +409,8 @@ export function renderReport(report, site, options) {
           <div class="signal-number"><strong>${percent(report.cmsPreservationCount, report.qualifiedTotal).toFixed(1)}%</strong><span>${report.cmsPreservationCount} of ${report.qualifiedTotal} qualified accounts</span></div>
           <div>
             <span class="section-label">FINDING 03 · PRODUCT WEDGE</span>
-            <h2 id="fit-heading">Keep the CMS. Remove the document assembly drag.</h2>
-            <p>The product-fit dimension gave 4 or 5 points to ${report.cmsPreservationCount} qualified accounts. That is a rubric result, not measured software usage or market share. It supports an entry strategy built around the current declaration workflow: prepare the pack, keep evidence and conflicts visible, let the authorised clerk review, then hand off to the existing system.</p>
+            <h2 id="fit-heading">Test the alongside-system hypothesis in discovery.</h2>
+            <p>The product-fit dimension gave 4 or 5 points to ${report.cmsPreservationCount} qualified accounts. That is a rubric result, not measured software usage or market share. Treat it as a research hypothesis for workflow discovery, not as evidence of delivered savings, current integration support or successful customer use.</p>
             <a class="inline-link" data-report-related="how_it_works" href="/how-it-works/">SEE THE DECLARIX WORKFLOW →</a>
           </div>
         </section>
@@ -416,7 +419,7 @@ export function renderReport(report, site, options) {
           <header class="report-section-heading">
             <span class="section-label">FINDING 04 · PUBLIC WEBSITE DISCOVERY</span>
             <h2 id="discovery-heading">Website language was a routing signal, never an automatic qualification.</h2>
-            <p>A limited, robots-aware pass checked the home page and at most one same-domain service page for each of ${report.websiteUniverse} deduplicated directory candidates. Public terms directed human review; they did not create a lead.</p>
+            <p>A limited, robots-aware pass checked the home page and at most one same-domain service page for each of ${report.websiteUniverse} deduplicated directory candidates. Public terms directed research-agent review; they did not establish a customer or buying intent.</p>
           </header>
           <div class="discovery-columns" aria-hidden="true">${report.websiteDiscovery.map((row) => `<div><span style="--height:${percent(row.count, report.websiteUniverse)}%"></span><strong>${row.count}</strong><small>${escapeHtml(row.label)}</small></div>`).join('')}</div>
           <div class="table-scroll" tabindex="0" role="region" aria-label="Public website discovery table">
@@ -432,13 +435,13 @@ export function renderReport(report, site, options) {
           <header>
             <span class="section-label">METHOD · REPRODUCIBLE AGGREGATES</span>
             <h2 id="method-heading">How the signal was built.</h2>
-            <p>The census reconciled public company directories, HMRC facility operators, limited public website discovery, current-signal research, and an earlier research phase into one decision ledger. The public report contains aggregates only.</p>
+            <p>Research agents classified public-source evidence. A coordinating agent reconciled counts, identities, aliases and scores. Separate human qualification is not established. The September reconciliation checks aggregate arithmetic, not every original source. The public report contains aggregates only.</p>
           </header>
           <ol class="method-steps">
             <li><span>01</span><div><strong>Define the universe.</strong><p>550 normalized HMRC customs-agent candidates, 180 BIFA company candidates, and 272 FIATA company candidates became an 854-company deduplicated directory union. These source counts overlap; they are not additive market size.</p></div></li>
             <li><span>02</span><div><strong>Cross-check operations.</strong><p>458 unique HMRC external temporary storage facility operators were reconciled against the union. 124 matched immediately; 334 entered a separate gap review.</p></div></li>
             <li><span>03</span><div><strong>Score evidence.</strong><p>Each qualified account was rated 0–5 for pain strength, product fit, timing, public reachability, and evidence quality. A weighted score of at least ${report.scoreThreshold} was required.</p></div></li>
-            <li><span>04</span><div><strong>Audit every decision.</strong><p>Counts, identities, aliases, score recomputation, source links, and phase reconciliation were checked before the aggregate publication layer was derived.</p></div></li>
+            <li><span>04</span><div><strong>Reconcile the ledger.</strong><p>The coordinating-agent workflow checked counts, identities, aliases, score consistency and phase reconciliation. This does not establish independent human source review.</p></div></li>
           </ol>
           <div class="formula-line"><span>SCORE</span><strong>25% pain + 25% product fit + 20% timing + 15% reachability + 15% evidence quality</strong></div>
         </section>
@@ -450,7 +453,7 @@ export function renderReport(report, site, options) {
           </div>
           <ul>
             <li>“Census” means complete within the documented public-source universe and 15 July 2026 snapshot, not every company that may exist.</li>
-            <li>Qualification indicates evidence-backed fit. It does not prove buying intent, budget, declaration volume, product use, or future conversion.</li>
+            <li>Qualification means the agent-assisted research rubric threshold was met. It does not prove buying intent, budget, declaration volume, product use, or future conversion.</li>
             <li>Structural accounts require fresh timing, CMS, volume, workflow, and representative-pack discovery before outreach.</li>
             <li>Directory entries, websites, vacancies, and company structures change. Re-check the current public source before using a finding.</li>
             <li>No private contact discovery, personal email or phone enrichment, gated access, sensitive-trait inference, or form submission was used.</li>
@@ -499,30 +502,10 @@ export function aggregateCsv(report) {
     ...report.tiers.map((row) => ['qualified_tier', row.id, row.label, row.count, report.qualifiedTotal, percent(row.count, report.qualifiedTotal).toFixed(1), `${row.range}: ${row.meaning}`, report.snapshotOn]),
     ...report.ledger.map((row) => ['coverage_ledger', row.id, row.label, row.count, report.totalDecisions, percent(row.count, report.totalDecisions).toFixed(1), row.meaning, report.snapshotOn]),
     ...report.websiteDiscovery.map((row) => ['website_discovery', row.id, row.label, row.count, report.websiteUniverse, percent(row.count, report.websiteUniverse).toFixed(1), row.meaning, report.snapshotOn]),
-    ['product_fit', 'cms_preservation', 'CMS-preservation fit', report.cmsPreservationCount, report.qualifiedTotal, percent(report.cmsPreservationCount, report.qualifiedTotal).toFixed(1), 'Qualified accounts rated 4 or 5 for product fit under the research rubric; not software market share.', report.snapshotOn],
+    ['product_fit', 'cms_preservation', 'Historical product-fit rubric score', report.cmsPreservationCount, report.qualifiedTotal, percent(report.cmsPreservationCount, report.qualifiedTotal).toFixed(1), 'Accounts rated 4 or 5 for product fit under the July research rubric; not software market share or validated current product fit.', report.snapshotOn],
   ]
-  return `${rows.map((row) => row.map(csvCell).join(',')).join('\n')}\n`
+  const extra = ['schema_version', 'source_url', 'method', 'reuse_notice', 'reconciled_on']
+  return [ [...rows[0], ...extra], ...rows.slice(1).map(row => [...row, '2.0', lineage.originalUrl, lineage.originalMethod, lineage.originalNotice, lineage.updatedOn]) ].map(row => row.map(csvCell).join(',')).join('\n') + '\n'
 }
 
-export function pressChartSvg(report) {
-  const priority = report.tiers[0]
-  const strong = report.tiers[1]
-  const structural = report.tiers[2]
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">UK customs operations signal report: 402 qualified accounts</title>
-  <desc id="desc">Of 402 qualified accounts, 50 were priority-grade signals, 73 were strong fit, and 279 were structural fit in a 15 July 2026 public-source research snapshot.</desc>
-  <rect width="1200" height="630" fill="#f7f6f1"/>
-  <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#16313d" stroke-width="4"/>
-  <text x="72" y="88" fill="#5c6e76" font-family="monospace" font-size="18" font-weight="700" letter-spacing="2">DECLARIX · ORIGINAL RESEARCH · 15 JULY 2026</text>
-  <text x="72" y="198" fill="#16313d" font-family="Arial, sans-serif" font-size="112" font-weight="900">402</text>
-  <text x="72" y="246" fill="#16313d" font-family="Arial, sans-serif" font-size="34" font-weight="700">qualified UK customs operations</text>
-  <text x="72" y="284" fill="#5c6e76" font-family="Arial, sans-serif" font-size="23">Evidence tiers across a documented public-source census</text>
-  <rect x="72" y="346" width="126" height="94" fill="#c77b27"/>
-  <rect x="198" y="346" width="184" height="94" fill="#1b7a4b"/>
-  <rect x="382" y="346" width="706" height="94" fill="#16313d"/>
-  <text x="72" y="484" fill="#16313d" font-family="monospace" font-size="18" font-weight="700">${priority.count} PRIORITY · ${percent(priority.count, report.qualifiedTotal).toFixed(1)}%</text>
-  <text x="72" y="521" fill="#16313d" font-family="monospace" font-size="18" font-weight="700">${strong.count} STRONG · ${percent(strong.count, report.qualifiedTotal).toFixed(1)}%</text>
-  <text x="72" y="558" fill="#16313d" font-family="monospace" font-size="18" font-weight="700">${structural.count} STRUCTURAL · ${percent(structural.count, report.qualifiedTotal).toFixed(1)}%</text>
-  <text x="1110" y="565" fill="#5c6e76" text-anchor="end" font-family="monospace" font-size="12">GETDECLARIX.COM/RESEARCH/UK-CUSTOMS-OPERATIONS-SIGNAL-REPORT-2026/</text>
-</svg>`
-}
+export function pressChartSvg(report) { return originalLineageSvg(report) }

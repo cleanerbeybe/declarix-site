@@ -1,0 +1,31 @@
+{
+  "ledger_rows": 1203,
+  "ledger_status_counts": {
+    "qualified": 402,
+    "unresolved": 489,
+    "excluded": 309,
+    "duplicate_alias": 3
+  },
+  "qualified_prospects": 402,
+  "tiers": {
+    "priority": 50,
+    "strong": 73,
+    "structural": 279
+  },
+  "cms_preservation_rubric_count": 397,
+  "website_rows": 854,
+  "recomputed_website_term_categories": {
+    "customs_workflow": 469,
+    "insufficient": 305,
+    "customs_only": 80
+  },
+  "snapshot_on": "2026-07-15",
+  "reconciled_on": "2026-09-16",
+  "method": "Agent-assisted public-source research; research agents classified evidence and a coordinating agent reconciled the ledger. Separate human qualification is not established.",
+  "limits": "Historical research classifications, not customers, buying intent, market size, software adoption or product results. Reconciliation checks aggregate arithmetic, not every original source.",
+  "input_sha256": [
+    "05b8da9e4667c3dc9a8caa7245cfd8a1a089c9381f56ccfa24d864bc6ae4f59d",
+    "d075acd72adc0d69ff7e6c1939384367ba09a57e16ed72b6e3d4a7dddc30d388",
+    "72c29c639da3a812a9014631bd22a128d83804365fe6b77d19ceae1a156bb7da"
+  ]
+}
