@@ -9,6 +9,7 @@ import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { verifyLegacyDiscovery } from './discovery-entry.mjs'
 import { productScopeRoutes, scopeBoundary, validateProductScope } from './product-scope.mjs'
 validateProductScope()
 import { comparisonRoute } from './customaite-comparison.mjs'
@@ -689,6 +690,8 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
   for (const route of expected) {
     if (!content.includes(`${site.origin}${route.path}`)) throw new Error(`${filename} is missing ${route.path}`)
   }
+  const scopedPaths = new Set(productScopeRoutes.map(route => route.path))
+  verifyLegacyDiscovery(content, routes.filter(route => !scopedPaths.has(route.path)), site.origin)
   if (!content.includes('Declarix does not submit to HMRC')) throw new Error(`${filename} is missing the filing boundary`)
 }
 

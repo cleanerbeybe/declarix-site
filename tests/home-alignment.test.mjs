@@ -1,6 +1,9 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { discoveryEntry, verifyLegacyDiscovery } from '../scripts/discovery-entry.mjs'
+import { routes, site } from '../scripts/routes.mjs'
+import { productScopeRoutes } from '../scripts/product-scope.mjs'
 
 const root = new URL('../', import.meta.url)
 const read = path => readFileSync(new URL(path, root), 'utf8')
@@ -49,10 +52,32 @@ test('pilot price and turnaround are preserved for separate owner decision', () 
   assert.match(app,/CAPPED AT £500/i); assert.match(app,/WITHIN ONE WORKING DAY/)
   assert.match(data,/capped at £500/)
 })
-test('global discovery omits pending legacy route descriptions', () => {
-  const generator = read('scripts/generate-static-routes.mjs')
-  assert.match(generator,/const discoveryRoutes = \[/)
-  assert.match(generator,/discoveryPaths\.has\(route\.path\)/)
-  assert.match(generator,/copy awaits claim alignment and is omitted/)
-  assert.match(generator,/legacy product claims/)
+test('global discovery uses the bounded entry renderer', () => {
+  assert.match(read('scripts/generate-static-routes.mjs'), /discoveryEntry\(route, site.origin, discoveryPaths\)/)
+  assert.match(read('scripts/verify-build.mjs'), /verifyLegacyDiscovery\(content,/)
+})
+test('all legacy routes suppress both title and description, keeping links', () => {
+  const reviewedPaths = new Set(productScopeRoutes.map(route => route.path))
+  const legacy = routes.filter(route => !reviewedPaths.has(route.path))
+  const content = legacy.map(route => discoveryEntry(route, site.origin, reviewedPaths)).join('\n')
+  verifyLegacyDiscovery(content, legacy, site.origin)
+  for (const route of legacy) {
+    assert.ok(content.includes(`[Indexed route: ${route.path}](${site.origin}${route.path})`))
+    assert.ok(!content.includes(`[${route.title}]`))
+    assert.ok(!content.includes(route.description))
+  }
+})
+test('discovery rejects restored unsafe titles, descriptions, missing and duplicate entries', () => {
+  const route = {path:'/legacy/',title:'Customs declaration automation for Sequoia and Descartes',description:'Up to 3× more declarations'}
+  const safe = discoveryEntry(route, site.origin, new Set())
+  assert.ok(!safe.includes(route.title) && !safe.includes(route.description))
+  for (const unsafe of [
+    safe.replace('Indexed route: /legacy/', route.title),
+    safe + ' ' + route.description,
+    '', safe + '\n' + safe,
+  ]) assert.throws(() => verifyLegacyDiscovery(unsafe, [route], site.origin), /Unaligned discovery/)
+})
+test('reviewed routes retain their exact reviewed title and description', () => {
+  const route = productScopeRoutes[0]
+  assert.equal(discoveryEntry(route, site.origin, new Set([route.path])), `- [${route.title}](${site.origin}${route.path}): ${route.description}`)
 })

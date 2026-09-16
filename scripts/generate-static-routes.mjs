@@ -12,6 +12,7 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { discoveryEntry } from './discovery-entry.mjs'
 import { productScopeRoutes, validateProductScope } from './product-scope.mjs'
 validateProductScope()
 import { comparisonRoute, renderComparison } from './customaite-comparison.mjs'
@@ -693,9 +694,7 @@ const discoveryRoutes = [
 ]
 const discoveryPaths = new Set(discoveryRoutes.map(route => route.path))
 const llmsRoutes = indexableRoutes
-  .map((route) => discoveryPaths.has(route.path)
-    ? `- [${route.title}](${site.origin}${route.path}): ${route.description}`
-    : `- [${route.title}](${site.origin}${route.path}): Indexed route; product or commercial copy awaits claim alignment and is omitted from this discovery summary.`)
+  .map(route => discoveryEntry(route, site.origin, discoveryPaths))
   .join('\n')
 const llms = `# Declarix
 > Customs case preparation and evidence-linked review. H1 standard imports are review-only with incomplete coverage.
