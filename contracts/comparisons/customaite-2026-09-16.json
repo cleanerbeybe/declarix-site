@@ -3,7 +3,7 @@
     "path": "/compare/declarix-vs-customaite/",
     "title": "Declarix vs Customaite: which workflow fits?",
     "h1": "Declarix vs Customaite: which workflow fits?",
-    "description": "Compare preparation, review, filing responsibility and handoff. See Customaite\u2019s published scope, Declarix\u2019s limits and four options to evaluate.",
+    "description": "Compare preparation, review, filing responsibility and handoff. See Customaite’s published scope, Declarix’s limits and four options to evaluate.",
     "reviewedOn": "2026-09-16"
   },
   "owner": "Nadia",
@@ -97,6 +97,12 @@
       "type": "Official vendor product page",
       "excerpt": "Describes UK CDS imports and exports, direct HMRC CDS integration, review before submission, and linked iDP document capture and iZap self-service products."
     },
+    "idp": {
+      "url": "https://www.icustoms.ai/intelligent-document-processing/",
+      "title": "iCustoms iDP document processing",
+      "type": "Official vendor product page",
+      "excerpt": "Describes PDF/CSV/Excel intake, iCombine multi-document merging, human review and CSV/Excel/XML/custom-template exports. Authority submission uses separate customs modules; a named third-party handoff is not established."
+    },
     "asm": {
       "url": "https://www.asm.org.uk/en/our-software/",
       "title": "ASM Sequoia",
@@ -162,7 +168,7 @@
           "evidenceType": "First-party source review, not live acceptance",
           "reviewer": "Nadia, Declarix",
           "status": "source-reviewed",
-          "text": "Request tracking, reply matching and human resolution are implemented in source. A \u201csent\u201d status is not proof of email delivery. Customer self-service is not released."
+          "text": "Request tracking, reply matching and human resolution are implemented in source. A “sent” status is not proof of email delivery. Customer self-service is not released."
         },
         "approval": {
           "product": "Declarix",
@@ -372,15 +378,15 @@
         },
         "intake": {
           "product": "iCustoms",
-          "module": "iCDS with iDP document capture",
-          "country": "UK; import and export as described by vendor",
-          "source": "icustoms",
-          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "module": "iDP document processing, separate from iCDS filing",
+          "country": "iDP page; country coverage must be confirmed separately",
+          "source": "idp",
+          "sourceUrl": "https://www.icustoms.ai/intelligent-document-processing/",
           "reviewedOn": "2026-09-16",
           "evidenceType": "Official vendor product page",
           "reviewer": "Nadia, Declarix",
           "status": "published",
-          "text": "Links iDP document scan and capture to fill iCDS. Exact mixed-pack formats and source-to-field review behavior are not verified here."
+          "text": "iDP describes PDF, CSV and Excel intake by upload, email or API; iCombine merges shipment data from multiple documents. Human checks are described. Demonstrate source-to-field review on your pack."
         },
         "exceptions": {
           "product": "iCustoms",
@@ -408,15 +414,15 @@
         },
         "handoff": {
           "product": "iCustoms",
-          "module": "iCDS Import & Export",
-          "country": "UK; import and export as described by vendor",
-          "source": "icustoms",
-          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "module": "iDP document processing, separate from iCDS filing",
+          "country": "iDP page; country coverage must be confirmed separately",
+          "source": "idp",
+          "sourceUrl": "https://www.icustoms.ai/intelligent-document-processing/",
           "reviewedOn": "2026-09-16",
           "evidenceType": "Official vendor product page",
           "reviewer": "Nadia, Declarix",
           "status": "not-verified",
-          "text": "Describes filing within iCDS. A separate accepted export to your existing filing system is not verified."
+          "text": "iDP describes CSV, Excel, XML and custom-template exports, plus drafts within its customs modules. An accepted mapping to a named third-party filing system is not verified."
         },
         "implementation": {
           "product": "iCustoms",
@@ -757,7 +763,7 @@
       "status": 200,
       "retrieved_at": "2026-09-16T09:37:36.648Z",
       "method": "web_fetch readable text returned HTTP 200; direct Python fetch returned 403, not evidence of absence",
-      "excerpt": "iCDS - Import & Export. Automated Customs Declaration Software CDS for UK Imports & Exports. iCDS is integrated directly with the HMRC CDS. Review: After checking your import declaration for accuracy, you can easily review any suggested edits. Submit: Once you\u2019re happy with everything, click submit. Document Scan & Capture: Effortlessly extract data from any document and fill iCDS. iDP. Self Service Portal: iZap."
+      "excerpt": "iCDS - Import & Export. Automated Customs Declaration Software CDS for UK Imports & Exports. iCDS is integrated directly with the HMRC CDS. Review: After checking your import declaration for accuracy, you can easily review any suggested edits. Submit: Once you’re happy with everything, click submit. Document Scan & Capture: Effortlessly extract data from any document and fill iCDS. iDP. Self Service Portal: iZap."
     }
   ],
   "declarix_evidence": {

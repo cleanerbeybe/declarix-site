@@ -12,8 +12,8 @@
     "submit:indexnow": "node scripts/submit-indexnow.mjs",
     "test:economics": "node --test tests/preparation-economics.test.mjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs",
-    "test:comparison": "node --test tests/customaite-comparison.test.mjs",
-    "test:comparison:browser": "node tests/customaite-comparison.browser.cjs"
+    "test:comparison": "node --test tests/customaite-comparison.test.mjs tests/vendor-comparisons.test.mjs",
+    "test:comparison:browser": "node tests/customaite-comparison.browser.cjs && node tests/vendor-comparisons.browser.cjs"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",

@@ -14,6 +14,7 @@ export const sources = {
   workflow: { url: 'https://www.customaite.ai/solutions/workflow', title: 'Customaite workflow suite', type: 'Official vendor product page', excerpt: 'Describes customer correspondence, product data management and a management dashboard.' },
   plans: { url: 'https://www.customaite.ai/plans', title: 'Customaite plans', type: 'Official vendor plans page', excerpt: 'States subscription purchasing and volume-based packages. Includes customer portal in the enterprise package. No currency price was found in the reviewed page.' },
   icustoms: { url: 'https://www.icustoms.ai/uk-cds-import/', title: 'iCustoms iCDS Import & Export', type: 'Official vendor product page', excerpt: 'Describes UK CDS imports and exports, direct HMRC CDS integration, review before submission, and linked iDP document capture and iZap self-service products.' },
+  idp: { url: 'https://www.icustoms.ai/intelligent-document-processing/', title: 'iCustoms iDP document processing', type: 'Official vendor product page', excerpt: 'Describes PDF/CSV/Excel intake, iCombine multi-document merging, human review and CSV/Excel/XML/custom-template exports. Authority submission uses separate customs modules; a named third-party handoff is not established.' },
   asm: { url: 'https://www.asm.org.uk/en/our-software/', title: 'ASM Sequoia', type: 'Official vendor product page', excerpt: 'Describes import, export and transit processing, customs and port-community connections, and back-office integration.' },
   descartes: { url: 'https://www.descartes.com/solutions/customs-and-regulatory-compliance/customs-declarations', title: 'Descartes customs declarations', type: 'Official vendor product page', excerpt: 'Identifies e-Customs for the United Kingdom. Wider platform descriptions must not be assumed to apply to every UK module.' },
 }
@@ -36,6 +37,7 @@ const cell = (product, country, source, text, status = 'published', module = pro
 const d = (text, status = 'source-reviewed') => cell('Declarix', 'UK H1 review profile only; incomplete', 'declarix', text, status, 'Case preparation and review workspace')
 const c = (source, text, status = 'published', module = 'Platform; confirm suite and plan') => cell('Customaite', 'UK declaration types not verified from these broad suite pages', source, text, status, module)
 const i = (text, status = 'published', module = 'iCDS Import & Export') => cell('iCustoms', 'UK; import and export as described by vendor', 'icustoms', text, status, module)
+const idp = (text, status = 'published') => cell('iCustoms', 'iDP page; country coverage must be confirmed separately', 'idp', text, status, 'iDP document processing, separate from iCDS filing')
 const a = (text, status = 'published') => cell('ASM Sequoia', 'UK supplier context; confirm exact declaration types', 'asm', text, status, 'Sequoia customs clearance')
 const e = (text, status = 'published') => cell('Descartes', 'United Kingdom e-Customs; do not infer global module features', 'descartes', text, status, 'UK e-Customs')
 export const products = [
@@ -64,10 +66,10 @@ export const products = [
   { id: 'icustoms', name: 'iCustoms', role: 'UK filing product family', cells: {
     jurisdiction: i('The vendor describes UK CDS imports and exports. Confirm the declaration categories and procedures you need.'),
     filing: i('States direct HMRC CDS integration and a review-then-submit process. This is a vendor statement, not our filing acceptance test.'),
-    intake: i('Links iDP document scan and capture to fill iCDS. Exact mixed-pack formats and source-to-field review behavior are not verified here.', 'published', 'iCDS with iDP document capture'),
+    intake: idp('iDP describes PDF, CSV and Excel intake by upload, email or API; iCombine merges shipment data from multiple documents. Human checks are described. Demonstrate source-to-field review on your pack.'),
     exceptions: i('Describes review of suggested edits and links a self-service product. The missing-information request and reply workflow is not verified.', 'not-verified', 'iCDS; iZap linked separately'),
     approval: i('Assignment, separation of duties and evidence-history controls are not verified from this product page.', 'not-verified'),
-    handoff: i('Describes filing within iCDS. A separate accepted export to your existing filing system is not verified.', 'not-verified'),
+    handoff: idp('iDP describes CSV, Excel, XML and custom-template exports, plus drafts within its customs modules. An accepted mapping to a named third-party filing system is not verified.', 'not-verified'),
     implementation: i('Describes account registration and onboarding. Required setup work, service levels and migration effort are not verified.', 'not-verified'),
     pricing: i('Pricing and module inclusions are not verified from this page. Request a quote; unknown fees are not zero.', 'not-verified'),
     fit: i('Evaluate if UK CDS filing and linked document capture are part of the decision. If you only want preparation while keeping another filing system, verify that handoff separately.', 'editorial-fit'),

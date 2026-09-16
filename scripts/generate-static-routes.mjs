@@ -13,6 +13,7 @@ import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mj
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
 import { comparisonRoute, renderComparison } from './customaite-comparison.mjs'
+import { comparisons, renderVendorComparison, validateComparisons } from './vendor-comparisons.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -52,6 +53,7 @@ function routeLinks() {
     ['PILOT', '/pilot/'],
     ['PREPARATION OPTIONS', economicsRoute.path],
     ['CUSTOMAITE COMPARISON', comparisonRoute.path],
+    ...comparisons.map(r => [r.id === 'P13' ? 'ICUSTOMS COMPARISON' : r.id === 'P15' ? 'SEDNA / FLYTTA COMPARISON' : 'ICUSTOMS VS CUSTOMAITE', r.path]),
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
     ...(publicEori.enabled ? [['GB EORI CHECK', eoriChecker.path]] : []),
@@ -639,7 +641,18 @@ const comparisonTarget = join(dist, comparisonRoute.path.slice(1), 'index.html')
 await mkdir(dirname(comparisonTarget), { recursive: true })
 await writeFile(comparisonTarget, renderComparison(site, { webmasterHtml: webmasterTags() }))
 
+validateComparisons()
+paths.add(comparisonRoute.path); titles.add(comparisonRoute.title); headings.add(comparisonRoute.h1)
+for (const route of comparisons) {
+  if (paths.has(route.path) || titles.has(route.title) || headings.has(route.h1)) throw new Error('Duplicate vendor comparison route')
+  paths.add(route.path); titles.add(route.title); headings.add(route.h1)
+  const target = join(dist, route.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderVendorComparison(site, route, { webmasterHtml: webmasterTags() }))
+}
+
 const indexableRoutes = [
+  ...comparisons,
   comparisonRoute,
   economicsRoute,
   ...routes,

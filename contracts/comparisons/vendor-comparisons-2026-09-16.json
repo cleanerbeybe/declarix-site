@@ -1,0 +1,679 @@
+{
+  "owner": "Nadia",
+  "reviewedOn": "2026-09-16",
+  "next_review": "2026-12-16",
+  "publication": "Draft build only; public-claim alignment and publication decision outstanding",
+  "method": "Official vendor descriptions; customer case is not universal acceptance. Editorial fit, not hands-on testing. Unknown does not mean absent.",
+  "query_evidence": {
+    "exact_uk_volume": null,
+    "difficulty": null,
+    "ranking_or_revenue_forecast": false
+  },
+  "routes": [
+    {
+      "id": "P13",
+      "path": "/compare/declarix-vs-icustoms/",
+      "title": "Declarix vs iCustoms: which workflow fits?",
+      "h1": "Declarix vs iCustoms: which workflow fits?",
+      "description": "Compare Declarix preparation and review with iCustoms iDP and UK iCDS. Separate document processing, export formats and filing responsibility.",
+      "reviewedOn": "2026-09-16",
+      "pair": [
+        "declarix",
+        "icustoms"
+      ],
+      "thirdPath": false,
+      "eyebrow": "KEEP YOUR FILING SYSTEM, OR EVALUATE A FILING MODULE?",
+      "lead": "Choose the filing boundary before choosing the automation.",
+      "summary": "iCustoms publishes separate document-processing and customs-filing modules. Its iDP page describes extraction, multi-document merging and exports. Its UK iCDS page describes direct HMRC CDS integration. Declarix focuses on evidence-linked preparation and review alongside a broker’s filing system.",
+      "boundary": "Do not treat iDP, UK iCDS and Ireland products as one interchangeable package. Ask which country, module and plan the quote covers. Declarix does not submit directly to HMRC; its H1 profile is review-only and incomplete.",
+      "choiceTitle": "Do you want to keep the filing system or change it?",
+      "choices": [
+        [
+          "Evaluate iCustoms for document processing plus UK filing",
+          "Ask for iDP and the relevant UK iCDS scope separately. Published CSV, Excel and XML exports are useful evidence, but they do not prove an accepted mapping into another filing system. A UK filing module is not proof that every Ireland feature or procedure is included."
+        ],
+        [
+          "Evaluate Declarix for preparation and review",
+          "Keep the broker’s filing system and focus the evaluation on source evidence, missing facts and approval. Do not choose Declarix if the immediate requirement is direct HMRC filing or a complete H1 profile. A generic export is not an accepted named connector."
+        ]
+      ],
+      "scenarioTitle": "Test the boundary between iDP and the filing module.",
+      "scenario": "Synthetic case: an invoice, packing list and spreadsheet contain one weight conflict. A goods line lacks origin evidence. The clerk needs to keep the existing filing system for this shipment.",
+      "steps": [
+        "Give each team the same synthetic files. Ask iCustoms to identify which functions belong to iDP and which require UK iCDS. Ask Declarix to show the source behind each proposed value.",
+        "Ask the clerk to resolve the conflict and request the missing fact. Check how the reply is matched and who approves it; do not count a sent marker as delivery.",
+        "Request the exact export format and recipient mapping. Open it in the named destination and record acceptance. A list of formats alone does not pass this test.",
+        "For an iCDS filing evaluation, run a separately agreed UK procedure with the authorised filing party. For Declarix, stop at preparation and review; incomplete H1 is not filing readiness."
+      ],
+      "questions": [
+        "Which iDP, UK iCDS or Ireland modules are quoted, and which are excluded?",
+        "Can we keep our current filing system, with a tested mapping and named support owner?",
+        "What happens when a corrected document arrives after approval?"
+      ]
+    },
+    {
+      "id": "P15",
+      "path": "/compare/declarix-vs-flytta/",
+      "title": "Declarix vs Flytta: compare the Sedna workflow",
+      "h1": "Declarix vs Flytta: compare the Sedna workflow",
+      "description": "Flytta’s customs workflow is part of Sedna AI. Compare email-led automation with Declarix preparation and review, with scoped sources and a test case.",
+      "reviewedOn": "2026-09-16",
+      "pair": [
+        "declarix",
+        "flytta"
+      ],
+      "thirdPath": false,
+      "eyebrow": "EMAIL-LED AUTOMATION OR CASE-BASED REVIEW?",
+      "lead": "Flytta is now part of the Sedna decision.",
+      "summary": "Sedna’s acquisition announcement places Flytta’s customs import/export workflow within Sedna AI. Its Casper Customs case study describes email intake, extraction and output to customs software. Declarix provides a different evaluation route: case preparation with source evidence and recorded review decisions.",
+      "boundary": "Sedna and Flytta are not separate alternatives. A vendor’s named customer implementation does not guarantee your destination, procedure or result. Declarix does not submit directly to HMRC; its H1 profile is review-only and incomplete.",
+      "choiceTitle": "Is the bottleneck in the shared inbox or the review case?",
+      "choices": [
+        [
+          "Evaluate Sedna for communication-led automation",
+          "If job intake starts in email and the wider communication workflow needs change, test Sedna’s current customs offering. The Casper story names ASM Sequoia and Descartes output. Ask for your own version, mapping and acceptance test rather than assuming the same deployment applies."
+        ],
+        [
+          "Evaluate Declarix for evidence-linked preparation",
+          "If the problem is resolving conflicting documents and keeping decisions tied to source evidence, test a scoped Declarix case. Keep filing with the broker. Do not assume a released customer portal, named connector or automatic email delivery."
+        ]
+      ],
+      "scenarioTitle": "Follow a replacement document through the email chain.",
+      "scenario": "Synthetic case: a broker receives an invoice by email. Two replies attach different packing-list versions, and one reply belongs to another shipment. The clerk has already checked the first version.",
+      "steps": [
+        "Show how the selected Sedna workflow identifies the shipment and attachments. For Declarix, show how the correct files enter the case. Measure the manual steps rather than assuming automatic intake.",
+        "Introduce the wrong-shipment reply and replacement packing list. Show which facts change, which sources remain visible and what needs review again.",
+        "Show due diligence, approval controls and the evidence history. If the proposed Sedna configuration has an automated path, ask when human review is required and how that policy is enforced.",
+        "Test the agreed destination using synthetic data. Ask Sedna to demonstrate the quoted mapping rather than rely on the Casper example. Test Declarix preparation only; no accepted named connector is claimed."
+      ],
+      "questions": [
+        "What is the current Sedna product and commercial package for the former Flytta workflow?",
+        "Which email permissions, routing rules and manual-review conditions apply?",
+        "Does the quoted configuration support our customs software version and exact UK procedures?"
+      ]
+    },
+    {
+      "id": "P27",
+      "path": "/compare/icustoms-vs-customaite/",
+      "title": "iCustoms vs Customaite: a customs-team decision guide",
+      "h1": "iCustoms vs Customaite: a customs-team decision guide",
+      "description": "Compare iCustoms modules with Customaite suites. Check UK scope, preparation, review, customer workflow and filing before choosing a demonstration.",
+      "reviewedOn": "2026-09-16",
+      "pair": [
+        "icustoms",
+        "customaite"
+      ],
+      "thirdPath": true,
+      "eyebrow": "A MODULE-BY-MODULE OR SUITE-BY-SUITE DECISION",
+      "lead": "Compare the proposed configuration, not two homepages.",
+      "summary": "iCustoms describes document processing in iDP and UK CDS filing in iCDS. Customaite describes compliance, automation and workflow suites across a source-data-to-declaration process. Start by naming the jurisdiction, filing owner and modules each vendor would supply.",
+      "boundary": "A UK iCDS product page gives a specific UK filing claim. Broad Customaite suite pages do not establish your exact UK procedure or authority connection. That is an evidence boundary, not proof of a missing capability or a reason to declare a winner.",
+      "choiceTitle": "Ask each vendor to draw the proposed workflow.",
+      "choices": [
+        [
+          "The iCustoms evaluation",
+          "Separate iDP intake, human review and exports from UK iCDS submission. Ask which module owns missing-information requests, which jurisdiction is supported, and whether the offer keeps or replaces your present filing system. Do not transfer Ireland product claims into a UK quote."
+        ],
+        [
+          "The Customaite evaluation",
+          "Ask how the proposed compliance, automation and workflow suites combine. Demonstrate invoice/packing-list matching, customer correspondence and the plan that includes the portal. Obtain the exact UK procedure, authority connection and filing responsibility in writing."
+        ]
+      ],
+      "scenarioTitle": "Use one job to compare modules with suites.",
+      "scenario": "Synthetic case: a UK broker receives an invoice and packing list with conflicting weights. A missing origin fact comes back in a customer reply after the first review. The broker must decide whether to keep or replace its filing system.",
+      "steps": [
+        "Have iCustoms label each step as iDP, UK iCDS or another quoted module. Have Customaite label each step with its suite and plan. Record exclusions alongside inclusions.",
+        "Show the source for each proposed value, resolve the weight conflict and process the customer reply. Check who can accept the change and which approval must be repeated.",
+        "Name the authorised filing party and exact UK procedure. If the existing filing system stays, demonstrate an accepted export; if it changes, demonstrate the proposed authority connection.",
+        "Request like-for-like written quotes for setup, users, usage, portal access, support and data exit. Keep unknown amounts blank and do not substitute vendor performance claims for your own measurements."
+      ],
+      "questions": [
+        "Which country, declaration types, modules and suite plans are in the written offer?",
+        "Who files, and where can a clerk see and resolve the authority response?",
+        "What is retained after a changed document, and can we export the evidence history?"
+      ]
+    }
+  ],
+  "vendors": {
+    "declarix": {
+      "id": "declarix",
+      "name": "Declarix",
+      "role": "Preparation and review",
+      "cells": {
+        "jurisdiction": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "source-reviewed",
+          "text": "The reviewed UK H1 import profile is review-only and incomplete. It must not be treated as ready for filing."
+        },
+        "filing": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "source-reviewed",
+          "text": "Prepares and reviews proposed declaration data. Declarix does not submit directly to HMRC. The broker keeps filing responsibility."
+        },
+        "intake": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "source-reviewed",
+          "text": "Source supports case-based mixed document intake and proposed values with source evidence. Test your formats and fields; universal coverage is not claimed."
+        },
+        "exceptions": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "source-reviewed",
+          "text": "Request tracking, reply matching and human resolution are implemented in source. A “sent” status is not proof of email delivery. Customer self-service is not released."
+        },
+        "approval": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "source-reviewed",
+          "text": "Assignment, recorded decisions and policy-driven second approval are implemented in source. They are not a universal junior/senior workflow."
+        },
+        "handoff": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Generic controlled pack and export preparation does not establish a tested Sequoia, Descartes or CargoWise connector. Named recipient acceptance is not verified."
+        },
+        "implementation": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Agree document scope, permissions, checks and the recipient test before a pilot. Customer deployment acceptance and support terms are not verified."
+        },
+        "pricing": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "No current price or pilot fee is quoted here. Request written scope, inclusions and terms; do not use an old offer as a current quote."
+        },
+        "fit": {
+          "product": "Declarix",
+          "module": "Case preparation and review workspace",
+          "country": "UK H1 review profile only; incomplete",
+          "source": "declarix",
+          "sourceUrl": "#declarix-scope",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "First-party source review, not live acceptance",
+          "reviewer": "Nadia, Declarix",
+          "status": "editorial-fit",
+          "text": "Evaluate for evidence-linked preparation and review alongside an existing filing system. Not a fit if you need direct HMRC submission or a complete, filing-ready H1 profile today."
+        }
+      }
+    },
+    "customaite": {
+      "id": "customaite",
+      "name": "Customaite",
+      "role": "Broader customs suite",
+      "cells": {
+        "jurisdiction": {
+          "product": "Customaite",
+          "module": "Platform; confirm suite and plan",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "home",
+          "sourceUrl": "https://www.customaite.ai/home",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Publishes a broad customs platform scope. Exact UK declaration types and plan coverage are not verified here; request them in writing."
+        },
+        "filing": {
+          "product": "Customaite",
+          "module": "Platform; confirm suite and plan",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "home",
+          "sourceUrl": "https://www.customaite.ai/home",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "Describes a source-data-to-declaration-to-archive workflow. That is broader than preparation alone; confirm who files and the UK authority connection in the proposed configuration."
+        },
+        "intake": {
+          "product": "Customaite",
+          "module": "Automation suite",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "automation",
+          "sourceUrl": "https://www.customaite.ai/solutions/automation",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "Describes extraction assistance and automated linking of invoice values with packing-list weights. Source-to-field evidence behavior should be demonstrated on your pack."
+        },
+        "exceptions": {
+          "product": "Customaite",
+          "module": "Workflow suite / customer portal",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "workflow",
+          "sourceUrl": "https://www.customaite.ai/solutions/workflow",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "Describes a customer communication portal for missing or incorrect information. Check which plan includes it and how a clerk accepts a reply."
+        },
+        "approval": {
+          "product": "Customaite",
+          "module": "Workflow suite",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "workflow",
+          "sourceUrl": "https://www.customaite.ai/solutions/workflow",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "The vendor describes an audit trail for customer exchanges and management tools. Exact assignment and second-approval rules are not verified here."
+        },
+        "handoff": {
+          "product": "Customaite",
+          "module": "Platform; confirm suite and plan",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "home",
+          "sourceUrl": "https://www.customaite.ai/home",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "An end-to-end platform description is not proof of an accepted export into your existing system. Exact formats, mappings and recipient acceptance are not verified."
+        },
+        "implementation": {
+          "product": "Customaite",
+          "module": "Platform; confirm suite and plan",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "plans",
+          "sourceUrl": "https://www.customaite.ai/plans",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor plans page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "The vendor describes implementation guidance and integration with existing IT. This is a vendor statement, not a measured migration effort or a verified support agreement."
+        },
+        "pricing": {
+          "product": "Customaite",
+          "module": "Platform; confirm suite and plan",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "plans",
+          "sourceUrl": "https://www.customaite.ai/plans",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor plans page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "Publishes a subscription model and volume-based packages. No currency price was found in the reviewed plans page. Request a quote for modules, setup, support and usage; do not assume portal access in every package."
+        },
+        "fit": {
+          "product": "Customaite",
+          "module": "Compliance, automation and workflow suites",
+          "country": "UK declaration types not verified from these broad suite pages",
+          "source": "compliance",
+          "sourceUrl": "https://www.customaite.ai/customs-compliance-suite",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "editorial-fit",
+          "text": "Evaluate when you want a broader suite covering preparation, compliance assistance and customer workflow. If you need confirmed UK coverage or a specific handoff, settle those points before choosing."
+        }
+      }
+    },
+    "icustoms": {
+      "id": "icustoms",
+      "name": "iCustoms",
+      "role": "UK filing product family",
+      "cells": {
+        "jurisdiction": {
+          "product": "iCustoms",
+          "module": "iCDS Import & Export",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "The vendor describes UK CDS imports and exports. Confirm the declaration categories and procedures you need."
+        },
+        "filing": {
+          "product": "iCustoms",
+          "module": "iCDS Import & Export",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "States direct HMRC CDS integration and a review-then-submit process. This is a vendor statement, not our filing acceptance test."
+        },
+        "intake": {
+          "product": "iCustoms",
+          "module": "iDP document processing, separate from iCDS filing",
+          "country": "iDP page; country coverage must be confirmed separately",
+          "source": "idp",
+          "sourceUrl": "https://www.icustoms.ai/intelligent-document-processing/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "iDP describes PDF, CSV and Excel intake by upload, email or API; iCombine merges shipment data from multiple documents. Human checks are described. Demonstrate source-to-field review on your pack."
+        },
+        "exceptions": {
+          "product": "iCustoms",
+          "module": "iCDS; iZap linked separately",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Describes review of suggested edits and links a self-service product. The missing-information request and reply workflow is not verified."
+        },
+        "approval": {
+          "product": "iCustoms",
+          "module": "iCDS Import & Export",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Assignment, separation of duties and evidence-history controls are not verified from this product page."
+        },
+        "handoff": {
+          "product": "iCustoms",
+          "module": "iDP document processing, separate from iCDS filing",
+          "country": "iDP page; country coverage must be confirmed separately",
+          "source": "idp",
+          "sourceUrl": "https://www.icustoms.ai/intelligent-document-processing/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "iDP describes CSV, Excel, XML and custom-template exports, plus drafts within its customs modules. An accepted mapping to a named third-party filing system is not verified."
+        },
+        "implementation": {
+          "product": "iCustoms",
+          "module": "iCDS Import & Export",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Describes account registration and onboarding. Required setup work, service levels and migration effort are not verified."
+        },
+        "pricing": {
+          "product": "iCustoms",
+          "module": "iCDS Import & Export",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Pricing and module inclusions are not verified from this page. Request a quote; unknown fees are not zero."
+        },
+        "fit": {
+          "product": "iCustoms",
+          "module": "iCDS Import & Export",
+          "country": "UK; import and export as described by vendor",
+          "source": "icustoms",
+          "sourceUrl": "https://www.icustoms.ai/uk-cds-import/",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "editorial-fit",
+          "text": "Evaluate if UK CDS filing and linked document capture are part of the decision. If you only want preparation while keeping another filing system, verify that handoff separately."
+        }
+      }
+    },
+    "flytta": {
+      "id": "flytta",
+      "name": "Sedna / Flytta",
+      "role": "Communication-led customs automation",
+      "cells": {
+        "jurisdiction": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "acquisition",
+          "sourceUrl": "https://sedna.com/resources/sedna-expands-ai-leadership-in-global-trade-with-flytta-acquisition",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor acquisition announcement",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Flytta’s customs import/export workflow is now part of Sedna AI. The announcement does not establish every UK declaration type or procedure; ask for current coverage."
+        },
+        "filing": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "casper",
+          "sourceUrl": "https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Vendor-published customer case study, not our acceptance test",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "The Casper case describes generating a declaration in customs software, staff due diligence and submission there. It does not establish Sedna as a direct HMRC filing service for your configuration."
+        },
+        "intake": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "casper",
+          "sourceUrl": "https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Vendor-published customer case study, not our acceptance test",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "Describes documents arriving by email and extracting data from invoices, shipping paperwork and PDFs. Demonstrate your formats and handling of conflicting or replaced documents."
+        },
+        "exceptions": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "casper",
+          "sourceUrl": "https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Vendor-published customer case study, not our acceptance test",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Describes automated confirmation emails after processing. That is not evidence of a missing-fact request, matched customer reply and authorised resolution workflow."
+        },
+        "approval": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "casper",
+          "sourceUrl": "https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Vendor-published customer case study, not our acceptance test",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Describes staff due diligence before submission, and a different automated path for standardised high-volume cases. Role controls, second approval and audit export for your configuration need demonstration."
+        },
+        "handoff": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "casper",
+          "sourceUrl": "https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Vendor-published customer case study, not our acceptance test",
+          "reviewer": "Nadia, Declarix",
+          "status": "published",
+          "text": "The vendor names output to ASM Sequoia and Descartes environments at Casper. Confirm the product version, mapping, support and acceptance for your own destination. This is not a universal connector guarantee."
+        },
+        "implementation": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "sedna",
+          "sourceUrl": "https://sedna.com/build/sedna-ai",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "Sedna AI describes automation within existing communication workflows. Customer-specific onboarding, permissions, exception ownership and support terms are not verified here."
+        },
+        "pricing": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "sedna",
+          "sourceUrl": "https://sedna.com/build/sedna-ai",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor product page",
+          "reviewer": "Nadia, Declarix",
+          "status": "not-verified",
+          "text": "No price or complete customs package is established by the reviewed sources. Request written module, setup, usage and support terms. Unknown fees are not zero."
+        },
+        "fit": {
+          "product": "Sedna / Flytta",
+          "module": "Sedna AI customs automation; confirm offered configuration",
+          "country": "UK customer example; exact declaration types not established",
+          "source": "acquisition",
+          "sourceUrl": "https://sedna.com/resources/sedna-expands-ai-leadership-in-global-trade-with-flytta-acquisition",
+          "reviewedOn": "2026-09-16",
+          "evidenceType": "Official vendor acquisition announcement",
+          "reviewer": "Nadia, Declarix",
+          "status": "editorial-fit",
+          "text": "Evaluate if email intake, trade communication and customs automation need to work together. If you need a particular UK procedure or destination, prove that configuration before selecting it."
+        }
+      }
+    }
+  },
+  "sources": {
+    "declarix": {
+      "url": "#declarix-scope",
+      "title": "Declarix scope review",
+      "type": "First-party source review, not live acceptance",
+      "excerpt": "Case-based preparation, source-linked review, configured checks and policy-driven approval. H1 remains review-only and incomplete. Direct HMRC submission is outside scope."
+    },
+    "home": {
+      "url": "https://www.customaite.ai/home",
+      "title": "Customaite platform",
+      "type": "Official vendor product page",
+      "excerpt": "Describes a workflow from source data through declaration and archive, with compliance, automation and workflow suites."
+    },
+    "automation": {
+      "url": "https://www.customaite.ai/solutions/automation",
+      "title": "Customaite automation suite",
+      "type": "Official vendor product page",
+      "excerpt": "Describes automated linking of invoice values and packing-list weights, extraction assistance and declarant tools."
+    },
+    "compliance": {
+      "url": "https://www.customaite.ai/customs-compliance-suite",
+      "title": "Customaite compliance suite",
+      "type": "Official vendor product page",
+      "excerpt": "Describes classification assistance, intelligent data validation and trade measures."
+    },
+    "workflow": {
+      "url": "https://www.customaite.ai/solutions/workflow",
+      "title": "Customaite workflow suite",
+      "type": "Official vendor product page",
+      "excerpt": "Describes customer correspondence, product data management and a management dashboard."
+    },
+    "plans": {
+      "url": "https://www.customaite.ai/plans",
+      "title": "Customaite plans",
+      "type": "Official vendor plans page",
+      "excerpt": "States subscription purchasing and volume-based packages. Includes customer portal in the enterprise package. No currency price was found in the reviewed page."
+    },
+    "icustoms": {
+      "url": "https://www.icustoms.ai/uk-cds-import/",
+      "title": "iCustoms iCDS Import & Export",
+      "type": "Official vendor product page",
+      "excerpt": "Describes UK CDS imports and exports, direct HMRC CDS integration, review before submission, and linked iDP document capture and iZap self-service products."
+    },
+    "idp": {
+      "url": "https://www.icustoms.ai/intelligent-document-processing/",
+      "title": "iCustoms iDP document processing",
+      "type": "Official vendor product page",
+      "excerpt": "Describes PDF/CSV/Excel intake, iCombine multi-document merging, human review and CSV/Excel/XML/custom-template exports. Authority submission uses separate customs modules; a named third-party handoff is not established."
+    },
+    "asm": {
+      "url": "https://www.asm.org.uk/en/our-software/",
+      "title": "ASM Sequoia",
+      "type": "Official vendor product page",
+      "excerpt": "Describes import, export and transit processing, customs and port-community connections, and back-office integration."
+    },
+    "descartes": {
+      "url": "https://www.descartes.com/solutions/customs-and-regulatory-compliance/customs-declarations",
+      "title": "Descartes customs declarations",
+      "type": "Official vendor product page",
+      "excerpt": "Identifies e-Customs for the United Kingdom. Wider platform descriptions must not be assumed to apply to every UK module."
+    },
+    "acquisition": {
+      "url": "https://sedna.com/resources/sedna-expands-ai-leadership-in-global-trade-with-flytta-acquisition",
+      "title": "Sedna announces Flytta acquisition",
+      "type": "Official vendor acquisition announcement",
+      "excerpt": "Sedna says Flytta’s Customs Import and Export Automation workflow is now part of Sedna AI. Flytta and Sedna are not two independent options in this comparison."
+    },
+    "casper": {
+      "url": "https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna",
+      "title": "Sedna: Casper Customs case study",
+      "type": "Vendor-published customer case study, not our acceptance test",
+      "excerpt": "Describes email document intake, extraction, output to ASM Sequoia and Descartes environments, staff due diligence and submission in customs software. This named implementation does not establish universal connector availability or results."
+    },
+    "sedna": {
+      "url": "https://sedna.com/build/sedna-ai",
+      "title": "Sedna AI",
+      "type": "Official vendor product page",
+      "excerpt": "Describes operational data extraction and automation within shipping communication workflows. Broad platform descriptions are not proof of specific UK customs procedure coverage."
+    }
+  }
+}
