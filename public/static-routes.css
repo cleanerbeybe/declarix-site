@@ -712,3 +712,16 @@ a:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+/* Product-scope limits are readable content, not a tiny legal footnote. */
+.limitations.scope-boundary {
+  color: var(--ink);
+  background: #eaf2ed;
+  font: 400 15px/1.6 Archivo, Arial, sans-serif;
+  letter-spacing: 0;
+  border-block: 1px solid var(--ink);
+}
+
+.scope-page .breadcrumbs, .scope-page .breadcrumbs a { color: var(--ink); }
+
+.scope-page .breadcrumbs { background: #eaf2ed; }

@@ -1,3 +1,5 @@
+import { productScopeRoutes } from './product-scope.mjs'
+
 export const site = {
   origin: 'https://getdeclarix.com',
   company: 'Declarix Limited',
@@ -127,63 +129,7 @@ export const routes = [
       },
     ],
   },
-  {
-    path: '/supported-scope/',
-    ref: 'SCHEDULE 03 · PRODUCT FIT',
-    title: 'Supported customs workflows and integrations | Declarix',
-    description:
-      'Where Declarix fits in a customs operation, including document intake, CDS-ready exports, Sequoia, Descartes, customer integrations, and clerk review.',
-    eyebrow: 'SUPPORTED SCOPE · DOCUMENTS TO CDS-READY EXPORT',
-    h1: 'Know exactly where Declarix fits.',
-    standfirst:
-      'Declarix turns the documents your customers send into a source-linked, CDS-ready entry pack. Your clerk checks it, your existing system files it, and your desk keeps the judgment.',
-    stamp: 'CDS\nREADY',
-    limitations:
-      'Declarix prepares the entry data and evidence. Your authorised team retains classification, customs judgment, approval and HMRC submission.',
-    sections: [
-      {
-        label: '01 · DOCUMENT INTAKE',
-        title: 'The whole job goes in.',
-        paragraphs: [
-          'Declarix reads invoices, packing lists, transport documents, spreadsheets, scans, phone photos and forwarded email chains. It works across the job instead of asking the clerk to re-enter one document at a time.',
-          'Conflicting or missing facts stay visible as questions. Proposed values keep the source document, page and line attached so the clerk can check the evidence quickly.',
-        ],
-      },
-      {
-        label: '02 · OUTPUT',
-        title: 'CDS-ready data for the system you keep.',
-        facts: [
-          ['Sequoia', 'Supported export and customer workflow integration'],
-          ['Descartes e-Customs', 'Supported export and customer workflow integration'],
-          ['Other customer systems', 'Mapped through the integration route agreed on the call'],
-          ['Evidence', 'Source reference retained beside each proposed field'],
-          ['Approval', 'Your clerk checks and approves'],
-          ['Submission', 'Your existing customs system and permissions'],
-        ],
-      },
-      {
-        label: '03 · BEST FIRST WORKFLOW',
-        title: 'Start where the manual work is heaviest.',
-        list: [
-          'High-volume repeat import work with consistent review rules.',
-          'Document-heavy jobs with long line tables or amalgamated invoices.',
-          'Workflows where senior clerks spend too much time on basic assembly.',
-          'Desks turning away declarations because recruiting another experienced clerk is slow or expensive.',
-          'Teams that need the source evidence beside each field before approval.',
-        ],
-      },
-      {
-        label: '04 · FIT CHECK',
-        title: 'The 20-minute call locates the value.',
-        list: [
-          'Estimate annual ROI from your volume, current minutes and loaded clerk cost.',
-          'Map the Sequoia, Descartes or customer-integration route.',
-          'Choose the first declaration workflow most likely to pay for itself.',
-          'Decide whether one real-job pilot is worth running.',
-        ],
-      },
-    ],
-  },
+  productScopeRoutes[0],
   {
     path: '/pricing/',
     ref: 'SCHEDULE 04 · COMMERCIAL',
@@ -284,64 +230,7 @@ export const routes = [
       },
     ],
   },
-  {
-    path: '/how-it-works/',
-    ref: 'FORM 06 · OPERATING FLOW',
-    title: 'How Declarix builds CDS-ready customs entry packs',
-    description:
-      'See how Declarix reads customs documents, links every field to its source, and returns CDS-ready output for Sequoia, Descartes or customer integrations.',
-    eyebrow: 'HOW IT WORKS · PAPERWORK TO CDS-READY OUTPUT',
-    h1: 'Your clerk checks the entry instead of building it.',
-    standfirst:
-      'Send the whole job. Declarix reads the documents, assembles the entry data, links every proposed field to its evidence and returns it to the customs workflow your team already uses.',
-    stamp: 'CHECK\nNOT KEY',
-    limitations:
-      'Your authorised clerk retains customs judgment and approval. Declarix prepares CDS-ready output; your existing system and permissions handle submission.',
-    sections: [
-      {
-        label: '01 · INTAKE',
-        title: 'Forward the job as it arrived.',
-        paragraphs: [
-          'Invoices, packing lists, transport documents, spreadsheets, scans, phone photos and the email chain arrive together. Declarix reads across the job instead of forcing the clerk to open and re-enter each file.',
-        ],
-      },
-      {
-        label: '02 · STRUCTURE',
-        title: 'Build the entry and pin the evidence.',
-        paragraphs: [
-          'Exporter, importer, values, weights, packages, previous documents, origin and line data move into their entry rows. Each proposed value keeps its document, page and line reference for checking.',
-        ],
-      },
-      {
-        label: '03 · EXCEPTIONS',
-        title: 'Flag the conflicts instead of hiding them.',
-        paragraphs: [
-          'If an invoice says CIF and the email says CIP, the conflict is shown beside the sources. Missing or ambiguous facts become a short review question rather than a silent guess.',
-        ],
-      },
-      {
-        label: '04 · REVIEW',
-        title: 'The clerk checks the working.',
-        paragraphs: [
-          'The clerk opens any field, sees its source and makes the customs judgment. Typical Declarix processing is around 200 seconds before this review begins.',
-        ],
-      },
-      {
-        label: '05 · FILING',
-        title: 'The CDS-ready export reaches your system.',
-        paragraphs: [
-          'Declarix supports Sequoia, Descartes e-Customs and customer integrations. Your team keeps the filing screen, badge, permissions and submission process it already knows.',
-        ],
-      },
-      {
-        label: '06 · COMMERCIAL FIT',
-        title: 'Run the desk economics.',
-        paragraphs: [
-          'The 20-minute numbers call uses your weekly volume, current minutes and loaded clerk cost to estimate annual ROI. It also maps the integration route and chooses the best first declaration workflow.',
-        ],
-      },
-    ],
-  },
+  productScopeRoutes[1],
   {
     path: '/pilot/',
     ref: 'DOCKET 07 · PILOT',

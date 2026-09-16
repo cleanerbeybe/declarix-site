@@ -9,6 +9,8 @@ import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { productScopeRoutes, scopeBoundary, validateProductScope } from './product-scope.mjs'
+validateProductScope()
 import { comparisonRoute } from './customaite-comparison.mjs'
 import { comparisons } from './vendor-comparisons.mjs'
 import { tools } from './tools.mjs'
@@ -29,6 +31,7 @@ const publicSources = [
   'src/world.tsx',
   'public/og.html',
   'scripts/routes.mjs',
+  'scripts/product-scope.mjs',
   'scripts/tools.mjs',
   'scripts/calculators.mjs',
   'scripts/preparation-economics.mjs',
@@ -117,7 +120,7 @@ for (const route of expected) {
   const heading = h1s[0][1].replace(/<[^>]*>/g, '').trim()
   if (headings.has(heading)) throw new Error(`Duplicate H1: ${heading}`)
   if (route.path !== '/' && /<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} loads route JavaScript`)
-  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path)) {
+  if (route.path !== '/' && !detailedHeroBoundaryRoutes.has(route.path) && !productScopeRoutes.some(r => r.path === route.path)) {
     const heroStart = html.indexOf('<header class="hero')
     const heroEnd = html.indexOf('</header>', heroStart)
     const heroAdjacentMarkup = html.slice(heroEnd + 9).trimStart()
@@ -685,3 +688,14 @@ const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).tr
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
 
 console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and owner-approved offer manifest ${site.claimsVersion}`)
+
+// Scoped draft contract supplements (does not approve or replace) the legacy site manifest.
+for (const route of productScopeRoutes) {
+  const html = await readFile(join(root, 'dist', route.path, 'index.html'), 'utf8')
+  if (/CDS.ready|3[×x]|200 seconds|£\d|every (?:proposed )?field|supported export|ready for Sequoia/i.test(html)) throw new Error('Unsupported built scope claim: '+route.path)
+  if (!html.includes(scopeBoundary) || !html.includes('class="limitations scope-boundary"')) throw new Error('Scope boundary not rendered: '+route.path)
+  for (const expected of ['name="twitter:image" content="'+site.origin+route.ogImage, 'property="og:image" content="'+site.origin+route.ogImage, '"dateModified":"'+route.reviewedOn+'"']) if (!html.includes(expected)) throw new Error('Scope metadata missing: '+expected)
+  if (html.includes(site.origin+'/og.jpg')) throw new Error('Legacy social claim leaked into scoped route')
+}
+await access(join(root, 'dist/product-scope.png'))
+console.log('Verified two draft product-scope routes; not a sitewide public-claim clearance')

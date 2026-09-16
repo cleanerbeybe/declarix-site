@@ -12,6 +12,8 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { routes, site } from './routes.mjs'
+import { validateProductScope } from './product-scope.mjs'
+validateProductScope()
 import { comparisonRoute, renderComparison } from './customaite-comparison.mjs'
 import { comparisons, renderVendorComparison, validateComparisons } from './vendor-comparisons.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -45,7 +47,7 @@ function bookingHref(route) {
   return `/?src=${encodeURIComponent(source)}#book`
 }
 
-function routeLinks() {
+function routeLinks(route = {}) {
   const links = [
     ['HOW IT WORKS', '/how-it-works/'],
     ['SCOPE', '/supported-scope/'],
@@ -68,7 +70,8 @@ function routeLinks() {
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
-  return links.map(([label, path]) => `<a href="${path}">${label}</a>`).join('')
+  const visibleLinks = route.claimContract ? links.filter(([, path]) => ['/how-it-works/', '/supported-scope/', economicsRoute.path, comparisonRoute.path, '/security/'].includes(path)) : links
+  return visibleLinks.map(([label, path]) => `<a href="${path}">${label}</a>`).join('')
 }
 
 function renderSection(section, index) {
@@ -117,9 +120,9 @@ function renderHeroStrip(route) {
   if (route.heroStrip?.length) {
     return `<div class="hero-value-strip">${route.heroStrip.map((item) => `<strong>${escapeHtml(item)}</strong>`).join('')}</div>`
   }
-  const boundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
+  const boundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/', '/supported-scope/', '/how-it-works/'])
   return boundaryRoutes.has(route.path) && route.limitations
-    ? `<p class="limitations">LIMITATION · ${escapeHtml(route.limitations)}</p>`
+    ? `<p class="limitations${route.claimContract ? " scope-boundary" : ""}">${route.claimContract ? "CURRENT SCOPE" : "LIMITATION"} · ${escapeHtml(route.limitations)}</p>`
     : ''
 }
 
@@ -194,12 +197,12 @@ function jsonLd(route) {
         headline: route.h1,
         description: route.description,
         datePublished: route.publishedOn,
-        dateModified: site.reviewedOn,
+        dateModified: route.reviewedOn || site.reviewedOn,
         isPartOf: { '@id': `${site.origin}/#website` },
         about: { '@id': `${site.origin}/#organization` },
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
-        image: `${site.origin}/og.jpg`,
+        image: `${site.origin}${route.ogImage || "/og.jpg"}`,
         citation: route.sources?.map((source) => source.url),
       },
       {
@@ -239,24 +242,24 @@ function renderRoute(route) {
     <meta property="og:title" content="${escapeHtml(route.title)}" />
     <meta property="og:description" content="${escapeHtml(route.description)}" />
     <meta property="og:url" content="${canonical}" />
-    <meta property="og:image" content="${site.origin}/og.jpg" />
+    <meta property="og:image" content="${site.origin}${route.ogImage || "/og.jpg"}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(route.title)}" />
     <meta name="twitter:description" content="${escapeHtml(route.description)}" />
-    <meta name="twitter:image" content="${site.origin}/og.jpg" />
+    <meta name="twitter:image" content="${site.origin}${route.ogImage || "/og.jpg"}" />
     <title>${escapeHtml(route.title)}</title>
     <script type="application/ld+json">${jsonLd(route)}</script>
   </head>
-  <body>
+  <body${route.claimContract ? ' class="scope-page"' : ''}>
     <div class="docket">
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
-        <div class="masthead-cell"><span>CORE OUTCOME</span><strong>UP TO 3×</strong></div>
+        <div class="masthead-cell"><span>${route.claimContract ? "WORKFLOW" : "CORE OUTCOME"}</span><strong>${route.claimContract ? "PREPARE · REVIEW" : "UP TO 3×"}</strong></div>
         <a class="masthead-cta" ${route.resourceKit ? 'data-kit-booking="masthead"' : ''} href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
       </header>
-      <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
+      <nav class="route-nav" aria-label="Primary">${routeLinks(route)}</nav>
       <div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div>
       <main>
         <header class="hero">
@@ -268,14 +271,14 @@ function renderRoute(route) {
           <aside class="hero-ledger">
             <span class="route-ref">${escapeHtml(route.ref)}</span>
             <div class="stamp">${escapeHtml(route.stamp).replaceAll('\n', '<br />')}</div>
-            <div class="review-cell"><span>LAST REVIEWED</span><strong>${site.reviewedOn}</strong></div>
+            <div class="review-cell"><span>LAST REVIEWED</span><strong>${route.reviewedOn || site.reviewedOn}</strong></div>
           </aside>
         </header>
         ${renderHeroStrip(route)}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
         ${renderSources(route)}
-        <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
+        <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${route.reviewedOn || site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
           <div><h2>${escapeHtml(route.cta?.title || 'Run the numbers before you buy.')}</h2><p>${escapeHtml(route.cta?.copy || 'Bring weekly volume, current minutes per declaration, loaded clerk cost and the system your team files through. Leave with an ROI estimate, integration route and recommended first workflow.')}</p></div>
           <a class="button" ${route.resourceKit ? 'data-kit-booking="bottom_cta"' : ''} href="${bookingHref(route)}">${escapeHtml(route.cta?.label || 'BOOK THE 20-MINUTE NUMBERS CALL')}</a>
