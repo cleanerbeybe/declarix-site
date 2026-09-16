@@ -114,7 +114,7 @@ export const registrationRoute = {
         "title": "13-question response draft",
         "description": "A clean drafting file with organisation context, all consultation questions, evidence prompts, and a final submission check.",
         "href": "/downloads/customs-intermediary-registration-response-draft-2026.md",
-        "meta": "EDITABLE · 13 QUESTIONS · 10 KB"
+        "meta": "EDITABLE · 13 QUESTIONS · 10,214 BYTES"
       },
       {
         "id": "evidence_matrix_csv",
@@ -122,7 +122,7 @@ export const registrationRoute = {
         "title": "Question-by-question evidence matrix",
         "description": "A spreadsheet-ready matrix for owners, examples, quantified impact, supporting evidence, alternatives, review status, and next action.",
         "href": "/downloads/customs-intermediary-registration-evidence-matrix-2026.csv",
-        "meta": "SPREADSHEET READY · 13 ROWS · 8 KB"
+        "meta": "SPREADSHEET READY · 13 ROWS · 7,169 BYTES"
       }
     ],
     "steps": [

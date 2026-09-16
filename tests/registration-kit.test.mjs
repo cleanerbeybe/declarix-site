@@ -26,3 +26,7 @@ test('registration stylesheet does not alter other route assets',()=>{
  assert.match(read('scripts/generate-static-routes.mjs'),/route.path === registrationRoute.path \? '<link rel="stylesheet" href="\/registration-kit.css" \/>' : ''/)
  assert.match(read('public/registration-kit.css'),/max-width: 1100px/)
 })
+
+test('download badges show exact portable-file byte counts',()=>{
+ for(const asset of route.resourceKit.assets){const bytes=readFileSync(new URL('../public'+asset.href,import.meta.url)).length;assert.ok(asset.meta.endsWith(bytes.toLocaleString('en-GB')+' BYTES'))}
+})
