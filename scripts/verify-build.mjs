@@ -1,3 +1,4 @@
+import { verifyWorkpaperBuild } from './workpaper-validation.mjs'
 import { verifyResearchBuild } from './research-validation.mjs'
 import { validateRadarHtml, validateRadarJson, validateRadarCsv } from './radar-validation.mjs'
 import { registrationRoute } from './registration-kit.mjs'
@@ -27,6 +28,7 @@ import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-wo
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 await verifyResearchBuild(root)
+await verifyWorkpaperBuild(root)
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
 const homeContract = JSON.parse(await readFile(join(root, 'contracts/home-discovery-draft-2026-09-16.json'), 'utf8'))
 const publicEori = resolvePublicEoriReleaseConfig()

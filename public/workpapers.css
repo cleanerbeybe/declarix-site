@@ -1,0 +1,7 @@
+/* Loaded only on the eleven operational workpaper routes. */
+.workpaper-notice{margin:24px clamp(16px,4vw,48px);padding:20px;border:2px solid #1b7a4b;background:#f7f6f1;color:#16313d;overflow-wrap:anywhere}.workpaper-notice h2{font-size:24px;line-height:1.3}.workpaper-notice p{font-size:16px;line-height:1.55;max-width:90ch}.authority-bridge{background:#f4deb6;color:#16313d}.authority-bridge p,.authority-bridge span,.authority-bridge a{color:#16313d}.authority-sources a{overflow-wrap:anywhere}
+@media(max-width:1000px){.authority-hero h1{overflow-wrap:anywhere}}
+
+.value-checks li b,.workflow-path li>b{color:#795016}
+
+.workflow-register a[aria-current="page"] em{color:#f4f1e9}

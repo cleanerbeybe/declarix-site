@@ -1,3 +1,4 @@
+import { isWorkpaper, workpaperEdition, workpaperFooter, workpaperContextHtml } from './workpaper-context.mjs'
 import { lineage, burdenLineageCsv, burdenLineageSvg } from './research-lineage.mjs'
 const REVIEWED_ON = '2026-07-17'
 
@@ -176,15 +177,16 @@ const workflowDefinitions = [
     direct: 'For a GVMS route, create one GMR for the crossing, include every required declaration reference, reach OPEN state before check-in and follow the inspection instruction after arrival.',
     steps: [
       ['01', 'Confirm the route', 'Check the port and direction use GVMS before the movement is built.'],
-      ['02', 'Collect every reference', 'Reconcile import, export, transit and safety-and-security references for all goods carried.'],
+      ['02', 'Choose the required references', 'Use the route-specific references. For EU-to-GB common transit, do not add associated import declaration references.'],
       ['03', 'Create and repair the GMR', 'Resolve rule failures until the GMR is OPEN; NOT_FINALISABLE is not ready for check-in.'],
       ['04', 'Match the physical movement', 'Vehicle registration, trailer or container identifiers must match what reaches the carrier.'],
       ['05', 'Present and follow the outcome', 'Give the GMR to the carrier and check whether the goods must report for inspection.'],
     ],
-    inputs: ['Port and route', 'Direction of travel', 'Vehicle/trailer/container', 'All declaration and transit references', 'Carrier booking'],
+    correction: 'GMR references depend on route and procedure. For EU-to-GB common transit, use the transit reference, not associated import declarations. Adding the ENS reference is optional on that route; the ENS duty is separate.',
+    inputs: ['Port and route', 'Direction of travel', 'Vehicle/trailer/container', 'References required for this route and procedure', 'Carrier booking'],
     stop: ['GMR is NOT_FINALISABLE', 'A declaration reference is missing', 'Physical identifiers changed', 'GVMS reports an incident or downtime'],
     sources: [
-      source('Create a goods movement reference', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/create-a-goods-movement-reference'),
+      source('Create a goods movement reference', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/create-a-goods-movement-reference', '16 SEPTEMBER 2026 · ROUTE/REFERENCE CORRECTION ONLY'),
       source('Goods Vehicle Movement Service', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/government/collections/goods-vehicle-movement-service'),
       source('GVMS check-in service guide', 'HM Revenue & Customs · Developer Hub', 'https://developer.service.hmrc.gov.uk/guides/gvms-end-to-end-service-guide/documentation/checkin-gmr.html'),
     ],
@@ -254,19 +256,20 @@ const workflowDefinitions = [
     h1: 'Choose the ENS system from the movement—not the habit.',
     standfirst:
       'Great Britain and Northern Ireland movements use different safety-and-security routes. Start with where the goods enter, then lock responsibility, timing, data and amendment ownership.',
-    direct: 'Use S&S GB for relevant imports into Great Britain and ICS2 for goods brought into Northern Ireland; submit the complete ENS on time and keep amendment and arrival responsibility explicit.',
+    direct: 'Where an ENS is required, use S&S GB for Great Britain and ICS2 for Northern Ireland from Great Britain or countries outside the EU. Check waivers, timing and carrier responsibility.',
     steps: [
-      ['01', 'Choose the jurisdiction and system', 'Map the first place of entry and whether S&S GB or ICS2 applies.'],
+      ['01', 'Choose the jurisdiction and system', 'Check origin, first entry and waivers: S&S GB for GB; ICS2 for NI from GB or outside the EU, where an ENS is required.'],
       ['02', 'Name the responsible party', 'Carrier responsibility remains clear even when a third party prepares the declaration.'],
       ['03', 'Work backwards from arrival', 'Use the current mode-specific time limit and preserve the transport schedule.'],
       ['04', 'Submit and retain the MRN', 'Resolve validation failures and pass the accepted reference into the movement pack.'],
       ['05', 'Own amendments and arrival', 'Update material changes before arrival and complete the required ICS2 arrival/presentation notifications.'],
     ],
+    correction: 'The NI instruction applies to arrivals from Great Britain or countries outside the EU, not every NI movement. Check ENS waivers. The carrier remains responsible when a third party files.',
     inputs: ['First place of entry', 'Mode and route', 'Carrier and filer', 'Consignment/transport data', 'Arrival schedule'],
     stop: ['System choice is unclear', 'Carrier has not authorised the filer', 'Timing window is missed', 'Diversion or material data changed'],
     sources: [
       source('Entry summary declaration requirements', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/safety-and-security-declarations/safety-and-security-import-requirements-entry-summary-declarations'),
-      source('Making an entry summary declaration', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/making-an-entry-summary-declaration'),
+      source('Making an entry summary declaration', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/making-an-entry-summary-declaration', '16 SEPTEMBER 2026 · JURISDICTION/WAIVER CORRECTION ONLY'),
       source('S&S import declarations service guide', 'HM Revenue & Customs · Developer Hub', 'https://developer.service.hmrc.gov.uk/guides/safety-and-security-import-declarations-end-to-end-service-guide/'),
     ],
     related: '/tools/customs-document-pack-check/',
@@ -314,12 +317,14 @@ const workflowDefinitions = [
       ['02', 'Lodge in NCTS', 'Submit complete movement and guarantee data and resolve rejection before presentation.'],
       ['03', 'Release at departure', 'Present goods and documents; retain the MRN/TAD and any seal or itinerary controls.'],
       ['04', 'Carry the movement evidence', 'Keep goods, transport identifiers and accompanying record aligned through offices of transit.'],
-      ['05', 'Present and close at destination', 'Obtain arrival/control results and discharge evidence; investigate movements that remain open.'],
+      ['05', 'Confirm arrival, then discharge', 'Retain arrival/control evidence and the separate discharge notification. Without discharge notification, treat the movement as open.'],
     ],
+    correction: 'Arrival or proof that transit ended is not itself discharge confirmation. Monitor the MRN and guarantee use; retain the discharge notification and investigate open movements.',
     inputs: ['Principal and EORI', 'Guarantee reference/access', 'Offices and route', 'Goods and transport data', 'MRN/TAD'],
-    stop: ['Guarantee validation fails', 'Goods differ from declaration', 'MRN/TAD is unavailable', 'Destination has not discharged the movement'],
+    stop: ['Guarantee validation fails', 'Goods differ from declaration', 'MRN/TAD is unavailable', 'Discharge notification has not been received'],
     sources: [
       source('New Computerised Transit System supporting guidance', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/government/publications/the-new-computerised-transit-system-supporting-guidance'),
+      source('Monitoring in-use Movement Reference Numbers', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/government/publications/community-common-transit-and-tir-newsletters/february-2026-monitoring-in-use-movement-reference-numbers-mrns', '16 SEPTEMBER 2026 · DISCHARGE CORRECTION ONLY'),
       source('NCTS guarantees', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/government/publications/the-new-computerised-transit-system-supporting-guidance/ncts-guarantees'),
       source('How to use the online NCTS', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/government/publications/the-new-computerised-transit-system-supporting-guidance/how-to-use-the-online-ncts'),
     ],
@@ -373,7 +378,7 @@ export const authorityRoutes = [
     eyebrow: `INCOTERMS 2020 · ${term.code} · OPERATIONAL VALUE SHEET`,
     ref: `TERM SHEET · ${term.code}`,
     stamp: `${term.code}\nMAP`,
-    reviewedOn: REVIEWED_ON,
+    reviewedOn: workpaperEdition,
     sources: [hmrcIncoterms, hmrcValuation, iccIncoterms],
   })),
   burden,
@@ -384,7 +389,7 @@ export const authorityRoutes = [
     eyebrow: `CUSTOMS WORKFLOW · ${workflow.code} · OPERATOR HANDOFF`,
     ref: `WORKFLOW ${String(index + 1).padStart(2, '0')} · ${workflow.code}`,
     stamp: `${workflow.code.replace(' / ', '\n')}`,
-    reviewedOn: REVIEWED_ON,
+    reviewedOn: workpaperEdition,
   })),
 ]
 
@@ -467,7 +472,7 @@ function jsonLd(route, site) {
 function renderSources(route) {
   const reviewedDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${route.reviewedOn}T00:00:00Z`))
   return `<section class="authority-sources" aria-labelledby="${sourceId(route)}">
-    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>Facts above are traced to the source edition checked on ${escapeHtml(reviewedDate)}. Operational prompts organise the job; they do not replace the current official instruction.</p></header>
+    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>${isWorkpaper(route) ? 'The edition date records this workpaper update, not a complete source re-review. Each source retains its original check date unless a limited correction check is identified.' : `Facts above are traced to the source edition checked on ${escapeHtml(reviewedDate)}. Operational prompts organise the job; they do not replace the current official instruction.`}</p></header>
     <ol>${route.sources.map((item) => `<li><a href="${escapeHtml(item.url)}">${escapeHtml(item.title)}</a><span>${escapeHtml(item.publisher)} · CHECKED ${escapeHtml(item.checked)}</span></li>`).join('')}</ol>
   </section>`
 }
@@ -492,20 +497,20 @@ function termSvg(term) {
   const cells = term.phases.map(([phase, owner], index) => {
     const x = 70 + index * 260
     const phaseText = svgTextLines(phase, x + 18, 252, 16, 27, 'font-family="Arial,sans-serif" font-weight="700" font-size="22" fill="#17333d"')
-    const ownerText = svgTextLines(owner, x + 18, 318, 20, 21, 'font-family="monospace" font-size="16" fill="#1e7f4d"')
-    return `<g><rect x="${x}" y="170" width="220" height="180" fill="${index % 2 ? '#e8e4d8' : '#ffffff'}" stroke="#17333d"/><text x="${x + 18}" y="210" font-family="monospace" font-size="17" fill="#5a6c73">0${index + 1}</text>${phaseText}${ownerText}</g>`
+    const ownerText = svgTextLines(owner, x + 18, 342, 20, 21, 'font-family="monospace" font-size="16" fill="#1b6c42"')
+    return `<g><rect x="${x}" y="170" width="220" height="210" fill="${index % 2 ? '#e8e4d8' : '#ffffff'}" stroke="#17333d"/><text x="${x + 18}" y="210" font-family="monospace" font-size="17" fill="#5a6c73">0${index + 1}</text>${phaseText}${ownerText}</g>`
   }).join('')
   const riskText = svgTextLines(term.risk, 70, 466, 88, 27, 'font-family="Arial,sans-serif" font-size="22" fill="#17333d"')
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img"><title>${term.code} delivery, cost and risk handoff</title><desc>Four-stage operational map for ${term.name}, showing the responsible party and risk handoff.</desc><rect width="1200" height="630" fill="#f4f1e9"/><rect x="40" y="40" width="1120" height="550" fill="none" stroke="#17333d" stroke-width="2"/><text x="70" y="98" font-family="monospace" font-size="18" fill="#5a6c73">DECLARIX · INCOTERMS OPERATIONAL ATLAS</text><text x="70" y="145" font-family="Arial,sans-serif" font-weight="800" font-size="42" fill="#17333d">${term.code} · ${escapeHtml(term.name)}</text>${cells}<path d="M70 410 H1110" stroke="#c8781c" stroke-width="14"/>${riskText}<text x="70" y="548" font-family="monospace" font-size="15" fill="#5a6c73">SOURCE-LED WORKPAPER · CHECK THE CONTRACT, NAMED PLACE AND CURRENT OFFICIAL GUIDANCE</text></svg>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc"><title id="title">${term.code} delivery, cost and risk handoff</title><desc id="desc">Four-stage operational map for ${term.name}, showing the responsible party and risk handoff.</desc><rect width="1200" height="1200" fill="#f4f1e9"/><rect x="40" y="40" width="1120" height="1120" fill="none" stroke="#17333d" stroke-width="2"/><text x="70" y="98" font-family="monospace" font-size="18" fill="#5a6c73">DECLARIX · INCOTERMS OPERATIONAL ATLAS</text><text x="70" y="145" font-family="Arial,sans-serif" font-weight="800" font-size="42" fill="#17333d">${term.code} · ${escapeHtml(term.name)}</text>${cells}<path d="M70 410 H1110" stroke="#c8781c" stroke-width="14"/>${riskText}<text x="70" y="548" font-family="monospace" font-size="15" fill="#5a6c73">SOURCE-LED WORKPAPER · CHECK THE CONTRACT, NAMED PLACE AND CURRENT OFFICIAL GUIDANCE</text>${workpaperFooter(term)}</svg>`
 }
 
 function workflowSvg(workflow) {
   const rows = workflow.steps.map(([number, title, copy], index) => {
     const y = 130 + index * 86
     const copyText = svgTextLines(copy, 140, y + 24, 92, 19, 'font-family="Arial,sans-serif" font-size="17" fill="#40565f"')
-    return `<g><circle cx="90" cy="${y}" r="27" fill="${index === 4 ? '#1e7f4d' : '#c8781c'}"/><text x="90" y="${y + 6}" text-anchor="middle" font-family="monospace" font-size="17" fill="#fff">${number}</text><text x="140" y="${y - 5}" font-family="Arial,sans-serif" font-weight="700" font-size="23" fill="#17333d">${escapeHtml(title)}</text>${copyText}${index < 4 ? `<path d="M90 ${y + 29} V${y + 59}" stroke="#17333d" stroke-width="2"/>` : ''}</g>`
+    return `<g><circle cx="90" cy="${y}" r="27" fill="${index === 4 ? '#1b7a4b' : '#795016'}"/><text x="90" y="${y + 6}" text-anchor="middle" font-family="monospace" font-size="17" fill="#fff">${number}</text><text x="140" y="${y - 5}" font-family="Arial,sans-serif" font-weight="700" font-size="23" fill="#17333d">${escapeHtml(title)}</text>${copyText}${index < 4 ? `<path d="M90 ${y + 29} V${y + 59}" stroke="#17333d" stroke-width="2"/>` : ''}</g>`
   }).join('')
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img"><title>${workflow.code} five-step handoff</title><desc>Five operational checkpoints for ${workflow.title}.</desc><rect width="1200" height="630" fill="#f4f1e9"/><rect x="40" y="40" width="1120" height="550" fill="none" stroke="#17333d" stroke-width="2"/><text x="70" y="86" font-family="monospace" font-size="16" fill="#5a6c73">DECLARIX · CUSTOMS WORKFLOW</text><text x="1110" y="86" text-anchor="end" font-family="monospace" font-weight="700" font-size="19" fill="#17333d">${escapeHtml(workflow.code)}</text>${rows}</svg>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc"><title id="title">${workflow.code} five-step handoff</title><desc id="desc">Five operational checkpoints for ${workflow.title}.</desc><rect width="1200" height="1200" fill="#f4f1e9"/><rect x="40" y="40" width="1120" height="1120" fill="none" stroke="#17333d" stroke-width="2"/><text x="70" y="86" font-family="monospace" font-size="16" fill="#5a6c73">DECLARIX · CUSTOMS WORKFLOW</text><text x="1110" y="86" text-anchor="end" font-family="monospace" font-weight="700" font-size="19" fill="#17333d">${escapeHtml(workflow.code)}</text>${rows}${workpaperFooter(workflow)}</svg>`
 }
 
 function burdenCsv() { return burdenLineageCsv() }
@@ -604,5 +609,5 @@ function analyticsScript(route, posthogKey, posthogHost) {
 export function renderAuthorityRoute(route, site, { navHtml, webmasterHtml, posthogKey = '', posthogHost = 'https://eu.i.posthog.com' }) {
   const canonical = `${site.origin}${route.path}`
   const content = route.kind === 'incoterms-hub' ? renderIncotermsHub(route) : route.kind === 'incoterm-term' ? renderTerm(route) : route.kind === 'burden-report' ? renderBurden(route) : `${renderWorkflow(route)}${renderWorkflowCluster(route)}`
-  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/>${route.kind === 'burden-report' ? '<link rel="stylesheet" href="/research-lineage.css"/>' : ''}<meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>REVIEWED<br/>${route.reviewedOn}</small></aside></header>${content}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
+  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/>${route.kind === 'burden-report' ? '<link rel="stylesheet" href="/research-lineage.css"/>' : ''}${isWorkpaper(route) ? '<link rel="stylesheet" href="/workpapers.css"/>' : ''}<meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>${isWorkpaper(route) ? 'EDITION' : 'REVIEWED'}<br/>${route.reviewedOn}</small></aside></header>${content}${isWorkpaper(route) ? workpaperContextHtml(route) : ''}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · ${isWorkpaper(route) ? 'EDITION' : 'REVIEWED'} ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
 }

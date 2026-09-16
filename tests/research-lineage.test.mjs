@@ -13,7 +13,9 @@ const contract=JSON.parse(read('contracts/research-lineage-draft-2026-09-16.json
 const options={navHtml:'',webmasterHtml:'',posthogKey:''}
 const csvRows=text=>text.trimEnd().split('\n').map(line=>{const cells=[];let cell='',quoted=false;for(let i=0;i<line.length;i++){if(line[i]==='"'){if(quoted&&line[i+1]==='"'){cell+='"';i++}else quoted=!quoted}else if(line[i]===','&&!quoted){cells.push(cell);cell=''}else cell+=line[i]}assert.equal(quoted,false);cells.push(cell);return cells})
 test('unrelated route records and source files unchanged',()=>{
- for(const row of contract.preserved_routes)assert.equal(hash(JSON.stringify([...routes,...radarRoutes,...authorityRoutes].find(x=>x.path===row.path))),row.sha256,row.path)
+ const successor=JSON.parse(read('contracts/workpapers-draft-2026-09-16.json'));
+ assert.equal(successor.supersedes_preservation_paths.length,11);
+ for(const row of contract.preserved_routes.filter(r=>!successor.supersedes_preservation_paths.includes(r.path)))assert.equal(hash(JSON.stringify([...routes,...radarRoutes,...authorityRoutes].find(x=>x.path===row.path))),row.sha256,row.path)
  for(const row of contract.preserved_source_files)assert.equal(createHash('sha256').update(readFileSync(new URL('../'+row.path,import.meta.url))).digest('hex'),row.sha256,row.path)
 })
 test('private-ledger aggregate reconciliation, thresholds and denominators preserved',()=>{
@@ -52,7 +54,8 @@ test('both SVGs carry visible sources, dates, methods, qualifiers and scaled geo
 test('source-register intro follows each route review date; stale HMRC date rejected',()=>{
  for(const route of authorityRoutes){
   const html=renderAuthorityRoute(route,site,options)
-  assert.ok(html.includes('source edition checked on '+(route===burden?'16 September 2026':'17 July 2026')),route.path)
+  if(['workflow','incoterm-term'].includes(route.kind))assert.ok(html.includes('edition date records this workpaper update, not a complete source re-review'),route.path)
+  else assert.ok(html.includes('source edition checked on '+(route===burden?'16 September 2026':'17 July 2026')),route.path)
  }
  const html=renderAuthorityRoute(burden,site,options)
  assert.throws(()=>validateResearchHtml(html.replace('source edition checked on 16 September 2026','source edition checked on 17 July 2026'),burden),/Research lineage/)

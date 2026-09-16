@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:economics && npm run test:comparison && npm run test:scope && npm run test:selection && npm run test:legacy-offer && npm run test:offer-boundaries && npm run test:home && npm run test:registration && npm run test:radar && npm run test:research && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
+    "build": "npm run test:economics && npm run test:comparison && npm run test:scope && npm run test:selection && npm run test:legacy-offer && npm run test:offer-boundaries && npm run test:home && npm run test:registration && npm run test:radar && npm run test:research && npm run test:workpapers && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
     "lint": "oxlint",
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
@@ -30,7 +30,10 @@
     "test:radar:mutations": "node tests/radar-built-mutations.mjs",
     "test:research": "node --test tests/research-lineage.test.mjs",
     "test:research:browser": "node tests/research-lineage.browser.cjs",
-    "test:research:mutations": "node tests/research-built-mutations.mjs"
+    "test:research:mutations": "node tests/research-built-mutations.mjs",
+    "test:workpapers": "node --test tests/workpapers.test.mjs",
+    "test:workpapers:browser": "node tests/workpapers.browser.cjs",
+    "test:workpapers:mutations": "node tests/workpapers-built-mutations.mjs"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",
