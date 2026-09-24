@@ -187,55 +187,35 @@ export const routes = [
   {
     path: '/pricing/',
     ref: 'SCHEDULE 04 · COMMERCIAL',
-    title: 'Declarix pricing and ROI for customs desks',
-    description:
-      'See the Declarix per-entry pricing model, worked labour economics, pilot terms, and the numbers to bring to a 20-minute ROI call.',
-    eyebrow: 'PRICING · PER ENTRY, NOT PER SEAT',
-    h1: 'More margin per declaration — or no deal worth doing.',
-    standfirst:
-      'Declarix is priced per entry against the labour and capacity it gives back. The 20-minute numbers call replaces the worked assumptions with your desk’s real volume, time and cost.',
-    stamp: 'PER\nENTRY',
-    limitations:
-      'The £7.95 to £2.45 labour model is an example, not a quote. Your job mix, review time and loaded clerk cost determine the real result and per-entry rate.',
+    title: 'Declarix pricing | More declarations, no extra seats',
+    description: 'Up to 3x more declarations per clerk. See monthly Desk, Team and Scale packages, overage rates, pilot terms and the public capacity calculator.',
+    eyebrow: 'PRICING · CAPACITY FOR CUSTOMS DESKS',
+    h1: 'Up to 3x more declarations per clerk.',
+    standfirst: 'Take on more work with the team you have. Choose a monthly pack allowance, then pay the same rate for every extra pack.',
+    stamp: 'MORE WORK\nSAME TEAM',
     sections: [
       {
-        label: '01 · INPUTS',
-        title: 'Four numbers build the commercial case.',
-        list: [
-          'Declarations processed in a representative week.',
-          'Minutes of clerk time used per declaration today.',
-          'Loaded hourly cost of the people doing that work.',
-          'The Sequoia, Descartes or customer workflow the output needs to reach.',
-          'The document mix and exceptions that make the job harder than average.',
-        ],
+        label: '01 · PILOT',
+        title: 'Prove it on your desk first.',
+        paragraphs: ['£0 upfront. £1 per declaration, capped at £500. The pilot fee is fully waived if the agreed success criteria are missed.'],
       },
       {
-        label: '02 · WORKED MODEL',
-        title: 'What the homepage example shows.',
-        list: [
-          'Loaded clerk labour falls from £7.95 to £2.45 per declaration.',
-          'That creates an illustrative £5.50 labour saving before the Declarix rate.',
-          'At 120 declarations a week, the model shows £34,320 a year in recovered labour.',
-          'The same reduction in clerk time creates room for up to three times more declarations.',
-          'The real test is whether your total cost falls after the Declarix per-entry rate is included.',
-        ],
+        label: '02 · SIMPLE TERMS',
+        title: 'Volume grows. Seats do not.',
+        paragraphs: ['Month to month. Cancel anytime. No seat fees. No hosting fees. Annual indexation applies. Extra declaration packs are billed at your package rate.'],
       },
       {
-        label: '03 · COMPARISON',
-        title: 'Replace the example with your desk.',
-        paragraphs: [
-          'On the call, Declarix rebuilds the model using your weekly volume, current preparation time and loaded clerk cost. The result is an annual ROI range and a break-even per-entry price, not a generic savings promise.',
-          'You also map the integration route and identify the workflow where recovered clerk time is most valuable. If the economics do not work, there is no reason to force a pilot.',
-        ],
+        label: '03 · LARGER DESKS',
+        title: 'More than 3,000 packs a month?',
+        paragraphs: ['At volumes above 3,000 packs a month, ask for a quote at £3.00 per pack. The rate never falls below £3.00.'],
       },
       {
         label: '04 · NEXT STEP',
-        title: 'Leave with the questions answered.',
-        paragraphs: [
-          'Book the 20-minute numbers call. Bring what you know; estimates are enough to start. You leave with the ROI range, integration route and recommended first declaration workflow.',
-        ],
+        title: 'See what your desk can take on.',
+        paragraphs: ['Enter your volume and clerk time in the public calculator. It shows the hours you can release, the extra declarations those hours support and the package that fits.'],
       },
     ],
+    cta: { title: 'Put your own numbers to work.', copy: 'Run the capacity calculator, then book a call to agree the first workflow and pilot success criteria.', label: 'BOOK THE NUMBERS CALL' },
   },
   {
     path: '/pricing-policy/',

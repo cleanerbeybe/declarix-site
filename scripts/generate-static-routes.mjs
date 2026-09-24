@@ -11,6 +11,8 @@ import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHu
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
+import { renderPricingTable } from './pricing.mjs'
+import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
@@ -48,6 +50,7 @@ function routeLinks() {
     ['HOW IT WORKS', '/how-it-works/'],
     ['SCOPE', '/supported-scope/'],
     ['PRICING', '/pricing/'],
+    ['ROI CALCULATOR', roiRoute.path],
     ['PILOT', '/pilot/'],
     ['PREPARATION OPTIONS', economicsRoute.path],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
@@ -230,6 +233,7 @@ function renderRoute(route) {
     <link rel="canonical" href="${canonical}" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/static-routes.css" />
+    ${route.path === '/pricing/' ? '<link rel="stylesheet" href="/pricing.css" />' : ''}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Declarix" />
     <meta property="og:title" content="${escapeHtml(route.title)}" />
@@ -268,6 +272,7 @@ function renderRoute(route) {
           </aside>
         </header>
         ${renderHeroStrip(route)}
+        ${route.path === '/pricing/' ? renderPricingTable() : ''}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
         ${renderSources(route)}
@@ -632,7 +637,13 @@ const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
 await writeFile(economicsTarget, renderPreparationEconomics(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
 
+if (paths.has(roiRoute.path) || titles.has(roiRoute.title) || headings.has(roiRoute.h1)) throw new Error('Duplicate ROI route')
+const roiTarget = join(dist, roiRoute.path.slice(1), 'index.html')
+await mkdir(dirname(roiTarget), { recursive: true })
+await writeFile(roiTarget, renderRoiCalculator(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
+
 const indexableRoutes = [
+  roiRoute,
   economicsRoute,
   ...routes,
   ...tools,
