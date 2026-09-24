@@ -17,7 +17,7 @@ export function priceForVolume(volume) {
 }
 
 export function renderPricingTable() {
-  const rows = packages.map((tier) => `<tr><th scope="row">${tier.name}</th><td>£${tier.monthly.toLocaleString('en-GB')} / month</td><td>${tier.included.toLocaleString('en-GB')} packs</td><td>£${tier.rate.toFixed(2)} / pack</td><td>£${tier.rate.toFixed(2)} / extra pack</td></tr>`).join('')
+  const rows = packages.map((tier) => `<tr><th scope="row">${tier.name}</th><td><span class="sr-only">Monthly fee: </span>£${tier.monthly.toLocaleString('en-GB')} / month</td><td><span class="sr-only">Included: </span>${tier.included.toLocaleString('en-GB')} packs</td><td><span class="sr-only">Rate: </span>£${tier.rate.toFixed(2)} / pack</td><td><span class="sr-only">Extra packs: </span>£${tier.rate.toFixed(2)} / extra pack</td></tr>`).join('')
   return `<section class="pricing-offer" aria-labelledby="packages-heading">
     <span class="section-label">MONTHLY PACKAGES</span><h2 id="packages-heading">A bigger desk without a bigger team.</h2>
     <p>One monthly allowance. The same clear rate for every pack above it.</p>

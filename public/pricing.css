@@ -1,4 +1,5 @@
 .pricing-offer { margin: 24px 0; padding: clamp(20px,4vw,48px); background: #fff; border: 1.5px solid var(--ink); }
+.pricing-offer .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .pricing-offer h2 { font-size: clamp(30px,4vw,52px); line-height: 1.06; max-width: 740px; margin: 14px 0; }
 .pricing-offer > p { line-height: 1.5; }
 .pricing-table-wrap { overflow-x: auto; margin: 28px 0 18px; }
@@ -12,7 +13,7 @@
 @media(max-width:760px) {
  .pricing-offer { margin: 16px 0; padding: 20px 16px; }
  .pricing-offer table { min-width: 0; }
- .pricing-offer thead { display: none; }
+ .pricing-offer thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
  .pricing-offer tbody tr { display: grid; grid-template-columns: 1fr 1fr; padding: 12px 0; border-bottom: 2px solid var(--ink); }
  .pricing-offer tbody th,.pricing-offer tbody td { border: 0; padding: 6px; }
  .pricing-offer tbody th { grid-column: 1 / -1; }

@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { priceForVolume, packages } from '../scripts/pricing.mjs'
+import { priceForVolume, packages, renderPricingTable } from '../scripts/pricing.mjs'
 import { calculateRoi } from '../scripts/roi-calculator.mjs'
 
 test('approved monthly ladder and £3 floor', () => {
@@ -11,6 +11,13 @@ test('approved monthly ladder and £3 floor', () => {
   assert.equal(priceForVolume(2000).overage,1000)
   for (const volume of [1,100,800,1000,2000,3000,3001,1000000]) assert.ok(priceForVolume(volume).rate >= 3)
   assert.throws(() => priceForVolume(0), RangeError)
+})
+
+test('each pricing cell has a real accessible label beyond visual CSS', () => {
+  const table = renderPricingTable()
+  for (const label of ['Monthly fee:', 'Included:', 'Rate:', 'Extra packs:']) {
+    assert.equal(table.split(`<span class="sr-only">${label} </span>`).length - 1, 3)
+  }
 })
 
 test('capacity and revenue transform workbook throughput arithmetic without double counting', () => {
