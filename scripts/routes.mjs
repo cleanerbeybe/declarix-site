@@ -662,6 +662,7 @@ export const routes = [
       'The consultation has closed. The proposals are not a current registration duty. Check the official consultation page for the government response and legislative next steps.',
     schemaType: 'Article',
     publishedOn: '2026-07-16',
+    reviewedOn: '2026-09-25',
     expiresOn: '2026-10-30',
     sections: [
       {

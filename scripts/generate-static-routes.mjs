@@ -190,7 +190,7 @@ function jsonLd(route) {
         headline: route.h1,
         description: route.description,
         datePublished: route.publishedOn,
-        dateModified: site.reviewedOn,
+        dateModified: route.reviewedOn || site.reviewedOn,
         isPartOf: { '@id': `${site.origin}/#website` },
         about: { '@id': `${site.origin}/#organization` },
         author: { '@id': `${site.origin}/#organization` },
@@ -264,14 +264,14 @@ function renderRoute(route) {
           <aside class="hero-ledger">
             <span class="route-ref">${escapeHtml(route.ref)}</span>
             <div class="stamp">${escapeHtml(route.stamp).replaceAll('\n', '<br />')}</div>
-            <div class="review-cell"><span>LAST REVIEWED</span><strong>${site.reviewedOn}</strong></div>
+            <div class="review-cell"><span>LAST REVIEWED</span><strong>${route.reviewedOn || site.reviewedOn}</strong></div>
           </aside>
         </header>
         ${renderHeroStrip(route)}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
         ${renderSources(route)}
-        <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
+        <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${route.reviewedOn || site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
           <div><h2>${escapeHtml(route.cta?.title || 'Run the numbers before you buy.')}</h2><p>${escapeHtml(route.cta?.copy || 'Bring weekly volume, current minutes per declaration, loaded clerk cost and the system your team files through. Leave with an ROI estimate, integration route and recommended first workflow.')}</p></div>
           <a class="button" ${route.resourceKit ? 'data-kit-booking="bottom_cta"' : ''} href="${bookingHref(route)}">${escapeHtml(route.cta?.label || 'BOOK THE 20-MINUTE NUMBERS CALL')}</a>
