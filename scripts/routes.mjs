@@ -193,6 +193,7 @@ export const routes = [
     h1: 'Up to 3x more declarations per clerk.',
     standfirst: 'Take on more work with the team you have. Choose a monthly pack allowance, then pay the same rate for every extra pack.',
     stamp: 'MORE WORK\nSAME TEAM',
+    reviewedOn: '2026-09-25',
     sections: [
       {
         label: '01 · PILOT',
