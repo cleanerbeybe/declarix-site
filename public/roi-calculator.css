@@ -1,0 +1,19 @@
+.roi-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; margin:24px 0; }
+.roi-layout form,.roi-results,.roi-method { background:#fff; border:1.5px solid var(--ink); padding:clamp(20px,3vw,36px); }
+.roi-layout h2,.roi-method h2 { font-size:clamp(28px,3vw,42px); margin:12px 0; }
+.roi-layout p,.roi-method p { line-height:1.55; }
+.roi-layout label { display:block; font-weight:700; margin:22px 0 8px; }
+.roi-layout input { width:100%; border:1.5px solid var(--ink); border-radius:0; padding:13px; font:inherit; font-size:18px; }
+.roi-layout input:focus-visible { outline:3px solid var(--cleared); outline-offset:2px; }
+.roi-extra { margin:28px 0; padding-top:12px; border-top:1px solid #aebdc1; }
+.roi-extra h3 { margin-bottom:0; }
+.roi-layout button { cursor:pointer; font:700 13px Archivo,sans-serif; border:0; }
+#roi-error:not(:empty) { color:#9b281e; font-weight:700; }
+.roi-results { background:var(--ink); color:#fff; align-self:start; }
+.roi-results .button { display:inline-block; margin-top:20px; }
+.roi-metric,.roi-plan { border-top:1px solid #789097; padding:22px 0; }
+.roi-metric span,.roi-plan span { display:block; font:500 12px 'IBM Plex Mono',monospace; text-transform:uppercase; }
+.roi-metric strong { display:block; font-size:clamp(44px,5vw,70px); margin-top:8px; }
+.roi-plan h3 { font-size:40px; margin:12px 0; color:#8ed3aa; }
+.roi-method { margin-bottom:24px; }
+@media(max-width:760px) { .roi-layout { grid-template-columns:1fr; margin:16px 0; } }
