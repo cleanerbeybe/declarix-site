@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Up to 3× more customs declarations per clerk with no new headcount. Declarix builds CDS-ready entry packs for Sequoia, Descartes and customer integrations."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#16313D" />
+    <link rel="canonical" href="https://getdeclarix.com/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- v3.0 §4.3 — critical faces preloaded so font-display: optional always lands -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/archivo-latin-900-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/archivo-latin-400-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/ibm-plex-mono-latin-500-normal.woff2"
+      crossorigin
+    />
+    <!-- v3.0 §2 — the poster is the LCP element; preload the frame the viewport will use -->
+    <link
+      rel="preload"
+      as="image"
+      href="/exhibits/hero-terminal-1920.jpg"
+      media="(min-width: 981px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/exhibits/hero-terminal-1080.jpg"
+      media="(max-width: 980px)"
+      fetchpriority="high"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Declarix" />
+    <meta property="og:title" content="Up to 3× more declarations per clerk | Declarix" />
+    <meta
+      property="og:description"
+      content="No new headcount. More margin on every declaration. See how Declarix turns customs paperwork into CDS-ready entry packs."
+    />
+    <meta property="og:url" content="https://getdeclarix.com/" />
+    <meta property="og:image" content="https://getdeclarix.com/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Up to 3× more declarations per clerk | Declarix" />
+    <meta
+      name="twitter:description"
+      content="No new headcount. More margin on every declaration. CDS-ready entry packs for Sequoia, Descartes and customer integrations."
+    />
+    <meta name="twitter:image" content="https://getdeclarix.com/og.jpg" />
+    <title>Up to 3× more declarations per clerk | Declarix</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://getdeclarix.com/#organization",
+            "name": "Declarix Limited",
+            "legalName": "Declarix Limited",
+            "identifier": "17288258",
+            "url": "https://getdeclarix.com/",
+            "email": "pack@getdeclarix.com"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://getdeclarix.com/#website",
+            "name": "Declarix",
+            "url": "https://getdeclarix.com/",
+            "publisher": { "@id": "https://getdeclarix.com/#organization" }
+          }
+        ]
+      }
+    </script>
+    <style>
+      :root {
+        --ink: #16313d;
+        --paper: #f7f6f1;
+        --field: #fff;
+        --cleared: #1b7a4b;
+        --muted: #5c6e76;
+        --manifest: #c77b27;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: Arial, sans-serif;
+      }
+
+      .pre-render-frame {
+        min-height: calc(100svh - 32px);
+        margin: 16px;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+      }
+
+      .pre-render-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--field);
+      }
+
+      .pre-render-wordmark,
+      .pre-render-book {
+        padding: 22px 24px;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+
+      .pre-render-book {
+        color: var(--paper);
+        background: var(--cleared);
+        text-decoration: none;
+      }
+
+      .pre-render-bar {
+        padding: 12px 20px;
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--manifest);
+        font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        text-align: center;
+      }
+
+      .pre-render-hero {
+        display: grid;
+        place-items: center;
+        min-height: 82svh;
+        padding: 48px 20px;
+        text-align: center;
+        color: var(--paper);
+        background:
+          linear-gradient(rgb(22 49 61 / 0.6), rgb(22 49 61 / 0.6)),
+          var(--ink) url('/exhibits/hero-terminal-1920.jpg') center / cover no-repeat;
+        border-bottom: 2px solid var(--paper);
+      }
+
+      .pre-render-hero > div {
+        display: grid;
+        justify-items: center;
+        gap: 18px;
+        max-width: 980px;
+      }
+
+      .pre-render-kicker,
+      .pre-render-price {
+        color: rgb(247 246 241 / 0.78);
+        font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        letter-spacing: 0.1em;
+      }
+
+      .pre-render-hero h1 {
+        margin: 0;
+        font-size: clamp(36px, 8vw, 76px);
+        font-weight: 900;
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .pre-render-hero p {
+        max-width: 58ch;
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+
+      .pre-render-issue {
+        padding: 8px 20px;
+        border-bottom: 1.5px solid var(--ink);
+        color: var(--muted);
+        font: 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        letter-spacing: 0.1em;
+      }
+
+      .pre-render-ctas {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .pre-render-ctas a {
+        padding: 16px 24px;
+        border: 1.5px solid var(--paper);
+        color: var(--paper);
+        font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+      }
+
+      .pre-render-ctas a:last-child {
+        color: var(--paper);
+        border-color: var(--cleared);
+        background: var(--cleared);
+      }
+
+      .pre-render-links {
+        display: flex;
+        flex-wrap: wrap;
+        border-top: 1.5px solid var(--ink);
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--field);
+      }
+
+      .pre-render-links a {
+        padding: 13px 18px;
+        border-right: 1px solid rgb(22 49 61 / 0.35);
+        color: var(--ink);
+        font: 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        text-decoration: none;
+      }
+
+      @media (max-width: 620px) {
+        .pre-render-frame {
+          min-height: calc(100svh - 16px);
+          margin: 8px;
+        }
+
+        .pre-render-hero h1 {
+          font-size: 26px;
+          font-size: clamp(30px, 10vw, 42px);
+        }
+
+        .pre-render-hero {
+          background:
+            linear-gradient(rgb(22 49 61 / 0.6), rgb(22 49 61 / 0.6)),
+            var(--ink) url('/exhibits/hero-terminal-1080.jpg') center / cover no-repeat;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-ihjmzh7s.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-BpQH8Ho1.js">
+    <link rel="modulepreload" crossorigin href="/assets/gsap-BbmEDsDm.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-CcseENKU.css">
+  </head>
+  <body>
+    <div id="root">
+      <div class="pre-render-frame">
+        <header class="pre-render-header">
+          <div class="pre-render-wordmark">DECLARIX</div>
+          <a class="pre-render-book" href="#book">BOOK THE CALL</a>
+        </header>
+        <div class="pre-render-issue">FORM DCLRX-H1 · ISSUE 4.2</div>
+        <div class="pre-render-bar">
+          MET US AT MULTIMODAL (NEC · 30 JUN–2 JUL)? Mention it when you book — we'll pick up where the conversation left off. →
+        </div>
+        <main class="pre-render-hero">
+          <div>
+            <div class="pre-render-kicker">FOR CUSTOMS BROKERS &amp; FREIGHT FORWARDERS WHO CLEAR THEIR OWN ENTRIES</div>
+            <h1>Up to 3× more declarations per clerk.</h1>
+            <p><strong>No new headcount. More margin on every declaration.</strong></p>
+            <p>
+              Declarix reads the whole customs job and builds a CDS-ready entry pack for Sequoia,
+              Descartes or your customer integration. Your clerk checks the evidence instead of
+              building the entry field by field.
+            </p>
+            <div class="pre-render-price">TYPICAL PROCESSING: ~200 SECONDS · EVERY FIELD LINKED TO ITS SOURCE</div>
+            <div class="pre-render-ctas">
+              <a href="#job">SEE WHERE THE 3× COMES FROM</a>
+              <a href="#book">BOOK THE 20-MINUTE NUMBERS CALL</a>
+            </div>
+          </div>
+        </main>
+        <nav class="pre-render-links" aria-label="Explore Declarix">
+          <a href="/how-it-works/">HOW IT WORKS</a>
+          <a href="/supported-scope/">SUPPORTED SCOPE</a>
+          <a href="/tools/customs-document-pack-check/">FREE PACK CHECK</a>
+          <a href="/customs-declaration-software/">CUSTOMS SOFTWARE GUIDE</a>
+          <a href="/customs-clearance-software/">CLEARANCE SOFTWARE</a>
+          <a href="/customs-intermediary-registration-2026/">REGISTRATION 2026</a>
+          <a href="/pricing/">PRICING</a>
+          <a href="/pilot/">PILOT</a>
+          <a href="/security/">SECURITY</a>
+          <a href="/privacy/">PRIVACY</a>
+          <a href="/about/">ABOUT</a>
+          <a href="/terms/">TERMS</a>
+          <a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a>
+        </nav>
+      </div>
+    </div>
+    <noscript>
+      <div class="pre-render-frame">
+        <main class="pre-render-hero">
+          <div>
+            <p><strong>Up to 3× more declarations per clerk.</strong></p>
+            <p>No new headcount. More margin on every declaration. Book the 20-minute numbers call to run your ROI.</p>
+          </div>
+        </main>
+      </div>
+    </noscript>
+  </body>
+</html>

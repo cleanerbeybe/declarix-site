@@ -1,0 +1,4 @@
+Contact: mailto:pack@getdeclarix.com
+Preferred-Languages: en
+Canonical: https://getdeclarix.com/.well-known/security.txt
+Expires: 2027-07-16T00:00:00.000Z
