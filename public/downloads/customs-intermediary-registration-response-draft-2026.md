@@ -1,10 +1,10 @@
 # Customs intermediary registration consultation — response working draft
 
-Edition: 17 July 2026
-Consultation deadline shown by HMRC: Monday 21 September 2026
+Updated: 25 September 2026
+Consultation closed: Monday 21 September 2026
 Official consultation: <https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration>
 
-Use this editable file to prepare an evidence-backed response. Keep the official consultation open while drafting because its wording, deadline, submission address, and process are the source of truth.
+Use this editable file to review the proposals against your operating evidence while the government considers responses and confirms its next steps on legislation. The consultation has closed; do not send it as a new consultation response.
 
 ## Before drafting
 
@@ -167,7 +167,7 @@ Set out practical implementation support, safeguards, data reuse, guidance, test
 - [ ] Proposed alternatives are specific enough to assess.
 - [ ] The reviewer removed unsupported claims and answers outside the organisation’s expertise.
 - [ ] Confidentiality requests are deliberate and explained rather than relying on an automatic email footer.
-- [ ] The current official deadline and submission instructions have been checked immediately before sending.
+- [ ] The official consultation page has been checked for the government response and next steps.
 - [ ] A final copy and the evidence used are saved in the organisation’s normal record.
 
 ## Primary sources
@@ -175,4 +175,4 @@ Set out practical implementation support, safeguards, data reuse, guidance, test
 1. HM Revenue & Customs, “Customs intermediaries: introduction of Mandatory Registration”, published 23 June 2026: <https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration>
 2. HM Revenue & Customs, “Standard for Customs Intermediaries”: <https://www.gov.uk/government/publications/standard-for-customs-intermediaries>
 
-Prepared as a free operational working file by Declarix Limited. This file organises a response; it is not HMRC guidance and does not predict the final policy.
+Prepared as a free operational working file by Declarix Limited. This file organises an internal review of the closed consultation proposals; it is not HMRC guidance.

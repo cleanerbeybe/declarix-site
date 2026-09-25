@@ -648,37 +648,37 @@ export const routes = [
   },
   {
     path: '/customs-intermediary-registration-2026/',
-    ref: 'RESPONSE KIT 13 · OPEN CONSULTATION',
+    ref: 'REGISTRATION 2026 · NEXT STEPS',
     title: 'Customs intermediary registration 2026 response kit',
     description:
-      'Download a free customs intermediary registration response kit for the 2026 HMRC consultation: a 13-question draft, evidence matrix, source register, and deadline plan.',
+      'The 2026 customs intermediary registration consultation is closed. Use the free 13-question kit and evidence matrix to prepare for the government next steps.',
     eyebrow: 'FREE RESPONSE KIT · CUSTOMS INTERMEDIARY REGISTRATION 2026',
-    h1: 'Build the response before the deadline.',
+    h1: 'Get your customs operation ready for what comes next.',
     standfirst:
-      'Download a question-by-question draft and evidence matrix, map the operating examples that matter, and give your reviewer a clean working file before 21 September 2026.',
+      'The consultation closed on 21 September 2026. Map your intermediary roles, controls and operating evidence now, so your team can respond quickly when the government confirms its next steps on legislation.',
     stamp: 'KIT\nREADY',
-    heroStrip: ['13 QUESTIONS MAPPED', '2 EDITABLE FILES', 'DEADLINE 21 SEP 2026'],
+    heroStrip: ['CONSULTATION CLOSED', '13 QUESTIONS MAPPED', '2 EDITABLE FILES'],
     boundary:
-      'This resource organises a response to an open HMRC consultation. It does not predict the final policy or replace the current consultation page and submission instructions.',
+      'The consultation has closed. The proposals are not a current registration duty. Check the official consultation page for the government response and legislative next steps.',
     schemaType: 'Article',
     publishedOn: '2026-07-16',
-    expiresOn: '2026-09-21',
+    expiresOn: '2026-10-30',
     sections: [
       {
         label: '01 · DIRECT ANSWER',
-        title: 'What is HMRC proposing—and what can you do now?',
+        title: 'What happened, and what should your team prepare now?',
         paragraphs: [
-          'HMRC opened a 13-week consultation on proposed mandatory registration for customs intermediaries that interact with HMRC on behalf of traders. It was published on 23 June 2026 and closes on 21 September 2026. The consultation asks about scope, exclusions, minimum requirements, checks, enforcement, and proportionate implementation. HMRC says respondents may answer only the questions relevant to them.',
-          'The practical job now is to turn operational experience into evidence: which entities and activities are affected, what the proposed checks would change, where a rule could duplicate an existing control, and what a proportionate alternative could look like. The free files below give that work a structure before drafting begins.',
+          'The HMRC consultation on mandatory registration for customs intermediaries closed on 21 September 2026. It asked about scope, exclusions, minimum requirements, checks, enforcement and proportionate implementation. The government will confirm its next steps on legislation after considering responses.',
+          'Use the period before the next announcement to map which entities and activities could be affected, which controls already exist, and where a new requirement could duplicate work. The free files below give your team a ready-made structure for that review.',
         ],
       },
       {
         label: '02 · PROPOSED SCOPE',
         title: 'Which operating models are in the consultation?',
         facts: [
-          ['Consultation status', 'Open proposal; not a current registration duty'],
+          ['Consultation status', 'Closed; government response and legislative next steps to follow'],
           ['Published', '23 June 2026'],
-          ['Response deadline', 'Monday 21 September 2026'],
+          ['Consultation closed', 'Monday 21 September 2026'],
           ['Proposed coverage', 'UK-wide; imports and exports; customs activity across declaration types'],
           ['Proposed focus', 'Intermediaries interacting with HMRC for traders'],
           ['Proposed exclusions', 'Advice-only work, specified carrier activity, and trader self-representation'],
@@ -700,8 +700,8 @@ export const routes = [
         label: '04 · RESPONSE FILE',
         title: 'Give every material view an operating example.',
         paragraphs: [
-          'For each consultation point, record the proposal, the affected workflow, a concrete example, the likely benefit or burden, supporting evidence, and a practical alternative. Separate facts about the current operation from forecasts about a future scheme. If a requirement would duplicate an existing control, name the control and explain how HMRC could rely on or align with it.',
-          'HMRC invites partial responses. A focused response on the parts your firm understands well can be more useful than an answer that guesses across every question. Responses and enquiries go to the address published in the consultation; check the official page before sending because the source controls the process.',
+          'For each proposal, record the affected workflow, a concrete example, the likely benefit or burden, supporting evidence, and a practical alternative. Separate the operation you run today from a possible future scheme. If a requirement would duplicate an existing control, name that control and the team that owns it.',
+          'The consultation is closed, but the question-by-question file remains a useful internal review tool. Assign an owner to each relevant question and keep your operating examples ready for the government response and any future implementation timetable.',
         ],
       },
       {
@@ -715,7 +715,7 @@ export const routes = [
         label: '06 · EXPIRY RULE',
         title: 'This page changes when the source changes.',
         paragraphs: [
-          'Declarix will review this resource when HMRC updates the consultation, closes responses, publishes a response summary, or announces legislation and implementation. After 21 September 2026, the page must not continue to describe the consultation as open. It will be updated into an outcome tracker or redirected to a current resource after the official next step is known.',
+          'Declarix will review this resource when the government publishes its response, announces legislation, or sets an implementation timetable. The next scheduled review is 30 October 2026; check the official consultation page for a newer announcement in the meantime.',
         ],
       },
     ],
@@ -729,7 +729,7 @@ export const routes = [
           id: 'response_draft_markdown',
           format: 'MARKDOWN',
           title: '13-question response draft',
-          description: 'A clean drafting file with organisation context, all consultation questions, evidence prompts, and a final submission check.',
+          description: 'A 13-question workpaper for reviewing your operating model, evidence and practical options after the consultation closed.',
           href: '/downloads/customs-intermediary-registration-response-draft-2026.md',
           meta: 'EDITABLE · 13 QUESTIONS · 7 KB',
         },
@@ -745,7 +745,7 @@ export const routes = [
       steps: [
         ['01', 'Map the operating model', 'List the entities, intermediary roles, services, systems, permissions, and movement mix behind the response.'],
         ['02', 'Add evidence to the material questions', 'Use real workflows, implementation estimates, volumes, errors, controls, and practical alternatives where they strengthen the answer.'],
-        ['03', 'Review and submit from the official page', 'Confirm the current deadline and submission instructions, then send only the questions your organisation is equipped to answer.'],
+        ['03', 'Keep the review ready', 'Track the government response and refresh your operating evidence when the next steps on legislation are confirmed.'],
       ],
     },
     cta: {
