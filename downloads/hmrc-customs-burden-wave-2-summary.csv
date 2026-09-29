@@ -1,0 +1,8 @@
+"metric_id","label","value_low","value_high","unit","precision","denominator","source_note"
+"sample","Surveyed declarants","460","460","respondents","exact","460","Random probability telephone survey"
+"intermediary_mix","Customs intermediaries","70","70","percent","published percentage","460","Do not convert weighted percentage to respondent count"
+"trader_mix","Traders","30","30","percent","published percentage","460","Do not convert weighted percentage to respondent count"
+"typical_process_time","Average time per typical process","19","28","minutes","published range","varies by process","GVMS export low and NCTS import high"
+"internal_cost","Internal cost per process","5","7","GBP","published range","varies by process","GVMS export low and other process types high"
+"automation_data_entry","Automated data entry would help","70","70","percent","approximate","varies by process","Approximately 70 percent across process types"
+"no_change_needed","No change needed or already efficient","0","20","percent","upper bound","varies by process","At most one in five"

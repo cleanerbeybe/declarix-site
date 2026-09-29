@@ -1,0 +1,14 @@
+question_number,consultation_theme,working_answer,evidence_or_operating_example,quantified_impact,practical_alternative,owner,review_status,next_action
+1,Organisation name,,,,,,Not started,Add the responding legal entity or representative body
+2,Business type,,,,,,Not started,Describe the operating model in plain language
+3,Annual movements and direction,,,,,,Not started,Add an evidenced range for imports exports or both
+4,Intermediary type and activities,,,,,,Not started,Map every relevant role and separate advice-only activity
+5,Business size,,,,,,Not started,Confirm the employee-size band used by the consultation
+6,Time operating in trade or customs,,,,,,Not started,Confirm the relevant operating history
+7,Benefits and challenges of mandatory registration,,,,,,Not started,Add one benefit and one operational challenge supported by examples
+8,Proposed scope and exclusions,,,,,,Not started,Map affected entities activities and edge cases
+9,Minimum requirements and proportionality,,,,,,Not started,Compare each proposal with evidence already maintained
+10,Graduated enforcement approach,,,,,,Not started,Test remediation suspension escalation review and appeal scenarios
+11,Transitional period,,,,,,Not started,Estimate implementation steps dependencies and elapsed time
+12,Unintended consequences and trade impacts,,,,,,Not started,Record likely capacity cost competition or border-flow effects
+13,Other design considerations,,,,,,Not started,Propose practical implementation support or safeguards

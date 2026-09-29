@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">UK customs operations signal report: 402 qualified accounts</title>
+  <desc id="desc">Of 402 qualified accounts, 50 were priority-grade signals, 73 were strong fit, and 279 were structural fit in a 15 July 2026 public-source research snapshot.</desc>
+  <rect width="1200" height="630" fill="#f7f6f1"/>
+  <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#16313d" stroke-width="4"/>
+  <text x="72" y="88" fill="#5c6e76" font-family="monospace" font-size="18" font-weight="700" letter-spacing="2">DECLARIX · ORIGINAL RESEARCH · 15 JULY 2026</text>
+  <text x="72" y="198" fill="#16313d" font-family="Arial, sans-serif" font-size="112" font-weight="900">402</text>
+  <text x="72" y="246" fill="#16313d" font-family="Arial, sans-serif" font-size="34" font-weight="700">qualified UK customs operations</text>
+  <text x="72" y="284" fill="#5c6e76" font-family="Arial, sans-serif" font-size="23">Evidence tiers across a documented public-source census</text>
+  <rect x="72" y="346" width="126" height="94" fill="#c77b27"/>
+  <rect x="198" y="346" width="184" height="94" fill="#1b7a4b"/>
+  <rect x="382" y="346" width="706" height="94" fill="#16313d"/>
+  <text x="72" y="484" fill="#16313d" font-family="monospace" font-size="18" font-weight="700">50 PRIORITY · 12.4%</text>
+  <text x="72" y="521" fill="#16313d" font-family="monospace" font-size="18" font-weight="700">73 STRONG · 18.2%</text>
+  <text x="72" y="558" fill="#16313d" font-family="monospace" font-size="18" font-weight="700">279 STRUCTURAL · 69.4%</text>
+  <text x="1110" y="565" fill="#5c6e76" text-anchor="end" font-family="monospace" font-size="12">GETDECLARIX.COM/RESEARCH/UK-CUSTOMS-OPERATIONS-SIGNAL-REPORT-2026/</text>
+</svg>
