@@ -371,7 +371,7 @@ export const routes = [
           ['Exceptions and unsupported cases', 'Counted, not hidden'],
           ['Corrections and rework', 'Assigned to their cause'],
           ['System handoff', 'Observed for the agreed target'],
-          ['Pilot fee if agreed success criteria are missed', 'Fully waived'],
+          ['Pilot cost if the agreed job fails', '£0 - you pay nothing'],
           ['Pilot rate and cap', '£1 per declaration, capped at £500'],
         ],
       },

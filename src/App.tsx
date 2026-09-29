@@ -857,7 +857,7 @@ function DeskMathSection({ source }: { source: string }) {
           <article>
             <span>COST PER DECLARATION</span>
             <strong>£7.95 <em>→</em> £2.45</strong>
-            <small>LABOUR ONLY · SEE PUBLISHED PACKAGES AT /PRICING/</small>
+            <small>LABOUR ONLY · SEE PUBLISHED PACKAGES</small>
           </article>
           <article>
             <span>BOTTOM LINE, PER YEAR</span>
@@ -963,7 +963,7 @@ function PilotSection() {
               <li>YOU SEND .......... ONE ANONYMISED, GENUINELY UGLY JOB</li>
               <li>WE RETURN ......... THE CDS-READY PACK, WITHIN ONE WORKING DAY</li>
               <li>YOUR CLERK ....... CHECKS IT SIDE-BY-SIDE AGAINST THE MANUAL RUN</li>
-              <li>IF SUCCESS CRITERIA ARE MISSED ....... PILOT FEE WAIVED</li>
+              <li>IF IT FAILS ....... YOU PAY NOTHING</li>
               <li>PILOT RATE ....... £1 PER DECLARATION, CAPPED AT £500</li>
             </ol>
           </div>
