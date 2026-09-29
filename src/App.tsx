@@ -823,7 +823,7 @@ function DeskMathSection({ source }: { source: string }) {
               <p><span>CHECK &amp; SUBMIT</span><strong className="docket-minutes" data-text="~9 MIN">~9 MIN</strong></p>
               <p><span>FLAGS &amp; EVIDENCE</span><strong>IN THE PACK</strong></p>
               <p><span>LOADED CLERK COST</span><strong>£2.45</strong></p>
-              <p><span>DECLARIX RATE</span><strong>SET ON THE CALL</strong></p>
+              <p><span>DECLARIX RATE</span><strong><a href="/pricing/">FROM £500 / MONTH</a></strong></p>
               <p className="total-row"><span>TOTAL</span><strong>UNDER TODAY'S — OR THERE'S NO DEAL WORTH DOING.</strong></p>
             </div>
           </div>
@@ -857,7 +857,7 @@ function DeskMathSection({ source }: { source: string }) {
           <article>
             <span>COST PER DECLARATION</span>
             <strong>£7.95 <em>→</em> £2.45</strong>
-            <small>LABOUR ONLY · DECLARIX RATE IS SIZED ON THE CALL</small>
+            <small>LABOUR ONLY · SEE PUBLISHED PACKAGES AT /PRICING/</small>
           </article>
           <article>
             <span>BOTTOM LINE, PER YEAR</span>
@@ -963,8 +963,8 @@ function PilotSection() {
               <li>YOU SEND .......... ONE ANONYMISED, GENUINELY UGLY JOB</li>
               <li>WE RETURN ......... THE CDS-READY PACK, WITHIN ONE WORKING DAY</li>
               <li>YOUR CLERK ....... CHECKS IT SIDE-BY-SIDE AGAINST THE MANUAL RUN</li>
-              <li>IF IT FAILS ....... YOU PAY NOTHING</li>
-              <li>IF IT WORKS ....... PILOT CONTINUES, CAPPED AT £500 TOTAL</li>
+              <li>IF SUCCESS CRITERIA ARE MISSED ....... PILOT FEE WAIVED</li>
+              <li>PILOT RATE ....... £1 PER DECLARATION, CAPPED AT £500</li>
             </ol>
           </div>
         </div>

@@ -230,13 +230,13 @@ export const routes = [
       'Define the unit, separate genuine rework from changed jobs, then test the total cost against the clerk time and declaration capacity returned to your desk.',
     stamp: 'CLEAR\nCOUNT',
     limitations:
-      'The final per-entry rate, inclusions and correction rules are stated in the quote. The homepage model is a transparent example used to start the ROI conversation.',
+      'Desk is £500/month for 100 packs, Team £4,000/month for 1,000 packs, and Scale £9,000/month for 3,000 packs. Extra packs keep the same package rate, never below £3.00. The homepage model starts the ROI conversation.',
     sections: [
       {
         label: '01 · PER-ENTRY MODEL',
         title: 'Pay for declaration work, not another seat.',
         paragraphs: [
-          'Declarix is priced against the entries and workflow it helps the desk process. Your quote names the unit being counted and shows how split shipments, amalgamated invoices, or unusual line volumes are treated, so the comparison uses the work you actually run.',
+          'Declarix packages count declaration packs, not seats: Desk £500/month for 100 packs, Team £4,000/month for 1,000, and Scale £9,000/month for 3,000. Extra packs keep the package rate, never below £3.00. The quote shows how split shipments, amalgamated invoices, or unusual line volumes are counted.',
         ],
       },
       {
@@ -250,7 +250,7 @@ export const routes = [
         label: '03 · TOTAL COST',
         title: 'Compare the full desk cost, not a headline rate.',
         paragraphs: [
-          'Put any minimum volume, VAT, payment timing, support, service window, pilot cap, renewal, and cancellation alongside the per-entry rate. Then compare that total with current preparation time, loaded clerk cost, customer chasing, and the declarations the team cannot take on today.',
+          'Compare the package, same-rate extra packs and pilot cost (£0 upfront, £1 per declaration, capped at £500 and fully waived if agreed success criteria are missed) with current preparation time, loaded clerk cost, customer chasing, and the declarations the team cannot take on today.',
         ],
       },
       {
@@ -325,17 +325,18 @@ export const routes = [
   },
   {
     path: '/pilot/',
+    reviewedOn: '2026-09-29',
     ref: 'DOCKET 07 · PILOT',
     title: 'Declarix customs-document preparation pilot',
     description:
-      'After the 20-minute numbers call, prove Declarix on one anonymised customs job. The pilot is free if it fails and capped at £500 if it works.',
+      'Prove Declarix on one anonymised customs job. £0 upfront, £1 per declaration, capped at £500. The fee is fully waived if agreed success criteria are missed.',
     eyebrow: 'PILOT · THE STEP AFTER THE NUMBERS WORK',
     h1: 'Prove it on one ugly job.',
     standfirst:
       'First run the ROI and map the integration. If the commercial case makes sense, send one anonymised job and let your clerk compare the CDS-ready pack with the manual run.',
-    stamp: '£0 FAIL\n£500 CAP',
+    stamp: '£0 UPFRONT\n£500 CAP',
     limitations:
-      'If the agreed job fails, you pay nothing. If it works, the initial pilot continues with a total cap of £500 before any wider rollout decision.',
+      '£0 upfront. £1 per declaration, capped at £500. The pilot fee is fully waived if the agreed success criteria are missed.',
     sections: [
       {
         label: '01 · PREPARE',
@@ -370,8 +371,8 @@ export const routes = [
           ['Exceptions and unsupported cases', 'Counted, not hidden'],
           ['Corrections and rework', 'Assigned to their cause'],
           ['System handoff', 'Observed for the agreed target'],
-          ['Pilot cost if the agreed job fails', '£0'],
-          ['Initial pilot cap if it works', '£500 total'],
+          ['Pilot fee if agreed success criteria are missed', 'Fully waived'],
+          ['Pilot rate and cap', '£1 per declaration, capped at £500'],
         ],
       },
     ],
@@ -644,7 +645,7 @@ export const routes = [
     schemaType: 'Article',
     publishedOn: '2026-07-16',
     reviewedOn: '2026-09-25',
-    expiresOn: '2026-10-30',
+    expiresOn: '2026-11-30',
     sections: [
       {
         label: '01 · DIRECT ANSWER',

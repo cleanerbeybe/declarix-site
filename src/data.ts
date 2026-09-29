@@ -213,7 +213,7 @@ export const questions = [
   },
   {
     q: 'What does it cost?',
-    a: "Per entry, not per seat. We size the rate against the labour and capacity you recover. The pilot is free if it fails and capped at £500 if it works. Your per-entry rate comes from the 20-minute numbers call.",
+    a: "Per entry, not per seat. Desk is £500/month for 100 packs, Team is £4,000/month for 1,000 packs, and Scale is £9,000/month for 3,000 packs. Extra packs cost the same per-pack rate as your package, never below £3.00. More capacity means more work for the same team. The pilot is £0 upfront and £1 per declaration, capped at £500; the fee is fully waived if the agreed success criteria are missed. Use the 20-minute numbers call to map your capacity and first workflow.",
   },
   {
     q: 'Will my clerks need training?',

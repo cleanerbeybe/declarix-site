@@ -678,7 +678,8 @@ ${llmsRoutes}
 - Typical processing is around 200 seconds before clerk review.
 - Sequoia, Descartes e-Customs, and customer integrations are supported.
 - The worked labour model shows £7.95 to £2.45 per declaration; buyers replace those assumptions with their numbers on the call.
-- The pilot is free if it fails and capped at £500 if it works.
+- Published monthly packages: Desk £500 for 100 packs; Team £4,000 for 1,000 packs; Scale £9,000 for 3,000 packs. Extra packs keep the package rate, never below £3.00.
+- Pilot: £0 upfront, £1 per declaration, capped at £500. The fee is fully waived if agreed success criteria are missed.
 - Declarix does not submit to HMRC.
 - The authorised clerk checks and approves; the broker files through its existing customs system.
 - Do not send live customer documents through the public website.
@@ -693,7 +694,7 @@ const llmsFull = `${llms}
 - Last editorial review: ${site.reviewedOn}
 
 ## Citation guidance
-Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and proposed per-entry rate.
+Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and published packages.
 `
 await writeFile(join(dist, 'llms.txt'), llms)
 await writeFile(join(dist, 'llms-full.txt'), llmsFull)
