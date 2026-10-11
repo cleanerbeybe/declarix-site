@@ -272,10 +272,16 @@ function checkerScript(checker, apiOrigin, posthogKey, posthogHost) {
           payload,
           showActions: false,
         });
+        status.textContent = heading.textContent;
         track('eori_check_unavailable', { reason });
       };
-      const assertContract = (payload) => {
+      // Match the backend's NFKC, case, Python whitespace and common dash rules.
+      // Other punctuation is retained, so it cannot silently change identity.
+      const normalizeEori = (value) => value.normalize('NFKC').toUpperCase()
+        .replace(/[\\t-\\r\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\u002d\\u2013\\u2014]/g, '');
+      const assertContract = (payload, submittedEori) => {
         if (!payload || typeof payload !== 'object' || typeof payload.normalized_eori !== 'string') throw new Error('contract');
+        if (payload.normalized_eori !== submittedEori) throw new Error('contract');
         if (!payload.format || !['valid', 'invalid', 'not_supported'].includes(payload.format.status)) throw new Error('contract');
         if (!payload.registry || !['valid', 'invalid', 'unavailable', 'not_checked'].includes(payload.registry.status)) throw new Error('contract');
         if (payload.format.status === 'valid' && ['valid', 'invalid'].includes(payload.registry.status)) {
@@ -296,6 +302,7 @@ function checkerScript(checker, apiOrigin, posthogKey, posthogHost) {
           return;
         }
         input.setCustomValidity('');
+        const submittedEori = normalizeEori(candidate);
         button.disabled = true;
         button.textContent = 'CHECKING HMRC…';
         status.textContent = 'Checking one GB EORI number with HMRC.';
@@ -320,7 +327,7 @@ function checkerScript(checker, apiOrigin, posthogKey, posthogHost) {
             unavailable('api_response', 'The checker could not reach the registry service. Try again shortly.');
             return;
           }
-          const payload = assertContract(await response.json());
+          const payload = assertContract(await response.json(), submittedEori);
           if (payload.format.status === 'not_supported') {
             showResult({
               state: 'unsupported',
