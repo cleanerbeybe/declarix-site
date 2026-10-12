@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import vm from 'node:vm'
+import { readFileSync } from 'node:fs'
 import { eoriChecker, renderEoriChecker } from '../scripts/eori-checker.mjs'
 
 const eori = 'GB123456789012'
@@ -155,6 +156,36 @@ test('response matching uses the submitted snapshot, not later edited input', as
   await pending
   assert.match(c.element('eori-result').className, /\bis-registry_valid\b/)
   assert.equal(c.element('eori-normalized').textContent, eori)
+})
+
+test('Q6 record has the accepted review date and four official check stamps', () => {
+  assert.equal(eoriChecker.reviewedOn, '2026-10-12')
+  assert.equal(eoriChecker.sources.length, 4)
+  assert.deepEqual(eoriChecker.sources.map(source => source.checked), Array(4).fill('12 OCTOBER 2026'))
+})
+
+test('Q6 renderer agrees on visible, structured and footer review dates', () => {
+  assert.match(html, /SOURCE REVIEW<\/span><strong>2026-10-12<\/strong>/)
+  assert.match(html, /REVIEWED 2026-10-12/)
+  assert.equal((html.match(/CHECKED 12 OCTOBER 2026/g) || []).length, 4)
+  const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])
+  const app = data['@graph'].find(node => node['@type'] === 'WebApplication')
+  assert.equal(app.dateModified, eoriChecker.reviewedOn)
+})
+
+test('Q6 guidance uses the captured final destination without changing source titles', () => {
+  assert.equal(eoriChecker.sources[1].url, 'https://www.gov.uk/guidance/economic-operators-registration-and-identification-eori/finding-and-checking-an-eori-number')
+  assert.equal(eoriChecker.sources[1].title, 'Finding and checking an EORI')
+  assert.match(html, /href="https:\/\/www.gov.uk\/guidance\/economic-operators-registration-and-identification-eori\/finding-and-checking-an-eori-number"/)
+})
+
+test('Q6 source register separates our check date from publisher update dates', () => {
+  const register = readFileSync(new URL('../docs/data/2026-07-17-eori-checker-public-release/SOURCE-REGISTER.md', import.meta.url), 'utf8')
+  assert.match(register, /Checked on \*\*12 October 2026\*\*/)
+  assert.match(register, /finding-and-checking-an-eori-number/)
+  assert.match(register, /2 October 2026/)
+  assert.match(register, /10 September 2025/)
+  assert.match(register, /retrieval\/review date/)
 })
 
 test('failure followed by retry never retains stale result details', async () => {
