@@ -189,7 +189,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
-    extraTools: [['/tools/mrn-checker/', 'Check every MRN for the GMR']],
+    extraTools: [['/tools/gmr-checker/', 'Check the GMR and plan its references'], ['/tools/mrn-checker/', 'Check every MRN for the GMR']],
   },
   {
     slug: 'postponed-vat-accounting-checklist',

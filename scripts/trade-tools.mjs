@@ -7,6 +7,7 @@
 import { readFileSync } from 'node:fs'
 import { PACK_CHECK, REVIEWED, escapeHtml, isLive, publishedTradeTools } from './trade-tools/page-kit.mjs'
 import mrnChecker from './trade-tools/pages/mrn.mjs'
+import gmrChecker from './trade-tools/pages/gmr.mjs'
 
 // Inline a logic module for the browser: drop import lines and export keywords.
 export function inlineModule(name) {
@@ -15,7 +16,7 @@ export function inlineModule(name) {
     .replace(/^export (const|function|class|let) /gm, '$1 ')
 }
 
-export const tradeTools = [mrnChecker]
+export const tradeTools = [mrnChecker, gmrChecker]
 for (const tool of tradeTools) publishedTradeTools.add(tool.path)
 
 const RELATED_NAMES = {
