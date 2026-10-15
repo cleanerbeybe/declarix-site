@@ -183,6 +183,12 @@ export const routes = [
         ],
       },
     ],
+    related: [
+      { href: '/customs-automation-software/', label: 'Customs automation software', copy: 'What Declarix automates at each stage and what your clerk decides.' },
+      { href: '/alternatives/sequoia/', label: 'ASM Sequoia alternatives', copy: 'Keep Sequoia and add up to 3× more declarations per clerk.' },
+      { href: '/alternatives/descartes-e-customs/', label: 'Descartes e-Customs alternatives', copy: 'Keep e-Customs and grow the desk without a migration.' },
+      { href: '/best-customs-software/', label: 'Best customs declaration software UK', copy: 'The 2026 buyer shortlist with a “best for” label for each option.' },
+    ],
   },
   {
     path: '/pricing/',
@@ -321,6 +327,11 @@ export const routes = [
           'The 20-minute numbers call uses your weekly volume, current minutes and loaded clerk cost to estimate annual ROI. It also maps the integration route and chooses the best first declaration workflow.',
         ],
       },
+    ],
+    related: [
+      { href: '/customs-automation-software/', label: 'Customs automation software', copy: 'The automation map, the exception path and the numbers.' },
+      { href: '/best-customs-software/', label: 'Best customs declaration software UK', copy: 'Eight options compared on the criteria a UK desk uses.' },
+      { href: '/alternatives/', label: 'Customs software alternatives', copy: 'Alternatives to Descartes, Sequoia, iCustoms, Flytta, Customaite, CargoWise and Customs4trade.' },
     ],
   },
   {
