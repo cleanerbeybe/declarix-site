@@ -459,6 +459,12 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
             <a href="/customs-reference/incoterms/fca/"><span>FCA · FREE CARRIER</span><strong>Find the named-place carrier handoff, then add buyer-paid transport to the border.</strong><b>OPEN THE FCA SHEET →</b></a>
             <a href="/customs-reference/incoterms/dap/"><span>DAP · DELIVERED AT PLACE</span><strong>Split delivery cost before and after the UK border to find the border value.</strong><b>OPEN THE DAP SHEET →</b></a>
             <a href="/customs-reference/incoterms/ddp/"><span>DDP · DELIVERED DUTY PAID</span><strong>Unpack duty, import VAT and post-border costs from the delivered price.</strong><b>OPEN THE DDP SHEET →</b></a>
+            <a href="/customs-reference/incoterms/exw/"><span>EXW · EX WORKS</span><strong>Buyer collects at the seller’s premises, so all transport and insurance to the UK border are added.</strong><b>OPEN THE EXW SHEET →</b></a>
+            <a href="/customs-reference/incoterms/fas/"><span>FAS · FREE ALONGSIDE SHIP</span><strong>Buyer pays loading and main carriage from the port, so add them up to the UK border.</strong><b>OPEN THE FAS SHEET →</b></a>
+            <a href="/customs-reference/incoterms/cfr/"><span>CFR · COST AND FREIGHT</span><strong>Seller-paid freight may already be in the price; add buyer-paid insurance to the border.</strong><b>OPEN THE CFR SHEET →</b></a>
+            <a href="/customs-reference/incoterms/cpt/"><span>CPT · CARRIAGE PAID TO</span><strong>Seller pays carriage to the named place; split it before and after the UK border.</strong><b>OPEN THE CPT SHEET →</b></a>
+            <a href="/customs-reference/incoterms/cip/"><span>CIP · CARRIAGE AND INSURANCE PAID TO</span><strong>Seller pays carriage and insurance; split both at the UK border and do not add them twice.</strong><b>OPEN THE CIP SHEET →</b></a>
+            <a href="/customs-reference/incoterms/dpu/"><span>DPU · DELIVERED AT PLACE UNLOADED</span><strong>Split delivery and unloading cost before and after the UK border to find the border value.</strong><b>OPEN THE DPU SHEET →</b></a>
             <a href="/customs-reference/incoterms/"><span>NOT SURE WHICH TERM?</span><strong>Answer four questions in the Incoterms chooser to find the closest sheet.</strong><b>OPEN THE CHOOSER →</b></a>
           </div>
         </section>

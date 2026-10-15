@@ -10,6 +10,8 @@ import {
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { alternativesRoutes, renderAlternativesRoute } from './alternatives.mjs'
+import { referenceAssets, referenceRoutes, renderReferenceRoute } from './customs-reference.mjs'
+import { referenceHub } from './customs-reference-links.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { comparisonRoutes, renderComparison, validateComparisons } from './comparisons.mjs'
@@ -24,6 +26,7 @@ import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
+
 const dist = join(root, 'dist')
 const posthogKey = process.env.VITE_POSTHOG_KEY || ''
 const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
@@ -43,7 +46,10 @@ const indexableRoutes = [
   ...radarRoutes,
   ...authorityRoutes,
   ...alternativesRoutes,
+  ...referenceRoutes,
 ]
+// The /customs-reference/ hub link (L5 strip, breadcrumbs) switches on once the L1 section hub is published.
+referenceHub.available = indexableRoutes.some((route) => route.path === referenceHub.path)
 registerRoutes(indexableRoutes)
 for (const hub of sectionHubs) hub.hubChildren = hubChildren(hub, indexableRoutes)
 
@@ -707,6 +713,32 @@ for (const alternativesRoute of alternativesRoutes) {
   const target = join(dist, alternativesRoute.path.slice(1), 'index.html')
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, renderAlternativesRoute(alternativesRoute, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
+}
+
+for (const referenceRoute of referenceRoutes) {
+  if (paths.has(referenceRoute.path)) throw new Error(`Duplicate route: ${referenceRoute.path}`)
+  if (titles.has(referenceRoute.title)) throw new Error(`Duplicate title: ${referenceRoute.title}`)
+  if (headings.has(referenceRoute.h1)) throw new Error(`Duplicate H1: ${referenceRoute.h1}`)
+  if (referenceRoute.sources.length < 3) throw new Error(`Reference route needs a full source register: ${referenceRoute.path}`)
+  paths.add(referenceRoute.path)
+  titles.add(referenceRoute.title)
+  headings.add(referenceRoute.h1)
+  const target = join(dist, referenceRoute.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderReferenceRoute(referenceRoute, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+  for (const asset of referenceAssets(referenceRoute)) {
+    const assetTarget = join(dist, asset.href.slice(1))
+    await mkdir(dirname(assetTarget), { recursive: true })
+    await writeFile(assetTarget, asset.content)
+  }
 }
 
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')

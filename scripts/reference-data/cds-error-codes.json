@@ -1,0 +1,1849 @@
+{
+ "id": "cds-error-codes",
+ "publisher": "HM Revenue & Customs · GOV.UK",
+ "licence": "Open Government Licence v3.0",
+ "checked_on": "2026-10-15",
+ "title": "Customs Declaration Service error codes with current known-error workarounds",
+ "sources": {
+  "errors": {
+   "url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "updated": "2026-06-23"
+  },
+  "workarounds": {
+   "url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "updated": "2026-07-04"
+  }
+ },
+ "workarounds": [
+  {
+   "code": "KEL 198",
+   "title": "Incorrect Rejection of Preference Country Group Codes",
+   "error_codes": [
+    "CDS10020"
+   ],
+   "category": "Calculation",
+   "meaning": "CDS will currently incorrectly reject the entry of UCC compliant preference country group codes in DE 5/16",
+   "workaround": "Until resolution, declarants must enter the appropriate country code in DE 5/16",
+   "status": "Financial Year 22 Resolution Priority",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KEL 219",
+   "title": "Incorrect Rejection Of Declarations Using Non-GBP Currencies",
+   "error_codes": [
+    "CDS12082"
+   ],
+   "category": "Processing Failure",
+   "meaning": "Where a declaration has been submitted using a non-GBP currency at header level in D.E. 4/11, all values at item level in D.E. 4/14 must be declared using the same currency. If a non-matching currency is used at item level, CDS will not be able to process the declaration and the declaration will remain in a received state.",
+   "workaround": "Until resolution, declarants must:\n- Only use GBP as declaration currency at header level\n- Ensure that all currencies used at item level in DE 4/14 are the same",
+   "status": "Financial Year 22 Resolution Priority",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KEL 239",
+   "title": "Incorrect Mandation of 'Country of Origin' and 'Preferential Country of Origin'",
+   "error_codes": [
+    "CDS12070"
+   ],
+   "category": "Processing Failure",
+   "meaning": "When a trader declares ALVS documents in D/E 2/3 on an Import declaration in a goods item, they are currently required to enter a Country of Origin in D/E 5/15. However, when this declaration also contains a Quote Preferential Rate, they are also incorrectly required to enter a Preferential Country of Origin in DE 5/16",
+   "workaround": "Until resolved, declarants will have to declare both a Country of Origin and Preferential Country of Origin",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KEL 266",
+   "title": "Unexpected Rejections When Testing Amendments",
+   "error_codes": [
+    "CDS10003"
+   ],
+   "category": "Amendment",
+   "meaning": "When testing amendment of a declaration with an RPA licence quota, an unexpected rejection may be received DMS 10003 : Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element).",
+   "workaround": "In order to avoid this error, testers should submit only one Duty Tax Fee object in the Amendment payload:\ni.e. instead of submitting :\n<DutyTaxFee>\n<TypeCode>A00</TypeCode>\n<Payment>\n<MethodCode>E</MethodCode>\n</Payment>\n</DutyTaxFee>\n<DutyTaxFee>\n<DutyRegimeCode>120</DutyRegimeCode>\n<QuotaOrderID>094067</QuotaOrderID>\n</DutyTaxFee>\nSubmit :\n<DutyTaxFee>\n<DutyRegimeCode>120</DutyRegimeCode>\n<QuotaOrderID>094067</QuotaOrderID>\n<TypeCode>A00</TypeCode>\n<Payment>\n<MethodCode>E</MethodCode>\n</Payment>\n</DutyTaxFee>\n(All the same elements are there, but within one tag)",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KEL 363",
+   "title": "No Notifications For ObligationGuarantee Entries",
+   "error_codes": [
+    "CDS12070"
+   ],
+   "category": "Pointers / Notification Messages",
+   "meaning": "When ObligationGuarantee/ReferenceID (Guarantee Reference) and ObligationGuarantee/ID (Other Guarantee Reference) are not both populated, CDS will not deliver a notification",
+   "workaround": "In order to mitigate a lack of a notification, declarants should populate both Guarantee Reference and Other Guarantee Reference",
+   "status": "Financial Year 22 Resolution Priority",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KEL 487",
+   "title": "Incorrect Mandation of EORI on Specific Import Declarations",
+   "error_codes": [
+    "CDS12056"
+   ],
+   "category": "REJ instead of ACC",
+   "meaning": "It has been identified that certain commodity codes that attract doc codes classed as 'ALVS' licences/documents will mandate an EORI to be declared in D.E. 3/16 on an import declaration (for example, 0106320000 attracts ALVS licence C640). However, certain imports (such as private bird, non-business owners bringing in goods under 0106320000) do not require the importer to own an EORI. This affects all imports where there is a doc code in the 'ALVSDocuments' list, but the importer doesn't require a certificate and/or require an EORI.",
+   "workaround": "Please enter the agent/declarants EORI in D.E. 3/16.",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD89",
+   "title": "Incorrect Mandation of Guarantee References",
+   "error_codes": [
+    "CDS12056"
+   ],
+   "category": "Guarantee References",
+   "meaning": "CDS currently incorrectly mandates that every guarantee reference declared in DE 8/3 must be paired with a guarantee type code in DE 8/2. The Volume 3 Tariff States that DE 8/2 has a cardinality (maximum number of instances) of 9, whereas DE 8/3 has a cardinality of 99. In order to permit up to 99 instances in DE 8/3, we have temporarily increased the number of instances permitted in DE 8/2 to 99.",
+   "workaround": "Declarants should pair every instance in DE 8/3 with a corresponding instance/code in DE 8/2, contrary to the limits in the CDS Trade Tariff.\n\nCannot be resolved until regulation change is affected.",
+   "status": "On Hold",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD154",
+   "title": "Incorrect Rejection of DUCRs Entered At Header Level",
+   "error_codes": [
+    "CDS12056"
+   ],
+   "category": "Tariff Requirements",
+   "meaning": "The CDS Trade Tariff Volume 3 states that a DUCR can be entered at header or item level in DE 2/1, however when Additional Declaration Types C, F, Y and Z are used on import declarations, CDS is enforcing the completion of at least one DUCR at header level or CDS will reject the declaration",
+   "workaround": "Until resolved, declarants should ensure that a DUCR is declared at header level when using Additional Declaration Types C, F, Y, or Z in order to avoid an incorrect rejection",
+   "status": "On Hold",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD156",
+   "title": "Incorrect Rejection of Declarations by Third Parties With Standing Authority",
+   "error_codes": [
+    "CDS12125"
+   ],
+   "category": "Duty Application",
+   "meaning": "Child EORIs should be permitted to use the DAN owned by the VAT group - However, CDS currently rejects declarations where a member of a VAT group (a 'child EORI') is declared in DE 3/16 and uses the DAN of the VAT group owner (the 'parent EORI')\nbut the VAT group owner (the 'Parent EORI') is not present on the declaration.",
+   "workaround": "In order to prevent an incorrect rejection, declarants should enter the VAT group Parent EORI in Representative DE 3/20 EORI with the VAT group parent EORI and completing DE 3/21, leaving both Declarant DE 3/18, and Importer 3/16 unchanged. If a sub-agent is used to submit the declaration, the EORI of the Representative (normally entered in DE 3/20 in this case) employed by the importer should be declared against AI Statement ‘GEN45’ when this workaround is used.",
+   "status": "On Hold",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD267",
+   "title": "Declaring Tax Base when using the manual override process",
+   "error_codes": [
+    "CDS40013"
+   ],
+   "category": "Manual calculations",
+   "meaning": "When using a manual override (AI code 'OVR01' in DE 2/2 and Document code '9WKS' in DE 2/3), the tax base for each applicable tax type must be declared in DE 4/4. For ad valorem customs duties and VAT, the tax base value must be declared with the currency code 'GBP'.\n\nCurrently, CDS is incorrectly mandating that the amounts declared in GBP against each tax type must all be the same value.",
+   "workaround": "In order to avoid the declaration being rejected, the same tax base value must be declared for each tax type. The tax base for the customs duty calculation should therefore be repeated as the tax base for the VAT calculation. The correct tax base must however be used in the respective calculation of the duties and VAT, and the correct amounts declared in DE 4/6 (Payable tax amount) and DE 4/7 (Total taxes). If using a manual override for imports of cigarettes then HMRC should be contacted for further guidance.",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD304",
+   "title": "Maximum Goods Items on a single customs declaration",
+   "error_codes": [
+    "CDS10020"
+   ],
+   "category": "Tariff Requirements",
+   "meaning": "The CDS Trade Tariff Volume 3 states that a maximum of 999 goods items can be entered on a single customs declaration.\nCDS is currently limited to 99 goods items on a single customs declaration at this time to ensure performance and stability. Declarations submitted with more than 99 goods items will be rejected.",
+   "workaround": "Until this issue is resolved, ensure declarations are submitted with a maximum of up to 99 goods items only.",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD418",
+   "title": "CDS does not allow licenses to be declared on B & E declarations",
+   "error_codes": [
+    "CDS10020"
+   ],
+   "category": "Pointers / Notification Messages",
+   "meaning": "Currently no licences can be declared on B & E declarations as a DiT or RPA licence is not allowed in GoodsItem.additionalDocuments.type.code",
+   "workaround": "Use normal full frontier additional declaration types A or D to declare these goods.",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD419",
+   "title": "CDS Quota cannot currently be claimed on an I1 declaration",
+   "error_codes": [
+    "CDS12077"
+   ],
+   "category": "Pointers / Notification Messages",
+   "meaning": "Tariff guidance says that DE 2/6 is only required on I1 C&F if claiming quota. But Quota cannot currently be claimed on an I1 declaration, so quota data elements (DE 2/6, DE 4/1, DE 4/3, DE 4/9, DE 8/1) are not required. Similarly, one cannot claim quota on a type B or E.",
+   "workaround": "Use normal full frontier additional declaration types A or D to claim quota. Claims can be made on Supplementary Declarations, but first-come first-serve quotas may be exhausted at that stage.",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "KD457",
+   "title": "Pre-lodged declarations with licence is invalidated",
+   "error_codes": [
+    "CDS70761"
+   ],
+   "category": "REJ instead of ACC",
+   "meaning": "If a pre-lodged declaration is successfully submitted to CDS (DMSRCV) with a quantity based licence and is then invalidated while in this state, the licence balance used on the declaration should be restored for future use.\nHowever, if a declaration in this state receives an invalidation request prior to arrival, the licence balance will not be restored for use on further declarations and a declarant may receive error code CDS70761 'Licence has insufficient quantity remaining to meet claim'",
+   "workaround": "If a declarant attempts to re-submit a declaration in this scenario and gets an error message telling them the licence is already used/unavailable, they must contact HMRC to restore the licence balance attributed to the invalidated declaration. The declarant should then be able to resubmit successfully.",
+   "status": "Delivery impact being investigated",
+   "source_url": "https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a4790f7732d8e7ce5f53c10/Declarant_CWD_5.2.0_FINAL.ods",
+   "checked_on": "2026-10-15"
+  }
+ ],
+ "record_count": 181,
+ "records": [
+  {
+   "code": "CDS10001",
+   "title": "Obligation error: Mandatory Data Element has not been provided",
+   "meaning": "Required details are missing - Either a DE is missing, or required information in a DE is missing/incomplete",
+   "check": "Check the declaration to ensure that all the required data elements have been completed in full. For example, if declaring a party name and address, then name, street and number, country and postcode must be completed.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10002",
+   "title": "Obligation error: Data Element is not allowed",
+   "meaning": "Invalid entry on the declaration",
+   "check": "Go through the declaration from the beginning to find where you have entered details that are not permitted. Some details are not permitted at item level, only at header level - this is specified by an X or Y at the start of the value sent.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10003",
+   "title": "Obligation error: Number of Occurrences exceeds what is allowed for the Data Element",
+   "meaning": "Too many instances of a data element",
+   "check": "You have exceeded the limit for one of the fields on the declaration. For example, only 1 preference code can be declared against an item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10004",
+   "title": "Commodity code Error: Mandatory data element not provided and/or format error and/or number of occurrences exceeds what is allowed for the data element",
+   "meaning": "Commodity code error",
+   "check": "A commodity code error is likely to be caused by missing or incorrect additional codes to the commodity code - these are the national additional codes or TARIC additional codes.\nIt may also be triggered where an insufficient number of digits have been provided.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10010",
+   "title": "Format error: data element has invalid format",
+   "meaning": "Invalid format",
+   "check": "One of the data elements does not comply with the minimum/maximum number of characters or uses characters not permitted. For example, the country code field with the address must only use alphabetic characters.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10020",
+   "title": "Domain error: data element contains invalid value",
+   "meaning": "Invalid value",
+   "check": "A code used in the declaration is either not a recognised code or is not a code permitted on the particular declaration.\nFor example:\nA document code which is only permitted on export declarations has been declared on an import declaration.\nA valid code has been entered on the declaration, but has been entered at the wrong level (header or item) to which it is permitted.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10021",
+   "title": "Data Error: Value must be positive",
+   "meaning": "You appear to have entered a negative value",
+   "check": "A negative amount has been declared for writing off a licence. The quantity being written off for a licence must be equal to or greater than zero",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS10045",
+   "title": "Calculated item Customs value is negative. Check declaration valuation data.",
+   "meaning": "Valuation error",
+   "check": "The deductions you declared may exceed the value of the items. See CDS Tariff completion notes for data element 4/9. Apportioning a deduction across multiple items must not reduce the value of any single item to zero or a negative amount.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS11003",
+   "title": "Relation error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of goods items on the declaration",
+   "meaning": "You have more or fewer items than the number you declared",
+   "check": "Amend data element 1/9 to match the number of declared goods items on the declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS11004",
+   "title": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid.",
+   "meaning": "Relation error",
+   "check": "The combination of procedure code and additional procedure code is either invalid or is not permitted on this type of declaration.\nOr the additional procedure code combination is not permitted.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS11005",
+   "title": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out.",
+   "meaning": "Relation error",
+   "check": "All items on the declaration must derive from the same procedure category. For example if one item has requested procedure 40, then another item must not have a requested procedure of 71 because this would require a different declaration type.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS11006",
+   "title": "Relation Error: Net Mass must be lower than Gross Mass",
+   "meaning": "Relation error",
+   "check": "Net mass declared is greater than the gross mass declared.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS11007",
+   "title": "Relation Error: The submitter of the Additional Message differs from the original declaration.",
+   "meaning": "Additional message cannot be accepted",
+   "check": "A person linked to a different EORI number or different identification details cannot send a request to HMRC about the declaration, such as requesting a cancellation. Only the original declarant can send requests.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS11012",
+   "title": "Element is not allowed to be amended on this declaration type",
+   "meaning": "Element is not allowed to be amended on this declaration type",
+   "check": "Check your amendment request. For example, you cannot change a declaration from prelodged (D) to arrived (A) through amendment, only through goods arrival.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12003",
+   "title": "Uniqueness Error: Reuse of LRN (D.E. 2/5) is not allowed within 48 hours",
+   "meaning": "Local reference number duplication",
+   "check": "You used the same local reference number (LRN) within 48 hours. Change the LRN or add a version number at the end using letters and numbers only.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12005",
+   "title": "Authorisation Error: Party ID unknown or invalid",
+   "meaning": "Identification not recognised",
+   "check": "An EORI or VAT number included on the declaration is not recognised or the number used is not permitted in this DE.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12006",
+   "title": "License Error: License has expired; or License ID cannot be recognised; or License ID does not belong to the party on the declaration; or License declared has insufficient balance remaining; or License does not apply to the goods or country declared",
+   "meaning": "Licence has expired, not recognised, or does not match",
+   "check": "You declared a licence number that is failing validation for one of these reasons:\n\nExpiry date is in the past\nLicence ID not recognised\nLicence DUCR not matching declaration DUCR\nLicence ID does not match EORI declared\nLicence declared has insufficient balance remaining\nLicence does not match country of origin specified\nLicence does not permit quantity declared",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12007",
+   "title": "Authorisation Error: Authorisation has expired or Authorisation reference number provided is not recognised",
+   "meaning": "Authorisation number not accepted",
+   "check": "You declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12013",
+   "title": "Authorisation Error: provided VAT number is not a valid destination for VAT transfer",
+   "meaning": "Authorisation error",
+   "check": "VAT number is not a valid destination for VAT transfer.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12014",
+   "title": "Sequence Error: A Goods Arrival Notification must follow a pre-lodged declaration.",
+   "meaning": "Goods arrival notification required",
+   "check": "A goods arrival notification must follow a pre-lodged declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12015",
+   "title": "Sequence Error: AdditionalMessage.declarationReference does not refer to an existing declaration or the existing declaration is not in a permissible state to process the request",
+   "meaning": "Declaration status does not allow request",
+   "check": "The request to arrive, amend or cancel declaration is invalid because the declaration cannot be found or is in a state that will not allow the requested action.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12016",
+   "title": "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past.",
+   "meaning": "Supplementary declaration is too late or predates acceptance",
+   "check": "The date when goods were accepted for the simplified declaration or EIDR must not be\nmore than 365 days in the past (or 200 days for a type Q declaration) and also cannot be\nin the future (cannot be before the goods are accepted).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12022",
+   "title": "Relation Error: The Good Item Number (D.E. 1/6) is larger than the total number of goods items on the declaration",
+   "meaning": "Number of items error",
+   "check": "The goods item number declared is larger than the total number of goods items on the declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12024",
+   "title": "Uniqueness Error: The value declared should be unique",
+   "meaning": "Uniqueness error",
+   "check": "You have declared a value and repeated it, when that is not allowed.\n\nCheck the entries for these data elements:\n1/11 - additional procedure code can only be used once on each item\n1/6 - item number cannot be repeated on the declaration\n2/3 -ARC number declared with document code C651 can only be used on one declaration\n4/9 - addition or deduction code can only be used once at header level or once with each item\n2/3 - licence ID cannot be repeated on the same item",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12026",
+   "title": "Uniqueness Error: The same data element cannot be amended more than once in the same request.",
+   "meaning": "Field has been amended more than once",
+   "check": "On amendments the same data element can only be amended once per amendment submission.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12031",
+   "title": "Sequence Error: Goods Arrival Notification must be submitted within 30 days.",
+   "meaning": "Arrival notification is too late",
+   "check": "Goods arrival notification has been submitted 30 or more days after the date the declaration was originally submitted and received.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12034",
+   "title": "Relation Error: Submission channel of amendment must be the same as the original declaration.",
+   "meaning": "Amendment request is invalid",
+   "check": "The amendment must be submitted using the same submission channel as the original declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12036",
+   "title": "Sequence Error: A new request cannot be submitted until a response is received to your previous request.",
+   "meaning": "Request not accepted",
+   "check": "There is an outstanding cancellation or amendment request. A new request cannot be submitted until a response is received to your previous request.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12042",
+   "title": "Relation error: elements must be identical within the Goods Item",
+   "meaning": "Relation error",
+   "check": "Different quota order numbers cannot be declared on the same item. Note that declaration will be rejected if there is more than one quota order number in data element 8/1 for an item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12044",
+   "title": "External Validation MUCR result: validation errors encountered",
+   "meaning": "MUCR reference is invalid",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12046",
+   "title": "Process Error: Goods Arrival Notification was not received within 30 days of the pre-lodged declaration.",
+   "meaning": "Goods arrival notification has not been submitted within 30 days from the date the declaration was originally received. The declaration must now be resubmitted to CDS as either arrived (where permitted) or pre-lodged and then arrived.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12050",
+   "title": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out.",
+   "meaning": "Procedure code is missing or invalid",
+   "check": "Declaration must include at least one item and every item must include a valid procedure code.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12052",
+   "title": "A valid Declaration Type (D.E. 1/2) has not been provided or acceptance date is not valid. No further validation has been carried out",
+   "meaning": "No valid declaration type",
+   "check": "Enter the declaration type - standard, simplified (regular use), simplified (occasional use), supplementary or clearance, and prelodged or arrived. See data element 1/2 for the correct codes.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12056",
+   "title": "Relation error: the combination of elements is not allowed",
+   "meaning": "The combination of 2 values you entered is not allowed or requires another value entered\nFor example:\nA document code has an incompatible document status\nor\nYou have declared a code/codes which require that another code is then entered but is missing, such as an additional procedure code required for another additional procedure code to be used.\nor\nYou cannot enter the customs procedure using ABDIN for Authorisation by Declaration (ABD)",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12057",
+   "title": "Relation Error: The invoice currency must be the same for every goods item on the declaration.",
+   "meaning": "Invoice currency for all items must be the same",
+   "check": "See data element 4/14 for the requirement.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12058",
+   "title": "Relation Error: When the packaging quantity is zero, then there must be another goods item with the same marks and numbers having a quantity greater than zero",
+   "meaning": "Number of packages error",
+   "check": "Packaging quantity cannot be zero for all packages for combined packaging",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12062",
+   "title": "External Validation DUCR result: validation errors encountered",
+   "meaning": "DUCR reference is a duplication or is invalid",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12066",
+   "title": "This element or value is not allowed in combination with the declared element(s) or value(s).",
+   "meaning": "Either:\n1) the way the declaration has been completed requires specific DEs to also be completed with certain values. For example, required DE has not been completed or not completed correctly, or;\n2) the way the declaration has been completed is not permitted. For example, the combination of DEs or their content is not allowed.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12067",
+   "title": "These elements or values are not allowed in combination with the declared element(s) or value(s).",
+   "meaning": "Either a DE is not permitted to be completed on a declaration, has been completed incorrectly, or the combination of declared elements required has not been satisfied.\nFor example:\nDE 8/1 Quota has been completed on a declaration where NIDOM and NIQUO are present in DE 2/2, or;\nDE 3/40 has been completed at header on a H8 declaration, but either APCs 'A04' or '1VW' and/or AI Statement 'PVA01' are missing.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12068",
+   "title": "This combination of elements mandates the declaration of a Document Identifier",
+   "meaning": "A document code identifier is required for a specific doc code entered in DE 2/3.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12069",
+   "title": "Declaration invalidation is already being processed at the Office of Exit. Please wait for further update.",
+   "meaning": "Declaration invalidation is already being processed at the Office of Exit. Please wait for further update.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12070",
+   "title": "Relation error: The value supplied in Data Element 1 mandates the completion of Data Element 2",
+   "meaning": "A required field is missing a value or is invalid",
+   "check": "For example, you have entered a value that requires another field to be completed, or makes another field or code entered invalid.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12071",
+   "title": "Relation error: Data Element must be supplied at either header or item level and cannot be declared at both levels",
+   "meaning": "A field has been completed at header and item level",
+   "check": "Check the data element completion guide for exports from the CDS Tariff. This tells you the exact requirements for each field. In particular see the data element completion guide for data elements 3/9, 5/8, 5/14, 7/10 and 8/5.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12072",
+   "title": "Relation error: Either Data Element 1 or Data Element 2 must be supplied, but not both",
+   "meaning": "Relation error",
+   "check": "This could be an unacceptable combination of values at header and item level, for example gross weight has been declared at both header and item level.\n\nOr EORI as well as name and address has been declared for consignee, consignor or buyer.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12073",
+   "title": "Relation error: Data Element must be supplied at header or item level",
+   "meaning": "Relation error",
+   "check": "A value is missing or has been entered at the wrong level.\n\nCheck these data elements:\n\n2/1, (31 or 3/2), and 8/5 must be declared at least once at either header or item level.\n7/10 must be declared at least once at header or item level if 7/2 is coded 1.\n3/15 or 3/16 must be declared at header level.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12074",
+   "title": "Relation error: Because Data Element 1 is not supplied, Data Element 2 is mandatory",
+   "meaning": "Data elements are missing and one or the other is required",
+   "check": "Check the data element completion guide for the CDS Tariff, and declare one or the other but not both. For example, exporter, consignor and carrier, complete either an EORI or name and address. See Tariff for specific requirements",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12075",
+   "title": "Relation error: Data Element 2 must not be supplied with this value in Data Element 1",
+   "meaning": "Relation error",
+   "check": "If one of the fields is completed the other should not have a value and should therefore be removed. For example, a document code and document status have been entered but the status is not required for this code. This can also indicate that a data element has been declared but is not permitted on this type of declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12077",
+   "title": "Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present",
+   "meaning": "Relation error affecting one or more additional completion requirements",
+   "check": "For example, the completion of one DE with a certain value/code requires another value/code to be entered in the same DE or a different DE (such as not entering 00100 in DE 2/2 when ABDIN is entered in DE 2/2 etc),\nor;\nthe DE itself has not been fully completed/populated as required (such as an address not fully completed when a name is provided in DE 7/14 etc).\nor;\nthe DE has been completed incorrectly, for example DE 4/4 measurement units KTC or CTG cannot have zero values.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12078",
+   "title": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8",
+   "meaning": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12079",
+   "title": "Relation Error: Data Element 2 must not be supplied with Data Element 1",
+   "meaning": "Relation error - Two values you declared are incompatible.\nFor example:\nA data element is declared at both header and item levels but only one level is permissible;\nYou have entered a MUCR in DE 2/1 for a GVMS location code in DE 5/23.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12080",
+   "title": "Relation error: Combination of Addition / Deduction codes (DE 4/9) is not allowed",
+   "meaning": "Relation error",
+   "check": "You have used a mix of addition or deduction codes for an item that is not permitted. Certain addition/deduction codes cannot be declared together.\n\nAdditions and deductions should only be declared at header level where they apply to all good items on the customs declaration.\n\nEach addition or deduction code can only be declared once at header level. The same addition or deduction code cannot then be declared at item level as well.\n\nIf a specific addition or deduction is being declared at item level, that addition or deduction may only be declared once per item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12081",
+   "title": "Relation Error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party",
+   "meaning": "Relation Error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12082",
+   "title": "Relation error: The currency declared in DE 4/11 must be the same as the currency declared in DE 4/14",
+   "meaning": "Relation error",
+   "check": "The currency declared for the total amount invoiced does not match the currency declared at item price amount (data element 4/14).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12083",
+   "title": "Relation Error: For Country of Preferential Origin DE 5/16 where mandated, only provide one country or country group, not both",
+   "meaning": "Relation error",
+   "check": "You have provided both a country and country group for mandatory data element Preferential Origin.\n\nWhere the proof of origin document refers to a group of countries, enter the group of countries by using the relevant Union codes in accordance with the codes listed in Appendix 13: Country Codes.\n\nWhere data element 5/16 is completed using a preference group code, data element 5/15 must be completed with the specific country of origin for the goods.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12084",
+   "title": "Relation error: Either Consignee Name (DE 3/9) or Consignee Identification Number (DE 3/10) must be supplied, but not both",
+   "meaning": "Consignee details",
+   "check": "You have provided both consignee name and consignee EORI. Only declare either the EORI or the full name and address of consignee not both. EORI should be declared when known.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12086",
+   "title": "Relation error: Either Carrier Name (DE 3/31) or Carrier Identification Number (DE 3/32) must be supplied, but not both",
+   "meaning": "Carrier details",
+   "check": "You have provided both Carrier name and Carrier EORI. Only declare either the EORI or the full name and address of carrier not both. EORI should be declared when known.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12087",
+   "title": "Relation error: VAT Declaring Party Identification (DE 3/40), where mandated, must be supplied at either header or item",
+   "meaning": "Additional fiscal party",
+   "check": "You have declared your additional fiscal party VAT number at both header and item level. It should only be declared at either item or header level. Or you have declared procedure code 1042 and not declared an additional fiscal references ID.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12088",
+   "title": "Relation error: Either Agent Name (DE 3/19) or Agent Identification Number (DE 3/20) must be supplied",
+   "meaning": "Representative details missing",
+   "check": "To correct this error, complete the EORI in data element 3/19, or the name and address in 3/20, even if they are your own details as the declarant and you are the direct representative.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12089",
+   "title": "Relation error: Consignee Party Name (DE3/9) must be supplied at either header or item level",
+   "meaning": "Consignee party details",
+   "check": "Consignee party name and address must be declared at either header or item level on a C21e unless the procedure code is 0019.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12090",
+   "title": "Relation error: Carrier Name (DE 3/31) or Carrier Identification Number (DE 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level",
+   "meaning": "Carrier EORI",
+   "check": "When declaring additional procedure Code 17X on a C21e clearance request, the carrier name and address or the carrier EORI must be declared at header level.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12091",
+   "title": "Relation error: Consignee (D.E. 3/10) & Exporter (D.E. 3/1) must not be the same Party",
+   "meaning": "Relation error",
+   "check": "Consignee (receiver of goods) and exporter cannot have the same EORI number.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12092",
+   "title": "Relation error: Seller (DE 3/25) & Exporter (DE 3/1) must not be the same Party",
+   "meaning": "Relation error",
+   "check": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller’s EORI number in data element 3/25.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12095",
+   "title": "Relation error: Additional Procedure Combination (DE 1/11) can only be used when Country of Dispatch/Export (DE 5/14) Exportation Country is a Third Country",
+   "meaning": "Relation error",
+   "check": "You have used an additional procedure combination (data element 1/11) incorrectly. Additional procedure codes 1IL and 1LV can only be used for goods dispatched/exported from a third country.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12096",
+   "title": "Relation error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents",
+   "meaning": "Authorisation error",
+   "check": "When declaring any of the authorisation types CGU, EUS, IPO or TEA in data element 3/39, it is necessary to declare document code C505 (Customs Comprehensive Guarantee) in DE 2/3. It may be necessary to declare C505 together with a waiver status code such as XW.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12097",
+   "title": "Relation error: Combination Additional Procedure Code (D.E. 1/11) and Country of Destination in DE 5/8 is not allowed",
+   "meaning": "Relation error",
+   "check": "When declaring Additional Procedure Code F75, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12098",
+   "title": "Relation Error: Combination of Means of Transport (DE 7/4) and Delivery Terms in DE 4/1 is not allowed",
+   "meaning": "Relation error",
+   "check": "You have declared a means of transport code (data element 7/4) that is not compatible with the delivery terms (data element 4/1).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12099",
+   "title": "Relation error: Combination of elements that make up the Goods Location code (5/23) is invalid",
+   "meaning": "Goods location code not recognised",
+   "check": "Check the codes listed in Appendix 16 and in the supplements to Tariff, where new goods location codes may be listed.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12100",
+   "title": "Relation Error: Combination of Delivery terms (DE 4/1) and Addition/Deduction code (DE 4/9) is not allowed",
+   "meaning": "Relation error",
+   "check": "You have declared Delivery Terms (data element 4/1) that are not compatible with the Addition/Deduction code (data element 4/9).\n\nThe combination of Delivery Terms and Addition/Deduction Code must be compatible.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12101",
+   "title": "Relation error: Declared Tax Type (DE4/3) is not allowed in combination with the Additional Procedure",
+   "meaning": "Relation error",
+   "check": "You have declared an additional procedure code that is not permitted to be combined with the declared tax type (data element 4/3). For example, additional procedure codes 32D, 31D, 1IL and 1LV cannot be used with an excise tax type.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12102",
+   "title": "Relation error: Deferred Payment Method in DE 4/8 is Required with the duty deferment account number provided in DE 2/6",
+   "meaning": "Relation error",
+   "check": "You have not declared the deferred payment method which is required for the duty deferment account number declared.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12103",
+   "title": "Relation error: Valid delivery destination is required in D.E.5/8 for a CO declaration",
+   "meaning": "Relation error",
+   "check": "When declaring Declaration Type code CO in data element 1/1, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12104",
+   "title": "Relation error: Valid Import Procedure code (1/10) is required",
+   "meaning": "Relation error",
+   "check": "For declaration type code IM, the procedure code must be a permitted import procedure code. Check Appendix 1 of the Import Tariff and the Inventory Import Tariff",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12105",
+   "title": "Relation error: Addition/Deduction code (DE 4/9) not allowed with the declared Additional Procedure Code (DE1/11)",
+   "meaning": "Relation error",
+   "check": "When using additional procedure code E01 (simplified procedure value) or E02 (standard import value), data element 4/9 additions and deductions, must not be declared.\nSee Appendix 1 for more information.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12106",
+   "title": "Relation error: Appropriate Additional Information Code must be provided in DE2/2 with Additional Procedure Code 1CL",
+   "meaning": "Relation error",
+   "check": "An appropriate Additional Information (AI) code is required with the additional procedure code 1CL.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12107",
+   "title": "Relation error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4",
+   "meaning": "Relation error",
+   "check": "When using Additional Information code 00600, data element 2/3 must not include any licence document codes, even if claiming a waiver/exemption.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12108",
+   "title": "Obligation Error: DUCR is mandatory on an Export Declaration",
+   "meaning": "Obligation error",
+   "check": "Declaration Unique Consignment Reference (DUCR) is mandatory at header level on an export declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12109",
+   "title": "Obligation Error: When providing fixed rate of exchange rate in DE 4/15, a currency code of GBP must be supplied",
+   "meaning": "Total invoiced amount should be in GBP",
+   "check": "You declared a fixed rate of exchange meaning a contractually agreed rate of exchange was used. The invoice value (data element 4/14) on an import declaration or the total amount invoiced (data element 4/11) on an export declaration, needs to be declared in GBP, converted using the agreed rate.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12110",
+   "title": "Relation error: A Quota Order number (DE8/1) cannot be provided in combination with this Preference Code (DE 4/17)",
+   "meaning": "Relation error",
+   "check": "The Preference Code declared (data element 4/17) is incompatible with claiming Quota (data element 8/1).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12111",
+   "title": "Relation error: The provided tax amount (DE 4/6 or DE 4/7) must always be declared with currency code GBP",
+   "meaning": "Relation error",
+   "check": "You have declared the tax amount (data element 4/6 or 4/7) in the incorrect currency. Tax amounts should always be declared with the sterling GBP currency code.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12112",
+   "title": "Relation error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21",
+   "meaning": "Addition/deduction code missing",
+   "check": "You have not provided the mandatory airfreight related addition/deduction code (data element 4/9) for the declared airport place of loading (data element 5/21).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12113",
+   "title": "Relation error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2",
+   "meaning": "Authorisation CGU requires a guarantee",
+   "check": "Holder of authorisation type CGU has been declared and so guarantee type in data element 8/2 must be 0 (Guarantee Waiver) or 1 (Comprehensive Guarantee).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12114",
+   "title": "Relation error: Value declared must be less than 100 as DE 4/9 Additions/Deductions code is a percentage",
+   "meaning": "Relation error",
+   "check": "The value you declared may not be less than 100%. The Additions/Deductions code is a percentage and so the value provided in data element 4/9 must be less than 100.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12115",
+   "title": "Relation error: Declared Procedure Code (DE 1/10 and / or 1/11) mandates the use of Additional Document (DE 2/3) 185C",
+   "meaning": "Relation error",
+   "check": "You have not have declared document code 185C (Claim to Visiting Forces Relief for goods removed from a customs warehouse), required for the additional procedure code entered.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12117",
+   "title": "Relation error: Importer (DE 3/16) & Buyer (DE 3/27) must not be the same party",
+   "meaning": "Relation error",
+   "check": "You have declared the same EORI for the Importer and Buyer on an import declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12118",
+   "title": "Relation error: Consignor (DE3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels",
+   "meaning": "Relation error",
+   "check": "You have declared consignor details for the additional procedure code 17X at both header and item level. It should only be declared at either item or header level.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12119",
+   "title": "Relation error: Declared Additional Document (D.E. 2/3) is not allowed with this Procedure Code (D.E. 1/10 or D.E. 1/11)",
+   "meaning": "Additional document not allowed or is missing",
+   "check": "Additional document code, for example licence, exemption or authorisation number, is not allowed or must not be declared with other data in the declaration.\n\nExamples include C512 and C514 (SDP and EIDR authorisations) not permitted with certain procedure codes; licence document code restrictions with certain additional procedure codes, Special Procedure authorisations required with certain procedure combinations.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12120",
+   "title": "Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2)",
+   "meaning": "Authorisation error",
+   "check": "You may not have declared an authorisation required for this declaration type. If you have declared the correct authorisation, check the authorisation number declared on the 'Additional documentation' page.\n\nFor SDP declarations, you need document code C512\nFor EIDR declarations, you need document code C514\nFor submitting an arrived export declaration, data element 3/39 must include one of the authorisation type codes CSE or EXRR.\n\nYou may have declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12121",
+   "title": "Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed",
+   "meaning": "There is an error with the Additional Information codes against a goods item.",
+   "check": "Either, the AI codes declared together for one goods item are not compatible with each other, or an AI code entered for the goods item mandates another AI is present.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12123",
+   "title": "Data Error: Value must be greater than 0",
+   "meaning": "A value declared must be equal to or greater than 0.",
+   "check": "For example:\n-Invoice value declared in DE 4/14 must be greater than 0.\n-Package quantity in DE 6/10 must be greater than or equal to 0.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12125",
+   "title": "DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided",
+   "meaning": "DAN error",
+   "check": "The deferment account number or Guarantee reference Number you have provided\n- is not recognised or\n- the account may be suspended/revoked or\n- Parties declared on the declaration do not have authority to use account number provided.\n\nCheck the CDS financial dashboard/contact HMRC deferment department.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12132",
+   "title": "DUCR format not valid",
+   "meaning": "Declaration Unique Consignment Reference (DUCR) format is not valid",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12133",
+   "title": "MUCR format not valid",
+   "meaning": "MUCR format is not valid",
+   "check": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format (opens in new tab).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12134",
+   "title": "DUCR and MUCR formats not valid",
+   "meaning": "MUCR or DUCR format is not valid",
+   "check": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format (opens in new tab).\n\nIf you have declared a previous declaration reference such as for an import, check the DUCR on the previous declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12135",
+   "title": "Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level",
+   "meaning": "Relation error",
+   "check": "Country of export is mandatory at header or item level when declaring additional procedure code 1CD, 1CG, 2CG or 2CD.\nOn a C21I with procedure code 0002, 0003, 0004, 0005, 0006 or 0007.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12136",
+   "title": "Relation Error: Provided Additional Procedure Code (DE 1/11) necessitates indirect representation (DE 3/21) for the following declaration types: C F Y J K Z",
+   "meaning": "Relation error",
+   "check": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code ‘3’. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12137",
+   "title": "Uniqueness Error: Only a single MUCR can be declared in DE 2/1 at Header level on an imports declaration",
+   "meaning": "Uniqueness error",
+   "check": "You have declared more than one MUCR at header level on your import declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12138",
+   "title": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration",
+   "meaning": "Additional procedure code is not allowed",
+   "check": "These additional procedure codes cannot be used with an EIDR C21 declaration.\n\n1CD - Controlled drugs using Simplified Procedures\n1CG - Controlled Goods using Simplified Procedures",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12139",
+   "title": "Relation Error: Additional Information Code OVR01 must be provided in DE 2/2 when entering a manual tax amount in DE 4/6 or DE 4/7",
+   "meaning": "Relation error",
+   "check": "You have not provided the Additional Information (AI) Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12141",
+   "title": "Relation Error: Incompatible goods movements declared. AI codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration.",
+   "meaning": "Relation error",
+   "check": "You have declared a combination of Additional Information Codes 'NIDOM' and 'NIIMP' that are not permitted to be declared together on the same declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12143",
+   "title": "Incompatible goods movements declared. AI codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration.",
+   "meaning": "DE 2/2 AI statement error",
+   "check": "The combination of NI Additional Information Codes are not permitted to be declared together on the same goods item",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12144",
+   "title": "Relation Error: EU Quota order number beginning '09' must not be entered in DE 8/1 for any imports into the UK",
+   "meaning": "Relation error",
+   "check": "You have entered the incorrect EU Quota order number beginning with '09' which is not permitted for imports into the UK.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12145",
+   "title": "Relation Error: When declaring the Requested Procedure code 42 in DE 1/10, the Additional Information code NIIMP must be declared in DE 2/3",
+   "meaning": "Relation error",
+   "check": "For the Requested Procedure code 42 in data element 1/10 the Additional Information code, NIIMP, must be declared in data element 2/2.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12146",
+   "title": "The Requested Procedure code 42 (DE 1/10) and Additional Information code OSR42 (DE 2/2) must be entered together on the same goods item",
+   "meaning": "Relation error",
+   "check": "You have not entered either the Requested Procedure code 42 (DE 1/10) or Additional Information code OSR42 (DE 2/2) on the same goods item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12147",
+   "title": "Relation Error: UVC01 declared on an original declaration. UVC01 can only be declared on an amendment request for a declaration",
+   "meaning": "Additional Information (AI) code is not allowed",
+   "check": "AI code UVC01 may only be used on an amendment.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12148",
+   "title": "Relation Error: Additional Document C506 requires deferred payment method",
+   "meaning": "Relation error",
+   "check": "You have not provided a deferred payment method for the declared Additional Document C506.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12149",
+   "title": "Relation Error: Additional Procedure code 000 can not be declared with any other Additional Procedure Code",
+   "meaning": "Relation error",
+   "check": "Additional procedure code 000 can not be declared with any other additional procedure code",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12150",
+   "title": "Authorisation Error: Authorisation reference number does not belong to the party on the declaration",
+   "meaning": "An authorisation number is invalid",
+   "check": "An authorisation number, such as for a Special Procedure, SDP, EIDR, CCG, Customs Warehousing, national authorisation, is either not valid or is not authorised for use by the party given on the declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12151",
+   "title": "Relation Error: When a licence is declared, ID must be unique from all other additional documents (DE 2/3) in the same goods item",
+   "meaning": "Duplication error",
+   "check": "For example:\nLicence ID cannot be declared more than once on the same item in DE 2/3.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12152",
+   "title": "Additional Procedure Code (DE 1/11) 1H7 can only be used when submitting an SRDS declaration and is required to be declared on all goods items.",
+   "meaning": "An additional procedure code is missing for an H7/SRDS declaration:",
+   "check": "Additional Procedure Code '1H7' must be present for the H7/SRDS declaration category.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12153",
+   "title": "Relation Error: EORIs with this country code are not supported",
+   "meaning": "Relation Error",
+   "check": "The country code at the start of an EORI must be GB when declaring any of the parties Importer (DE 3/16), Exporter (DE 3/2), Declarant (DE 3/18), Representative (DE 3/20).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12154",
+   "title": "Incompatible goods movements declared. When AI code 'NIIMP', 'NIDOM' or 'NIEXP' is entered at item level in D.E. 2/2, Document Code – 999L cannot be entered in D.E.2/3",
+   "meaning": "The Document Code 999L cannot be used for goods being imported or exported from Northern Ireland. Please use the UK/NI online tariff to identify the document codes, other than 999L, required by the measure conditions on your commodity code.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12155",
+   "title": "Uniqueness Error: Only one instance of 999L may be declared in D.E. 2/3 per goods item",
+   "meaning": "Uniqueness Error",
+   "check": "The document code 999L can only be declared once per goods item. It does not have to be declared for each measure for which a waiver applies on that goods item. For example, if a goods item has two measures for which 999L is available to declare a waiver, declaring it once for that goods item will suffice to satisfy both measures. Declaring it twice will result in this rejection.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12156",
+   "title": "Obligation Error: Mandatory Data Element has not been provided or the ID for previous document CLE must match the AcceptanceDate in the format yyyymmdd",
+   "meaning": "The declaration Acceptance Date is missing or not in the correct format against Previous Document Code 'CLE'",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12157",
+   "title": "Invalid EORI - This Party must have a permanent business establishment in Northern Ireland or the European Union",
+   "meaning": "A relevant party on the declaration does not have the status of 'established in the Union', for the purposes of an NI declaration.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12158",
+   "title": "Missing Element - A non-GB EORI requires entry of NI Movement AI Codes in DE 2/2",
+   "meaning": "A relevant party on an NI declaration has been entered with an XI EORI number, however no NI AI statements (NIIMP, NIDOM, NIEXP) are present.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12170",
+   "title": "Authorisation Error: Invalid VAT number. Please note, if you are attempting to claim Onward Supply Relief (OSR), you must be identified as trading under the terms of the Northern Ireland Protocol (now Windsor Framework) for VAT.",
+   "meaning": "Authorisation Error: Invalid VAT number. Please note, if you are attempting to claim Onward Supply Relief (OSR), you must be identified as trading under the terms of the Northern Ireland Protocol (now Windsor Framework) for VAT.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12171",
+   "title": "Relation Error: The values supplied in Data Element 1 and Data Element 2 require a valid value to be provided in Data Element 3.",
+   "meaning": "Due to the way the declaration has been completed, a further DE must be completed or completed in a certain way - For example, on an NI export dec if DE 7/4 is either 1, 3, 4, 8 or 9 then DE 7/15 must be completed.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12172",
+   "title": "Relation Error: The value(s) supplied in Data Element 1 and/or Data Element 2 require a valid value to be provided in Data Element 3 and/or Data Element 4.",
+   "meaning": "Due to the way the declaration has been completed, a further DE must be completed or completed in a certain way - For example, on an NI export supp dec if DE 7/2 is '1' for containerised, a containder ID must be provided in DE 7/10 at header or item.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12174",
+   "title": "Relation Error: The value declared in Total amount invoiced (D.E. 4/11) does not correspond with the total of all item price amounts (D.E. 4/14) on the declaration",
+   "meaning": "Relation Error: The value declared in Total amount invoiced (D.E. 4/11) does not correspond with the total of all item price amounts (D.E. 4/14) on the declaration",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS12500",
+   "title": "Validation error: value limit exceeded",
+   "meaning": "The value entered into a specific DE exceeds the amount permitted - Please consult the Tariff Volume 3 for the limits permitted for the procedure/relief in question.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS13000",
+   "title": "Credibility check: incredible value found",
+   "meaning": "Value fails credibility check as too high or too low",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS14000",
+   "title": "Credibility check: incredible quota value found",
+   "meaning": "Value fails credibility check as too high or too low",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS19999",
+   "title": "Additional errors found",
+   "meaning": "Declaration has multiple errors",
+   "check": "Contact the help desk.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS20001",
+   "title": "Related movement not (yet) found",
+   "meaning": "Related movement not found",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS20002",
+   "title": "Related movement does not match declaration",
+   "meaning": "Related movement does not match declaration",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS20003",
+   "title": "Related movement not found",
+   "meaning": "Related movement not found",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40007",
+   "title": "Duplicate value",
+   "meaning": "Duplication error",
+   "check": "For example, the same Additional TARIC or National additional code has been declared twice for one item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40010",
+   "title": "Data element value does not apply",
+   "meaning": "Value given for a data element does not apply",
+   "check": "This could be a formatting error or a code incorrectly completed.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40011",
+   "title": "Missing data element value",
+   "meaning": "Missing data element value",
+   "check": "A value that is required by the commodity code has not been completed. For example, supplementary unit. You need to check the 'Measures' column for the commodity code on the Trade Tariff.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40012",
+   "title": "At least one of the commodity codes you have declared requires additional information that cannot be provided on this dataset. Please use the standard full export declaration dataset (B1) instead.",
+   "meaning": "At least one of the commodity codes you have declared requires additional information that cannot be provided on this dataset. Please use the standard full export declaration dataset (B1) instead.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40013",
+   "title": "Data element contains invalid value",
+   "meaning": "A DE contains invalid information related to a Tariff measure/condition - For example, the Preference code in DE 4/17 is incorrect.",
+   "check": "Where this is in relation to a measurement unit error on DE 6/2 and/or DE 4/4:\nThis can be due to the values supplied being invalid, or an incorrect combination has been entered. For example, supplying both LPA and ASV in DE 4/4 against an excise tax type that does not permit this combination.\nIt can also indicate that two instances of the same measurement amount do not align. For example, the DE 6/2 Supplementary unit amount in litres differs to the amount entered against a measurement unit LTR in DE 4/4.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40044",
+   "title": "Disallowed Document",
+   "meaning": "Document declared is not allowed for the given commodity code",
+   "check": "You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in the 'Conditions' box for the commodity code and Appendix 5A.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40045",
+   "title": "Missing document",
+   "meaning": "A document is missing",
+   "check": "The licence or exemption required for these goods is missing. You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in the 'Conditions' box for the commodity code and Appendix 5A.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40047",
+   "title": "Prohibition",
+   "meaning": "Value not allowed",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40049",
+   "title": "Quota exhausted",
+   "meaning": "Quota used up",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40053",
+   "title": "Quota suspended",
+   "meaning": "Quota suspended",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40059",
+   "title": "Incomplete measure or commodity code",
+   "meaning": "Incomplete measure or commodity code",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40066",
+   "title": "Tariff condition not fulfilled",
+   "meaning": "Tariff condition not fulfilled",
+   "check": "Value is not allowed to be used for the given commodity code. You need to check the 'Measures' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in the 'Conditions' box for the commodity code and Appendix 5A.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40068",
+   "title": "Additional Excise code is missing",
+   "meaning": "National additional code for excise is missing",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40069",
+   "title": "Quota Closed",
+   "meaning": "Quota error",
+   "check": "The Quota claimed is no longer available.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40070",
+   "title": "When AI code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration.",
+   "meaning": "Additional information code NIIMP must appear on all items",
+   "check": "Additional information code NIIMP when used on one item must be entered on all items.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40071",
+   "title": "When AI code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
+   "meaning": "Additional information code NIDOM must appear on all items",
+   "check": "Additional information code NIDOM when used on one item must be entered on all items.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40072",
+   "title": "When AI code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
+   "meaning": "Additional information code NIEXP must appear on all items",
+   "check": "Additional information code NIEXP when used on one item must be entered on all items.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40073",
+   "title": "When de-risking AI code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
+   "meaning": "You declared NIREM additional information code on its own",
+   "check": "NIREM additional information (AI) code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS40074",
+   "title": "When subsidy AI code 'NIAID' is entered at item level in DE 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
+   "meaning": "Relation error",
+   "check": "You have not entered either 'NIIMP' or 'NIDOM' AI codes when you declared subsidy AI code 'NIAID'. Either of these codes are required to be entered at item level on the same good item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS49999",
+   "title": "Other errors",
+   "meaning": "Other Errors",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50000",
+   "title": "Response from ALVS is not release",
+   "meaning": "Response from ALVS is not release",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50001",
+   "title": "Invalid UCR Format, DUCR or MUCR",
+   "meaning": "Invalid UCR Format, DUCR or MUCR",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50003",
+   "title": "UCR is not at the top of its' consolidation",
+   "meaning": "UCR is not at the top of its consolidation",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50008",
+   "title": "UCR Type does not match UCR Format",
+   "meaning": "DUCR or MUCR is not the right format",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50015",
+   "title": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)",
+   "meaning": "Declaration is cancelled or terminated upon arrival",
+   "check": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival).",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50018",
+   "title": "Goods Arrival Date/Time is invalid or not included",
+   "meaning": "This is an ILE error code and is returned for Inventory linking.",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50027",
+   "title": "Role/Location-Based Authorisation failed (PDS)",
+   "meaning": "Authorisation failed",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50028",
+   "title": "Goods Location is invalid",
+   "meaning": "Goods location code invalid",
+   "check": "The codes declared in the goods location code field must be selected from the code lists shown in Appendix 16.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS50031",
+   "title": "Request has been received after a successful RET",
+   "meaning": "Request has been received after a successful RET",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70711",
+   "title": "Licence Error: Electronic licence does not exist",
+   "meaning": "Licence error",
+   "check": "Electronic licence does not exist.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70719",
+   "title": "Licence Error: Electronic licence quoted although Document Status Code indicated paper licence",
+   "meaning": "Licence error",
+   "check": "Electronic licence quoted but document status code indicates paper licence. Check the document status code.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70724",
+   "title": "Licence Error: Licence is not valid",
+   "meaning": "Licence reference quoted is not valid",
+   "check": "This could be because:\n\nlicence does not match the commodity code\nlicensing authority declared is incorrect\nlicence is out of date\nlicence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the licencing authority",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70739",
+   "title": "Licence Error: An Import licence cannot be used on an Export declaration",
+   "meaning": "Licence error",
+   "check": "Import licence cannot be used on an export declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70740",
+   "title": "Licence Error: Importer/Exporter is not the owner of the licence",
+   "meaning": "Licence error",
+   "check": "Importer/Exporter is not the owner of the licence and/or licence is not valid.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70758",
+   "title": "Licence is not valid for declared Country of Destination",
+   "meaning": "Licence error",
+   "check": "Licence is not valid for declared country of destination.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70760",
+   "title": "Licence Error: Licence is not valid for the declared goods item",
+   "meaning": "Licence is not valid for this item",
+   "check": "This could be because:\n\nlicence does not match the commodity code;\nlicensing authority declared is incorrect;\nlicence is out of date;\nlicence allows insufficient quantity;\nthe licence quantity type entered does not match the quantity type on the licence;\nlicence reference number declared is incorrect;\nlicence does not belong to the importer/ exporter declared;\nlicence is not valid for the country of origin/ dispatch/ destination;\nlicence does not match the DUCR declared in DE 2/1;\n\nIf still stuck, contact the issuing authority",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70761",
+   "title": "Licence has insufficient quantity remaining to meet claim",
+   "meaning": "Licence error",
+   "check": "Licence does not cover the quantity declared.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS70791",
+   "title": "Licence Error: Licence line number does not exist on the licence",
+   "meaning": "Licence error",
+   "check": "Line number given on licence is not valid.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71115",
+   "title": "Licence Error: An Export licence cannot be used on an Import declaration",
+   "meaning": "Licence error",
+   "check": "Export licence cannot be used on an import declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71200",
+   "title": "Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item",
+   "meaning": "Document reference is a duplication",
+   "check": "You cannot use the same reference on a single goods item.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71201",
+   "title": "Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code",
+   "meaning": "Licence error",
+   "check": "All instances of a licence for a declaration must use a consistent Document Status Code.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71203",
+   "title": "Licence Error: Document Status Code \"EL\" or \"EP\" is not allowed on a Single Use licence",
+   "meaning": "Licence error",
+   "check": "Document status code \"EL\" or \"EP\" is not allowed on a single use licence.\nThe licence can only be used once so cannot be part used.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71204",
+   "title": "Licence is already surrendered",
+   "meaning": "Licence is already surrendered",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71206",
+   "title": "Licence is already exhausted",
+   "meaning": "Licence is already exhausted",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71216",
+   "title": "Transaction not permitted; Licence is inactive and is no longer available for use",
+   "meaning": "Licence is no longer available for use",
+   "check": "Licence declared has been made inactive, check correct licence is declared or contact issuing authority.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71236",
+   "title": "Licence not valid for declared Country of Origin",
+   "meaning": "Licence error",
+   "check": "You have declared an invalid Licence for the declared Country of Origin.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71252",
+   "title": "Licence not valid for declared Country of Dispatch",
+   "meaning": "Licence error",
+   "check": "Licence not valid for declared country of dispatch",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS71262",
+   "title": "Licence Error: Document Status Code \"EA\" can only be declared on Type Y declaration",
+   "meaning": "Licence error",
+   "check": "Document Status Code \"EA\" can only be used on a supplementary declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS73329",
+   "title": "Licence Error: Licence cannot be declared on declaration category/declaration type combination",
+   "meaning": "Licence cannot be used",
+   "check": "A licence document code (for example X002, 9106) cannot be declared on this type of declaration, even if using a waiver/exemption document status code. If the goods are entitled to a waiver/exemption and there is a waiver document code which can be used in place of the licence document code (for example Y903, Y927), then this can be used instead. If there is no waiver document code that can be used then it may be necessary to use a standard declaration.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS77000",
+   "title": "Obligation Error: ID must be provided for declared Document Code",
+   "meaning": "Document identifier required",
+   "check": "Instructions for how to use the code are given in the 'Conditions' box for the commodity code and Appendix 5A.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS77001",
+   "title": "Quantity must be provided for Document Category",
+   "meaning": "Quantity must be provided",
+   "check": "In some cases, when you declare a document status code to indicate a waiver for a licence, you are still required to enter a '0' as the quantity attributed to the licence. This will also require a measurement unit such as GBP.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS77002",
+   "title": "Obligation Error: Document Status Code must be provided for declared Document Code",
+   "meaning": "Document status code needed",
+   "check": "Check appendix 5A for more information.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS77003",
+   "title": "Licence Error: DUCR must be provided for an Import declaration with a Licence",
+   "meaning": "Licence error",
+   "check": "You have not provided a DUCR - this is required at header level for an import declaration with a licence.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS77004",
+   "title": "Reservation could not be made",
+   "meaning": "Reservation could not be made",
+   "check": "",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  },
+  {
+   "code": "CDS77005",
+   "title": "Reason for waiver must be declared for Document Category",
+   "meaning": "Reason not given for use of a 'Y' code",
+   "check": "The Y series document code used requires a document reason. Check the 'Conditions' box in the Online Tariff or appendix 5A for the information required.",
+   "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+   "asset_url": "https://assets.publishing.service.gov.uk/media/6a39834dc6e94f095f3efc31/CDS_Error_Codes_09-06-2026.ods",
+   "checked_on": "2026-10-15"
+  }
+ ]
+}

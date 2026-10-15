@@ -68,6 +68,15 @@ const shortNames = {
   '/customs-reference/incoterms/dap/': 'DAP',
   '/customs-reference/incoterms/fca/': 'FCA',
   '/customs-reference/incoterms/ddp/': 'DDP',
+  '/customs-reference/customs-procedure-codes/': 'Customs procedure codes',
+  '/customs-reference/customs-document-codes/': 'Customs document codes',
+  '/customs-reference/cds-error-codes/': 'CDS error codes',
+  '/customs-reference/incoterms/exw/': 'EXW',
+  '/customs-reference/incoterms/fas/': 'FAS',
+  '/customs-reference/incoterms/cfr/': 'CFR',
+  '/customs-reference/incoterms/cpt/': 'CPT',
+  '/customs-reference/incoterms/cip/': 'CIP',
+  '/customs-reference/incoterms/dpu/': 'DPU',
 }
 
 const registry = new Map()
