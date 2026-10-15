@@ -4,7 +4,7 @@ export const eoriChecker = {
   ref: 'PUBLIC TOOL 04 · GB EORI',
   title: 'GB EORI number checker | Free HMRC registry check',
   schemaName: 'Free GB EORI number checker',
-  reviewedOn: '2026-10-12',
+  reviewedOn: '2026-10-15',
   description:
     'Check one GB EORI number against HMRC’s current registry, see the source and timestamp, and get the right XI or EU checker handoff without signing up.',
   eyebrow: 'FREE GB EORI CHECKER · HMRC REGISTRY RESULT · NO SIGN-UP',
@@ -36,6 +36,18 @@ export const eoriChecker = {
       checked: '12 OCTOBER 2026',
       url: 'https://www.gov.uk/eori',
     },
+    {
+      title: 'Apply for an EORI number',
+      publisher: 'HM Revenue & Customs · GOV.UK',
+      checked: '15 OCTOBER 2026',
+      url: 'https://www.gov.uk/eori/apply-for-eori',
+    },
+    {
+      title: 'Get an EORI number for Northern Ireland (XI)',
+      publisher: 'HM Revenue & Customs · GOV.UK',
+      checked: '15 OCTOBER 2026',
+      url: 'https://www.gov.uk/eori/eori-northern-ireland',
+    },
   ],
   questions: [
     {
@@ -62,6 +74,36 @@ export const eoriChecker = {
       question: 'Why might HMRC be temporarily unavailable?',
       answer:
         'A timeout, upstream rate limit or service interruption can prevent a current registry answer. The page keeps that state separate from valid and invalid and asks you to retry rather than guessing.',
+    },
+    {
+      question: 'Is this EORI checker free?',
+      answer:
+        'Yes. Checking a GB EORI number here is free, with no account and no sign-up. Each check returns HMRC’s current registry answer for one number.',
+    },
+    {
+      question: 'How do I find my own EORI number?',
+      answer:
+        'Sign in to the EORI digital registration service with the same Government Gateway details you used to apply. HMRC’s guidance says not to sign in from another page, such as the business tax account; your number is shown once you are signed in.',
+    },
+    {
+      question: 'How long does it take to get an EORI number?',
+      answer:
+        'HMRC says you get a GB EORI number immediately unless it needs to make checks, which can take up to 5 working days. An XI EORI number arrives within 5 days of the XI registration form.',
+    },
+    {
+      question: 'Do I need an XI EORI number?',
+      answer:
+        'You need an XI EORI number to move goods into Northern Ireland from Great Britain, to move goods from Northern Ireland to a non-EU country, to make a declaration in Northern Ireland or to apply for a customs decision there. You must apply for a GB EORI number first.',
+    },
+    {
+      question: 'Is an EORI number the same as a VAT number?',
+      answer:
+        'No. A VAT number identifies a business for VAT. An EORI number identifies an economic operator in customs activity. A VAT-registered business’s GB EORI is often built from its 9-digit VAT number followed by 000, which is why the two are easy to mix up.',
+    },
+    {
+      question: 'Can I check an EORI number by company name?',
+      answer:
+        'No. HMRC’s checker, and this one, work from the EORI number itself. Ask the trader for their number, then check it here. If the holder has consented, the result shows their published name and address.',
     },
   ],
 }
@@ -509,6 +551,48 @@ export function renderEoriChecker(checker, site, { apiOrigin, navHtml, webmaster
             <article><span>02 · PUBLIC DETAILS</span><h3>No name does not cancel a valid result.</h3><p>HMRC supplies trader details only when the holder has chosen to publish them. The validity answer stands separately.</p></article>
             <article><span>03 · FRESHNESS</span><h3>Use the timestamp.</h3><p>Every completed registry result shows the Declarix check time and the HMRC processing time when supplied.</p></article>
             <article><span>04 · NEXT WORKFLOW</span><h3>Move from identifier to usable pack.</h3><p>Use the free pack checker to organise the evidence handoff, or bring the first workflow and desk numbers to the 20-minute call.</p></article>
+          </div>
+        </section>
+
+        <section class="eori-guide" id="how-to-check-eori" aria-labelledby="eori-how-heading">
+          <header><span class="section-label">HOW TO CHECK AN EORI NUMBER</span><h2 id="eori-how-heading">How to check an EORI number in four steps</h2><p>Paste a GB number into the checker above for HMRC’s live registry answer. Use the European Commission checker for XI and EU numbers.</p></header>
+          <ol class="eori-steps">
+            <li><b>01</b><div><strong>Read the first two letters.</strong><p>GB means a UK number issued by HMRC: check it here. XI, or an EU country code such as DE, FR, NL or IE, goes to the European Commission checker.</p></div></li>
+            <li><b>02</b><div><strong>Paste the whole number.</strong><p>Spaces, dashes and lower-case letters are fine. The checker tidies them before it asks HMRC.</p></div></li>
+            <li><b>03</b><div><strong>Read the answer and the time.</strong><p>Valid means HMRC confirmed the number when the check ran. A name and address appear only when the holder has agreed to publish them.</p></div></li>
+            <li><b>04</b><div><strong>Keep the record with the job.</strong><p>Note the check time beside the shipment, then move on to the invoice, packing list and the rest of the document pack.</p></div></li>
+          </ol>
+        </section>
+
+        <section class="eori-guide" id="gb-eu-eori-checker" aria-labelledby="eori-which-heading">
+          <header><span class="section-label">GB EORI CHECKER · EU EORI CHECKER</span><h2 id="eori-which-heading">GB, XI or EU EORI: which checker to use</h2><p>The prefix decides the checker. GB numbers go to HMRC through this page. XI and EU numbers are checked on the European Commission’s EORI validation service.</p></header>
+          <div class="eori-table-scroll" tabindex="0" role="region" aria-label="Which EORI checker to use"><table class="eori-table">
+            <thead><tr><th scope="col">Prefix</th><th scope="col">Issued by</th><th scope="col">Check it with</th><th scope="col">Typical use</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">GB</th><td>HMRC</td><td>This free GB EORI checker (HMRC registry)</td><td>Importing to or exporting from Great Britain</td></tr>
+              <tr><th scope="row">XI</th><td>HMRC, for Northern Ireland</td><td><a data-eori-eu="guide_xi" href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en">European Commission EORI checker ↗</a></td><td>Moving goods into Northern Ireland from Great Britain, declarations and customs decisions in Northern Ireland</td></tr>
+              <tr><th scope="row">DE, FR, NL, IE and other EU codes</th><td>The EU member state</td><td><a data-eori-eu="guide_eu" href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en">European Commission EORI checker ↗</a></td><td>Customs activity in the EU</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section class="eori-guide" id="eori-errors" aria-labelledby="eori-errors-heading">
+          <header><span class="section-label">COMMON ERRORS</span><h2 id="eori-errors-heading">Common EORI number errors and how to fix them</h2><p>Most failed checks come from a copying slip, the wrong prefix, or a VAT number used in place of an EORI.</p></header>
+          <div class="eori-errors">
+            <article><strong>An XI or EU number in the GB checker</strong><p>The checker routes it to the European Commission service. Open the handoff and check it there.</p></article>
+            <article><strong>Digits missing</strong><p>A GB EORI is usually GB followed by 12 digits, and sometimes 15. Copy the whole number from the source document.</p></article>
+            <article><strong>VAT number instead of EORI</strong><p>A GB VAT number has 9 digits. A VAT-registered business’s EORI often adds 000 to it. Ask for the EORI itself.</p></article>
+            <article><strong>Letter O for zero, letter I for one</strong><p>EORI numbers use digits after the prefix. Retype any character that came from a scan or photo.</p></article>
+            <article><strong>Valid, but no name shown</strong><p>The holder has not agreed to publish their details. The valid answer stands on its own.</p></article>
+            <article><strong>HMRC does not confirm the number</strong><p>Check the copy first. The holder can see their number by signing in to the EORI registration service they applied through.</p></article>
+          </div>
+        </section>
+
+        <section class="eori-guide" id="how-to-get-eori" aria-labelledby="eori-get-heading">
+          <header><span class="section-label">HOW TO GET AN EORI NUMBER</span><h2 id="eori-get-heading">How to get an EORI number, including XI</h2><p>Apply on GOV.UK with a Government Gateway user ID. HMRC says you get a GB EORI number immediately unless it needs to make checks, which can take up to 5 working days.</p></header>
+          <div class="eori-get">
+            <article><span>GB EORI · WHAT YOU NEED</span><ul><li>Unique Taxpayer Reference (UTR)</li><li>VAT number and effective date of registration</li><li>Standard Industrial Classification (SIC) code</li><li>Business start date</li><li>National Insurance number, if you are an individual or sole trader</li></ul><p><a href="https://www.gov.uk/eori/apply-for-eori">Apply for an EORI number on GOV.UK ↗</a></p></article>
+            <article id="xi-eori"><span>XI EORI · NORTHERN IRELAND</span><p>You need an XI EORI number to move goods into Northern Ireland from Great Britain, to move goods from Northern Ireland to a non-EU country, to make a declaration in Northern Ireland, or to apply for a customs decision there.</p><p>Apply for a GB EORI number first. Then complete the XI EORI registration form with your XI VAT number and proof of a permanent business establishment in Northern Ireland. HMRC says the XI number arrives within 5 days. To check an XI EORI, use the <a data-eori-eu="guide_get_xi" href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en">European Commission checker ↗</a>.</p></article>
           </div>
         </section>
 

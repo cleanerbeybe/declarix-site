@@ -21,3 +21,12 @@ The check date above is our retrieval/review date. It is not a publisher update 
 - The GOV.UK application/eligibility guide remains available as supporting guidance.
 
 Complete official captures and exact retrieval times are retained in the 12 October Q6 source-review evidence. The selected request/200/400/500 API contracts match the prior evidence after resolving references and treating required-field lists as sets. This is documentation compatibility, not a live registry or deployed-provider test. No identifier was submitted. The historical register path is retained; no consumer migration is required.
+
+## 15 October 2026 guide additions
+
+The page gained how-to-check, GB/XI/EU checker, common-error and how-to-get-an-EORI sections (SEO lane L4). Two supporting GOV.UK sources were added and checked on **15 October 2026**; the four sources above keep their 12 October check stamps.
+
+| Source | Supports |
+|---|---|
+| [Apply for an EORI number](https://www.gov.uk/eori/apply-for-eori) | What you need to apply, "immediately unless HMRC needs to make any checks… up to 5 working days", XI requires a GB application first, XI within 5 days. |
+| [Get an EORI number for Northern Ireland (XI)](https://www.gov.uk/eori/eori-northern-ireland) | The four activities that need an XI EORI number. |

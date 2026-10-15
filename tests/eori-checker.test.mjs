@@ -158,16 +158,18 @@ test('response matching uses the submitted snapshot, not later edited input', as
   assert.equal(c.element('eori-normalized').textContent, eori)
 })
 
-test('Q6 record has the accepted review date and four official check stamps', () => {
-  assert.equal(eoriChecker.reviewedOn, '2026-10-12')
-  assert.equal(eoriChecker.sources.length, 4)
-  assert.deepEqual(eoriChecker.sources.map(source => source.checked), Array(4).fill('12 OCTOBER 2026'))
+test('Q6 record keeps its four 12 October check stamps; the 15 October guide adds two sources', () => {
+  assert.equal(eoriChecker.reviewedOn, '2026-10-15')
+  assert.equal(eoriChecker.sources.length, 6)
+  assert.deepEqual(eoriChecker.sources.slice(0, 4).map(source => source.checked), Array(4).fill('12 OCTOBER 2026'))
+  assert.deepEqual(eoriChecker.sources.slice(4).map(source => source.checked), Array(2).fill('15 OCTOBER 2026'))
 })
 
 test('Q6 renderer agrees on visible, structured and footer review dates', () => {
-  assert.match(html, /SOURCE REVIEW<\/span><strong>2026-10-12<\/strong>/)
-  assert.match(html, /REVIEWED 2026-10-12/)
+  assert.match(html, /SOURCE REVIEW<\/span><strong>2026-10-15<\/strong>/)
+  assert.match(html, /REVIEWED 2026-10-15/)
   assert.equal((html.match(/CHECKED 12 OCTOBER 2026/g) || []).length, 4)
+  assert.equal((html.match(/CHECKED 15 OCTOBER 2026/g) || []).length, 2)
   const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])
   const app = data['@graph'].find(node => node['@type'] === 'WebApplication')
   assert.equal(app.dateModified, eoriChecker.reviewedOn)
