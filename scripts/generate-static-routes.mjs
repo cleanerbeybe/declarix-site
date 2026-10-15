@@ -11,6 +11,7 @@ import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHu
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
+import { comparisonRoutes, renderComparison, validateComparisons } from './comparisons.mjs'
 import { renderPricingTable } from './pricing.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
@@ -52,6 +53,7 @@ function routeLinks() {
     ['PRICING', '/pricing/'],
     ['ROI CALCULATOR', roiRoute.path],
     ['PILOT', '/pilot/'],
+    ['COMPARE', '/compare/'],
     ['PREPARATION OPTIONS', economicsRoute.path],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
@@ -642,9 +644,23 @@ const roiTarget = join(dist, roiRoute.path.slice(1), 'index.html')
 await mkdir(dirname(roiTarget), { recursive: true })
 await writeFile(roiTarget, renderRoiCalculator(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
 
+validateComparisons()
+for (const page of comparisonRoutes) {
+  if (paths.has(page.path)) throw new Error(`Duplicate route: ${page.path}`)
+  if (titles.has(page.title)) throw new Error(`Duplicate title: ${page.title}`)
+  if (headings.has(page.h1)) throw new Error(`Duplicate H1: ${page.h1}`)
+  paths.add(page.path)
+  titles.add(page.title)
+  headings.add(page.h1)
+  const target = join(dist, page.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderComparison(page, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags(), bookingHref: bookingHref(page) }))
+}
+
 const indexableRoutes = [
   roiRoute,
   economicsRoute,
+  ...comparisonRoutes.map((page) => ({ ...page, reviewedOn: '2026-10-15' })),
   ...routes,
   ...tools,
   ...calculators,

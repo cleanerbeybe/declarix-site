@@ -8,6 +8,7 @@ import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './rada
 import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
+import { comparisonRoutes, pageSources } from './comparisons.mjs'
 import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
@@ -38,6 +39,8 @@ const publicSources = [
   'scripts/authority-library.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
+  'scripts/comparisons.mjs',
+  'scripts/comparison-sources.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -76,6 +79,7 @@ for (const record of radarRecords) {
 const expected = [
   roiRoute,
   economicsRoute,
+  ...comparisonRoutes,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
   ...tools,
@@ -509,6 +513,32 @@ for (const route of expected) {
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (comparisonRoutes.includes(route)) {
+    if (!/<table class="compare-table">[\s\S]*?<caption[\s\S]*?<th scope="col">[\s\S]*?<th scope="row">/.test(html)) {
+      throw new Error(`${route.path} is missing its semantic comparison table`)
+    }
+    if (!html.includes('id="verdict-heading"') || !html.includes('class="faq-item"') || !html.includes('class="source-register"')) {
+      throw new Error(`${route.path} is missing its verdict, visible FAQ or source register`)
+    }
+    if (route.kind !== 'hub' && !html.includes('Choose Declarix if')) throw new Error(`${route.path} is missing its Choose Declarix section`)
+    for (const href of ['/tools/customs-document-pack-check/', '/pilot/']) {
+      if (!html.includes(`href="${href}"`)) throw new Error(`${route.path} is missing next step ${href}`)
+    }
+    for (const source of pageSources(route)) {
+      if (!html.includes(`href="${source.url}"`)) throw new Error(`${route.path} is missing source ${source.url}`)
+    }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const graph = schema['@graph'] || []
+    const faq = graph.find((item) => item['@type'] === 'FAQPage')
+    const visible = (html.match(/class="faq-item"/g) || []).length
+    if (!faq || faq.mainEntity.length !== visible) throw new Error(`${route.path} FAQPage must match the visible FAQ`)
+    for (const question of faq.mainEntity) {
+      if (!html.includes(question.name.replaceAll('&', '&amp;'))) throw new Error(`${route.path} FAQPage question is not visible: ${question.name}`)
+    }
+    if (!graph.some((item) => item['@type'] === 'BreadcrumbList')) throw new Error(`${route.path} is missing BreadcrumbList`)
+    if (route.kind === 'hub' && !graph.some((item) => item['@type'] === 'ItemList')) throw new Error('/compare/ is missing ItemList')
   }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
