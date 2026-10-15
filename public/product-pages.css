@@ -1,0 +1,273 @@
+/* Feature, guide and integration workflow pages. Loads after static-routes.css. */
+
+.pp-answer {
+  padding: clamp(28px, 5vw, 56px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.pp-answer p {
+  max-width: 76ch;
+  margin: 12px 0 0;
+  font-size: clamp(18px, 2vw, 21px);
+  line-height: 1.55;
+}
+
+.pp-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pp-section {
+  min-width: 0;
+  padding: clamp(30px, 5vw, 60px);
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  background: rgb(255 255 255 / 0.42);
+}
+
+.pp-section.pp-wide {
+  grid-column: 1 / -1;
+  border-right: 0;
+}
+
+.pp-section h2,
+.pp-faq h2,
+.pp-index h2 {
+  max-width: 24ch;
+  margin: 12px 0 18px;
+  font-size: clamp(26px, 3.2vw, 42px);
+  line-height: 1.04;
+}
+
+.pp-section p,
+.pp-section li {
+  max-width: 72ch;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.pp-section ul {
+  padding-left: 20px;
+}
+
+.pp-section a,
+.pp-answer a,
+.pp-faq a {
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.pp-steps {
+  display: grid;
+  gap: 0;
+  margin: 24px 0 0;
+  padding: 0;
+  border-top: 1.5px solid var(--ink);
+  list-style: none;
+}
+
+.pp-steps li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.45);
+}
+
+.pp-steps li > span {
+  font: 600 13px/1.4 'IBM Plex Mono', monospace;
+  color: var(--cleared);
+}
+
+.pp-steps strong {
+  font-size: 17px;
+}
+
+.pp-steps p {
+  margin: 4px 0 0;
+}
+
+.pp-table-wrap {
+  max-width: 100%;
+  margin-top: 24px;
+  overflow-x: auto;
+  border: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.pp-table-wrap:focus-visible {
+  outline: 3px solid var(--manifest);
+  outline-offset: 3px;
+}
+
+.pp-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pp-table caption {
+  padding: 12px 14px;
+  border-bottom: 1.5px solid var(--ink);
+  font: 500 10px/1.5 'IBM Plex Mono', monospace;
+  letter-spacing: 0.07em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pp-table th,
+.pp-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgb(22 49 61 / 0.3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.pp-table thead th {
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgb(22 49 61 / 0.06);
+}
+
+.pp-table tbody th {
+  font-weight: 700;
+}
+
+.pp-figure {
+  margin: 28px 0 0;
+  border: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.pp-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pp-figure figcaption {
+  padding: 12px 14px;
+  border-top: 1.5px solid var(--ink);
+  font: 500 11px/1.55 'IBM Plex Mono', monospace;
+  color: var(--muted);
+}
+
+.pp-index {
+  padding: clamp(30px, 5vw, 60px);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.pp-index ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0;
+  margin: 24px 0 0;
+  padding: 0;
+  border-top: 1.5px solid var(--ink);
+  border-left: 1.5px solid var(--ink);
+  list-style: none;
+}
+
+.pp-index li {
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.pp-index a {
+  display: grid;
+  gap: 10px;
+  min-height: 180px;
+  padding: 22px;
+  text-decoration: none;
+}
+
+.pp-index a strong {
+  font-size: 21px;
+  line-height: 1.15;
+}
+
+.pp-index a span {
+  line-height: 1.55;
+}
+
+.pp-index a b {
+  align-self: end;
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.07em;
+  color: var(--cleared);
+}
+
+.pp-index a:hover strong,
+.pp-index a:focus-visible strong {
+  text-decoration: underline;
+}
+
+.pp-faq {
+  padding: clamp(30px, 5vw, 60px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.pp-faq dl {
+  margin: 0;
+  border-top: 1.5px solid var(--ink);
+}
+
+.pp-faq-item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.45);
+}
+
+.pp-faq dt {
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.pp-faq dd {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.pp-secondary {
+  display: inline-block;
+  margin-top: 14px;
+  font: 600 11px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 760px) {
+  .pp-body,
+  .pp-faq-item {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-section,
+  .pp-section.pp-wide {
+    padding: 34px 22px;
+    border-right: 0;
+  }
+
+  .pp-answer,
+  .pp-index,
+  .pp-faq {
+    padding: 34px 22px;
+  }
+
+  .pp-faq-item {
+    gap: 6px;
+  }
+
+  .pp-steps li {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 10px;
+  }
+}
