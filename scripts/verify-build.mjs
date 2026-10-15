@@ -543,6 +543,8 @@ for (const route of expected) {
     }
     if (!graph.some((item) => item['@type'] === 'BreadcrumbList')) throw new Error(`${route.path} is missing BreadcrumbList`)
     if (route.kind === 'hub' && !graph.some((item) => item['@type'] === 'ItemList')) throw new Error('/compare/ is missing ItemList')
+  }
+
   if (alternativesRoutes.includes(route)) {
     if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
       throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
