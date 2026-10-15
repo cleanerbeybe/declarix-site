@@ -94,6 +94,7 @@ const titles = new Set()
 const canonicals = new Set()
 const headings = new Set()
 const inbound = new Map(expected.map((route) => [route.path, 0]))
+const inboundPages = new Map(expected.map((route) => [route.path, new Set()]))
 for (const route of expected) {
   const file = route.path === '/' ? join(root, 'dist/index.html') : join(root, 'dist', route.path.slice(1), 'index.html')
   const html = await readFile(file, 'utf8')
@@ -549,6 +550,7 @@ for (const route of expected) {
     if (url.pathname.startsWith('/downloads/')) continue
     if (!expectedPaths.has(url.pathname)) throw new Error(`${route.path} links to unknown route ${url.pathname}`)
     inbound.set(url.pathname, inbound.get(url.pathname) + 1)
+    if (url.pathname !== route.path) inboundPages.get(url.pathname).add(route.path)
   }
 
   if (route.path !== '/') {
@@ -653,6 +655,20 @@ try {
 
 for (const [path, count] of inbound) {
   if (path !== '/' && count === 0) throw new Error(`Orphan route: ${path}`)
+}
+for (const [path, sources] of inboundPages) {
+  if (path !== '/' && sources.size < 2) throw new Error(`Weakly linked route: ${path} has ${sources.size} linking page(s); add a contextual link`)
+}
+const valueDutyHtml = await readFile(join(root, 'dist/tools/customs-value-import-duty-vat-calculator/index.html'), 'utf8')
+for (const route of authorityRoutes.filter((candidate) => candidate.kind === 'incoterm-term')) {
+  if (!valueDutyHtml.includes(`href="${route.path}"`)) throw new Error(`Customs value calculator does not link ${route.path}`)
+}
+for (const path of ['how-it-works', 'supported-scope']) {
+  const html = await readFile(join(root, 'dist', path, 'index.html'), 'utf8')
+  const body = html.slice(html.indexOf('<div class="content-grid">'), html.indexOf('</main>'))
+  for (const money of ['/customs-declaration-software/', '/customs-clearance-software/']) {
+    if (!body.includes(`href="${money}"`)) throw new Error(`/${path}/ body copy does not link ${money}`)
+  }
 }
 
 const sitemap = await readFile(join(root, 'dist/sitemap.xml'), 'utf8')

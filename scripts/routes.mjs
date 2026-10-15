@@ -160,6 +160,13 @@ export const routes = [
           ['Approval', 'Your clerk checks and approves'],
           ['Submission', 'Your existing customs system and permissions'],
         ],
+        linkSentence: [
+          'Read how the CDS-ready pack works as ',
+          ['customs declaration software for Sequoia and Descartes desks', '/customs-declaration-software/'],
+          ', or compare the filing and preparation layers in the ',
+          ['customs clearance software buyer file', '/customs-clearance-software/'],
+          '.',
+        ],
       },
       {
         label: '03 · BEST FIRST WORKFLOW',
@@ -312,6 +319,13 @@ export const routes = [
         title: 'The CDS-ready export reaches your system.',
         paragraphs: [
           'Declarix supports Sequoia, Descartes e-Customs and customer integrations. Your team keeps the filing screen, badge, permissions and submission process it already knows.',
+        ],
+        linkSentence: [
+          'Comparing products? See how Declarix fits as ',
+          ['customs declaration software', '/customs-declaration-software/'],
+          ' beside your filing system, and what to ask when you shortlist ',
+          ['customs clearance software', '/customs-clearance-software/'],
+          '.',
         ],
       },
       {

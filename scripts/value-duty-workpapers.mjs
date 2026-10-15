@@ -458,6 +458,18 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
           </div>
         </section>
 
+        <section class="official-checkpoints value-duty-incoterms" aria-labelledby="incoterms-bridge-heading">
+          <header><span class="section-label">TRADE TERM FIRST</span><h2 id="incoterms-bridge-heading">Know which costs the price already includes.</h2><p>The Incoterm on the invoice tells you who paid for carriage and insurance and where risk moved. Open the matching sheet to see which freight and insurance amounts belong in fields 03 and 04.</p></header>
+          <div>
+            <a href="/customs-reference/incoterms/fob/"><span>FOB · FREE ON BOARD</span><strong>Buyer pays main carriage, so freight and insurance to the UK border are usually added.</strong><b>OPEN THE FOB SHEET →</b></a>
+            <a href="/customs-reference/incoterms/cif/"><span>CIF · COST, INSURANCE AND FREIGHT</span><strong>Seller-paid freight and insurance may already be in the invoice price. Do not add them twice.</strong><b>OPEN THE CIF SHEET →</b></a>
+            <a href="/customs-reference/incoterms/fca/"><span>FCA · FREE CARRIER</span><strong>Find the named-place carrier handoff, then add buyer-paid transport to the border.</strong><b>OPEN THE FCA SHEET →</b></a>
+            <a href="/customs-reference/incoterms/dap/"><span>DAP · DELIVERED AT PLACE</span><strong>Split delivery cost before and after the UK border to find the border value.</strong><b>OPEN THE DAP SHEET →</b></a>
+            <a href="/customs-reference/incoterms/ddp/"><span>DDP · DELIVERED DUTY PAID</span><strong>Unpack duty, import VAT and post-border costs from the delivered price.</strong><b>OPEN THE DDP SHEET →</b></a>
+            <a href="/customs-reference/incoterms/"><span>NOT SURE WHICH TERM?</span><strong>Answer four questions in the Incoterms chooser to find the closest sheet.</strong><b>OPEN THE CHOOSER →</b></a>
+          </div>
+        </section>
+
         <section class="value-duty-workpaper" id="valuation-workpaper" aria-labelledby="workpaper-heading">
           <header class="value-duty-workpaper-header"><span class="section-label">YOUR PLANNING SCENARIO</span><h2 id="workpaper-heading">Cross-foot the movement in three stages.</h2><p>Enter every field. Use 0 only where you have checked that a charge, adjustment or rate does not apply. No input is fetched or inferred.</p></header>
           <form id="value-duty-form">

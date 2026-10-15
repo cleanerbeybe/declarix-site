@@ -79,6 +79,7 @@ function routeLinks() {
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
     ['FREE TOOLS', '/tools/'],
     ['RESEARCH', '/research/'],
+    ['SIGNAL REPORT', '/research/uk-customs-operations-signal-report-2026/'],
     ['RADAR', '/research/cds-operations-radar/'],
     ['INCOTERMS', '/customs-reference/incoterms/'],
     ['WORKFLOWS', '/customs-workflows/'],
@@ -105,10 +106,16 @@ function renderSection(section, index) {
         )
         .join('')}</div>`
     : ''
+  // linkSentence: an added sentence mixing text and [label, href] links.
+  const linkSentence = section.linkSentence
+    ? `<p>${section.linkSentence
+        .map((part) => (Array.isArray(part) ? `<a href="${escapeHtml(part[1])}">${escapeHtml(part[0])}</a>` : escapeHtml(part)))
+        .join('')}</p>`
+    : ''
   return `<section class="sheet">
     <span class="section-label">${escapeHtml(section.label || String(index + 1).padStart(2, '0'))}</span>
     <h2>${escapeHtml(section.title)}</h2>
-    ${paragraphs}${list}${facts}
+    ${paragraphs}${list}${facts}${linkSentence}
   </section>`
 }
 

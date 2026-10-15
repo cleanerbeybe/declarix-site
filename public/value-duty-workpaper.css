@@ -595,3 +595,26 @@
     padding: 13px 0;
   }
 }
+
+.value-duty-incoterms > div a {
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.value-duty-incoterms > div a:nth-child(3n) {
+  border-right: 0;
+}
+
+.value-duty-incoterms > div a:nth-last-child(-n + 3) {
+  border-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .value-duty-incoterms > div a,
+  .value-duty-incoterms > div a:nth-last-child(-n + 3) {
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .value-duty-incoterms > div a:last-child {
+    border-bottom: 0;
+  }
+}
