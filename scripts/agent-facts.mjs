@@ -419,22 +419,28 @@ export function renderAgentFactsMain(pages) {
         </section>`
 }
 
+// Lane L1 adds scripts/site-graph.mjs with one shared Organization node (and a verify check that
+// every page uses it). Use it when present so this page stays in step; otherwise use the
+// same node the other static routes emit today.
+const siteGraph = await import('./site-graph.mjs').catch(() => null)
+function organizationNode() {
+  if (siteGraph?.organizationNode) return siteGraph.organizationNode(site)
+  return {
+    '@type': 'Organization',
+    '@id': `${site.origin}/#organization`,
+    name: site.company,
+    legalName: site.company,
+    url: `${site.origin}/`,
+    email: site.contact,
+    identifier: site.companyNumber,
+  }
+}
+
 export function agentFactsJsonLd() {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-        foundingDate: '2026-06-19',
-        address: { '@type': 'PostalAddress', addressLocality: 'Leicester', addressCountry: 'GB' },
-        sameAs: [agentFactsRoute.sources[0].url],
-      },
+      organizationNode(),
       {
         '@type': 'AboutPage',
         '@id': `${site.origin}${agentFactsRoute.path}#webpage`,
