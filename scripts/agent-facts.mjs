@@ -462,7 +462,7 @@ export function agentFactsJsonLd() {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: agentFactsRoute.h1, item: `${site.origin}${agentFactsRoute.path}` },
+          { '@type': 'ListItem', position: 2, name: 'For AI assistants', item: `${site.origin}${agentFactsRoute.path}` },
         ],
       },
     ],
