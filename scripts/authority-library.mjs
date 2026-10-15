@@ -189,6 +189,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
+    extraTools: [['/tools/mrn-checker/', 'Check every MRN for the GMR']],
   },
   {
     slug: 'postponed-vat-accounting-checklist',
@@ -270,6 +271,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
+    extraTools: [['/tools/mrn-checker/', 'Decode an ENS or import MRN']],
   },
   {
     slug: 'duty-deferment-account-checklist',
@@ -324,6 +326,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
+    extraTools: [['/tools/mrn-checker/', 'Check a transit MRN']],
   },
 ]
 
@@ -557,7 +560,7 @@ function renderBurden(route) {
 
 function renderWorkflow(route) {
   const asset = authorityAssets(route)[0]
-  return `<section class="direct-answer"><span>DIRECT ANSWER · ${escapeHtml(route.code)}</span><h2>${escapeHtml(route.direct)}</h2></section><section class="workflow-path" aria-labelledby="workflow-path-heading"><header><span>FIVE-CHECK HANDOFF</span><h2 id="workflow-path-heading">Move the job in order.</h2><p>Each checkpoint produces evidence for the next person or system. A failed checkpoint stays visible.</p></header><ol>${route.steps.map(([number, title, copy]) => `<li><b>${number}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section><div class="responsibility-grid"><section><span>HAVE READY</span><h2>Inputs</h2><ul>${route.inputs.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>STOP AND RESOLVE</span><h2>Do not hand off green</h2><ul>${route.stop.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><div class="download-row">${renderDownload(route, asset, `${route.code} workflow diagram`)}</div><section class="authority-bridge"><span>RELATED DESK JOB</span><h2>Carry the handoff into the pack.</h2><p>The diagram is ungated. Use the related browser workpaper to turn the movement into a reviewable action list.</p><a data-authority-related="workflow_tool" href="${route.related}">${escapeHtml(route.relatedLabel).toUpperCase()} →</a></section>`
+  return `<section class="direct-answer"><span>DIRECT ANSWER · ${escapeHtml(route.code)}</span><h2>${escapeHtml(route.direct)}</h2></section><section class="workflow-path" aria-labelledby="workflow-path-heading"><header><span>FIVE-CHECK HANDOFF</span><h2 id="workflow-path-heading">Move the job in order.</h2><p>Each checkpoint produces evidence for the next person or system. A failed checkpoint stays visible.</p></header><ol>${route.steps.map(([number, title, copy]) => `<li><b>${number}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section><div class="responsibility-grid"><section><span>HAVE READY</span><h2>Inputs</h2><ul>${route.inputs.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>STOP AND RESOLVE</span><h2>Do not hand off green</h2><ul>${route.stop.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><div class="download-row">${renderDownload(route, asset, `${route.code} workflow diagram`)}</div><section class="authority-bridge"><span>RELATED DESK JOB</span><h2>Carry the handoff into the pack.</h2><p>The diagram is ungated. Use the related browser workpaper to turn the movement into a reviewable action list.</p><a data-authority-related="workflow_tool" href="${route.related}">${escapeHtml(route.relatedLabel).toUpperCase()} →</a>${(route.extraTools || []).map(([path, label]) => `<a data-authority-related="workflow_free_tool" href="${path}">${escapeHtml(label).toUpperCase()} →</a>`).join('')}</section>`
 }
 
 function renderWorkflowCluster(currentRoute) {

@@ -11,6 +11,7 @@ import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { tools } from './tools.mjs'
+import { tradeTools } from './trade-tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -38,6 +39,10 @@ const publicSources = [
   'scripts/authority-library.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
+  'scripts/trade-tools.mjs',
+  'scripts/trade-tools/page-kit.mjs',
+  ...tradeTools.map((tool) => `scripts/trade-tools/pages/${tool.pageFile}`),
+  ...[...new Set(tradeTools.flatMap((tool) => tool.modules))].map((name) => `scripts/trade-tools/${name}.mjs`),
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -82,6 +87,7 @@ const expected = [
   ...calculators,
   ...reports,
   ...valueDutyWorkpapers,
+  ...tradeTools,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
@@ -301,6 +307,42 @@ for (const route of expected) {
       if (!html.includes(`id="${outputId}"`)) throw new Error(`${route.path} is missing output ${outputId}`)
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (tradeTools.includes(route)) {
+    for (const phrase of [
+      'DIRECT ANSWER',
+      'WORKED EXAMPLE',
+      'HOW IT WORKS',
+      'tool_started',
+      'tool_completed',
+      'tool_pack_check_clicked',
+      'tool_booking_clicked',
+      'data-tt-pack="result"',
+      'data-tt-pilot="declarix"',
+      'up to 3× more declarations',
+      "sessionStorage.getItem(key)",
+    ]) {
+      if (!html.includes(phrase)) throw new Error(`${route.path} is missing trade tool contract: ${phrase}`)
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit restricted FAQPage or HowTo structured data`)
+    }
+    if ((html.match(/class="tt-question"/g) || []).length < 4) throw new Error(`${route.path} is missing visible question-and-answer support`)
+    if (!html.includes(`href="/tools/customs-document-pack-check/"`) || !html.includes('href="/pilot/"')) {
+      throw new Error(`${route.path} is missing the pack-check and pilot next steps`)
+    }
+    // Analytics never carry what the visitor typed or uploaded.
+    for (const prohibited of ['properties: { mrn', 'properties: { gmr', 'query: q.query', 'track(event, input', 'mrn: item']) {
+      if (html.includes(prohibited)) throw new Error(`${route.path} sends visitor input to analytics: ${prohibited}`)
+    }
+    if (/sk_live|api[_-]?key\s*[:=]\s*['"][A-Za-z0-9]/i.test(html)) throw new Error(`${route.path} embeds a secret`)
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    if (inlineScripts.length !== 1) throw new Error(`${route.path} must ship exactly one inline tool script`)
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
