@@ -11,6 +11,7 @@ import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { sectionHubs } from './section-hubs.mjs'
+import { organizationNode } from './site-graph.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -39,6 +40,8 @@ const publicSources = [
   'scripts/authority-library.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
+  'scripts/section-hubs.mjs',
+  'scripts/site-graph.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -542,6 +545,15 @@ for (const route of expected) {
   if (route === roiRoute && !html.includes('"@type":"WebApplication"')) throw new Error(`${route.path} is missing WebApplication structured data`)
   if (route === economicsRoute && !html.includes('"@type":"WebPage"')) throw new Error(`${route.path} is missing WebPage structured data`)
   if (route === economicsRoute && title.length > 60) throw new Error(`${route.path} title exceeds 60 characters`)
+  {
+    const expectedOrganization = JSON.stringify(organizationNode(site))
+    const organizations = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+      .flatMap((match) => JSON.parse(match[1])['@graph'] || [])
+      .filter((item) => item['@type'] === 'Organization')
+    if (organizations.length !== 1 || JSON.stringify(organizations[0]) !== expectedOrganization) {
+      throw new Error(`${route.path} Organization entity differs from site-graph organizationNode()`)
+    }
+  }
   if (sectionHubs.includes(route)) {
     const children = expected.filter((candidate) => candidate.path !== route.path && candidate.path.startsWith(route.path))
     if (children.length < 2) throw new Error(`${route.path} hub has fewer than two children`)

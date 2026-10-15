@@ -1,4 +1,4 @@
-import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 export const eoriChecker = {
   path: '/tools/eori-checker/',
   id: 'gb_eori_checker',
@@ -106,15 +106,7 @@ function jsonLd(checker, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'WebApplication',
         '@id': `${site.origin}${checker.path}#application`,

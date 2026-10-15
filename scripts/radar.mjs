@@ -1,4 +1,4 @@
-import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 const escapeHtml = (value) =>
   String(value)
     .replaceAll('&', '&amp;')
@@ -330,12 +330,7 @@ function jsonLdHub(site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        url: `${site.origin}/`,
-      },
+      organizationNode(site),
       {
         '@type': 'CollectionPage',
         '@id': `${site.origin}${radarHub.path}#collection`,
@@ -368,12 +363,7 @@ function jsonLdRecord(record, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        url: `${site.origin}/`,
-      },
+      organizationNode(site),
       {
         '@type': 'Article',
         '@id': `${site.origin}${record.path}#article`,

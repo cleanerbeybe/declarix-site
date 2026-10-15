@@ -15,7 +15,7 @@ import { renderPricingTable } from './pricing.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { hubChildren, hubItemList, renderHubRegister, sectionHubs } from './section-hubs.mjs'
-import { breadcrumbHtml, breadcrumbList, registerRoutes, shortName } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode, registerRoutes, shortName } from './site-graph.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -203,15 +203,7 @@ function jsonLd(route) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': route.schemaType || 'WebPage',
         '@id': `${site.origin}${route.path}#webpage`,

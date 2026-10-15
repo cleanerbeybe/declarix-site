@@ -99,6 +99,44 @@ export function breadcrumbHtml(path, leafHtml) {
   return ['<a href="/">HOME</a>', ...links, leafHtml].join(' → ')
 }
 
+// One Organization entity for every page. The @id is stable: other nodes refer to it.
+export function organizationNode(site) {
+  return {
+    '@type': 'Organization',
+    '@id': `${site.origin}/#organization`,
+    name: 'Declarix',
+    legalName: site.company,
+    url: `${site.origin}/`,
+    email: site.contact,
+    logo: {
+      '@type': 'ImageObject',
+      '@id': `${site.origin}/#logo`,
+      url: `${site.origin}/logo.png`,
+      contentUrl: `${site.origin}/logo.png`,
+      width: 512,
+      height: 512,
+      caption: 'Declarix',
+    },
+    image: { '@id': `${site.origin}/#logo` },
+    description: 'UK customs declaration software for freight forwarders and customs brokers.',
+    areaServed: { '@type': 'Country', name: 'United Kingdom', identifier: 'GB' },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Leicester',
+      addressRegion: 'England',
+      addressCountry: 'GB',
+    },
+    foundingDate: '2026-06-19',
+    founder: { '@type': 'Person', '@id': `${site.origin}/#founder`, name: 'Ihusan Adam', honorificPrefix: 'Dr' },
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'Companies House company number',
+      value: site.companyNumber,
+    },
+    sameAs: [`https://find-and-update.company-information.service.gov.uk/company/${site.companyNumber}`],
+  }
+}
+
 // Shared Open Graph + Twitter card head block for hand-built pages.
 export function socialHead(site, { title, description, path, type = 'website' }) {
   const canonical = `${site.origin}${path}`

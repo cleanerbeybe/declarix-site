@@ -1,4 +1,4 @@
-import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 const percent = (count, denominator) => Number(((count / denominator) * 100).toFixed(1))
 
 export const reports = [
@@ -99,15 +99,7 @@ function jsonLd(report, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'Report',
         '@id': reportId,

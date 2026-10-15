@@ -1,5 +1,5 @@
 import { packages, priceForVolume } from './pricing.mjs'
-import { breadcrumbHtml, breadcrumbList, jsonLdScript, socialHead } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, jsonLdScript, organizationNode, socialHead } from './site-graph.mjs'
 
 export const roiRoute = {
   path: '/roi-calculator/',
@@ -33,7 +33,7 @@ export function calculateRoi(input) {
 
 function roiJsonLd(site) {
   return [
-    { '@type': 'Organization', '@id': `${site.origin}/#organization`, name: site.company, url: `${site.origin}/` },
+    organizationNode(site),
     { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: 'Declarix', url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` } },
     {
       '@type': 'WebApplication',

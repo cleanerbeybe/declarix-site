@@ -1,4 +1,4 @@
-import { breadcrumbHtml, breadcrumbList, jsonLdScript, socialHead } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, jsonLdScript, organizationNode, socialHead } from './site-graph.mjs'
 
 // P34: arithmetic from user assumptions, not a price or performance benchmark.
 export const economicsRoute = {
@@ -73,7 +73,7 @@ export function economicsCsv(model) {
 function economicsJsonLd(site) {
   const route = economicsRoute
   return [
-    { '@type': 'Organization', '@id': `${site.origin}/#organization`, name: site.company, url: `${site.origin}/` },
+    organizationNode(site),
     { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: 'Declarix', url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` } },
     {
       '@type': 'WebPage',

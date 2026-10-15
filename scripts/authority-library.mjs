@@ -1,4 +1,4 @@
-import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 const REVIEWED_ON = '2026-07-17'
 
 const source = (title, publisher, url, checked = '17 JULY 2026') => ({ title, publisher, url, checked })
@@ -404,14 +404,7 @@ function bookingHref(route, placement) {
 function jsonLd(route, site) {
   const primaryType = route.kind === 'burden-report' ? 'Report' : route.kind === 'incoterms-hub' ? 'CollectionPage' : 'Article'
   const graph = [
-    {
-      '@type': 'Organization',
-      '@id': `${site.origin}/#organization`,
-      name: site.company,
-      legalName: site.company,
-      url: `${site.origin}/`,
-      identifier: site.companyNumber,
-    },
+    organizationNode(site),
     {
       '@type': primaryType,
       '@id': `${site.origin}${route.path}#page`,

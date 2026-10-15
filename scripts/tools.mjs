@@ -1,4 +1,4 @@
-import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 export const tools = [
   {
     path: '/tools/customs-document-pack-check/',
@@ -133,15 +133,7 @@ function jsonLd(tool, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'WebApplication',
         '@id': `${site.origin}${tool.path}#application`,
