@@ -9,6 +9,7 @@ import { radarCsv, radarDigests, radarHub, radarJson, radarLastObservedAt, radar
 import { authorityAssets, authorityRoutes, incotermExample } from './authority-library.mjs'
 import { alternativesRoutes } from './alternatives.mjs'
 import { additionalRecords, documentRecords, errorRecords, procedureRecords, referenceAssets, referenceRoutes } from './customs-reference.mjs'
+import { procedureRoutes } from './customs-procedures.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { agentFactsRoute } from './agent-facts.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
@@ -50,6 +51,8 @@ const publicSources = [
   'scripts/authority-library.mjs',
   'scripts/customs-reference.mjs',
   'scripts/customs-reference-links.mjs',
+  'scripts/customs-procedures.mjs',
+  'scripts/customs-procedures-content.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
   'scripts/comparisons.mjs',
@@ -139,6 +142,7 @@ const expected = [
   ...productPages,
   ...useCaseRoutes,
   agentFactsRoute,
+  ...procedureRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -836,6 +840,39 @@ for (const route of expected) {
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
+  if (procedureRoutes.includes(route)) {
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must not collect prospect, document, or newsletter data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    for (const phrase of ['PRIMARY SOURCE REGISTER', 'DIRECT ANSWER', 'authority_related_clicked', 'authority_booking_clicked', 'BOOK THE 20-MINUTE NUMBERS CALL']) {
+      if (!html.includes(phrase)) throw new Error(`${route.path} is missing customs reference contract: ${phrase}`)
+    }
+    if (route.kind !== 'glossary') {
+      for (const phrase of ['WORKED UK EXAMPLE', 'COMMON ERRORS', 'HOW DECLARIX PRE-CHECKS THE ENTRY', '/tools/customs-document-pack-check/']) {
+        if (!html.includes(phrase)) throw new Error(`${route.path} is missing customs reference section: ${phrase}`)
+      }
+    }
+    if (!route.sources.every((source) => /^https:\/\/(www\.gov\.uk|www\.trade-tariff\.service\.gov\.uk|developer\.service\.hmrc\.gov\.uk|assets\.publishing\.service\.gov\.uk)\//.test(source.url))) {
+      throw new Error(`${route.path} cites a rule source outside GOV.UK`)
+    }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const graph = schema['@graph'] || []
+    const requiredType = route.kind === 'glossary' ? 'CollectionPage' : 'TechArticle'
+    if (!graph.some((item) => item['@type'] === requiredType)) throw new Error(`${route.path} is missing ${requiredType} structured data`)
+    if (route.kind === 'glossary' && !graph.some((item) => item['@type'] === 'DefinedTermSet')) {
+      throw new Error(`${route.path} is missing DefinedTermSet structured data`)
+    }
+    const breadcrumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (breadcrumbs.length < 2 || breadcrumbs.at(-1).item !== `${site.origin}${route.path}`) {
+      throw new Error(`${route.path} has an incomplete breadcrumb trail`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
   if (productPages.includes(route)) {
     if (/<script\s[^>]*src=/i.test(html) || /<form/i.test(html)) throw new Error(`${route.path} must stay static and collect no data`)
     if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
@@ -1080,7 +1117,7 @@ if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is
 // Golden rule (owner, 15 Oct 2026): new pages never volunteer negatives about Declarix or label the
 // worked examples as fake. Applies to every route added by the 15 Oct SEO build.
 {
-  const newRoutes = new Set([...comparisonRoutes, ...alternativesRoutes, ...productPages, ...useCaseRoutes, ...referenceRoutes, ...documentGenerators, ...sectionHubs, agentFactsRoute, ...radarDigests].map((route) => route.path))
+  const newRoutes = new Set([...comparisonRoutes, ...alternativesRoutes, ...productPages, ...useCaseRoutes, ...referenceRoutes, ...documentGenerators, ...sectionHubs, ...procedureRoutes, agentFactsRoute, ...radarDigests].map((route) => route.path))
   const banned = /fictional|synthetic(?! diamonds)|illustrative(?! labour model)|sample shipment data|review-only|results may vary|not a substitute|does not replace|do not replace|not legal advice|we did not test|not been tested|not verified|unverified/i
   for (const path of newRoutes) {
     let html

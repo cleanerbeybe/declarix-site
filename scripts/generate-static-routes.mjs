@@ -13,6 +13,7 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { alternativesRoutes, renderAlternativesRoute } from './alternatives.mjs'
 import { referenceAssets, referenceRoutes, renderReferenceRoute } from './customs-reference.mjs'
 import { referenceHub } from './customs-reference-links.mjs'
+import { procedureRoutes, renderProcedureRoute, setKnownPaths } from './customs-procedures.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { comparisonRoutes, renderComparison, validateComparisons } from './comparisons.mjs'
@@ -54,7 +55,10 @@ const indexableRoutes = [
   ...referenceRoutes,
   ...productPages,
   ...useCaseRoutes,
+  ...procedureRoutes,
 ]
+// L11 customs reference pages link routes owned by other lanes only when those routes are published.
+setKnownPaths(['/', ...indexableRoutes.map((route) => route.path)])
 // The /customs-reference/ hub link (L5 strip, breadcrumbs) switches on once the L1 section hub is published.
 referenceHub.available = indexableRoutes.some((route) => route.path === referenceHub.path)
 registerRoutes(indexableRoutes)
@@ -831,6 +835,32 @@ for (const useCase of useCaseRoutes) {
   const target = join(dist, useCase.path.slice(1), 'index.html')
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, renderUseCase(useCase, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags(), posthogKey, posthogHost }))
+}
+
+for (const procedureRoute of procedureRoutes) {
+  if (!procedureRoute.path.startsWith('/') || !procedureRoute.path.endsWith('/')) {
+    throw new Error(`Customs reference route must use a trailing slash: ${procedureRoute.path}`)
+  }
+  if (paths.has(procedureRoute.path)) throw new Error(`Duplicate route: ${procedureRoute.path}`)
+  if (titles.has(procedureRoute.title)) throw new Error(`Duplicate title: ${procedureRoute.title}`)
+  if (headings.has(procedureRoute.h1)) throw new Error(`Duplicate H1: ${procedureRoute.h1}`)
+  if (procedureRoute.sources.length < 3) throw new Error(`Customs reference route needs at least three GOV.UK sources: ${procedureRoute.path}`)
+  if (procedureRoute.title.length > 60) throw new Error(`Customs reference title over 60 characters: ${procedureRoute.path}`)
+  if (procedureRoute.description.length > 155) throw new Error(`Customs reference description over 155 characters: ${procedureRoute.path}`)
+  paths.add(procedureRoute.path)
+  titles.add(procedureRoute.title)
+  headings.add(procedureRoute.h1)
+  const target = join(dist, procedureRoute.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderProcedureRoute(procedureRoute, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
 }
 
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
