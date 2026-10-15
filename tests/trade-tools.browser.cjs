@@ -66,8 +66,9 @@ const scenarios = {
     await page.locator('#tariff-origin').selectOption('');
     await page.locator('#tariff-query').fill('wooden dining chairs');
     await page.getByRole('button', { name: 'CHECK CODE' }).click();
-    await page.locator('#tt-result .tt-candidates, #tt-result .tt-facts').first().waitFor({ timeout: 20000 });
-    record(width + ' tariff live search', (await page.locator('#tt-result').innerText()).length > 40);
+    await page.waitForFunction(() => !document.getElementById('tt-result').innerText.includes('6109 10 00 10'), null, { timeout: 20000 });
+    const search = await page.locator('#tt-result').innerText();
+    record(width + ' tariff live search', /9403|9401/.test(search.replace(/\s/g, '')));
   },
 };
 

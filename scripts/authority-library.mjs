@@ -245,6 +245,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
+    extraTools: [['/tools/commodity-code-checker/', 'Check the commodity code and its document codes']],
   },
   {
     slug: 'ens-ics2-entry-summary-declaration-checklist',
