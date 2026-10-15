@@ -4,7 +4,7 @@
 // (product PRs 464/465, reused from feat/customer-request-pages-20260916) and the fictional worked
 // example v3 (8 October 2026). Prices come from pricing.mjs only.
 import { packages, priceForVolume } from './pricing.mjs'
-import { organizationNode } from './site-graph.mjs'
+import { organizationNode, registeredPaths } from './site-graph.mjs'
 import { calculateRoi } from './roi-calculator.mjs'
 
 const REVIEWED_ON = '2026-10-15'
@@ -188,7 +188,7 @@ const brokers = {
     ['What does it cost?', 'Desk is £500/month for 100 packs, Team is £4,000/month for 1,000 packs, and Scale is £9,000/month for 3,000 packs. Extra packs cost the same per-pack rate as your package, never below £3.00.'],
     ['How do we test it on our own work?', '£0 upfront. £1 per declaration, capped at £500. The pilot fee is fully waived if the agreed success criteria are missed.'],
   ],
-  related: ['/customs-entry-checking-software/', '/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customer-document-requests/', '/use-cases/customs-team-review/', '/for/small-customs-brokerages/', '/use-cases/freight-forwarders/', '/customs-clearance-software/', '/roi-calculator/', '/pilot/'],
+  related: ['/customs-entry-checking-software/', '/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customer-document-requests/', '/use-cases/customs-team-review/', '/for/small-customs-brokerages/', '/use-cases/freight-forwarders/', '/customs-clearance-software/', '/compare/', '/alternatives/', '/roi-calculator/', '/pilot/'],
   sources: [sources.appoint, sources.vol3, sources.standard],
 }
 
@@ -237,7 +237,7 @@ const forwarders = {
     ['Can we use it only in peak season?', 'Yes. Packages are month to month, so you can size the allowance to the volume you expect.'],
     ['Who files the entry?', 'Your customs clerk files it with your own badge and software, because Declarix never submits to HMRC.'],
   ],
-  related: ['/use-cases/customs-brokers/', '/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customer-document-requests/', '/customs-entry-checking-software/', '/customs-workflows/gmr-gvms-checklist/', '/how-it-works/', '/pilot/'],
+  related: ['/use-cases/customs-brokers/', '/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customer-document-requests/', '/customs-entry-checking-software/', '/customs-workflows/gmr-gvms-checklist/', '/best-customs-software/', '/how-it-works/', '/pilot/'],
   sources: [sources.importSteps, sources.valuation, sources.vol3],
 }
 
@@ -401,7 +401,7 @@ const dataEntry = {
     ['What happens when a value cannot be read clearly?', 'A low-confidence read becomes a flagged question, and it stops the pack until a person resolves it, so a weak read never reaches the entry.'],
     ['Which systems does the data go into?', 'The CDS-ready pack goes to Sequoia, Descartes e-Customs or a mapped customer integration.'],
   ],
-  related: ['/use-cases/invoice-packing-list-reconciliation/', '/customs-entry-checking-software/', '/use-cases/customs-team-review/', '/use-cases/customs-brokers/', '/how-it-works/', '/supported-scope/', '/compare/automation-vs-outsourcing/'],
+  related: ['/use-cases/invoice-packing-list-reconciliation/', '/customs-entry-checking-software/', '/use-cases/customs-team-review/', '/use-cases/customs-brokers/', '/how-it-works/', '/supported-scope/', '/compare/automation-vs-manual-entry/', '/compare/automation-vs-outsourcing/', '/research/hmrc-customs-administrative-burden-explorer-2026/'],
   sources: [sources.vol3, sources.commodity, sources.cds],
 }
 
@@ -459,7 +459,7 @@ const importers = {
     ['Can my broker start using Declarix?', 'Yes. Your broker can book a 20-minute numbers call to see how Declarix fits their desk and run a pilot on real jobs.'],
   ],
   cta: { title: 'Introduce your broker to Declarix.', copy: 'Brokers who check every job before keying ask fewer, clearer questions. Your broker can book the 20-minute numbers call to see the desk economics and the pilot terms.', label: 'BOOK THE 20-MINUTE NUMBERS CALL' },
-  related: ['/use-cases/customer-document-requests/', '/use-cases/invoice-packing-list-reconciliation/', '/tools/customs-document-pack-check/', '/tools/customs-value-import-duty-vat-calculator/', '/customs-reference/incoterms/', '/use-cases/customs-brokers/'],
+  related: ['/use-cases/customer-document-requests/', '/use-cases/invoice-packing-list-reconciliation/', '/tools/customs-document-pack-check/', '/tools/customs-value-import-duty-vat-calculator/', '/tools/eori-checker/', '/tools/commercial-invoice-generator/', '/customs-reference/incoterms/', '/use-cases/customs-brokers/'],
   sources: [sources.importSteps, sources.eori, sources.origin, sources.appoint, sources.valuation],
 }
 
@@ -584,7 +584,7 @@ const smallBrokerages = {
     ['Who files the declarations?', 'Your clerk files them in your own customs system, because Declarix never submits to HMRC.'],
   ],
   cta: { title: 'See what your desk can take on.', copy: 'Bring weekly volume, current minutes per declaration, loaded clerk cost and the system your team files through. Leave with an ROI estimate, the integration route and the first workflow to run on Desk.' },
-  related: ['/use-cases/customs-brokers/', '/customs-entry-checking-software/', '/pricing/', '/roi-calculator/', '/pilot/', '/use-cases/customer-document-requests/', '/compare/automation-vs-outsourcing/'],
+  related: ['/use-cases/customs-brokers/', '/customs-entry-checking-software/', '/pricing/', '/roi-calculator/', '/pilot/', '/use-cases/customer-document-requests/', '/compare/automation-vs-hiring/', '/compare/automation-vs-outsourcing/'],
   sources: [sources.appoint, sources.standard, sources.developers],
 }
 
@@ -647,7 +647,7 @@ const entryChecking = {
     ['Can a clerk override a flag?', 'A lesser flag can be waived and a blocker overridden with a recorded reason, while the eight hard stops cannot be overridden by anyone.'],
     ['Does Declarix file the entry?', 'No. Your clerk files in your existing customs system, because Declarix never submits to HMRC.'],
   ],
-  related: ['/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customs-data-entry/', '/use-cases/customs-team-review/', '/use-cases/customs-brokers/', '/for/small-customs-brokerages/', '/customs-declaration-software/', '/tools/customs-document-pack-check/', '/pilot/'],
+  related: ['/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customs-data-entry/', '/use-cases/customs-team-review/', '/use-cases/customs-brokers/', '/for/small-customs-brokerages/', '/customs-declaration-software/', '/best-customs-software/', '/compare/', '/tools/customs-document-pack-check/', '/pilot/'],
   sources: [sources.cds, sources.vol3, sources.amend, sources.developers],
 }
 
@@ -673,6 +673,13 @@ const externalNames = {
   '/tools/customs-value-import-duty-vat-calculator/': ['Customs value, duty and VAT calculator', 'See how freight and insurance change the value.'],
   '/customs-reference/incoterms/': ['Incoterms for UK customs', 'Which costs and risks each term hands over.'],
   '/customs-workflows/gmr-gvms-checklist/': ['GMR and GVMS checklist', 'For roll-on roll-off moves through GB ports.'],
+  '/compare/': ['Customs software comparisons', 'Declarix and the UK filing and preparation tools, side by side.'],
+  '/alternatives/': ['Customs software alternatives', 'Grow the desk without leaving the filing system you know.'],
+  '/best-customs-software/': ['Best customs declaration software UK', 'The 2026 buyer shortlist, with the best fit for each desk.'],
+  '/compare/automation-vs-manual-entry/': ['Automation vs manual entry', 'The same job keyed by hand and prepared by Declarix.'],
+  '/research/hmrc-customs-administrative-burden-explorer-2026/': ['HMRC customs burden explorer 2026', 'What 460 declarants told HMRC about process time and internal cost.'],
+  '/compare/automation-vs-hiring/': ['Automation vs hiring', 'Model the workload before you add a clerk.'],
+  '/tools/commercial-invoice-generator/': ['Free commercial invoice generator', 'Build an invoice your broker can enter first time.'],
 }
 
 function relatedEntry(path) {
@@ -768,6 +775,8 @@ function renderFaqs(route) {
 function renderRelated(route) {
   if (!route.related?.length) return ''
   return `<section class="uc-block uc-related" aria-labelledby="related-heading"><span class="section-label">KEEP GOING</span><h2 id="related-heading">Related workflows and free tools</h2><div class="uc-related-grid">${route.related
+    // Only link pages published in this build (held routes and the dormant EORI checker drop out).
+    .filter((path) => registeredPaths().has(path))
     .map((path) => {
       const [name, note] = relatedEntry(path)
       return `<a href="${path}" data-usecase-related="${escapeHtml(path)}"><strong>${escapeHtml(name)}</strong><span>${escapeHtml(note)}</span><em>OPEN →</em></a>`

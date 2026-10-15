@@ -1077,6 +1077,19 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
 
+// Held routes (scripts/held-routes.mjs) must be completely absent: no page, no sitemap entry, no link.
+{
+  const { HELD_ROUTES } = await import('./held-routes.mjs')
+  const sitemapXml = await readFile(join(root, 'dist/sitemap.xml'), 'utf8')
+  for (const path of HELD_ROUTES) {
+    if (expectedPaths.has(path)) throw new Error(`Held route ${path} is still in the published route list`)
+    if (sitemapXml.includes(`${site.origin}${path}<`)) throw new Error(`Held route ${path} is in sitemap.xml`)
+    let exists = true
+    try { await access(join(root, 'dist', path.slice(1), 'index.html')) } catch { exists = false }
+    if (exists) throw new Error(`Held route ${path} was generated`)
+  }
+}
+
 // Owner ruling 15 Oct 2026: the site never mentions other organisations that use the name Declarix.
 // Scans every published text file (pages, Markdown twins, llms, JSON, feeds, SKILL.md).
 {

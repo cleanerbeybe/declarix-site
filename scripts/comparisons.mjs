@@ -1,6 +1,7 @@
 // /compare/ hub and comparison pages (growth pack P13, P15, P17, P19, P21, P23, P25–P29, P33, P35, P44).
 // Vendor facts live in comparison-sources.mjs with source URLs and the date checked.
 import { breadcrumbList, organizationNode } from './site-graph.mjs'
+import { notHeld } from './held-routes.mjs'
 import { CHECKED, CHECKED_ISO, criteria, deskLine, pilotLine, priceLine, products, sources } from './comparison-sources.mjs'
 
 const PACK_CHECK = '/tools/customs-document-pack-check/'
@@ -688,7 +689,8 @@ export const compareHub = {
   ],
 }
 
-export const comparisonRoutes = [compareHub, ...comparisonPages, ...workflowPages]
+const allComparisonRoutes = [compareHub, ...comparisonPages, ...workflowPages]
+export const comparisonRoutes = allComparisonRoutes.filter(notHeld)
 
 // ---------- Rendering ----------
 
@@ -699,7 +701,7 @@ const esc = (value) =>
 const rich = (value) => esc(value).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) => `<a href="${href}">${label}</a>`)
 const plain = (value) => String(value).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '$1')
 
-const allRoutes = () => [...comparisonRoutes, { path: '/compare/automation-vs-outsourcing/', title: 'Automation vs outsourcing: cost model' }]
+const allRoutes = () => [...allComparisonRoutes, { path: '/compare/automation-vs-outsourcing/', title: 'Automation vs outsourcing: cost model' }]
 const routeName = (path) => {
   const route = allRoutes().find((candidate) => candidate.path === path)
   if (!route) throw new Error(`Unknown comparison link ${path}`)
@@ -847,7 +849,7 @@ function renderHubGroups(page) {
     <span class="section-label">ALL COMPARISONS</span>
     <h2 id="hub-heading">Open the comparison you need.</h2>
     <div class="hub-groups">${page.groups
-      .map(([title, intro, paths]) => `<div><h3>${esc(title)}</h3><p>${esc(intro)}</p><ul>${paths.map((path) => `<li><a href="${path}">${esc(routeName(path))}</a></li>`).join('')}</ul></div>`)
+      .map(([title, intro, paths]) => `<div><h3>${esc(title)}</h3><p>${esc(intro)}</p><ul>${paths.filter(notHeld).map((path) => `<li><a href="${path}">${esc(routeName(path))}</a></li>`).join('')}</ul></div>`)
       .join('')}</div>
   </section>`
 }
@@ -867,7 +869,7 @@ function renderNextSteps(page) {
     ['/pilot/', 'Prove it on one job', `${pilotLine.charAt(0).toUpperCase()}${pilotLine.slice(1)}.`],
     ...(page.kind === 'hub' ? [] : [['/compare/', 'All comparisons', 'Every customs software comparison, sourced and dated.']]),
   ]
-  const related = (page.related || []).map((path) => [path, routeName(path), 'Related comparison'])
+  const related = (page.related || []).filter(notHeld).map((path) => [path, routeName(path), 'Related comparison'])
   return `<section class="compare-block" aria-labelledby="next-heading">
     <span class="section-label">NEXT STEP</span>
     <h2 id="next-heading">Test it on your own work.</h2>
@@ -933,7 +935,7 @@ function jsonLd(page, site, list) {
     },
   ]
   if (page.kind === 'hub') {
-    const paths = page.groups.flatMap(([, , list2]) => list2)
+    const paths = page.groups.flatMap(([, , list2]) => list2).filter(notHeld)
     graph.push({
       '@type': 'ItemList',
       '@id': `${url}#comparisons`,

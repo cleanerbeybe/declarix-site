@@ -17,6 +17,7 @@ import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mj
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { comparisonRoutes, renderComparison, validateComparisons } from './comparisons.mjs'
 import { llmsFullText } from './llms-full.mjs'
+import { HELD_ROUTES, notHeld } from './held-routes.mjs'
 import { renderPricingTable } from './pricing.mjs'
 import { productPages, renderProductPage } from './product-pages.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
@@ -87,29 +88,28 @@ function bookingHref(route) {
 }
 
 function routeLinks() {
+  // One sitewide nav, grouped in reading order: product, buying, free resources, company.
+  // Deep pages (each calculator, Incoterms, registration kit, HMRC burden explorer, EORI checker) are
+  // listed on their section hubs (/tools/, /research/, /customs-reference/), which the nav links.
   const links = [
     ['HOW IT WORKS', '/how-it-works/'],
+    ['FEATURES', '/features/'],
     ['SCOPE', '/supported-scope/'],
-    ['PRICING', '/pricing/'],
-    ['ROI CALCULATOR', roiRoute.path],
-    ['PILOT', '/pilot/'],
-    ['COMPARE', '/compare/'],
     ['USE CASES', '/use-cases/'],
-    ['PREPARATION OPTIONS', economicsRoute.path],
-    ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
-    ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
-    ...(publicEori.enabled ? [['GB EORI CHECK', eoriChecker.path]] : []),
-    ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
-    ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
+    ['PRICING', '/pricing/'],
+    ['PILOT', '/pilot/'],
+    ['ROI CALCULATOR', roiRoute.path],
+    ['COMPARE', '/compare/'],
+    ['ALTERNATIVES', '/alternatives/'],
+    ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['FREE TOOLS', '/tools/'],
+    ['WORKFLOWS', '/customs-workflows/'],
+    ['REFERENCE', '/customs-reference/'],
+    ['GUIDES', '/guides/'],
     ['RESEARCH', '/research/'],
     ['SIGNAL REPORT', '/research/uk-customs-operations-signal-report-2026/'],
     ['RADAR', '/research/cds-operations-radar/'],
-    ['INCOTERMS', '/customs-reference/incoterms/'],
-    ['WORKFLOWS', '/customs-workflows/'],
-    ['REFERENCE', '/customs-reference/'],
-    ['HMRC BURDEN', '/research/hmrc-customs-administrative-burden-explorer-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
   ]
@@ -209,7 +209,7 @@ function relatedItems(route) {
   const seen = new Set()
   return (route.related || [])
     .map((item) => (Array.isArray(item) ? { href: item[1], label: item[0], copy: item[2] } : item))
-    .filter((item) => !seen.has(item.href) && seen.add(item.href))
+    .filter((item) => notHeld(item.href) && !seen.has(item.href) && seen.add(item.href))
 }
 
 function renderRelated(route) {
@@ -857,6 +857,19 @@ for (const page of comparisonRoutes) {
 }
 
 const homeLastmod = [site.reviewedOn, site.homeModifiedOn].filter(Boolean).sort().at(-1)
+// Held routes (scripts/held-routes.mjs): unwrap any remaining in-text link to a held page, keeping its words.
+if (HELD_ROUTES.length) {
+  const { readdir, readFile: readText } = await import('node:fs/promises')
+  const walk = async (dir) => (await Promise.all((await readdir(dir, { withFileTypes: true })).map((entry) => (entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)])))).flat()
+  const heldPattern = new RegExp(`<a\\b[^>]*href="(?:${site.origin.replaceAll('.', '\\.')})?(?:${HELD_ROUTES.map((path) => path.replaceAll('/', '\\/')).join('|')})(?:#[^"]*)?"[^>]*>([\\s\\S]*?)<\\/a>`, 'g')
+  for (const file of await walk(dist)) {
+    if (!file.endsWith('.html')) continue
+    const html = await readText(file, 'utf8')
+    const next = html.replace(heldPattern, '$1')
+    if (next !== html) await writeFile(file, next)
+  }
+}
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${site.origin}/</loc><lastmod>${homeLastmod}</lastmod></url>

@@ -1,4 +1,5 @@
 import { breadcrumbList, organizationNode } from './site-graph.mjs'
+import { notHeld } from './held-routes.mjs'
 import { declarix, hmrcList, HMRC_LIST_UPDATED, VENDOR_CHECKED, vendors } from './alternatives-vendors.mjs'
 
 // Lane L3 (15 Oct 2026): /alternatives/ hub, seven alternatives pages, the UK buyer shortlist and the
@@ -863,7 +864,7 @@ const automation = {
 export const alternativesHub = hub
 export const buyerShortlist = shortlist
 export const automationPage = automation
-export const alternativesRoutes = [hub, ...alternativesPages, shortlist, automation]
+export const alternativesRoutes = [hub, ...alternativesPages, shortlist, automation].filter(notHeld)
 
 // ---------------------------------------------------------------------------------------------
 // Rendering
@@ -1045,6 +1046,7 @@ function renderHubList(route) {
   return `<section aria-labelledby="hub-heading">
     <div class="block"><span class="section-label">THE REGISTER</span><h2 id="hub-heading">Every alternatives page.</h2><p>Side-by-side vendor comparisons live on the <a href="/compare/">compare customs workflows and software</a> hub.</p></div>
     <ul class="hub-list">${items
+      .filter((item) => notHeld(item.href))
       .map(
         (item) => `<li><span class="section-label">${escapeHtml(item.label)}</span><h3><a href="${item.href}">${escapeHtml(item.title)}</a></h3><p>${escapeHtml(item.copy)}</p></li>`,
       )
@@ -1067,6 +1069,7 @@ function renderRelated(route) {
     <span class="section-label">KEEP COMPARING</span>
     <h2 id="related-heading">Related buyer guides.</h2>
     <ul class="related-links">${route.related
+      .filter((link) => notHeld(link.href))
       .map((link) => `<li><a href="${link.href}">${escapeHtml(link.label)}</a><span>${escapeHtml(link.copy)}</span></li>`)
       .join('')}</ul>
   </section>`
@@ -1114,7 +1117,7 @@ export function alternativesJsonLd(route, site) {
     breadcrumbList(site, route.path),
   ]
   if (route.kind === 'hub') {
-    const items = [...alternativesPages, shortlist, automation]
+    const items = [...alternativesPages, shortlist, automation].filter(notHeld)
     page.mainEntity = {
       '@type': 'ItemList',
       name: 'Customs software alternatives for UK desks',

@@ -1,6 +1,7 @@
 // Integration workflows, product feature pages and buyer guides (lane L7, 15 Oct 2026).
 // Content lives in product-pages-content.mjs; this file renders it into static, script-free HTML.
 import { breadcrumbList, nameForPath, organizationNode } from './site-graph.mjs'
+import { notHeld } from './held-routes.mjs'
 import {
   featureHub,
   featureRoutes,
@@ -13,7 +14,7 @@ import {
 export { featureHub, featureRoutes, guideHub, guideRoutes, integrationRoutes, workflowsHubPath }
 
 // Every indexable route this module renders, hubs first.
-export const productPages = [featureHub, ...featureRoutes, guideHub, ...guideRoutes, ...integrationRoutes]
+export const productPages = [featureHub, ...featureRoutes, guideHub, ...guideRoutes, ...integrationRoutes].filter(notHeld)
 
 const escapeHtml = (value) =>
   String(value)
