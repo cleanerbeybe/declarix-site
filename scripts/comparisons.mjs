@@ -73,7 +73,7 @@ export const comparisonPages = [
       ['Does Declarix replace Descartes e-Customs?', 'No, Declarix works ahead of e-Customs: it builds the CDS-ready entry pack that your clerk checks and e-Customs files.'],
       ['Does Declarix support Descartes e-Customs?', 'Yes, Declarix supports CDS-ready exports for Descartes e-Customs, and the 20-minute numbers call maps the exact route for your desk.'],
       ['Is Descartes on HMRC’s list of CDS software providers?', `Yes, HMRC lists Descartes Systems UK Ltd for CDS imports, CDS exports and simplified import declarations (checked ${CHECKED}).`],
-      ['Who uses Descartes customs software?', 'Descartes names customs brokers, forwarders and importers, including Kuehne+Nagel, DSV and Cardinal Global Logistics.'],
+      ['Who uses Descartes customs software?', 'Descartes serves customs brokers and forwarders, and shows Kuehne+Nagel, DSV and Cardinal Global Logistics on its customs declarations page.'],
       ['How fast is Declarix?', 'Typical Declarix processing is around 200 seconds before the clerk starts the check.'],
       ['What does Declarix cost?', `Declarix publishes its packages: ${priceLine}, with no seat fees.`],
       ['How do I try it on my own work?', `Run one anonymised job through the [pilot](/pilot/): ${pilotLine}.`],
@@ -200,7 +200,7 @@ export const comparisonPages = [
       ['Is Descartes on HMRC’s CDS software list?', `Yes, HMRC lists Descartes Systems UK Ltd for CDS imports, CDS exports and simplified import declarations (checked ${CHECKED}).`],
       ['Which one reads documents with AI?', 'iCustoms offers iDP for AI extraction, while the Descartes UK e-Customs page lists templates, copy and clone, and Excel upload.'],
       ['Which one covers GVMS?', 'Both list GVMS support: iCustoms through its iGVMS module and Descartes through GMR creation in e-Customs.'],
-      ['Do either publish prices?', 'Neither published prices on the pages checked; both offer a demo.'],
+      ['Do either publish prices?', 'Descartes publishes a base platform price from £178 a month on its UK pricing page; iCustoms did not publish prices on the pages checked. Both offer a demo.'],
       ['Where does Declarix fit?', 'Declarix works ahead of the filing system, building the CDS-ready pack so each clerk handles up to 3× more declarations.'],
     ],
     related: ['/compare/declarix-vs-descartes-e-customs/', '/compare/declarix-vs-icustoms/', '/compare/sequoia-vs-descartes/', '/compare/icustoms-vs-customs4trade/'],
@@ -277,7 +277,7 @@ export const comparisonPages = [
       },
     ],
     faqs: [
-      ['Which one files to CDS?', `iCustoms states that iCDS files directly to CDS and is on HMRC’s list, while Customaite works alongside declaration software such as Sequoia and Descartes (checked ${CHECKED}).`],
+      ['Which one files to CDS?', `iCustoms states that iCDS is integrated directly with HMRC CDS and is on HMRC’s list, while Customaite works alongside declaration software such as Sequoia and Descartes (checked ${CHECKED}).`],
       ['Which one has a customer portal?', 'Both: iCustoms offers iZap self-service, and Customaite offers a customer communication portal in its Enterprise plan.'],
       ['Do either publish prices?', 'Neither published prices on the pages checked; Customaite publishes volume tiers from 200 declarations a month.'],
       ['Where does Declarix fit?', 'Declarix builds the CDS-ready pack ahead of your filing system, with published packages from £500 a month.'],
@@ -300,7 +300,7 @@ export const comparisonPages = [
       'This is not an either-or choice. Sequoia files. Declarix removes the keying before Sequoia.',
     ],
     bestFor: [
-      ['ASM Sequoia', 'Forwarders of all sizes that need a UK clearance platform with CDS and port community gateways.'],
+      ['ASM Sequoia', 'Forwarders that need a UK clearance platform with CDS and port community gateways.'],
     ],
     blocks: [
       {
@@ -385,7 +385,7 @@ export const comparisonPages = [
     standfirst:
       'CargoWise runs customs inside a full logistics platform. Declarix concentrates on the slowest part of a UK customs job: reading the customer’s documents and building the entry.',
     verdict: [
-      'CargoWise Customs is best for forwarders, brokers and warehouse operators that want customs inside one global logistics platform covering 15+ countries. Declarix is best for UK customs desks that want up to 3× more declarations per clerk without changing their filing system. It works ahead of Sequoia and Descartes, and connects to other systems through a mapped customer integration.',
+      'CargoWise Customs is best for forwarders, brokers and warehouse operators that want customs inside one global logistics platform with customs coverage in 15 listed markets. Declarix is best for UK customs desks that want up to 3× more declarations per clerk without changing their filing system. It works ahead of Sequoia and Descartes, and connects to other systems through a mapped customer integration.',
       'CargoWise users can still use Declarix for the build. The 20-minute numbers call maps the integration route for your desk.',
     ],
     bestFor: [
@@ -433,7 +433,7 @@ export const comparisonPages = [
     blocks: [],
     faqs: [
       ['Is Flytta still a separate product?', 'No, Sedna acquired Flytta in March 2025, and its customs workflow is now part of Sedna AI.'],
-      ['Which one files to CDS?', `iCustoms states iCDS files directly to CDS and is on HMRC’s list; Sedna describes output to ASM Sequoia and Descartes, which file (checked ${CHECKED}).`],
+      ['Which one files to CDS?', `iCustoms states iCDS is integrated directly with HMRC CDS and is on HMRC’s list; Sedna describes output to ASM Sequoia and Descartes, which file (checked ${CHECKED}).`],
       ['Do either publish prices?', 'Neither published customs prices on the pages checked.'],
       ['Where does Declarix fit?', 'Declarix builds the CDS-ready pack ahead of Sequoia or Descartes, with published packages from £500 a month.'],
     ],
@@ -449,7 +449,7 @@ export const comparisonPages = [
     ref: 'COMPARE 28 · SEQUOIA / DESCARTES',
     stamp: 'WORKS\nWITH BOTH',
     standfirst:
-      'Sequoia and e-Customs are two of the most familiar UK filing systems. Both are on HMRC’s CDS software list. Declarix supports both, so this choice never limits your preparation workflow.',
+      'Sequoia and e-Customs are both established UK filing systems. Both are on HMRC’s CDS software list. Declarix supports both, so this choice never limits your preparation workflow.',
     verdict: [
       'ASM Sequoia suits UK forwarders that want a clearance platform from a user-owned, not-for-profit mutual, with gateways to CDS and every UK community system. Descartes e-Customs suits brokers, forwarders and importers that want a SaaS filing system from a listed global group, with GVMS, transit and multi-country coverage.',
       'Declarix works ahead of both. It builds the CDS-ready pack so each clerk handles up to 3× more declarations, whichever system files.',
@@ -682,7 +682,7 @@ export const compareHub = {
   faqs: [
     ['What is the difference between customs filing software and customs preparation software?', 'Filing software submits the declaration to CDS, while preparation software such as Declarix builds the entry from the customer’s documents before filing.'],
     ['Which UK customs software is on HMRC’s CDS list?', `ASM, Descartes, WiseTech Global, iCustoms and Customs4trade all appear on HMRC’s list of CDS software providers (checked ${CHECKED}).`],
-    ['Which customs software publishes its prices?', `Declarix publishes its packages (${priceLine}); the other vendors compared here did not publish prices on the pages checked.`],
+    ['Which customs software publishes its prices?', `Declarix publishes every package (${priceLine}). Of the other vendors compared here, Descartes publishes a base platform price; the rest did not publish prices on the pages checked.`],
     ['Can I keep Sequoia or Descartes and still automate?', 'Yes, Declarix supports CDS-ready exports for Sequoia and Descartes e-Customs, so you automate the build and keep your filing system.'],
     ['Who publishes these comparisons?', 'Declarix Limited publishes them, using vendor pages and GOV.UK as sources, each linked and dated.'],
   ],
