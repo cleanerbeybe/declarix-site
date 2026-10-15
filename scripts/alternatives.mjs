@@ -1,3 +1,4 @@
+import { breadcrumbList, organizationNode } from './site-graph.mjs'
 import { declarix, hmrcList, HMRC_LIST_UPDATED, VENDOR_CHECKED, vendors } from './alternatives-vendors.mjs'
 
 // Lane L3 (15 Oct 2026): /alternatives/ hub, seven alternatives pages, the UK buyer shortlist and the
@@ -1091,9 +1092,6 @@ function renderSources(route) {
 
 export function alternativesJsonLd(route, site) {
   const url = `${site.origin}${route.path}`
-  const crumbs = [{ '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` }]
-  if (route.parent) crumbs.push({ '@type': 'ListItem', position: 2, name: route.parent.label, item: `${site.origin}${route.parent.href}` })
-  crumbs.push({ '@type': 'ListItem', position: crumbs.length + 1, name: route.h1, item: url })
   const page = {
     '@type': route.schemaType,
     '@id': `${url}#webpage`,
@@ -1113,18 +1111,10 @@ export function alternativesJsonLd(route, site) {
   }
   if (route.schemaType === 'Article') page.mainEntityOfPage = url
   const graph = [
-    {
-      '@type': 'Organization',
-      '@id': `${site.origin}/#organization`,
-      name: site.company,
-      legalName: site.company,
-      url: `${site.origin}/`,
-      email: site.contact,
-      identifier: site.companyNumber,
-    },
+    organizationNode(site),
     page,
     { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: 'Declarix', url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` } },
-    { '@type': 'BreadcrumbList', itemListElement: crumbs },
+    breadcrumbList(site, route.path),
   ]
   if (route.kind === 'hub') {
     const items = [...alternativesPages, shortlist, automation]

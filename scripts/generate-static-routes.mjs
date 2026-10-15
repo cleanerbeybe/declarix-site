@@ -191,7 +191,8 @@ function renderResourceKit(route) {
 }
 
 function renderRelated(route) {
-  if (!route.related?.length) return ''
+  // Section hubs render their own related list inside the hub register.
+  if (!route.related?.length || route.kind === 'section-hub') return ''
   const relatedId = `related-${route.path.split('/').filter(Boolean).join('-')}`
   return `<section class="source-register" aria-labelledby="${relatedId}">
     <header>

@@ -1,5 +1,6 @@
 // /compare/ hub and comparison pages (growth pack P13, P15, P17, P19, P21, P23, P25–P29, P33, P35, P44).
 // Vendor facts live in comparison-sources.mjs with source URLs and the date checked.
+import { breadcrumbList, organizationNode } from './site-graph.mjs'
 import { CHECKED, CHECKED_ISO, criteria, deskLine, pilotLine, priceLine, products, sources } from './comparison-sources.mjs'
 
 const PACK_CHECK = '/tools/customs-document-pack-check/'
@@ -896,17 +897,8 @@ function jsonLd(page, site, list) {
     .filter((key) => key !== 'declarix')
     .map((key) => ({ '@type': 'SoftwareApplication', name: products[key].name, url: products[key].site, applicationCategory: 'BusinessApplication' }))
   const graph = [
-    { '@type': 'Organization', '@id': `${site.origin}/#organization`, name: site.company, legalName: site.company, url: `${site.origin}/`, email: site.contact, identifier: site.companyNumber },
+    organizationNode(site),
     { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: 'Declarix', url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` } },
-    {
-      '@type': 'SoftwareApplication',
-      '@id': `${site.origin}/#software`,
-      name: 'Declarix',
-      url: `${site.origin}/`,
-      applicationCategory: 'BusinessApplication',
-      description: 'Builds CDS-ready customs entry packs from customer documents for Sequoia, Descartes e-Customs and customer integrations, with up to 3× more declarations per clerk.',
-      publisher: { '@id': `${site.origin}/#organization` },
-    },
     {
       '@type': page.kind === 'hub' ? 'CollectionPage' : 'WebPage',
       '@id': `${url}#webpage`,
@@ -918,7 +910,14 @@ function jsonLd(page, site, list) {
       datePublished: CHECKED_ISO,
       dateModified: CHECKED_ISO,
       isPartOf: { '@id': `${site.origin}/#website` },
-      about: { '@id': `${site.origin}/#software` },
+      about: {
+        '@type': 'SoftwareApplication',
+        name: 'Declarix',
+        url: `${site.origin}/`,
+        applicationCategory: 'BusinessApplication',
+        description: 'Builds CDS-ready customs entry packs from customer documents for Sequoia, Descartes e-Customs and customer integrations, with up to 3× more declarations per clerk.',
+        publisher: { '@id': `${site.origin}/#organization` },
+      },
       author: { '@id': `${site.origin}/#organization` },
       publisher: { '@id': `${site.origin}/#organization` },
       image: `${site.origin}/og.jpg`,
@@ -926,20 +925,7 @@ function jsonLd(page, site, list) {
       citation: list.map((source) => source.url),
       breadcrumb: { '@id': `${url}#breadcrumb` },
     },
-    {
-      '@type': 'BreadcrumbList',
-      '@id': `${url}#breadcrumb`,
-      itemListElement: page.kind === 'hub'
-        ? [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-            { '@type': 'ListItem', position: 2, name: 'Compare', item: url },
-          ]
-        : [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-            { '@type': 'ListItem', position: 2, name: 'Compare', item: `${site.origin}/compare/` },
-            { '@type': 'ListItem', position: 3, name: page.h1, item: url },
-          ],
-    },
+    { ...breadcrumbList(site, page.path), '@id': `${url}#breadcrumb` },
     {
       '@type': 'FAQPage',
       '@id': `${url}#faq`,
