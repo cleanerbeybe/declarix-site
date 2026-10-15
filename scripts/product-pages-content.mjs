@@ -8,7 +8,7 @@ export const workflowsHubPath = '/customs-workflows/'
 
 const CHECKED = '2026-10-15'
 const PUBLISHED = '2026-10-15'
-const DEMO = 'Declarix web app running its built-in demo job (sample shipment data).'
+const DEMO = 'Declarix web app — worked example.'
 
 const screens = {
   review: { src: '/product/review-evidence.jpg', width: 1400, height: 788 },

@@ -108,11 +108,11 @@ const invoiceSchema = {
   ],
   example: {
     header: {
-      exporterName: 'Beispiel Lager GmbH (SYNTHETIC)',
+      exporterName: 'Beispiel Lager GmbH',
       exporterAddress: 'Hafenstraße 1, 20457 Hamburg, Germany',
       exporterEori: 'DE1234567',
       exporterVat: 'DE123456789',
-      importerName: 'Harbour Example Trading Ltd (SYNTHETIC)',
+      importerName: 'Harbour Example Trading Ltd',
       importerAddress: 'Unit 4, Example Park, Leicester LE1 1AA, United Kingdom',
       importerEori: 'GB123456789000',
       consignee: '',
@@ -185,10 +185,10 @@ const packingSchema = {
   ],
   example: {
     header: {
-      shipperName: 'Beispiel Lager GmbH (SYNTHETIC)',
+      shipperName: 'Beispiel Lager GmbH',
       shipperAddress: 'Hafenstraße 1, 20457 Hamburg, Germany',
       shipperEori: 'DE1234567',
-      consigneeName: 'Harbour Example Trading Ltd (SYNTHETIC)',
+      consigneeName: 'Harbour Example Trading Ltd',
       consigneeAddress: 'Unit 4, Example Park, Leicester LE1 1AA, United Kingdom',
       consigneeEori: 'GB123456789000',
       packingListNumber: 'PL-2026-0142',
@@ -770,7 +770,7 @@ function renderWorkedExample(generator) {
     const t = computed.totals
     const money = (p) => formatPence(p, 'EUR')
     return `<section class="gen-example" aria-labelledby="gen-example-heading">
-      <header><span class="section-label">SYNTHETIC WORKED EXAMPLE</span><h2 id="gen-example-heading">A worked commercial invoice, line by line</h2><p>A synthetic German seller ships bearings and gaskets to a synthetic UK importer on FCA Hamburg terms, invoiced in euros. Load it into the generator with “Load the synthetic example”.</p></header>
+      <header><span class="section-label">WORKED EXAMPLE</span><h2 id="gen-example-heading">A worked commercial invoice, line by line</h2><p>A German seller ships bearings and gaskets to a UK importer on FCA Hamburg terms, invoiced in euros. Load it into the generator with “Load an example”.</p></header>
       <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Worked example arithmetic"><table class="gen-guide-table">
         <thead><tr><th scope="col">Line</th><th scope="col">Calculation</th><th scope="col">Amount</th></tr></thead>
         <tbody>
@@ -788,7 +788,7 @@ function renderWorkedExample(generator) {
   }
   const t = computed.totals
   return `<section class="gen-example" aria-labelledby="gen-example-heading">
-    <header><span class="section-label">SYNTHETIC WORKED EXAMPLE</span><h2 id="gen-example-heading">A worked packing list, package by package</h2><p>The same synthetic shipment as the invoice example: five cartons of bearings and gaskets in one container from Hamburg. Load it with “Load the synthetic example”.</p></header>
+    <header><span class="section-label">WORKED EXAMPLE</span><h2 id="gen-example-heading">A worked packing list, package by package</h2><p>The same shipment as the invoice example: five cartons of bearings and gaskets in one container from Hamburg. Load it with “Load an example”.</p></header>
     <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Worked example arithmetic"><table class="gen-guide-table">
       <thead><tr><th scope="col">Line</th><th scope="col">Calculation</th><th scope="col">Result</th></tr></thead>
       <tbody>
@@ -1052,7 +1052,7 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
         showValidation = false;
         render();
         track('tool_example_loaded');
-        status.textContent = 'Synthetic example loaded. Replace it with your own details.';
+        status.textContent = 'Example loaded. Replace it with your own details.';
       });
       document.getElementById('gen-clear').addEventListener('click', () => {
         fillState({ header: {}, lines: [] });
@@ -1164,7 +1164,7 @@ export function renderDocumentGenerator(generator, site, { navHtml, webmasterHtm
         <section class="gen-builder" id="gen-builder" aria-labelledby="gen-builder-heading">
           <header class="gen-builder-head">
             <div><span class="section-label">GENERATOR</span><h2 id="gen-builder-heading">Create your ${noun}</h2><p>Fields marked * are needed before export. Amounts use a full stop for decimals; commas and currency symbols are ignored.</p></div>
-            <div class="gen-quick"><button class="secondary-button" id="gen-example" type="button">LOAD THE SYNTHETIC EXAMPLE</button><button class="secondary-button" id="gen-clear" type="button">CLEAR FORM</button><label class="secondary-button gen-file" for="gen-open-json">OPEN A SAVED JSON FILE<input id="gen-open-json" type="file" accept="application/json,.json" /></label></div>
+            <div class="gen-quick"><button class="secondary-button" id="gen-example" type="button">LOAD AN EXAMPLE</button><button class="secondary-button" id="gen-clear" type="button">CLEAR FORM</button><label class="secondary-button gen-file" for="gen-open-json">OPEN A SAVED JSON FILE<input id="gen-open-json" type="file" accept="application/json,.json" /></label></div>
           </header>
           <noscript><p class="gen-noscript">The live generator needs JavaScript. You can still print the blank template below or download the <a href="${generator.templateCsv}">blank CSV template</a>.</p></noscript>
           <form id="gen-form" novalidate>

@@ -39,7 +39,7 @@ export const sectionHubs = [
         title: 'Your numbers, visible formulas, dated sources.',
         paragraphs: [
           'The tools need no account and no email address. The calculators show each formula next to the result, and each tool lists the GOV.UK or HMRC source it was checked against, with the date.',
-          'The tools help a clerk prepare and check work. The authorised declarant still makes the customs decisions and files through its own customs system.',
+          'The tools speed up the preparation and checking work, so the declarant reaches the filing screen with the facts in order.',
         ],
       },
       {

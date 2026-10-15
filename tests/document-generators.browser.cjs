@@ -65,7 +65,7 @@ const cases = [
       record(`${label}: running total`, (await page.textContent('#gen-running-total')).includes(spec.total))
       record(`${label}: summary cleared after example`, await page.locator('#gen-summary').isHidden())
       const previewText = await page.textContent('#gen-preview')
-      record(`${label}: preview filled`, previewText.includes('SYNTHETIC') && previewText.includes('848210'))
+      record(`${label}: preview filled`, previewText.includes('Beispiel Lager GmbH') && previewText.includes('848210'))
 
       await page.click('#gen-check')
       record(`${label}: example passes check`, await page.locator('#gen-summary.is-ready').isVisible())

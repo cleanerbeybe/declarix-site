@@ -382,7 +382,7 @@ for (const route of expected) {
       'href="/tools/customs-document-pack-check/"',
       `href="${route.templateCsv}"`,
       '<td>DE 6/8</td>',
-      'SYNTHETIC WORKED EXAMPLE',
+      'WORKED EXAMPLE',
       "sessionStorage.getItem(key)",
     ]) {
       const haystack = phrase === '@media print' ? await readFile(join(root, 'dist/document-generator.css'), 'utf8') : html
@@ -820,8 +820,8 @@ for (const route of expected) {
       if (!/\salt="[^"]{20,}"/.test(match[0])) throw new Error(`${route.path} has an image without descriptive alt text`)
       await access(join(root, 'dist', match[1].slice(1)))
     }
-    if (html.includes('worked-example-v3-page-') && !html.includes('WORKED EXAMPLE · FICTIONAL SHIPMENT')) {
-      throw new Error(`${route.path} shows the worked example without its fictional-example label`)
+    if (html.includes('worked-example-v3-page-') && !html.includes('WORKED EXAMPLE')) {
+      throw new Error(`${route.path} shows the worked example without its WORKED EXAMPLE label`)
     }
     if (route.path === '/for/small-customs-brokerages/') {
       for (const tier of packages) {
@@ -1076,6 +1076,20 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
+
+// Golden rule (owner, 15 Oct 2026): new pages never volunteer negatives about Declarix or label the
+// worked examples as fake. Applies to every route added by the 15 Oct SEO build.
+{
+  const newRoutes = new Set([...comparisonRoutes, ...alternativesRoutes, ...productPages, ...useCaseRoutes, ...referenceRoutes, ...documentGenerators, ...sectionHubs, agentFactsRoute, ...radarDigests].map((route) => route.path))
+  const banned = /fictional|synthetic(?! diamonds)|illustrative(?! labour model)|sample shipment data|review-only|results may vary|not a substitute|does not replace|do not replace|not legal advice|we did not test|not been tested|not verified|unverified/i
+  for (const path of newRoutes) {
+    let html
+    try { html = await readFile(join(root, 'dist', path.slice(1), 'index.html'), 'utf8') } catch { continue }
+    const text = html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    const hit = text.match(banned)
+    if (hit) throw new Error(`${path} volunteers a negative or labels the example as fake: "${hit[0]}"`)
+  }
+}
 
 // Held routes (scripts/held-routes.mjs) must be completely absent: no page, no sitemap entry, no link.
 {
