@@ -464,7 +464,7 @@ export function renderReport(report, site, options) {
           <header>
             <span class="section-label">TURN THE SIGNAL INTO A DESK DECISION</span>
             <h2 id="next-heading">Use the free workbench.</h2>
-            <p>Move from category evidence to your own workflow. No account required, and the browser tools do not ask you to upload customer documents.</p>
+            <p>Move from category evidence to your own workflow. No account required, and the browser tools do not ask you to upload customer documents. For the latest HMRC changes, read the <a data-report-related="radar_digest" href="/research/cds-operations-radar/2026-10/">October 2026 CDS Operations Radar digest</a>.</p>
           </header>
           <div class="next-action-grid">
             <a data-report-related="desk_calculator" href="/tools/customs-declaration-cost-calculator/"><span>01 · ECONOMICS</span><strong>Model the desk cost per declaration.</strong><b>OPEN CALCULATOR →</b></a>
