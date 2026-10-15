@@ -27,6 +27,7 @@ import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.
 import { hubChildren, hubItemList, renderHubRegister, sectionHubs } from './section-hubs.mjs'
 import { breadcrumbHtml, breadcrumbList, organizationNode, registerRoutes, shortName } from './site-graph.mjs'
 import { renderTool, tools } from './tools.mjs'
+import { renderTradeTool, tradeTools } from './trade-tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 import { renderUseCase, useCaseRoutes } from './use-cases.mjs'
 
@@ -48,6 +49,7 @@ const indexableRoutes = [
   ...reports,
   ...valueDutyWorkpapers,
   ...documentGenerators,
+  ...tradeTools,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
@@ -855,6 +857,30 @@ for (const procedureRoute of procedureRoutes) {
   await writeFile(
     target,
     renderProcedureRoute(procedureRoute, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+}
+
+for (const tradeTool of tradeTools) {
+  if (!tradeTool.path.startsWith('/tools/') || !tradeTool.path.endsWith('/')) throw new Error(`Trade tool must live under /tools/: ${tradeTool.path}`)
+  if (paths.has(tradeTool.path)) throw new Error(`Duplicate route: ${tradeTool.path}`)
+  if (titles.has(tradeTool.title)) throw new Error(`Duplicate title: ${tradeTool.title}`)
+  if (headings.has(tradeTool.h1)) throw new Error(`Duplicate H1: ${tradeTool.h1}`)
+  if (tradeTool.faqs.length < 4) throw new Error(`Trade tool needs visible question support: ${tradeTool.path}`)
+  if (tradeTool.sources.length < 3) throw new Error(`Trade tool needs primary source coverage: ${tradeTool.path}`)
+  paths.add(tradeTool.path)
+  titles.add(tradeTool.title)
+  headings.add(tradeTool.h1)
+
+  const target = join(dist, tradeTool.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderTradeTool(tradeTool, site, {
       navHtml: routeLinks(),
       webmasterHtml: webmasterTags(),
       posthogKey,

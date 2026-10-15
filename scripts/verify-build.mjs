@@ -21,6 +21,7 @@ import { sectionHubs } from './section-hubs.mjs'
 import { organizationNode } from './site-graph.mjs'
 import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
 import { tools } from './tools.mjs'
+import { tradeTools } from './trade-tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 import { useCaseRoutes } from './use-cases.mjs'
 import { packages } from './pricing.mjs'
@@ -66,6 +67,10 @@ const publicSources = [
   'scripts/product-pages.mjs',
   'scripts/product-pages-content.mjs',
   'scripts/use-cases.mjs',
+  'scripts/trade-tools.mjs',
+  'scripts/trade-tools/page-kit.mjs',
+  ...tradeTools.map((tool) => `scripts/trade-tools/pages/${tool.pageFile}`),
+  ...[...new Set(tradeTools.flatMap((tool) => tool.modules))].map((name) => `scripts/trade-tools/${name}.mjs`),
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -134,6 +139,7 @@ const expected = [
   ...reports,
   ...valueDutyWorkpapers,
   ...documentGenerators,
+  ...tradeTools,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
@@ -407,6 +413,42 @@ for (const route of expected) {
     const csvTemplate = await readFile(join(root, 'dist', route.templateCsv.slice(1)), 'utf8')
     if (csvTemplate !== templateCsv(route)) throw new Error(`${route.path} blank CSV template drifted`)
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (tradeTools.includes(route)) {
+    for (const phrase of [
+      'DIRECT ANSWER',
+      'WORKED EXAMPLE',
+      'HOW IT WORKS',
+      'tool_started',
+      'tool_completed',
+      'tool_pack_check_clicked',
+      'tool_booking_clicked',
+      'data-tt-pack="result"',
+      'data-tt-pilot="declarix"',
+      'up to 3× more declarations',
+      "sessionStorage.getItem(key)",
+    ]) {
+      if (!html.includes(phrase)) throw new Error(`${route.path} is missing trade tool contract: ${phrase}`)
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit restricted FAQPage or HowTo structured data`)
+    }
+    if ((html.match(/class="tt-question"/g) || []).length < 4) throw new Error(`${route.path} is missing visible question-and-answer support`)
+    if (!html.includes(`href="/tools/customs-document-pack-check/"`) || !html.includes('href="/pilot/"')) {
+      throw new Error(`${route.path} is missing the pack-check and pilot next steps`)
+    }
+    // Analytics never carry what the visitor typed or uploaded.
+    for (const prohibited of ['properties: { mrn', 'properties: { gmr', 'query: q.query', 'track(event, input', 'mrn: item']) {
+      if (html.includes(prohibited)) throw new Error(`${route.path} sends visitor input to analytics: ${prohibited}`)
+    }
+    if (/sk_live|api[_-]?key\s*[:=]\s*['"][A-Za-z0-9]/i.test(html)) throw new Error(`${route.path} embeds a secret`)
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    if (inlineScripts.length !== 1) throw new Error(`${route.path} must ship exactly one inline tool script`)
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
@@ -1117,7 +1159,7 @@ if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is
 // Golden rule (owner, 15 Oct 2026): new pages never volunteer negatives about Declarix or label the
 // worked examples as fake. Applies to every route added by the 15 Oct SEO build.
 {
-  const newRoutes = new Set([...comparisonRoutes, ...alternativesRoutes, ...productPages, ...useCaseRoutes, ...referenceRoutes, ...documentGenerators, ...sectionHubs, ...procedureRoutes, agentFactsRoute, ...radarDigests].map((route) => route.path))
+  const newRoutes = new Set([...comparisonRoutes, ...alternativesRoutes, ...productPages, ...useCaseRoutes, ...referenceRoutes, ...documentGenerators, ...tradeTools, ...sectionHubs, ...procedureRoutes, agentFactsRoute, ...radarDigests].map((route) => route.path))
   const banned = /fictional|synthetic(?! diamonds)|illustrative(?! labour model)|sample shipment data|review-only|results may vary|not a substitute|does not replace|do not replace|not legal advice|we did not test|not been tested|not verified|unverified/i
   for (const path of newRoutes) {
     let html

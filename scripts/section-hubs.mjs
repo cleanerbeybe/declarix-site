@@ -32,6 +32,8 @@ export const sectionHubs = [
           'A budget or pricing question: the declaration cost calculator turns minutes and loaded cost into an annual figure.',
           'A valuation question: the customs value workpaper adds freight, insurance and adjustments, then applies your duty and VAT rates.',
           'An unknown trading party: the EORI checker asks HMRC whether a GB EORI is valid.',
+          'Documents to prepare: the commercial invoice and packing list generators build CDS-mapped documents in the browser.',
+          'A reference to check: the MRN, GMR and commodity code checkers, the postponed VAT statement reconciler and the C285 repayment checker.',
         ],
       },
       {
