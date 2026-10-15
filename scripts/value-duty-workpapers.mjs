@@ -396,7 +396,7 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
     <meta name="theme-color" content="#16313d" />
     ${webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/calculator.css" />
     <link rel="stylesheet" href="/value-duty-workpaper.css" />

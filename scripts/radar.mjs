@@ -513,7 +513,7 @@ function shell({ title, description, canonical, schema, css = '/radar.css', body
     <meta name="theme-color" content="#16313d" />
     ${options.webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/report.css" />
     <link rel="stylesheet" href="${css}" />

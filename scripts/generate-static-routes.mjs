@@ -253,7 +253,7 @@ function renderRoute(route) {
     <meta name="theme-color" content="#16313d" />
     ${webmasterTags()}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     ${route.path === '/pricing/' ? '<link rel="stylesheet" href="/pricing.css" />' : ''}
     <meta property="og:type" content="website" />
@@ -325,7 +325,7 @@ function renderNotFound() {
     <meta name="robots" content="noindex,follow" />
     <meta name="theme-color" content="#16313d" />
     ${webmasterTags()}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <title>Page not found | Declarix</title>
   </head>
@@ -367,7 +367,7 @@ function renderBookingConfirmed() {
     <meta name="robots" content="noindex,follow" />
     <meta name="theme-color" content="#16313d" />
     ${webmasterTags()}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <title>Workflow call booked | Declarix</title>
   </head>

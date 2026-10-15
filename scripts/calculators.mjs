@@ -287,7 +287,7 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
     <meta name="theme-color" content="#16313d" />
     ${webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/calculator.css" />
     <meta property="og:type" content="website" />
