@@ -354,7 +354,7 @@ function jsonLdHub(site) {
           })),
         },
       },
-      breadcrumbList(site, radarHub.path, 'CDS Operations Radar'),
+      breadcrumbList(site, radarHub.path),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -381,7 +381,7 @@ function jsonLdRecord(record, site) {
         citation: [record.source.url],
         about: record.topics,
       },
-      breadcrumbList(site, record.path, record.title),
+      breadcrumbList(site, record.path),
     ],
   }).replaceAll('<', '\\u003c')
 }

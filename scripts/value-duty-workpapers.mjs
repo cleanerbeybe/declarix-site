@@ -170,7 +170,7 @@ function jsonLd(workpaper, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      breadcrumbList(site, workpaper.path, workpaper.schemaName),
+      breadcrumbList(site, workpaper.path),
     ],
   }).replaceAll('<', '\\u003c')
 }

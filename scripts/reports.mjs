@@ -149,7 +149,7 @@ function jsonLd(report, site) {
         url: `${site.origin}/`,
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      breadcrumbList(site, report.path, report.h1),
+      breadcrumbList(site, report.path),
     ],
   }).replaceAll('<', '\\u003c')
 }

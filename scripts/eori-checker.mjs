@@ -128,7 +128,7 @@ function jsonLd(checker, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      breadcrumbList(site, checker.path, checker.schemaName),
+      breadcrumbList(site, checker.path),
     ],
   }).replaceAll('<', '\\u003c')
 }

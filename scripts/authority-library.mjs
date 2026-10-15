@@ -426,7 +426,7 @@ function jsonLd(route, site) {
       url: `${site.origin}/`,
       publisher: { '@id': `${site.origin}/#organization` },
     },
-    breadcrumbList(site, route.path, route.h1),
+    breadcrumbList(site, route.path),
   ]
   if (route.kind === 'burden-report') {
     graph.push({

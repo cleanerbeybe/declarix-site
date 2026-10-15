@@ -525,6 +525,7 @@ for (const route of expected) {
     if (trail.at(-1).item !== `${site.origin}${route.path}`) throw new Error(`${route.path} breadcrumb does not end at the page`)
     trail.forEach((item, index) => {
       if (item.position !== index + 1) throw new Error(`${route.path} breadcrumb positions are not sequential`)
+      if (!item.name || item.name.length > 60 || /[.!?]$/.test(item.name)) throw new Error(`${route.path} breadcrumb name is not a short page name: ${item.name}`)
       const itemPath = new URL(item.item).pathname
       if (!expectedPaths.has(itemPath)) throw new Error(`${route.path} breadcrumb links to unknown route ${itemPath}`)
       if (!route.path.startsWith(itemPath)) throw new Error(`${route.path} breadcrumb level ${itemPath} is not an ancestor`)

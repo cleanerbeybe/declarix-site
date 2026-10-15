@@ -84,7 +84,7 @@ function jsonLd(calculator, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      breadcrumbList(site, calculator.path, calculator.schemaName),
+      breadcrumbList(site, calculator.path),
     ],
   }).replaceAll('<', '\\u003c')
 }

@@ -228,7 +228,7 @@ function jsonLd(route) {
         url: `${site.origin}/`,
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      breadcrumbList(site, route.path, route.kind === 'section-hub' ? undefined : route.h1),
+      breadcrumbList(site, route.path),
     ],
   }).replaceAll('<', '\\u003c')
 }

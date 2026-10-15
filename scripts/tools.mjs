@@ -149,7 +149,7 @@ function jsonLd(tool, site) {
         publisher: { '@id': `${site.origin}/#organization` },
         citation: tool.sources.map((source) => source.url),
       },
-      breadcrumbList(site, tool.path, tool.h1),
+      breadcrumbList(site, tool.path),
     ],
   }).replaceAll('<', '\\u003c')
 }
