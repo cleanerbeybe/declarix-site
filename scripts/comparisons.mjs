@@ -200,7 +200,7 @@ export const comparisonPages = [
       ['Is Descartes on HMRC’s CDS software list?', `Yes, HMRC lists Descartes Systems UK Ltd for CDS imports, CDS exports and simplified import declarations (checked ${CHECKED}).`],
       ['Which one reads documents with AI?', 'iCustoms offers iDP for AI extraction, while the Descartes UK e-Customs page lists templates, copy and clone, and Excel upload.'],
       ['Which one covers GVMS?', 'Both list GVMS support: iCustoms through its iGVMS module and Descartes through GMR creation in e-Customs.'],
-      ['Do either publish prices?', 'Descartes publishes a base platform price from £178 a month on its UK pricing page; iCustoms did not publish prices on the pages checked. Both offer a demo.'],
+      ['Do either publish prices?', 'Descartes publishes a base platform price from £178 a month on its UK pricing page, iCustoms did not publish prices on the pages checked, and both offer a demo.'],
       ['Where does Declarix fit?', 'Declarix works ahead of the filing system, building the CDS-ready pack so each clerk handles up to 3× more declarations.'],
     ],
     related: ['/compare/declarix-vs-descartes-e-customs/', '/compare/declarix-vs-icustoms/', '/compare/sequoia-vs-descartes/', '/compare/icustoms-vs-customs4trade/'],
@@ -682,7 +682,7 @@ export const compareHub = {
   faqs: [
     ['What is the difference between customs filing software and customs preparation software?', 'Filing software submits the declaration to CDS, while preparation software such as Declarix builds the entry from the customer’s documents before filing.'],
     ['Which UK customs software is on HMRC’s CDS list?', `ASM, Descartes, WiseTech Global, iCustoms and Customs4trade all appear on HMRC’s list of CDS software providers (checked ${CHECKED}).`],
-    ['Which customs software publishes its prices?', `Declarix publishes every package (${priceLine}). Of the other vendors compared here, Descartes publishes a base platform price; the rest did not publish prices on the pages checked.`],
+    ['Which customs software publishes its prices?', `Declarix publishes every package (${priceLine}) and is the only vendor compared here that publishes every package and per-pack rate.`],
     ['Can I keep Sequoia or Descartes and still automate?', 'Yes, Declarix supports CDS-ready exports for Sequoia and Descartes e-Customs, so you automate the build and keep your filing system.'],
     ['Who publishes these comparisons?', 'Declarix Limited publishes them, using vendor pages and GOV.UK as sources, each linked and dated.'],
   ],
