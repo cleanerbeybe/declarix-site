@@ -129,11 +129,11 @@ export const vendors = {
     precheck: 'Not stated on the pages checked',
     throughput: 'Vendor describes a “high performance customs clearance platform”',
     pricing: 'Quote-based; no public price on the pages checked',
-    uk: 'UK company (ASM UK Ltd, established 1986)',
+    uk: 'UK company (Agency Sector Management (UK) Ltd, formed 1986)',
     summary:
       'ASM describes Sequoia as a “state-of-the-art, high performance customs clearance platform” for forwarders. It processes import, export and transit shipments with a “connection to customs and all of the port community systems”.',
     facts: [
-      ['Vendor', 'ASM UK Ltd, established 1986'],
+      ['Vendor', 'Agency Sector Management (UK) Ltd (ASM), formed 1986'],
       ['Who it is for', 'Forwarders (vendor wording)'],
       ['CDS filing', 'On the HMRC list for CDS imports, exports and simplified imports and exports'],
       ['Connections', 'Customs and port community systems; back-office integration'],
@@ -153,18 +153,21 @@ export const vendors = {
     worksWith: 'ERP and commercial systems, UK port systems, the Descartes Global Logistics Network and Excel upload',
     precheck: 'Not stated as document AI on the page checked; markets classification',
     throughput: 'Not stated on the page checked',
-    pricing: 'Quote-based; no public price on the page checked',
+    pricing: 'Published: base platform from £178 a month plus a £704 + VAT set-up fee; modules £150–£900 a month; volume pricing on request',
     uk: 'UK-first product page; transit and EMCS in multiple countries',
     summary:
-      'Descartes e-Customs is a “cloud-based platform” that helps businesses “automate import and export declarations, ensuring accuracy and HMRC compliance”. It also lists bonded warehousing, ETSF, GVMS, transit, EMCS, ICS/ECS and classification.',
+      'Descartes e-Customs is a “cloud-based platform that automates import and export declarations, ensuring accuracy and HMRC compliance”. It also lists bonded warehousing, ETSF, GVMS, transit, EMCS, ICS/ECS and classification.',
     facts: [
       ['Product', 'Descartes e-Customs™'],
       ['Who it is for', '“any businesses wanting to submit import and export customs declarations”'],
       ['CDS filing', 'On the HMRC list (Descartes Systems UK Ltd) for CDS imports, exports and simplified imports'],
       ['Wider suite', 'Bonded warehousing, ETSF, GVMS, transit, EMCS, ICS/ECS and classification'],
-      ['Pricing', 'Quote-based; no public price found on the page checked'],
+      ['Pricing', 'Base platform “Starting from £178 per month”, set-up fee £704 + VAT; modules £150–£900 a month'],
     ],
-    sources: [src('Descartes UK customs (e-Customs)', 'Descartes Systems Group', 'https://www.descartes.com/uk-customs')],
+    sources: [
+      src('Descartes UK customs (e-Customs)', 'Descartes Systems Group', 'https://www.descartes.com/uk-customs'),
+      src('The costs of a UK customs software', 'Descartes Systems Group', 'https://www.descartes.com/uk-customs/the-costs-of-a-uk-customs-software'),
+    ],
   },
   cargowise: {
     id: 'cargowise',
@@ -219,17 +222,17 @@ export const vendors = {
     worksWith: 'ATLAS, AEB, Format, DAKOSY, Scope and other EU systems; SAP, Oracle, Dynamics and Infor ERPs',
     precheck: 'Reads invoices, CMRs, certificates and shipping emails, then matches and validates',
     throughput: 'Not stated on the page checked',
-    pricing: 'Quote-based; no public price on the page checked',
+    pricing: 'Published: pay per use “€5.00 per credit”; Basic €4,500, Growth €15,120 and Team €25,500 a year; Enterprise on request',
     uk: 'UK listed among 30+ countries, with CDS filings named',
     summary:
-      'Digicust offers AI customs agents that “extend your existing customs software”. It reads invoices, CMRs, certificates and shipping emails, and lists CDS filings for the UK among more than 30 countries.',
+      'Digicust offers AI customs agents that prepare work “for seamless handoff to your existing customs software”. It reads invoices, CMRs, certificates and shipping emails, and lists CDS filings for the UK among more than 30 countries.',
     facts: [
       ['Who it is for', 'Teams extending existing customs software; brokers and consultants'],
       ['Systems named', 'ATLAS, AEB, Format, DAKOSY, Scope and other EU systems'],
       ['UK', '“CDS filings (UK)” listed among 30+ countries'],
-      ['Pricing', 'Quote-based; no public price found on the page checked'],
+      ['Pricing', 'Published: “€5.00 per credit” pay per use, or yearly packages from €4,500'],
       ['HMRC list', 'Not listed (the list covers filing software)'],
     ],
-    sources: [src('Digicust homepage', 'Digicust', 'https://digicust.com/')],
+    sources: [src('Digicust homepage', 'Digicust', 'https://digicust.com/'), src('Digicust pricing', 'Digicust', 'https://digicust.com/en/price/')],
   },
 }

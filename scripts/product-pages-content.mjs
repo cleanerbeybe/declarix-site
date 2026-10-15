@@ -35,13 +35,13 @@ const gov = {
     checked: CHECKED,
   },
   volume3: {
-    title: 'UK Trade Tariff: volume 3 for the Customs Declaration Service',
+    title: 'CDS Declaration and Customs Clearance Request Instructions (UK Trade Tariff: volume 3 for CDS)',
     publisher: 'HM Revenue & Customs',
-    url: 'https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds',
+    url: 'https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2',
     checked: CHECKED,
   },
   softwareList: {
-    title: 'Software developers providing customs declaration support',
+    title: 'Software developers providing customs declaration software',
     publisher: 'HM Revenue & Customs',
     url: 'https://www.gov.uk/guidance/list-of-software-developers-providing-customs-declaration-support',
     checked: CHECKED,
@@ -59,31 +59,25 @@ const gov = {
     checked: CHECKED,
   },
   valuation: {
-    title: 'How to value your imports for customs duty and trade statistics',
+    title: 'Working out the customs value of your imported goods',
     publisher: 'HM Revenue & Customs',
-    url: 'https://www.gov.uk/guidance/how-to-value-your-imports-for-customs-duty-and-trade-statistics',
-    checked: CHECKED,
-  },
-  notice252: {
-    title: 'Notice 252: valuation of imported goods for customs purposes, VAT and trade statistics',
-    publisher: 'HM Revenue & Customs',
-    url: 'https://www.gov.uk/government/publications/notice-252-valuation-of-imported-goods-for-customs-purposes-vat-and-trade-statistics',
+    url: 'https://www.gov.uk/government/collections/working-out-the-customs-value-of-your-imported-goods',
     checked: CHECKED,
   },
   commodityCodes: {
-    title: 'Finding commodity codes for imports or exports',
+    title: 'Finding commodity codes for imports into or exports out of the UK',
     publisher: 'HM Revenue & Customs',
     url: 'https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports',
     checked: CHECKED,
   },
   licences: {
-    title: 'Import and export licences',
-    publisher: 'GOV.UK',
-    url: 'https://www.gov.uk/guidance/import-and-export-licences',
+    title: 'Import controls',
+    publisher: 'Department for Business and Trade',
+    url: 'https://www.gov.uk/guidance/import-controls',
     checked: CHECKED,
   },
   representation: {
-    title: 'Appoint someone to deal with customs on your behalf',
+    title: 'Get someone to deal with customs for you',
     publisher: 'HM Revenue & Customs',
     url: 'https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf',
     checked: CHECKED,
@@ -107,7 +101,7 @@ const numbersCta = {
 
 // Shared mapping table for the three integration pages: where each common H1 import fact comes from.
 const fieldMapRows = [
-  ['DE 3/1 Exporter · DE 3/15 Importer', 'Commercial invoice, bill of lading or air waybill', 'Party names and addresses compared across documents; GB and XI EORI formats checked'],
+  ['DE 3/1 Exporter · DE 3/15 Importer · DE 3/16 Importer identification number', 'Commercial invoice, bill of lading or air waybill', 'Party names and addresses compared across documents; GB and XI EORI formats checked'],
   ['DE 4/1 Delivery terms', 'Commercial invoice and the email chain', 'Incoterm checked against the freight and insurance shown on the invoice'],
   ['DE 4/10 Currency · DE 4/11 Total amount invoiced', 'Commercial invoice', 'Invoice total must equal the sum of the lines; ISO 4217 currency code checked'],
   ['DE 4/9 Additions and deductions', 'Invoice, freight bill, delivery terms', 'Freight or insurance counted twice is flagged; collect freight with no figure becomes a question'],
@@ -286,7 +280,7 @@ export const integrationRoutes = [
     standfirst: 'CargoWise runs the forwarding and the declaration. Declarix takes on the document reading and entry building before it, so your clerk reviews evidence rather than retyping invoices.',
     answer: 'Keep CargoWise for your forwarding and customs filing. Declarix reads the job as it arrived, builds CDS-ready entry data with the source beside every value and flags every conflict. The handoff into CargoWise is mapped as a customer integration on the 20-minute numbers call, and your clerk approves before anything is filed.',
     systemFacts: [
-      'WiseTech Global describes CargoWise customs as handling declarations on a single platform, with a CDS wizard, automated data checks and built-in validation rules, and the ability to automate customs declarations from shipments. Declarix strengthens the step before that: turning the customer’s paperwork into the clean, evidenced shipment data those features depend on.',
+      'WiseTech Global describes CargoWise customs for the UK as handling export declarations on a single platform, with a CDS wizard, CDS-rule VAT calculation and the ability to automate customs declarations from shipments, backed by real-time validation and automated rules. Declarix strengthens the step before that: turning the customer’s paperwork into the clean, evidenced shipment data those features depend on.',
     ],
     routeParagraphs: [
       'Declarix supports CargoWise desks through its customer-integration route. On the 20-minute numbers call we map how the prepared entry data reaches your CargoWise set-up, the fields it carries and where your clerk approves.',
@@ -723,7 +717,7 @@ export const featureRoutes = [
             ['PackagingTypeCode “Cartons” is not a valid value (an..2)', 'DE 6/9 type of packages, goods line 1, packing list page 1', 'Apply the controlled transform from “Cartons” to “CT”'],
             ['Border transport mode in conflict', 'DE 7/4, bill of lading page 1 (SEA and AIR both ticked)', 'Confirm the crossing mode with the carrier and set DE 7/4'],
             ['Gross mass missing on an item', 'DE 6/5, packing list line 3', 'Obtain the weight; the pack is held as missing mandatory data'],
-            ['XI EORI with the wrong digit count', 'DE 3/15 importer identification', 'Correct to XI plus 12 or 15 digits'],
+            ['XI EORI with the wrong digit count', 'DE 3/16 importer identification number', 'Correct to XI plus 12 or 15 digits'],
           ],
         },
         after: [
@@ -963,7 +957,7 @@ export const guideRoutes = [
             ['Packing list', 'Packages, marks, net and gross weights per line', 'DE 6/9, 6/10, 6/1, 6/5, 6/18'],
             ['Bill of lading, air waybill or CMR', 'Transport mode, vessel or flight, ports, container numbers, carton count', 'DE 7/4, 7/9, 7/10, 5/21'],
             ['Freight and insurance invoices', 'Costs to the UK border for the customs value', 'DE 4/9'],
-            ['Importer details', 'EORI, representation status, deferment', 'DE 3/15, 3/21, 2/6'],
+            ['Importer details', 'EORI, representation status, deferment', 'DE 3/15, 3/16, 3/21, 2/6'],
           ],
         },
       },
@@ -975,10 +969,10 @@ export const guideRoutes = [
           head: ['Document', 'When it applies', 'Where to check'],
           rows: [
             ['Certificate or statement of origin', 'When you claim preferential duty under a trade agreement', '[Commodity codes and measures](https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports)'],
-            ['Import licence', 'Controlled goods such as firearms, some chemicals or strategic goods', '[Import and export licences](https://www.gov.uk/guidance/import-and-export-licences)'],
+            ['Import licence', 'Controlled goods such as firearms and ammunition, nuclear materials or certain chemicals', '[Import controls](https://www.gov.uk/guidance/import-controls)'],
             ['Health or phytosanitary certificate', 'Animals, animal products, plants and plant products', '[Import goods into the UK](https://www.gov.uk/import-goods-into-uk)'],
             ['Authorisation references', 'Special procedures, simplified declarations or deferment', '[Completion instructions, Group 2](https://www.gov.uk/government/publications/cds-uk-trade-tariff-volume-3-import-declaration-completion-guide)'],
-            ['Valuation evidence', 'Related-party sales, royalties, assists or other additions', '[Valuation guidance](https://www.gov.uk/guidance/how-to-value-your-imports-for-customs-duty-and-trade-statistics)'],
+            ['Valuation evidence', 'Related-party sales, royalties, assists or other additions', '[Valuation guidance](https://www.gov.uk/government/collections/working-out-the-customs-value-of-your-imported-goods)'],
           ],
         },
       },
@@ -991,7 +985,7 @@ export const guideRoutes = [
           'Package count: packing list against the bill of lading or air waybill.',
           'Item value and line value: the invoice lines must add up to the invoice total.',
           'Description: the invoice description must match the packing list well enough to support the commodity code.',
-          'Delivery terms: a CIF invoice needs insurance; EXW or collect freight needs a freight figure for the customs value.',
+          'Delivery terms: a CIF invoice should already include freight and insurance; EXW, FCA, FOB or collect freight needs the freight and insurance costs to the UK border added for the customs value.',
           'Origin: every line needs an origin; a preference claim needs proof of origin.',
         ],
         after: [
@@ -1096,7 +1090,7 @@ export const guideRoutes = [
           ],
         },
         after: [
-          'Some checks sit in two families; Declarix runs 124 distinct named checks in total, and many repeat on every goods line. Valuation checks follow HMRC’s [import valuation guidance](https://www.gov.uk/guidance/how-to-value-your-imports-for-customs-duty-and-trade-statistics) and [Notice 252](https://www.gov.uk/government/publications/notice-252-valuation-of-imported-goods-for-customs-purposes-vat-and-trade-statistics).',
+          'Some checks sit in two families; Declarix runs 124 distinct named checks in total, and many repeat on every goods line. Valuation checks follow HMRC’s guidance on [working out the customs value of your imported goods](https://www.gov.uk/government/collections/working-out-the-customs-value-of-your-imported-goods).',
         ],
       },
       {
@@ -1137,7 +1131,7 @@ export const guideRoutes = [
       ['Customs value, duty and VAT calculator', '/tools/customs-value-import-duty-vat-calculator/', 'Work through a valuation.'],
       ['All guides', '/guides/', 'More practical guides for customs desks.'],
     ],
-    sources: [gov.completion, gov.valuation, gov.notice252, gov.commodityCodes],
+    sources: [gov.completion, gov.valuation, gov.commodityCodes],
     cta: { ...numbersCta, title: 'Run 124 checks before your clerk starts.', secondary: ['SEE ALL FEATURES →', '/features/'] },
   },
 ]

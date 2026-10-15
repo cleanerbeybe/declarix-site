@@ -94,7 +94,7 @@ export const eoriChecker = {
     {
       question: 'Do I need an XI EORI number?',
       answer:
-        'You need an XI EORI number to move goods into Northern Ireland from Great Britain, to move goods from Northern Ireland to a non-EU country, to make a declaration in Northern Ireland or to apply for a customs decision there. You must apply for a GB EORI number first.',
+        'You will usually need an XI EORI number to move goods into Northern Ireland from Great Britain, to move goods from Northern Ireland to a non-EU country, to make a declaration in Northern Ireland or to apply for a customs decision there. You must apply for a GB EORI number first.',
     },
     {
       question: 'Is an EORI number the same as a VAT number?',
@@ -569,7 +569,7 @@ export function renderEoriChecker(checker, site, { apiOrigin, navHtml, webmaster
             <article><strong>An XI or EU number in the GB checker</strong><p>The checker routes it to the European Commission service. Open the handoff and check it there.</p></article>
             <article><strong>Digits missing</strong><p>A GB EORI is usually GB followed by 12 digits, and sometimes 15. Copy the whole number from the source document.</p></article>
             <article><strong>VAT number instead of EORI</strong><p>A GB VAT number has 9 digits. A VAT-registered business’s EORI often adds 000 to it. Ask for the EORI itself.</p></article>
-            <article><strong>Letter O for zero, letter I for one</strong><p>EORI numbers use digits after the prefix. Retype any character that came from a scan or photo.</p></article>
+            <article><strong>Letter O for zero, letter I for one</strong><p>GB and XI EORI numbers use only digits after the prefix. Retype any character that came from a scan or photo.</p></article>
             <article><strong>Valid, but no name shown</strong><p>The holder has not agreed to publish their details. The valid answer stands on its own.</p></article>
             <article><strong>HMRC does not confirm the number</strong><p>Check the copy first. The holder can see their number by signing in to the EORI registration service they applied through.</p></article>
           </div>
@@ -578,8 +578,8 @@ export function renderEoriChecker(checker, site, { apiOrigin, navHtml, webmaster
         <section class="eori-guide" id="how-to-get-eori" aria-labelledby="eori-get-heading">
           <header><span class="section-label">HOW TO GET AN EORI NUMBER</span><h2 id="eori-get-heading">How to get an EORI number, including XI</h2><p>Apply on GOV.UK with a Government Gateway user ID. HMRC says you get a GB EORI number immediately unless it needs to make checks, which can take up to 5 working days.</p></header>
           <div class="eori-get">
-            <article><span>GB EORI · WHAT YOU NEED</span><ul><li>Unique Taxpayer Reference (UTR)</li><li>VAT number and effective date of registration</li><li>Standard Industrial Classification (SIC) code</li><li>Business start date</li><li>National Insurance number, if you are an individual or sole trader</li></ul><p><a href="https://www.gov.uk/eori/apply-for-eori">Apply for an EORI number on GOV.UK ↗</a></p></article>
-            <article id="xi-eori"><span>XI EORI · NORTHERN IRELAND</span><p>You need an XI EORI number to move goods into Northern Ireland from Great Britain, to move goods from Northern Ireland to a non-EU country, to make a declaration in Northern Ireland, or to apply for a customs decision there.</p><p>Apply for a GB EORI number first. Then complete the XI EORI registration form with your XI VAT number and proof of a permanent business establishment in Northern Ireland. HMRC says the XI number arrives within 5 days. To check an XI EORI, use the <a data-eori-eu="guide_get_xi" href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en">European Commission checker ↗</a>.</p></article>
+            <article><span>GB EORI · WHAT YOU NEED</span><ul><li>Unique Taxpayer Reference (UTR)</li><li>VAT number and effective date of registration, if you are VAT registered</li><li>Standard Industrial Classification (SIC) code</li><li>Business start date</li><li>National Insurance number, if you are an individual or sole trader</li></ul><p><a href="https://www.gov.uk/eori/apply-for-eori">Apply for an EORI number on GOV.UK ↗</a></p></article>
+            <article id="xi-eori"><span>XI EORI · NORTHERN IRELAND</span><p>You will usually need an XI EORI number to move goods into Northern Ireland from Great Britain, to move goods from Northern Ireland to a non-EU country, to make a declaration in Northern Ireland, or to apply for a customs decision there.</p><p>Apply for a GB EORI number first. Then complete the XI EORI registration form. You will need your XI VAT number (if you have one), any EU VAT numbers and, in most cases, 2 documents that show a permanent business establishment in Northern Ireland, such as a bank statement and a utility bill. HMRC says the XI number arrives within 5 days. To check an XI EORI, use the <a data-eori-eu="guide_get_xi" href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en">European Commission checker ↗</a>.</p></article>
           </div>
         </section>
 
