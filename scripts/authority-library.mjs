@@ -217,6 +217,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-value-import-duty-vat-calculator/',
     relatedLabel: 'Cross-foot the import VAT scenario',
+    extraTools: [['/tools/postponed-vat-statement-checker/', 'Reconcile the monthly PVA statement']],
   },
   {
     slug: 'ipaffs-import-notification-checklist',
