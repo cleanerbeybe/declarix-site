@@ -16,6 +16,7 @@ import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
+import { renderUseCase, useCaseRoutes } from './use-cases.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const dist = join(root, 'dist')
@@ -52,6 +53,7 @@ function routeLinks() {
     ['PRICING', '/pricing/'],
     ['ROI CALCULATOR', roiRoute.path],
     ['PILOT', '/pilot/'],
+    ['USE CASES', '/use-cases/'],
     ['PREPARATION OPTIONS', economicsRoute.path],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
@@ -108,6 +110,20 @@ function renderSources(route) {
           <span>${escapeHtml(source.publisher)} · CHECKED ${escapeHtml(source.checked)}</span>
         </li>`,
       )
+      .join('')}</ol>
+  </section>`
+}
+
+function renderRelatedRoutes(route) {
+  if (!route.related?.length) return ''
+  return `<section class="source-register related-routes" aria-labelledby="related-${route.path.split('/').filter(Boolean).join('-')}">
+    <header>
+      <span class="section-label">SEE IT ON A REAL JOB</span>
+      <h2 id="related-${route.path.split('/').filter(Boolean).join('-')}">Declarix use cases.</h2>
+      <p>Each use case shows the same customs job before and after Declarix, with a worked UK example.</p>
+    </header>
+    <ol>${route.related
+      .map(([label, path, note]) => `<li><a href="${path}">${escapeHtml(label)}</a><span>${escapeHtml(note)}</span></li>`)
       .join('')}</ol>
   </section>`
 }
@@ -275,6 +291,7 @@ function renderRoute(route) {
         ${route.path === '/pricing/' ? renderPricingTable() : ''}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
+        ${renderRelatedRoutes(route)}
         ${renderSources(route)}
         <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${route.reviewedOn || site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
@@ -632,6 +649,23 @@ for (const authorityRoute of authorityRoutes) {
   }
 }
 
+for (const useCase of useCaseRoutes) {
+  if (!useCase.path.startsWith('/') || !useCase.path.endsWith('/')) throw new Error(`Use case must use a trailing slash: ${useCase.path}`)
+  if (paths.has(useCase.path)) throw new Error(`Duplicate route: ${useCase.path}`)
+  if (titles.has(useCase.title)) throw new Error(`Duplicate title: ${useCase.title}`)
+  if (headings.has(useCase.h1)) throw new Error(`Duplicate H1: ${useCase.h1}`)
+  if (useCase.title.length > 60) throw new Error(`Use case title is too long: ${useCase.path}`)
+  if (useCase.description.length > 155) throw new Error(`Use case description is too long: ${useCase.path}`)
+  if (useCase.faqs.length < 3) throw new Error(`Use case needs visible question support: ${useCase.path}`)
+  if (useCase.sources.length < 2) throw new Error(`Use case needs at least two primary sources: ${useCase.path}`)
+  paths.add(useCase.path)
+  titles.add(useCase.title)
+  headings.add(useCase.h1)
+  const target = join(dist, useCase.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderUseCase(useCase, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags(), posthogKey, posthogHost }))
+}
+
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
 const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
@@ -653,6 +687,7 @@ const indexableRoutes = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...useCaseRoutes,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

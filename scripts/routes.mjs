@@ -129,6 +129,13 @@ export const routes = [
   },
   {
     path: '/supported-scope/',
+    related: [
+      ['Customs software for brokers', '/use-cases/customs-brokers/', 'The broker desk before and after Declarix.'],
+      ['Freight forwarders', '/use-cases/freight-forwarders/', 'Commercial documents checked against the B/L, AWB or CMR.'],
+      ['Small customs brokerages', '/for/small-customs-brokerages/', 'The Desk package for small teams.'],
+      ['Customs team review', '/use-cases/customs-team-review/', 'Maker-checker approval and a tamper-evident audit trail.'],
+      ['Importers', '/use-cases/importers/', 'What your broker needs from you, first time.'],
+    ],
     ref: 'SCHEDULE 03 · PRODUCT FIT',
     title: 'Supported customs workflows and integrations | Declarix',
     description:
@@ -267,6 +274,13 @@ export const routes = [
   },
   {
     path: '/how-it-works/',
+    related: [
+      ['Customs entry checking software', '/customs-entry-checking-software/', '120+ checks on every job before anyone keys a line.'],
+      ['Invoice and packing list reconciliation', '/use-cases/invoice-packing-list-reconciliation/', 'A worked example with eight flags traced to their source lines.'],
+      ['Customer document requests', '/use-cases/customer-document-requests/', 'Every missing fact in one drafted email, with replies matched back.'],
+      ['Customs data entry', '/use-cases/customs-data-entry/', 'Every field mapped to its CDS data element with the source attached.'],
+      ['All use cases', '/use-cases/', 'Brokers, freight forwarders, small brokerages and importers.'],
+    ],
     ref: 'FORM 06 · OPERATING FLOW',
     title: 'How Declarix builds CDS-ready customs entry packs',
     description:
