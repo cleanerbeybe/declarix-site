@@ -9,6 +9,8 @@ import {
 } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
+import { referenceAssets, referenceRoutes, renderReferenceRoute } from './customs-reference.mjs'
+import { referenceHub } from './customs-reference-links.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { renderPricingTable } from './pricing.mjs'
@@ -18,6 +20,18 @@ import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
+
+// The /customs-reference/ hub link switches on automatically once any route owns that path.
+referenceHub.available = [
+  ...routes,
+  ...tools,
+  ...calculators,
+  ...reports,
+  ...valueDutyWorkpapers,
+  ...radarRoutes,
+  ...authorityRoutes,
+  ...referenceRoutes,
+].some((route) => route.path === referenceHub.path)
 const dist = join(root, 'dist')
 const posthogKey = process.env.VITE_POSTHOG_KEY || ''
 const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
@@ -632,6 +646,32 @@ for (const authorityRoute of authorityRoutes) {
   }
 }
 
+for (const referenceRoute of referenceRoutes) {
+  if (paths.has(referenceRoute.path)) throw new Error(`Duplicate route: ${referenceRoute.path}`)
+  if (titles.has(referenceRoute.title)) throw new Error(`Duplicate title: ${referenceRoute.title}`)
+  if (headings.has(referenceRoute.h1)) throw new Error(`Duplicate H1: ${referenceRoute.h1}`)
+  if (referenceRoute.sources.length < 3) throw new Error(`Reference route needs a full source register: ${referenceRoute.path}`)
+  paths.add(referenceRoute.path)
+  titles.add(referenceRoute.title)
+  headings.add(referenceRoute.h1)
+  const target = join(dist, referenceRoute.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderReferenceRoute(referenceRoute, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+  for (const asset of referenceAssets(referenceRoute)) {
+    const assetTarget = join(dist, asset.href.slice(1))
+    await mkdir(dirname(assetTarget), { recursive: true })
+    await writeFile(assetTarget, asset.content)
+  }
+}
+
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
 const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
@@ -653,6 +693,7 @@ const indexableRoutes = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...referenceRoutes,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,6 +1,10 @@
+import { referenceLinkStrip } from './customs-reference-links.mjs'
+
 const REVIEWED_ON = '2026-07-17'
+const INCOTERMS_REVIEWED_ON = '2026-10-15'
 
 const source = (title, publisher, url, checked = '17 JULY 2026') => ({ title, publisher, url, checked })
+const checkedOctober = (title, url) => source(title, 'HM Revenue & Customs · GOV.UK', url, '15 OCTOBER 2026')
 
 const hmrcIncoterms = source(
   'Customs valuation: Incoterms',
@@ -17,6 +21,17 @@ const iccIncoterms = source(
   'International Chamber of Commerce',
   'https://iccwbo.org/business-solutions/incoterms-rules/',
 )
+const hmrcDeliveryCosts = checkedOctober('Delivery costs to include in the customs value', 'https://www.gov.uk/guidance/delivery-costs-to-include-in-the-customs-value')
+const hmrcMethodOne = checkedOctober('Customs valuation: Method 1 transaction value', 'https://www.gov.uk/guidance/customs-valuation/method-1-transaction-value')
+const hmrcDeliveryTerms = checkedOctober('Delivery terms for Data Element 4/1 of CDS', 'https://www.gov.uk/government/publications/delivery-terms-for-data-element-41-of-the-customs-declaration-service')
+const hmrcImportVat = checkedOctober('Paying VAT on imports: valuation of imported goods', 'https://www.gov.uk/guidance/vat-imports-acquisitions-and-purchases-from-abroad')
+const hmrcExchangeRates = checkedOctober('Exchange rates for customs and VAT', 'https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat')
+const incotermSources = [hmrcIncoterms, hmrcValuation, iccIncoterms, hmrcDeliveryCosts, hmrcMethodOne, hmrcDeliveryTerms, hmrcImportVat, hmrcExchangeRates]
+
+// Worked examples: every amount is illustrative. Treatments follow HMRC's delivery-cost rules:
+// 'value' = in the customs value; 'uk' = after the place of introduction, separately shown, so outside the customs value
+// but inside the import VAT value as a cost to the first UK destination; 'out' = outside both.
+// 'duty' and 'vat' lines are calculated, used where a DDP price already contains them.
 
 const termDefinitions = [
   {
@@ -46,6 +61,25 @@ const termDefinitions = [
       ['Main carriage', 'Buyer'],
       ['UK import and delivery', 'Buyer'],
     ],
+    example: {
+      title: 'Leeds tableware importer · FOB Ningbo by container',
+      scenario:
+        'A Leeds homeware importer buys stoneware dinner sets FOB Ningbo. The importer books the ocean freight to Felixstowe and pays the shipping line’s bunker and peak-season surcharges. A UK haulier then moves the container from Felixstowe to the Leeds warehouse.',
+      de41: 'FOB · Ningbo (named port of shipment)',
+      placeOfIntroduction: 'Felixstowe, the UK port where the goods arrive direct by sea',
+      currency: 'USD',
+      rate: 0.77,
+      dutyRate: 6,
+      lines: [
+        ['Seller’s FOB invoice for the dinner sets', 24000, 'USD', 'value'],
+        ['Ocean freight Ningbo to Felixstowe, including bunker adjustment factor', 2600, 'USD', 'value'],
+        ['Peak season surcharge from the shipping line', 300, 'USD', 'value'],
+        ['Marine insurance premium for the sea leg', 95, 'USD', 'value'],
+        ['UK haulage Felixstowe to Leeds, invoiced separately', 640, 'GBP', 'uk'],
+      ],
+      lesson:
+        'FOB stops at the ship’s rail in Ningbo, so every freight, surcharge and insurance cost to Felixstowe joins the customs value. The Leeds haulage sits after the place of introduction: it stays out of the customs value and goes into the import VAT value.',
+    },
   },
   {
     code: 'CIF',
@@ -74,6 +108,24 @@ const termDefinitions = [
       ['Freight + minimum insurance', 'Seller pays'],
       ['UK import and delivery', 'Buyer'],
     ],
+    example: {
+      title: 'Bristol olive oil importer · CIF Avonmouth',
+      scenario:
+        'A Bristol food wholesaler buys olive oil from an Izmir producer CIF Avonmouth. The producer’s price already contains the sea freight and its insurance to Avonmouth. The wholesaler also buys its own top-up cargo cover, then pays terminal handling at Avonmouth and local delivery.',
+      de41: 'CIF · Avonmouth (named port of destination)',
+      placeOfIntroduction: 'Avonmouth, the UK port where the goods arrive direct by sea',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 0,
+      lines: [
+        ['Seller’s CIF invoice, freight and insurance to Avonmouth included', 18500, 'EUR', 'value'],
+        ['Buyer’s extra top-up cargo insurance', 60, 'EUR', 'out'],
+        ['Terminal handling at Avonmouth after arrival', 210, 'GBP', 'uk'],
+        ['Delivery Avonmouth to the Bristol warehouse', 180, 'GBP', 'uk'],
+      ],
+      lesson:
+        'HMRC needs no transport addition on CIF terms because the price already reaches the UK port. Where the seller insures and the buyer also insures, only the seller’s insurance counts, so the top-up premium stays out. The duty rate here is 0% to show that the import VAT value still picks up the UK costs.',
+    },
   },
   {
     code: 'DAP',
@@ -102,6 +154,23 @@ const termDefinitions = [
       ['UK import clearance', 'Buyer'],
       ['Named place · ready to unload', 'Seller → Buyer risk'],
     ],
+    example: {
+      title: 'Manchester furniture retailer · DAP Manchester by road',
+      scenario:
+        'A Manchester retailer buys oak furniture from a Poznań factory DAP Manchester. The factory’s carrier drives the trailer via Calais and Dover. On request, the factory gives a carriage statement that splits the road freight at Dover.',
+      de41: 'DAP · Manchester (named place of destination)',
+      placeOfIntroduction: 'Dover, where the trailer first passes a UK customs office',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 0,
+      lines: [
+        ['DAP price for the furniture, carriage to Manchester included', 29300, 'EUR', 'value'],
+        ['UK leg Dover to Manchester, inside the price and shown separately on the carriage statement', 700, 'EUR', 'uk'],
+        ['Unloading at the Manchester store, paid by the buyer', 120, 'GBP', 'uk'],
+      ],
+      lesson:
+        'The seller’s DAP price was €30,000. Because the carriage statement shows €700 for the Dover to Manchester leg, that part comes out of the customs value and moves to the import VAT value. Without the statement, the full €30,000 would stay in. This example uses a 0% duty rate, so the result shows how VAT is built.',
+    },
   },
   {
     code: 'FCA',
@@ -130,6 +199,24 @@ const termDefinitions = [
       ['Main carriage', 'Buyer'],
       ['UK import and delivery', 'Buyer'],
     ],
+    example: {
+      title: 'Birmingham engineering firm · FCA seller’s premises, Milan',
+      scenario:
+        'A Birmingham engineering firm buys hydraulic valves FCA the seller’s Milan premises. The buyer’s own haulier collects, drives via the Channel crossing and delivers to Birmingham. The haulier’s invoice shows the Dover to Birmingham leg separately.',
+      de41: 'FCA · seller’s premises, Milan (named place of delivery)',
+      placeOfIntroduction: 'Dover, where the vehicle first passes a UK customs office',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 2,
+      lines: [
+        ['Seller’s FCA invoice for the valves', 15000, 'EUR', 'value'],
+        ['Road freight Milan to Dover, buyer’s haulier', 1070, 'EUR', 'value'],
+        ['Road freight Dover to Birmingham, separately shown on the same invoice', 380, 'EUR', 'uk'],
+        ['Transit insurance for the whole journey, premium not split', 45, 'EUR', 'value'],
+      ],
+      lesson:
+        'Under FCA the buyer pays the main carriage, so the freight to Dover is added to the invoice price. The UK leg is deducted because the haulier priced it separately. The insurance premium was not split, so all of it stays in the customs value.',
+    },
   },
   {
     code: 'DDP',
@@ -159,8 +246,330 @@ const termDefinitions = [
       ['Named place · ready to unload', 'Seller → Buyer risk'],
     ],
     frozenEvidence: 'Frozen GB keyword evidence: 1,400 monthly volume, KD 12, 741 available clicks.',
+    example: {
+      title: 'Edinburgh retailer · DDP Edinburgh, sea via Leith',
+      scenario:
+        'A Bergen knitwear maker sells to an Edinburgh retailer DDP Edinburgh. The maker ships to Leith, arranges UK clearance through its representative and builds the duty and import VAT into one delivered price. The retailer asks for the price build-up before it agrees the importer details.',
+      de41: 'DDP · Edinburgh (named place of destination)',
+      placeOfIntroduction: 'Leith, the UK port where the goods arrive direct by sea',
+      currency: 'GBP',
+      rate: 1,
+      dutyRate: 8,
+      lines: [
+        ['Goods element of the delivered price', 11500, 'GBP', 'value'],
+        ['Sea freight Bergen to Leith', 650, 'GBP', 'value'],
+        ['Cargo insurance for the sea leg', 40, 'GBP', 'value'],
+        ['Haulage Leith to the Edinburgh shop', 160, 'GBP', 'uk'],
+        ['Customs duty already inside the DDP price', null, 'GBP', 'duty'],
+        ['Import VAT already inside the DDP price', null, 'GBP', 'vat'],
+      ],
+      lesson:
+        'The delivered price is not the customs value. Strip out the duty, the import VAT and the haulage after Leith, and the border value is the goods plus freight and insurance to Leith. The duty and VAT lines are calculated from that value, so the build-up adds back to the delivered price.',
+    },
+  },
+  {
+    code: 'EXW',
+    slug: 'exw',
+    name: 'Ex Works',
+    mode: 'Any mode or combination of modes',
+    title: 'EXW Incoterms: buyer-side costs and UK customs value',
+    description:
+      'EXW and UK customs value: add every buyer-paid cost from the seller’s door to the UK border, from loading to main carriage, with a worked example.',
+    h1: 'EXW: every cost after the seller’s door is yours to add.',
+    standfirst:
+      'Ex Works puts the least on the seller. The buyer loads, clears export, books the main carriage and handles UK import. Each of those costs up to the UK place of introduction belongs in the customs value evidence.',
+    fit: 'Use for any mode when the seller makes the goods available at its premises or another named place, not loaded and not cleared for export.',
+    risk: 'Risk moves when the goods are placed at the buyer’s disposal at the named place, before loading on the collecting vehicle.',
+    seller: ['Goods ready at the named place', 'Packaging and marking for the journey', 'Help with information the buyer needs'],
+    buyer: ['Loading at the seller’s premises', 'Export clearance and main carriage', 'UK import clearance and onward delivery'],
+    valueChecks: [
+      'Add loading at the seller’s premises and all transport in the country of export.',
+      'Add main carriage, surcharges and insurance up to the UK place of introduction.',
+      'Deduct only UK-leg transport that is charged separately and evidenced.',
+      'Tie the collection note, haulier invoice and seller invoice to the same consignment.',
+    ],
+    phases: [
+      ['Goods made available', 'Seller → Buyer risk'],
+      ['Loading + export clearance', 'Buyer'],
+      ['Main carriage', 'Buyer'],
+      ['UK import and delivery', 'Buyer'],
+    ],
+    example: {
+      title: 'Leicester machine shop · EXW Stuttgart',
+      scenario:
+        'A Leicester machine shop buys spindle parts EXW the maker’s Stuttgart works. The shop’s forwarder pays for loading at the works, then trucks the parts via the Channel crossing to Leicester. The forwarder’s invoice splits the road freight at Dover.',
+      de41: 'EXW · Stuttgart works (named place of delivery)',
+      placeOfIntroduction: 'Dover, where the vehicle first passes a UK customs office',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 2.7,
+      lines: [
+        ['Seller’s EXW invoice for the spindle parts', 12000, 'EUR', 'value'],
+        ['Loading at the Stuttgart works, paid by the buyer', 150, 'EUR', 'value'],
+        ['Road freight Stuttgart to Dover', 1250, 'EUR', 'value'],
+        ['Road freight Dover to Leicester, separately shown', 350, 'EUR', 'uk'],
+        ['Transit insurance to the UK border', 90, 'EUR', 'value'],
+      ],
+      lesson:
+        'Ex Works prices leave out everything after the seller’s door. Loading, German haulage, the Channel crossing and insurance all join the customs value. Only the Dover to Leicester leg comes out, because it is priced separately.',
+    },
+  },
+  {
+    code: 'FAS',
+    slug: 'fas',
+    name: 'Free Alongside Ship',
+    mode: 'Sea and inland waterway only',
+    title: 'FAS Incoterms: quayside handoff and UK customs value',
+    description:
+      'FAS for bulk sea cargo: map the alongside-ship handoff, add loading, freight and insurance, and keep UK port costs out of the customs value.',
+    h1: 'FAS: the quayside handoff comes before loading.',
+    standfirst:
+      'Under FAS the seller delivers alongside the vessel at the named port of shipment. Loading on board, the sea freight and the insurance are the buyer’s costs, and each one belongs in the UK customs value up to the port of arrival.',
+    fit: 'Use for sea or inland-waterway cargo when the seller places the goods alongside the buyer’s vessel at the named port of shipment.',
+    risk: 'Risk moves when the goods are alongside the ship, for example on the quay or a barge, at the named port of shipment.',
+    seller: ['Export clearance', 'Delivery alongside the nominated vessel', 'Origin costs to the quay'],
+    buyer: ['Loading on board', 'Main carriage and insurance', 'UK import clearance and onward delivery'],
+    valueChecks: [
+      'Add stevedoring or loading on board at the port of shipment.',
+      'Add sea freight, bunker and other carrier surcharges to the UK port.',
+      'Keep UK port discharge and onward haulage out when they are separately charged.',
+      'Match the mate’s receipt or bill of lading to the quayside delivery and the invoice.',
+    ],
+    phases: [
+      ['Export preparation', 'Seller'],
+      ['Alongside ship at named port', 'Seller → Buyer risk'],
+      ['Loading + main carriage', 'Buyer'],
+      ['UK import and delivery', 'Buyer'],
+    ],
+    example: {
+      title: 'Hull timber merchant · FAS Kotka',
+      scenario:
+        'A Hull timber merchant buys birch plywood FAS Kotka. The merchant charters space, pays the stevedores to load at Kotka, insures the voyage and pays Hull port discharge and haulage to its York yard.',
+      de41: 'FAS · Kotka (named port of shipment)',
+      placeOfIntroduction: 'Hull, the UK port where the goods arrive direct by sea',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 0,
+      lines: [
+        ['Seller’s FAS invoice for the plywood', 40000, 'EUR', 'value'],
+        ['Stevedoring to load on board at Kotka', 1200, 'EUR', 'value'],
+        ['Sea freight Kotka to Hull', 3800, 'EUR', 'value'],
+        ['Marine insurance for the voyage', 160, 'EUR', 'value'],
+        ['Discharge at Hull after arrival, separately charged', 900, 'GBP', 'uk'],
+        ['Haulage Hull to the York yard', 420, 'GBP', 'uk'],
+      ],
+      lesson:
+        'FAS stops one step earlier than FOB, so the loading cost at Kotka is also the buyer’s and joins the customs value. The Hull costs come after arrival at the place of introduction and move to the import VAT value.',
+    },
+  },
+  {
+    code: 'CFR',
+    slug: 'cfr',
+    name: 'Cost and Freight',
+    mode: 'Sea and inland waterway only',
+    title: 'CFR Incoterms: seller freight, buyer insurance, UK value',
+    description:
+      'Use the CFR workpaper to confirm the seller-paid freight to the UK port, add the buyer’s own cargo insurance and build a clean UK customs value trail.',
+    h1: 'CFR: freight is in the price. Insurance is not.',
+    standfirst:
+      'CFR makes the seller pay freight to the named destination port while risk moves on board at the port of shipment. The seller does not have to insure, so any cover the buyer buys for the voyage belongs in the customs value.',
+    fit: 'Use for sea or inland-waterway shipments when the seller contracts and pays freight to the named port of destination without an insurance obligation.',
+    risk: 'Risk moves when the goods are on board the vessel at the port of shipment, even though the seller pays freight to destination.',
+    seller: ['Export clearance', 'Delivery on board', 'Freight to the named destination port'],
+    buyer: ['Risk and insurance during the voyage', 'UK import clearance', 'Destination port costs and onward delivery'],
+    valueChecks: [
+      'Confirm the invoice price includes freight to the named UK port.',
+      'Add the buyer’s own voyage insurance premium.',
+      'Keep UK port handling and inland delivery out when separately charged.',
+      'Check the bill of lading port of discharge matches the named destination.',
+    ],
+    phases: [
+      ['Export preparation', 'Seller'],
+      ['On board · risk transfers', 'Seller → Buyer risk'],
+      ['Freight to destination port', 'Seller pays'],
+      ['UK import and delivery', 'Buyer'],
+    ],
+    example: {
+      title: 'Reading food distributor · CFR Southampton',
+      scenario:
+        'A Reading distributor buys canned pineapple from a Bangkok packer CFR Southampton. The packer’s price covers the ocean freight. The distributor insures the voyage itself and pays a haulier from Southampton to Reading.',
+      de41: 'CFR · Southampton (named place of destination)',
+      placeOfIntroduction: 'Southampton, the UK port where the goods arrive direct by sea',
+      currency: 'USD',
+      rate: 0.77,
+      dutyRate: 12,
+      lines: [
+        ['Seller’s CFR invoice, ocean freight to Southampton included', 21000, 'USD', 'value'],
+        ['Buyer’s own voyage insurance premium', 70, 'USD', 'value'],
+        ['Haulage Southampton to Reading', 380, 'GBP', 'uk'],
+      ],
+      lesson:
+        'The CFR price already reaches Southampton, so no freight is added. The seller did not insure, so the buyer’s premium is added. That one line is the difference between this CFR value and a CIF value for the same shipment.',
+    },
+  },
+  {
+    code: 'CPT',
+    slug: 'cpt',
+    name: 'Carriage Paid To',
+    mode: 'Any mode or combination of modes',
+    title: 'CPT Incoterms: carriage to destination and UK value',
+    description:
+      'CPT and UK customs value: split the UK leg of seller-paid carriage, add the buyer’s insurance and trace the value to the border.',
+    h1: 'CPT: the seller pays the carriage. The buyer carries the risk.',
+    standfirst:
+      'Under CPT the seller pays carriage to the named destination, but risk moves to the buyer when the goods are handed to the first carrier. When the named place is inland in the UK, the UK part of the carriage is the figure to evidence.',
+    fit: 'Use for any mode when the seller hands the goods to its carrier and pays carriage to the named place of destination.',
+    risk: 'Risk moves when the goods are handed to the first carrier, not at the named destination.',
+    seller: ['Export clearance', 'Delivery to the first carrier', 'Carriage to the named destination'],
+    buyer: ['Risk and insurance during carriage', 'UK import clearance', 'Unloading where not in the carriage contract'],
+    valueChecks: [
+      'Find how much of the carriage in the price covers the journey after the UK border.',
+      'Deduct that UK leg only when it is shown separately and evidenced.',
+      'Add any insurance the buyer buys for the journey to the UK border.',
+      'Match the carrier’s receipt and the delivery evidence to the invoice.',
+    ],
+    phases: [
+      ['Export preparation', 'Seller'],
+      ['First carrier · risk transfers', 'Seller → Buyer risk'],
+      ['Carriage to named place', 'Seller pays'],
+      ['UK import clearance', 'Buyer'],
+    ],
+    example: {
+      title: 'Northampton DIY wholesaler · CPT Northampton',
+      scenario:
+        'A Northampton wholesaler buys garden tools from a Rotterdam distributor CPT Northampton. The distributor’s carrier crosses to Harwich and drives on to Northampton. The invoice shows the carriage, and the Harwich to Northampton leg, as separate lines.',
+      de41: 'CPT · Northampton (named place of destination)',
+      placeOfIntroduction: 'Harwich, where the goods first pass a UK customs office',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 2,
+      lines: [
+        ['Tools at the invoice unit prices', 24900, 'EUR', 'value'],
+        ['Carriage Rotterdam to Harwich, inside the CPT price', 810, 'EUR', 'value'],
+        ['Carriage Harwich to Northampton, inside the price and shown separately', 290, 'EUR', 'uk'],
+        ['Buyer’s transit insurance to Harwich', 55, 'EUR', 'value'],
+      ],
+      lesson:
+        'The CPT invoice total was €26,000. The €290 UK leg comes out because the invoice shows it, and the buyer’s own insurance goes in because risk was the buyer’s from the first carrier.',
+    },
+  },
+  {
+    code: 'CIP',
+    slug: 'cip',
+    name: 'Carriage and Insurance Paid To',
+    mode: 'Any mode or combination of modes',
+    title: 'CIP Incoterms: seller carriage and insurance, UK value',
+    description:
+      'CIP and UK customs value: split seller-paid carriage and insurance at the UK border, apportion inland cover and never add a cost twice.',
+    h1: 'CIP: split the carriage and the cover at the border.',
+    standfirst:
+      'CIP adds a seller insurance obligation to CPT. Both the carriage and the policy can run past the UK border to an inland named place, so the evidence needs to show what part of each sits before the place of introduction.',
+    fit: 'Use for any mode when the seller pays carriage and contracts insurance to the named place of destination.',
+    risk: 'Risk moves when the goods are handed to the first carrier, while the seller’s insurance covers the buyer’s risk during carriage.',
+    seller: ['Export clearance', 'Carriage to the named destination', 'Insurance cover for the buyer’s risk in transit'],
+    buyer: ['Risk from the first carrier', 'UK import clearance', 'Any extra cover above the contract level'],
+    valueChecks: [
+      'Confirm carriage and insurance are inside the price before adding anything.',
+      'Deduct the UK carriage leg only when the invoice or carrier statement splits it.',
+      'Apportion the insurance premium for the UK leg only when the split can be shown.',
+      'Do not add the buyer’s extra cover when the seller’s policy already applies.',
+    ],
+    phases: [
+      ['Export preparation', 'Seller'],
+      ['First carrier · risk transfers', 'Seller → Buyer risk'],
+      ['Carriage + insurance to named place', 'Seller pays'],
+      ['UK import clearance', 'Buyer'],
+    ],
+    example: {
+      title: 'Coventry auto-parts plant · CIP Coventry by rail and road',
+      scenario:
+        'A Coventry plant buys brake assemblies from a Lyon supplier CIP Coventry. The goods travel by rail freight through the Channel Tunnel to Folkestone, then by road to Coventry. The supplier’s invoice splits the carriage at Folkestone and states the insurance premium as one figure.',
+      de41: 'CIP · Coventry (named place of destination)',
+      placeOfIntroduction: 'Folkestone, where the goods first pass a UK customs office',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 3,
+      lines: [
+        ['Brake assemblies at the invoice unit prices', 45580, 'EUR', 'value'],
+        ['Carriage Lyon to Folkestone, inside the CIP price', 1850, 'EUR', 'value'],
+        ['Carriage Folkestone to Coventry, inside the price and shown separately', 450, 'EUR', 'uk'],
+        ['Seller’s cargo insurance to Coventry, premium not split', 120, 'EUR', 'value'],
+      ],
+      lesson:
+        'The CIP total was €48,000. The UK road leg comes out because it is priced on its own line. The premium covers the whole journey but was not split, so all of it stays in the customs value.',
+    },
+  },
+  {
+    code: 'DPU',
+    slug: 'dpu',
+    name: 'Delivered at Place Unloaded',
+    mode: 'Any mode or combination of modes',
+    title: 'DPU Incoterms: delivered unloaded and UK customs value',
+    description:
+      'DPU and UK customs value: split transport before and after the border and see which unloading costs can come out, with a worked example.',
+    h1: 'DPU: the seller unloads. The value still stops at the border.',
+    standfirst:
+      'DPU replaced DAT in Incoterms 2020. The seller delivers the goods unloaded at the named place, while the buyer handles UK import clearance. Costs after the UK place of introduction only leave the customs value when the evidence shows them separately.',
+    fit: 'Use for any mode when the seller delivers the goods unloaded at the named place of destination and the buyer handles import clearance.',
+    risk: 'Risk moves when the goods are unloaded and placed at the buyer’s disposal at the named place of destination.',
+    seller: ['Export clearance', 'Main carriage to the named place', 'Unloading at the named place'],
+    buyer: ['UK import clearance and duty', 'Importer evidence and instructions', 'Onward handling after delivery'],
+    valueChecks: [
+      'Ask for a price build-up that splits transport before and after the UK border.',
+      'Deduct UK transport only when it is shown separately and evidenced.',
+      'Keep unloading in the value when the seller’s price does not show it separately.',
+      'Name the delivery place precisely so the unloading point is clear.',
+    ],
+    phases: [
+      ['Export preparation', 'Seller'],
+      ['Main carriage', 'Seller'],
+      ['UK import clearance', 'Buyer'],
+      ['Named place · unloaded', 'Seller → Buyer risk'],
+    ],
+    example: {
+      title: 'Cambridge lab-equipment buyer · DPU Cambridge',
+      scenario:
+        'A Cambridge research company buys a cold-storage cabinet system from an Aarhus maker DPU at its Cambridge site. The maker ships via Esbjerg and Harwich and unloads with a hired crane. Its quote splits the transport at Harwich but includes the crane in the goods price.',
+      de41: 'DPU · Cambridge research site (named place of destination)',
+      placeOfIntroduction: 'Harwich, where the goods first pass a UK customs office',
+      currency: 'EUR',
+      rate: 0.86,
+      dutyRate: 2.2,
+      lines: [
+        ['Equipment price, crane unloading included but not shown separately', 59080, 'EUR', 'value'],
+        ['Transport Aarhus to Harwich, inside the DPU price', 2400, 'EUR', 'value'],
+        ['Transport Harwich to Cambridge, inside the price and shown separately', 520, 'EUR', 'uk'],
+      ],
+      lesson:
+        'The DPU total was €62,000. The UK transport leg comes out because the quote prices it on its own line. The crane cost stays in because it is not shown separately. A fresh quote with the unloading on its own line gives the evidence to treat it the same way.',
+    },
   },
 ]
+
+const round2 = (value) => Math.round(value * 100) / 100
+
+export function incotermExample(term) {
+  const example = term.example
+  const toGbp = (amount, currency) => round2(currency === 'GBP' ? amount : amount * example.rate)
+  const lines = example.lines.map(([label, amount, currency, treatment]) => ({
+    label,
+    amount,
+    currency,
+    treatment,
+    gbp: amount === null ? null : toGbp(amount, currency),
+  }))
+  const customsValue = round2(lines.filter((line) => line.treatment === 'value').reduce((sum, line) => sum + line.gbp, 0))
+  const ukCosts = round2(lines.filter((line) => line.treatment === 'uk').reduce((sum, line) => sum + line.gbp, 0))
+  const duty = round2((customsValue * example.dutyRate) / 100)
+  const vatValue = round2(customsValue + ukCosts + duty)
+  const vat = round2(vatValue * 0.2)
+  for (const line of lines) {
+    if (line.treatment === 'duty') line.gbp = duty
+    if (line.treatment === 'vat') line.gbp = vat
+  }
+  const invoiceTotal = round2(lines.filter((line) => line.treatment !== 'out').reduce((sum, line) => sum + line.gbp, 0))
+  return { ...example, lines, customsValue, ukCosts, duty, vatValue, vat, invoiceTotal }
+}
 
 const workflowDefinitions = [
   {
@@ -327,20 +736,23 @@ const workflowDefinitions = [
   },
 ]
 
+const SEED_TERMS = new Set(['FOB', 'CIF', 'DAP', 'FCA', 'DDP'])
+
 const incotermsHub = {
   kind: 'incoterms-hub',
   path: '/customs-reference/incoterms/',
   title: 'Incoterms chooser and UK customs value atlas',
   description:
-    'Choose between FOB, CIF, DAP, FCA and DDP using transport, carriage, import-clearance and delivery handoffs, then open the matching customs-value workpaper.',
+    'All 11 Incoterms 2020 rules mapped to UK customs value: answer four handoff questions, open the term sheet and follow a worked UK valuation example.',
   h1: 'Choose the handoff. Then build the customs value trail.',
-  eyebrow: 'INCOTERMS OPERATIONAL CHOOSER · FIVE SEED TERMS · UK CUSTOMS VALUE',
+  eyebrow: 'INCOTERMS OPERATIONAL CHOOSER · ALL 11 INCOTERMS 2020 RULES · UK CUSTOMS VALUE',
   standfirst:
     'Incoterms allocate delivery tasks, costs and risk; they do not select the customs valuation method. Use four operational questions to reach a sensible term sheet, then test the actual contract and cost evidence.',
   ref: 'ATLAS 01 · DELIVERY HANDOFFS',
-  stamp: '5\nTERMS',
-  reviewedOn: REVIEWED_ON,
-  sources: [hmrcIncoterms, hmrcValuation, iccIncoterms],
+  stamp: '11\nTERMS',
+  publishedOn: REVIEWED_ON,
+  reviewedOn: INCOTERMS_REVIEWED_ON,
+  sources: incotermSources,
 }
 
 const burden = {
@@ -371,8 +783,9 @@ export const authorityRoutes = [
     eyebrow: `INCOTERMS 2020 · ${term.code} · OPERATIONAL VALUE SHEET`,
     ref: `TERM SHEET · ${term.code}`,
     stamp: `${term.code}\nMAP`,
-    reviewedOn: REVIEWED_ON,
-    sources: [hmrcIncoterms, hmrcValuation, iccIncoterms],
+    publishedOn: SEED_TERMS.has(term.code) ? REVIEWED_ON : INCOTERMS_REVIEWED_ON,
+    reviewedOn: INCOTERMS_REVIEWED_ON,
+    sources: incotermSources,
   })),
   burden,
   ...workflowDefinitions.map((workflow, index) => ({
@@ -418,7 +831,7 @@ function jsonLd(route, site) {
       name: route.title,
       headline: route.h1,
       description: route.description,
-      datePublished: REVIEWED_ON,
+      datePublished: route.publishedOn || REVIEWED_ON,
       dateModified: route.reviewedOn,
       isPartOf: { '@id': `${site.origin}/#website` },
       author: { '@id': `${site.origin}/#organization` },
@@ -460,7 +873,7 @@ function jsonLd(route, site) {
 
 function renderSources(route) {
   return `<section class="authority-sources" aria-labelledby="${sourceId(route)}">
-    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>Facts above are traced to the source edition checked on 17 July 2026. Operational prompts organise the job; they do not replace the current official instruction.</p></header>
+    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>${route.kind === 'incoterms-hub' || route.kind === 'incoterm-term' ? 'Facts above are traced to the source editions below, each with the date it was checked. Worked examples use illustrative amounts, exchange rates and duty rates.' : 'Facts above are traced to the source edition checked on 17 July 2026. Operational prompts organise the job; they do not replace the current official instruction.'}</p></header>
     <ol>${route.sources.map((item) => `<li><a href="${escapeHtml(item.url)}">${escapeHtml(item.title)}</a><span>${escapeHtml(item.publisher)} · CHECKED ${escapeHtml(item.checked)}</span></li>`).join('')}</ol>
   </section>`
 }
@@ -540,14 +953,51 @@ function renderDownload(route, asset, label) {
 }
 
 function renderIncotermsHub() {
-  const termLinks = termDefinitions.map((term) => `<a class="term-row" href="/customs-reference/incoterms/${term.slug}/" data-authority-related="term_${term.code.toLowerCase()}"><b>${term.code}</b><span><strong>${term.name}</strong><small>${term.mode}</small></span><em>OPEN SHEET →</em></a>`).join('')
-  return `<section class="chooser" aria-labelledby="chooser-heading"><header><span>FOUR-QUESTION CHOOSER</span><h2 id="chooser-heading">Find the closest operational sheet.</h2><p>The result narrows the handoff to inspect. Your contract and the current ICC rules remain decisive.</p></header><form id="incoterms-chooser"><fieldset><legend>1 · Transport mode</legend><label><input type="radio" name="mode" value="sea" required /> Sea / inland waterway only</label><label><input type="radio" name="mode" value="any" /> Any mode or multimodal</label></fieldset><fieldset><legend>2 · Who contracts main carriage?</legend><label><input type="radio" name="carriage" value="seller" required /> Seller</label><label><input type="radio" name="carriage" value="buyer" /> Buyer</label></fieldset><fieldset><legend>3 · Does the seller handle UK import clearance and duties?</legend><label><input type="radio" name="import" value="seller" required /> Yes</label><label><input type="radio" name="import" value="buyer" /> No</label></fieldset><fieldset><legend>4 · Is delivery promised at the destination place?</legend><label><input type="radio" name="destination" value="yes" required /> Yes</label><label><input type="radio" name="destination" value="no" /> No</label></fieldset><button class="button" type="submit">SHOW THE CLOSEST SHEET</button></form><div class="chooser-result" id="chooser-result" aria-live="polite" hidden><span>CLOSEST SHEET TO INSPECT</span><strong id="chooser-code"></strong><p id="chooser-copy"></p><a id="chooser-link" data-authority-related="chooser_result" href="/customs-reference/incoterms/">OPEN THE TERM SHEET →</a></div></section><section class="term-register" aria-labelledby="term-register-heading"><header><span>SEED ATLAS</span><h2 id="term-register-heading">Five high-coverage handoffs.</h2><p>FOB, CIF, DAP and FCA cover the approved seed set. DDP is fifth because the frozen GB keyword evidence recorded 1,400 monthly searches and 741 available clicks.</p></header>${termLinks}</section><section class="authority-bridge"><span>CUSTOMS VALUE</span><h2>The trade term does not choose the valuation method.</h2><p>Use the term to locate cost and responsibility evidence, then build the value with the applicable valuation method and actual additions or deductions.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a></section>`
+  const termRow = (term) => `<a class="term-row" href="/customs-reference/incoterms/${term.slug}/" data-authority-related="term_${term.code.toLowerCase()}"><b>${term.code}</b><span><strong>${term.name}</strong><small>${term.mode}</small></span><em>OPEN SHEET →</em></a>`
+  const anyMode = termDefinitions.filter((term) => term.mode.startsWith('Any')).map(termRow).join('')
+  const seaOnly = termDefinitions.filter((term) => term.mode.startsWith('Sea')).map(termRow).join('')
+  const examples = termDefinitions
+    .map((term) => {
+      const example = incotermExample(term)
+      return `<tr><th scope="row"><a href="/customs-reference/incoterms/${term.slug}/">${term.code}</a></th><td data-label="Example">${escapeHtml(example.title)}</td><td data-label="Place of introduction">${escapeHtml(example.placeOfIntroduction)}</td><td data-label="Customs value">${money(example.customsValue)}</td></tr>`
+    })
+    .join('')
+  return `<section class="chooser" aria-labelledby="chooser-heading"><header><span>FOUR-QUESTION CHOOSER</span><h2 id="chooser-heading">Find the closest operational sheet.</h2><p>The result narrows the handoff to inspect. Your contract and the current ICC rules remain decisive.</p></header><form id="incoterms-chooser"><fieldset><legend>1 · Transport mode</legend><label><input type="radio" name="mode" value="sea" required /> Sea / inland waterway only</label><label><input type="radio" name="mode" value="any" /> Any mode or multimodal</label></fieldset><fieldset><legend>2 · Who contracts main carriage?</legend><label><input type="radio" name="carriage" value="seller" required /> Seller</label><label><input type="radio" name="carriage" value="buyer" /> Buyer</label></fieldset><fieldset><legend>3 · Does the seller handle UK import clearance and duties?</legend><label><input type="radio" name="import" value="seller" required /> Yes</label><label><input type="radio" name="import" value="buyer" /> No</label></fieldset><fieldset><legend>4 · Is delivery promised at the destination place?</legend><label><input type="radio" name="destination" value="yes" required /> Yes</label><label><input type="radio" name="destination" value="no" /> No</label></fieldset><button class="button" type="submit">SHOW THE CLOSEST SHEET</button></form><div class="chooser-result" id="chooser-result" aria-live="polite" hidden><span>CLOSEST SHEET TO INSPECT</span><strong id="chooser-code"></strong><p id="chooser-copy"></p><a id="chooser-link" data-authority-related="chooser_result" href="/customs-reference/incoterms/">OPEN THE TERM SHEET →</a></div></section><section class="term-register" aria-labelledby="term-register-heading"><header><span>FULL ATLAS · INCOTERMS 2020</span><h2 id="term-register-heading">All eleven rules, grouped by transport mode.</h2><p>HMRC groups the rules the same way: seven for any mode of transport and four for sea and inland waterway only. FOB, CIF, DAP and FCA cover the approved seed set. DDP is fifth because the frozen GB keyword evidence recorded 1,400 monthly searches and 741 available clicks.</p></header><h3 class="term-group">Any mode or multimodal · 7 rules</h3>${anyMode}<h3 class="term-group">Sea and inland waterway only · 4 rules</h3>${seaOnly}</section><section class="term-examples" aria-labelledby="term-examples-heading"><header><span>ELEVEN WORKED UK EXAMPLES</span><h2 id="term-examples-heading">One real-world value build for every rule.</h2><p>Each sheet carries its own UK import, its own place of introduction and its own cost split. Amounts, exchange rates and duty rates are illustrative.</p></header><div class="table-scroll" tabindex="0" role="region" aria-label="Worked example index"><table><caption>Worked customs value examples by Incoterm</caption><thead><tr><th scope="col">Rule</th><th scope="col">Example</th><th scope="col">Place of introduction</th><th scope="col">Customs value</th></tr></thead><tbody>${examples}</tbody></table></div></section><section class="authority-bridge"><span>CUSTOMS VALUE</span><h2>The trade term does not choose the valuation method.</h2><p>Use the term to locate cost and responsibility evidence, then build the value with the applicable valuation method and actual additions or deductions.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a></section>${referenceLinkStrip('incoterms')}`
+}
+
+const money = (value) => `£${value.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+const foreign = (value, currency) => `${{ GBP: '£', EUR: '€', USD: '$' }[currency] || ''}${value.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+
+function renderExample(route) {
+  const example = incotermExample(route)
+  const treatmentLabel = { value: 'In the customs value', uk: 'After the border · import VAT value only', out: 'Outside both values', duty: 'Calculated duty inside the price', vat: 'Calculated import VAT inside the price' }
+  const rows = example.lines
+    .map((line) => `<tr class="treat-${line.treatment}"><th scope="row">${escapeHtml(line.label)}</th><td data-label="Amount">${line.amount === null ? 'calculated' : foreign(line.amount, line.currency)}</td><td data-label="GBP">${money(line.gbp)}</td><td data-label="Treatment">${treatmentLabel[line.treatment]}</td></tr>`)
+    .join('')
+  const rateNote = example.currency === 'GBP' ? 'Invoiced in sterling.' : `Illustrative exchange rate: ${example.currency} 1 = £${example.rate}. Use the HMRC rate for the month of import.`
+  const totals = [
+    ['Customs value', money(example.customsValue)],
+    [`Customs duty at an illustrative ${example.dutyRate}%`, money(example.duty)],
+    ['UK costs to first destination', money(example.ukCosts)],
+    ['Import VAT value (customs value + duty + UK costs)', money(example.vatValue)],
+    ['Import VAT at 20%', money(example.vat)],
+    ...(route.code === 'DDP' ? [['Delivered price rebuilt from the lines', money(example.invoiceTotal)]] : []),
+  ]
+  return `<section class="worked-example" aria-labelledby="worked-example-heading"><header><span>WORKED UK EXAMPLE · ${route.code}</span><h2 id="worked-example-heading">${escapeHtml(example.title)}</h2><p>${escapeHtml(example.scenario)}</p></header><dl class="example-facts"><div><dt>DE 4/1 delivery terms</dt><dd>${escapeHtml(example.de41)}</dd></div><div><dt>Place of introduction</dt><dd>${escapeHtml(example.placeOfIntroduction)}</dd></div><div><dt>Currency</dt><dd>${escapeHtml(rateNote)}</dd></div></dl><div class="table-scroll" tabindex="0" role="region" aria-label="${route.code} worked example cost lines"><table><caption>${route.code} cost lines and treatment</caption><thead><tr><th scope="col">Cost line</th><th scope="col">Amount</th><th scope="col">GBP</th><th scope="col">Treatment</th></tr></thead><tbody>${rows}</tbody></table></div><dl class="example-totals">${totals.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${value}</dd></div>`).join('')}</dl><p class="example-lesson"><strong>What this example shows.</strong> ${escapeHtml(example.lesson)}</p></section>`
+}
+
+function renderTermSiblings(route) {
+  const links = termDefinitions
+    .filter((term) => term.code !== route.code)
+    .map((term) => `<a href="/customs-reference/incoterms/${term.slug}/" data-authority-related="sibling_${term.code.toLowerCase()}"><b>${term.code}</b> ${escapeHtml(term.name)}</a>`)
+    .join('')
+  return `<nav class="term-siblings" aria-label="Other Incoterms 2020 sheets"><span>OTHER INCOTERMS 2020 SHEETS</span><div>${links}</div></nav>`
 }
 
 function renderTerm(route) {
   const asset = authorityAssets(route)[0]
   const phases = route.phases.map(([phase, owner], index) => `<li><span>0${index + 1}</span><strong>${escapeHtml(phase)}</strong><em>${escapeHtml(owner)}</em></li>`).join('')
-  return `<section class="direct-answer"><span>DIRECT ANSWER · ${route.code}</span><h2>${escapeHtml(route.fit)}</h2><p>${escapeHtml(route.risk)}</p></section><figure class="handoff-map"><figcaption><span>ORIGINAL OPERATIONAL MAP</span><h2>Delivery, cost and risk handoff.</h2></figcaption><ol>${phases}</ol></figure><div class="responsibility-grid"><section><span>SELLER HANDOFF</span><h2>Seller side</h2><ul>${route.seller.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>BUYER HANDOFF</span><h2>Buyer side</h2><ul>${route.buyer.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><section class="value-checks"><header><span>VALUE WORKPAPER</span><h2>Four checks before the number moves.</h2><p>${route.frozenEvidence ? escapeHtml(route.frozenEvidence) : 'Keep the named place, transport evidence and commercial invoice tied to the same consignment.'}</p></header><ol>${route.valueChecks.map((item, index) => `<li><b>0${index + 1}</b><span>${escapeHtml(item)}</span></li>`).join('')}</ol></section><div class="download-row">${renderDownload(route, asset, `${route.code} operational map`)}</div><section class="authority-bridge"><span>NEXT WORKPAPER</span><h2>Cross-foot the cost trail.</h2><p>Bring the goods amount, currency direction, freight, insurance and adjustments into one browser-only calculation.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a><a data-authority-related="incoterms_hub" href="/customs-reference/incoterms/">BACK TO THE INCOTERMS CHOOSER</a></section>`
+  return `<section class="direct-answer"><span>DIRECT ANSWER · ${route.code}</span><h2>${escapeHtml(route.fit)}</h2><p>${escapeHtml(route.risk)}</p></section><figure class="handoff-map"><figcaption><span>ORIGINAL OPERATIONAL MAP</span><h2>Delivery, cost and risk handoff.</h2></figcaption><ol>${phases}</ol></figure><div class="responsibility-grid"><section><span>SELLER HANDOFF</span><h2>Seller side</h2><ul>${route.seller.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>BUYER HANDOFF</span><h2>Buyer side</h2><ul>${route.buyer.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><section class="value-checks"><header><span>VALUE WORKPAPER</span><h2>Four checks before the number moves.</h2><p>${route.frozenEvidence ? escapeHtml(route.frozenEvidence) : 'Keep the named place, transport evidence and commercial invoice tied to the same consignment.'}</p></header><ol>${route.valueChecks.map((item, index) => `<li><b>0${index + 1}</b><span>${escapeHtml(item)}</span></li>`).join('')}</ol></section>${renderExample(route)}<div class="download-row">${renderDownload(route, asset, `${route.code} operational map`)}</div><section class="authority-bridge"><span>NEXT WORKPAPER</span><h2>Cross-foot the cost trail.</h2><p>Bring the goods amount, currency direction, freight, insurance and adjustments into one browser-only calculation.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a><a data-authority-related="incoterms_hub" href="/customs-reference/incoterms/">BACK TO THE INCOTERMS CHOOSER</a></section>${renderTermSiblings(route)}${referenceLinkStrip('incoterms')}`
 }
 
 function renderBurden(route) {
@@ -587,7 +1037,8 @@ function analyticsScript(route, posthogKey, posthogHost) {
       else if (destination === 'yes') code = 'DAP';
       else if (mode === 'sea' && carriage === 'seller') code = 'CIF';
       else if (mode === 'sea') code = 'FOB';
-      const copyByCode = { FOB: 'Sea shipment; buyer contracts main carriage after the on-board handoff.', CIF: 'Sea shipment; seller contracts freight and minimum insurance to destination.', DAP: 'Seller delivers to the named place; buyer handles UK import clearance and unloading.', FCA: 'Seller delivers to the carrier at the named place; buyer contracts main carriage.', DDP: 'Seller handles delivery and import clearance, including duty under the sale term.' };
+      else if (carriage === 'seller') code = 'CPT';
+      const copyByCode = { FOB: 'Sea shipment; buyer contracts main carriage after the on-board handoff. If the seller stops at the quayside, compare FAS.', CIF: 'Sea shipment; seller contracts freight and insurance to destination. If the seller does not insure, compare CFR.', DAP: 'Seller delivers to the named place; buyer handles UK import clearance and unloading. If the seller also unloads, compare DPU.', FCA: 'Seller delivers to the carrier at the named place; buyer contracts main carriage. If the buyer also loads at the seller’s premises, compare EXW.', CPT: 'Seller pays carriage to the named place; risk moves at the first carrier. If the seller also insures, compare CIP.', DDP: 'Seller handles delivery and import clearance, including duty under the sale term.' };
       document.getElementById('chooser-code').textContent = code;
       document.getElementById('chooser-copy').textContent = copyByCode[code];
       document.getElementById('chooser-link').href = '/customs-reference/incoterms/' + code.toLowerCase() + '/';
@@ -611,5 +1062,5 @@ function analyticsScript(route, posthogKey, posthogHost) {
 export function renderAuthorityRoute(route, site, { navHtml, webmasterHtml, posthogKey = '', posthogHost = 'https://eu.i.posthog.com' }) {
   const canonical = `${site.origin}${route.path}`
   const content = route.kind === 'incoterms-hub' ? renderIncotermsHub(route) : route.kind === 'incoterm-term' ? renderTerm(route) : route.kind === 'burden-report' ? renderBurden(route) : `${renderWorkflow(route)}${renderWorkflowCluster(route)}`
-  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/><meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>REVIEWED<br/>${route.reviewedOn}</small></aside></header>${content}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
+  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/>${route.kind === 'incoterms-hub' || route.kind === 'incoterm-term' ? '<link rel="stylesheet" href="/customs-reference.css"/>' : ''}<meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>REVIEWED<br/>${route.reviewedOn}</small></aside></header>${content}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
 }

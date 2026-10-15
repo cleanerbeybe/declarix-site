@@ -5,7 +5,8 @@ import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
-import { authorityAssets, authorityRoutes } from './authority-library.mjs'
+import { authorityAssets, authorityRoutes, incotermExample } from './authority-library.mjs'
+import { additionalRecords, documentRecords, errorRecords, procedureRecords, referenceAssets, referenceRoutes } from './customs-reference.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
@@ -36,6 +37,8 @@ const publicSources = [
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
   'scripts/authority-library.mjs',
+  'scripts/customs-reference.mjs',
+  'scripts/customs-reference-links.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
 ]
@@ -85,6 +88,7 @@ const expected = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...referenceRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -478,7 +482,7 @@ for (const route of expected) {
       }
     }
     if (route.kind === 'incoterms-hub') {
-      for (const code of ['fob', 'cif', 'dap', 'fca', 'ddp']) {
+      for (const code of ['fob', 'cif', 'dap', 'fca', 'ddp', 'exw', 'fas', 'cfr', 'cpt', 'cip', 'dpu']) {
         if (!html.includes(`/customs-reference/incoterms/${code}/`)) throw new Error(`${route.path} is missing ${code.toUpperCase()} sheet`)
       }
       if ((html.match(/type="radio"/g) || []).length !== 8 || !html.includes('authority_chooser_completed')) {
@@ -492,6 +496,10 @@ for (const route of expected) {
       if ((html.match(/class="handoff-map"/g) || []).length !== 1 || (html.match(/class="value-checks"/g) || []).length !== 1) {
         throw new Error(`${route.path} is missing its handoff map or value checks`)
       }
+      if ((html.match(/class="worked-example"/g) || []).length !== 1) throw new Error(`${route.path} is missing its worked UK example`)
+      const example = incotermExample(route)
+      const customsValue = `£${example.customsValue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      if (!html.includes(customsValue)) throw new Error(`${route.path} worked example lost its customs value ${customsValue}`)
     }
     if (route.kind === 'burden-report') {
       for (const phrase of ['460', '19–28', '£5–£7', '≈70%', 'At most 1 in 5', '402 qualified accounts']) {
@@ -506,6 +514,49 @@ for (const route of expected) {
       if ((html.match(/class="workflow-path"/g) || []).length !== 1 || !html.includes('FIVE-CHECK HANDOFF')) {
         throw new Error(`${route.path} is missing its five-step workflow`)
       }
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (referenceRoutes.includes(route)) {
+    if (/<script\s[^>]*src=/i.test(html)) throw new Error(`${route.path} must stay self-contained`)
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) throw new Error(`${route.path} must not collect free text or files`)
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    for (const phrase of ['PRIMARY SOURCE REGISTER', 'BOOK THE 20-MINUTE NUMBERS CALL', 'authority_related_clicked', 'reference_filter_used', '/tools/customs-document-pack-check/', 'up to 3× more declarations per clerk', 'class="direct-answer"', 'class="ref-faq"']) {
+      if (!html.includes(phrase)) throw new Error(`${route.path} is missing reference contract: ${phrase}`)
+    }
+    for (const source of route.sources) if (!html.includes(source.url)) throw new Error(`${route.path} is missing source ${source.url}`)
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const types = (schema['@graph'] || []).map((item) => item['@type'])
+    for (const type of ['TechArticle', 'Dataset', 'BreadcrumbList']) if (!types.includes(type)) throw new Error(`${route.path} is missing ${type} structured data`)
+    const countRows = (name) => {
+      const table = html.match(new RegExp(`<table[^>]*data-filter-table="${name}"[^>]*>([\\s\\S]*?)</table>`))?.[1] || ''
+      return (table.match(/<tr\s+id=/g) || []).length
+    }
+    const expectedRows =
+      route.kind === 'reference-procedure'
+        ? [['pc', procedureRecords], ['apc', additionalRecords]]
+        : route.kind === 'reference-document'
+          ? [['doc', documentRecords]]
+          : [['err', errorRecords]]
+    for (const [name, records] of expectedRows) {
+      const rows = countRows(name)
+      if (rows !== records.length) throw new Error(`${route.path} server HTML has ${rows} of ${records.length} ${name} records`)
+      for (const record of records) {
+        if (!record.source_url || !/^\d{4}-\d{2}-\d{2}$/.test(record.checked_on)) throw new Error(`${route.path} record ${record.code} lacks source or checked date`)
+      }
+    }
+    if (route.kind === 'reference-procedure') {
+      for (const url of new Set([...procedureRecords, ...additionalRecords].map((record) => record.source_url))) {
+        if (!html.includes(url)) throw new Error(`${route.path} is missing record source ${url}`)
+      }
+      if (!html.includes('id="cpc-checker"') || !html.includes('reference_combination_checked')) throw new Error(`${route.path} is missing the combination checker`)
+    }
+    for (const asset of referenceAssets(route)) {
+      const published = await readFile(join(root, 'dist', asset.href.slice(1)), 'utf8')
+      if (published !== asset.content) throw new Error(`${route.path} download drifted: ${asset.href}`)
+      if (!html.includes(`href="${asset.href}"`)) throw new Error(`${route.path} does not link its download ${asset.href}`)
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })

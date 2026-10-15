@@ -1,0 +1,105 @@
+/* Customs reference finders and Incoterms worked examples. Builds on authority-library.css tokens. */
+.reference-main .authority-hero h1{max-width:14ch;font-size:clamp(2.6rem,6vw,6rem)}
+.ref-section,.cpc-anatomy,.cpc-checker,.ref-faq,.worked-example,.term-examples,.reference-strip,.term-siblings{padding:clamp(2.2rem,5vw,4.5rem) clamp(1.25rem,6vw,6rem);border-bottom:1px solid var(--authority-rule)}
+.ref-section>header,.cpc-checker>header,.ref-faq>header,.worked-example>header,.term-examples>header,.reference-strip>header{max-width:76ch;margin-bottom:1.8rem}
+.ref-section header>span,.cpc-anatomy figcaption>span,.cpc-checker header>span,.ref-faq header>span,.worked-example header>span,.term-examples header>span,.reference-strip header>span,.term-siblings>span{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;font-weight:600;color:var(--authority-muted)}
+.ref-section h2,.cpc-anatomy h2,.cpc-checker h2,.ref-faq h2,.worked-example h2,.term-examples h2,.reference-strip h2{font-size:clamp(1.8rem,3.6vw,3.6rem);line-height:1.02;letter-spacing:-.03em;margin:.3em 0;text-wrap:balance}
+.ref-section header p,.cpc-checker header p,.worked-example header p,.term-examples header p,.cpc-anatomy>p{line-height:1.6;max-width:72ch}
+.ref-section a,.worked-example a,.term-examples a{color:var(--authority-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+.table-scroll{max-width:100%;overflow-x:auto;border:1px solid var(--authority-rule);background:var(--authority-field)}
+.table-scroll:focus{outline:3px solid var(--authority-amber);outline-offset:2px}
+.ref-table,.worked-example table,.term-examples table{width:100%;border-collapse:collapse;font-size:.95rem;line-height:1.45}
+.ref-table caption,.worked-example caption,.term-examples caption{text-align:left;padding:.75rem 1rem;font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em;border-bottom:1px solid var(--authority-rule);color:var(--authority-muted)}
+.ref-table th,.ref-table td,.worked-example th,.worked-example td,.term-examples th,.term-examples td{padding:.7rem 1rem;border-bottom:1px solid rgba(23,51,61,.18);vertical-align:top;text-align:left;overflow-wrap:anywhere}
+.ref-table thead th,.worked-example thead th,.term-examples thead th{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em;background:var(--authority-paper);position:sticky;top:0}
+.ref-table tbody th code,.ref-table code{font-family:"IBM Plex Mono",monospace;font-weight:700;white-space:nowrap}
+.ref-table small{display:block;margin-top:.35rem;color:var(--authority-muted);font-size:.82rem}
+.ref-table tr:target{background:#fff3df;outline:2px solid var(--authority-amber)}
+.ref-table-wide td:nth-child(3){min-width:24ch}
+.ref-filter{display:flex;flex-wrap:wrap;gap:.75rem 1rem;align-items:flex-end;margin-bottom:1rem}
+.ref-filter label{display:grid;gap:.3rem;flex:1 1 180px;min-width:0}
+.ref-filter label>span,.ref-select>span{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em}
+.ref-filter input,.ref-filter select,.ref-select select{width:100%;min-height:44px;border:1px solid var(--authority-rule);background:var(--authority-field);color:var(--authority-ink);font:inherit;padding:.5rem .7rem;border-radius:0}
+.ref-filter output{font-family:"IBM Plex Mono",monospace;font-size:.8rem;flex:1 1 100%}
+.cpc-anatomy ol{list-style:none;padding:0;margin:0 0 1.2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border:1px solid var(--authority-rule);background:var(--authority-field)}
+.cpc-anatomy li{padding:1.3rem;border-right:1px solid var(--authority-rule);display:grid;gap:.35rem}
+.cpc-anatomy li:last-child{border-right:0}
+.cpc-anatomy li b{font-family:"IBM Plex Mono",monospace;font-size:clamp(2rem,4vw,3.2rem);color:var(--authority-green);line-height:1;overflow-wrap:anywhere}
+.cpc-anatomy li em{font-style:normal;color:var(--authority-muted);font-size:.9rem}
+.cpc-checker form{display:grid;gap:1rem;border:1px solid var(--authority-rule);background:var(--authority-field);padding:1.25rem}
+.cpc-checker fieldset{border:0;padding:0;margin:0;display:flex;gap:1.5rem;flex-wrap:wrap}
+.cpc-checker legend{font-family:"IBM Plex Mono",monospace;font-weight:700;margin-bottom:.4rem}
+.cpc-checker fieldset label{display:flex;gap:.5rem;align-items:center;min-height:44px}
+.cpc-checker input[type=radio]{width:20px;height:20px;accent-color:var(--authority-green)}
+.ref-select{display:grid;gap:.35rem;min-width:0}
+.cpc-checker .button{justify-self:start}
+.cpc-result{margin-top:0;padding:1.4rem;border:1px solid var(--authority-rule);border-top:0;background:var(--authority-ink);color:var(--authority-paper)}
+.cpc-result strong{font-size:1.35rem;display:block}
+.cpc-result[data-valid=no]{background:#5b2a12}
+.ref-examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:1rem}
+.ref-examples article{border:1px solid var(--authority-rule);background:var(--authority-field);padding:1.3rem}
+.ref-examples h3{margin:0 0 .8rem;font-size:1.2rem;line-height:1.25}
+.ref-examples dl,.example-facts,.example-totals{margin:0;display:grid;gap:.6rem}
+.ref-examples dt,.example-facts dt,.example-totals dt{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.05em;color:var(--authority-muted)}
+.ref-examples dd,.example-facts dd{margin:.15rem 0 0;line-height:1.5}
+.example-facts{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));margin-bottom:1.2rem}
+.example-facts>div{border-left:3px solid var(--authority-amber);padding-left:.8rem}
+.example-totals{margin-top:1.2rem;border:1px solid var(--authority-rule);background:var(--authority-field)}
+.example-totals>div{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 1rem;border-bottom:1px solid rgba(23,51,61,.18)}
+.example-totals>div:first-child dd{font-weight:800;font-size:1.25rem}
+.example-totals dd{margin:0;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+.worked-example tr.treat-value td:last-child{color:var(--authority-green);font-weight:600}
+.worked-example tr.treat-uk td:last-child,.worked-example tr.treat-out td:last-child{color:#8a4b12}
+.example-lesson{margin-top:1.2rem;line-height:1.6;max-width:76ch}
+.term-group{font-family:"IBM Plex Mono",monospace;font-size:.8rem;letter-spacing:.06em;margin:1.6rem 0 .6rem}
+.ref-faq details{border-top:1px solid var(--authority-rule);padding:1rem 0}
+.ref-faq details:last-child{border-bottom:1px solid var(--authority-rule)}
+.ref-faq summary{cursor:pointer;font-weight:700;font-size:1.1rem;min-height:44px;display:flex;align-items:center}
+.ref-faq details p{line-height:1.6;max-width:72ch}
+.ref-note{line-height:1.6;max-width:76ch}
+.error-sample{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--authority-ink);color:var(--authority-paper);padding:1rem;font-size:.85rem;margin-top:1rem}
+.reference-strip>div{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));border:1px solid var(--authority-rule);background:var(--authority-field)}
+.reference-strip>div a{display:grid;gap:.3rem;padding:1.2rem;color:var(--authority-ink);text-decoration:none;border-right:1px solid var(--authority-rule)}
+.reference-strip>div a:last-child{border-right:0}
+.reference-strip>div a span{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--authority-green)}
+.reference-strip>div a strong{font-size:1.15rem}
+.reference-strip>div a small{color:var(--authority-muted);line-height:1.45}
+.reference-strip>div a:hover strong{text-decoration:underline}
+.reference-hub-link{display:inline-block;margin-top:1rem;font-family:"IBM Plex Mono",monospace;color:var(--authority-ink)}
+.term-siblings>div{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.term-siblings a{border:1px solid var(--authority-rule);padding:.55rem .8rem;min-height:44px;display:inline-flex;align-items:center;gap:.4rem;color:var(--authority-ink);text-decoration:none;background:var(--authority-field)}
+.term-siblings a b{font-family:"IBM Plex Mono",monospace}
+.ref-bridge a+a{margin-left:1.5rem}
+@media(max-width:760px){
+  .reference-main .authority-hero h1{font-size:clamp(2.3rem,11vw,3.6rem)}
+  .cpc-anatomy li{border-right:0;border-bottom:1px solid var(--authority-rule)}
+  .cpc-anatomy li:last-child{border-bottom:0}
+  .reference-strip>div a{border-right:0;border-bottom:1px solid var(--authority-rule)}
+  .reference-strip>div a:last-child{border-bottom:0}
+  .ref-bridge a+a{margin-left:0}
+  .ref-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .ref-table,.ref-table tbody,.ref-table tr,.ref-table th,.ref-table td{display:block;width:100%}
+  .ref-table tr{border-bottom:2px solid var(--authority-rule);padding:.4rem 0}
+  .ref-table tr[hidden]{display:none}
+  .ref-table th,.ref-table td{border-bottom:0;padding:.3rem 1rem}
+  .ref-table-wide td:nth-child(3){min-width:0}
+  .worked-example thead,.term-examples thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .worked-example table,.worked-example tbody,.worked-example tr,.worked-example th,.worked-example td,.term-examples table,.term-examples tbody,.term-examples tr,.term-examples th,.term-examples td{display:block;width:100%}
+  .worked-example tr,.term-examples tr{border-bottom:2px solid var(--authority-rule);padding:.4rem 0}
+  .worked-example th,.worked-example td,.term-examples th,.term-examples td{border-bottom:0;padding:.25rem 1rem}
+  .worked-example td[data-label]::before,.term-examples td[data-label]::before{content:attr(data-label) " · ";font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--authority-muted)}
+  .example-totals>div{flex-wrap:wrap}
+  .example-totals dd{white-space:normal}
+  .worked-example caption,.term-examples caption,.ref-table caption{display:block;width:100%}
+  [data-filter-table] td::before{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--authority-muted)}
+  [data-filter-table=pc] td:nth-child(4)::before{content:"Valid DE 1/11 pairs · "}
+  [data-filter-table=apc] td:nth-child(5)::before{content:"Pairs with DE 1/10 · "}
+  [data-filter-table=doc] td:nth-child(4)::before{content:"Status codes · "}
+  [data-filter-table=doc] td:nth-child(5)::before{content:"Document ID / reason · "}
+  [data-filter-table=err] td:nth-child(3)::before{content:"In plain English · ";display:block}
+  [data-filter-table=err] td:nth-child(4)::before{content:"What to check · ";display:block}
+  [data-filter-table=err] td:nth-child(5)::before{content:"Open HMRC workaround · "}
+}
+@media print{.ref-filter,.cpc-checker,.reference-strip{display:none!important}.ref-table tr[hidden]{display:table-row!important}}
+.ref-table .pairs{font-family:"IBM Plex Mono",monospace;font-size:.8rem;word-spacing:.2em}
+.ref-select[hidden]{display:none}
