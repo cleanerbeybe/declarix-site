@@ -99,6 +99,30 @@ export function breadcrumbHtml(path, leafHtml) {
   return ['<a href="/">HOME</a>', ...links, leafHtml].join(' → ')
 }
 
+// Shared Open Graph + Twitter card head block for hand-built pages.
+export function socialHead(site, { title, description, path, type = 'website' }) {
+  const canonical = `${site.origin}${path}`
+  return [
+    `<meta property="og:type" content="${type}" />`,
+    '<meta property="og:site_name" content="Declarix" />',
+    `<meta property="og:title" content="${escapeHtml(title)}" />`,
+    `<meta property="og:description" content="${escapeHtml(description)}" />`,
+    `<meta property="og:url" content="${canonical}" />`,
+    `<meta property="og:image" content="${site.origin}/og.jpg" />`,
+    '<meta property="og:image:width" content="1200" />',
+    '<meta property="og:image:height" content="630" />',
+    '<meta name="twitter:card" content="summary_large_image" />',
+    `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
+    `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
+    `<meta name="twitter:image" content="${site.origin}/og.jpg" />`,
+  ].join('')
+}
+
+export function jsonLdScript(graph) {
+  const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replaceAll('<', '\\u003c')
+  return `<script type="application/ld+json">${json}</script>`
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll('&', '&amp;')

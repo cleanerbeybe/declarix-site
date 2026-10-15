@@ -518,8 +518,8 @@ for (const route of expected) {
     const graphs = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]))
     const nodes = graphs.flatMap((schema) => schema['@graph'] || [schema])
     const trail = nodes.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
-    if (graphs.length && trail.length < 2) throw new Error(`${route.path} is missing its BreadcrumbList`)
-    if (trail.length && trail.at(-1).item !== `${site.origin}${route.path}`) throw new Error(`${route.path} breadcrumb does not end at the page`)
+    if (trail.length < 2) throw new Error(`${route.path} is missing its BreadcrumbList`)
+    if (trail.at(-1).item !== `${site.origin}${route.path}`) throw new Error(`${route.path} breadcrumb does not end at the page`)
     trail.forEach((item, index) => {
       if (item.position !== index + 1) throw new Error(`${route.path} breadcrumb positions are not sequential`)
       const itemPath = new URL(item.item).pathname
@@ -532,6 +532,16 @@ for (const route of expected) {
       }
     }
   }
+  if (route !== expected[2]) {
+    for (const tag of ['og:image', 'og:title', 'og:description', 'og:url']) {
+      if (!html.includes(`property="${tag}"`)) throw new Error(`${route.path} is missing ${tag}`)
+    }
+    if (!html.includes('name="twitter:card" content="summary_large_image"')) throw new Error(`${route.path} is missing its Twitter card`)
+    if (title.length > 70) throw new Error(`${route.path} title is ${title.length} characters`)
+  }
+  if (route === roiRoute && !html.includes('"@type":"WebApplication"')) throw new Error(`${route.path} is missing WebApplication structured data`)
+  if (route === economicsRoute && !html.includes('"@type":"WebPage"')) throw new Error(`${route.path} is missing WebPage structured data`)
+  if (route === economicsRoute && title.length > 60) throw new Error(`${route.path} title exceeds 60 characters`)
   if (sectionHubs.includes(route)) {
     const children = expected.filter((candidate) => candidate.path !== route.path && candidate.path.startsWith(route.path))
     if (children.length < 2) throw new Error(`${route.path} hub has fewer than two children`)

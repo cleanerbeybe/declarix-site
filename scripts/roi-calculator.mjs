@@ -1,4 +1,5 @@
 import { packages, priceForVolume } from './pricing.mjs'
+import { breadcrumbHtml, breadcrumbList, jsonLdScript, socialHead } from './site-graph.mjs'
 
 export const roiRoute = {
   path: '/roi-calculator/',
@@ -30,9 +31,34 @@ export function calculateRoi(input) {
   return { hours, extraPacks, annualCapturedRevenue, packageFit }
 }
 
+function roiJsonLd(site) {
+  return [
+    { '@type': 'Organization', '@id': `${site.origin}/#organization`, name: site.company, url: `${site.origin}/` },
+    { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: 'Declarix', url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` } },
+    {
+      '@type': 'WebApplication',
+      '@id': `${site.origin}${roiRoute.path}#application`,
+      name: 'Customs desk capacity and ROI calculator',
+      url: `${site.origin}${roiRoute.path}`,
+      description: roiRoute.description,
+      dateModified: roiRoute.reviewedOn,
+      applicationCategory: 'BusinessApplication',
+      browserRequirements: 'Requires a modern web browser with JavaScript enabled.',
+      operatingSystem: 'Any',
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'GBP' },
+      image: `${site.origin}/og.jpg`,
+      isPartOf: { '@id': `${site.origin}/#website` },
+      author: { '@id': `${site.origin}/#organization` },
+      publisher: { '@id': `${site.origin}/#organization` },
+    },
+    breadcrumbList(site, roiRoute.path),
+  ]
+}
+
 export function renderRoiCalculator(site, { navHtml, webmasterHtml = '' }) {
   const canonical = `${site.origin}${roiRoute.path}`
-  return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><meta name="description" content="${roiRoute.description}"><title>${roiRoute.title}</title><link rel="canonical" href="${canonical}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/static-routes.css"><link rel="stylesheet" href="/roi-calculator.css">${webmasterHtml}<meta property="og:title" content="${roiRoute.title}"><meta property="og:description" content="${roiRoute.description}"><meta property="og:url" content="${canonical}"></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>CORE OUTCOME</span><strong>UP TO 3×</strong></div><a class="masthead-cta" href="/?src=roi_calculator#book">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs"><a href="/">HOME</a> → <a href="/pricing/">PRICING</a> → ROI CALCULATOR</div><main><header class="hero"><div class="hero-copy"><p class="eyebrow">FREE CAPACITY CALCULATOR</p><h1>${roiRoute.h1}</h1><p>Up to 3x more declarations per clerk. Put your own volume and time into the model, then see the package that fits.</p></div><aside class="hero-ledger"><span class="route-ref">YOUR DESK · YOUR NUMBERS</span><div class="stamp">MORE<br>CAPACITY</div></aside></header>
+  return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><meta name="description" content="${roiRoute.description}"><title>${roiRoute.title}</title><link rel="canonical" href="${canonical}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/static-routes.css"><link rel="stylesheet" href="/roi-calculator.css">${webmasterHtml}${socialHead(site, { title: roiRoute.title, description: roiRoute.description, path: roiRoute.path })}${jsonLdScript(roiJsonLd(site))}</head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>CORE OUTCOME</span><strong>UP TO 3×</strong></div><a class="masthead-cta" href="/?src=roi_calculator#book">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs">${breadcrumbHtml(roiRoute.path, 'ROI CALCULATOR')}</div><main><header class="hero"><div class="hero-copy"><p class="eyebrow">FREE CAPACITY CALCULATOR</p><h1>${roiRoute.h1}</h1><p>Up to 3x more declarations per clerk. Put your own volume and time into the model, then see the package that fits.</p></div><aside class="hero-ledger"><span class="route-ref">YOUR DESK · YOUR NUMBERS</span><div class="stamp">MORE<br>CAPACITY</div></aside></header>
   <div class="roi-layout"><form id="roi-form" novalidate><h2>Start with capacity.</h2><p>Enter your monthly declaration packs and the clerk minutes used per declaration.</p>
     <label for="volume">1 · Declaration packs per month</label><input id="volume" name="volume" type="number" min="1" max="1000000" step="1" required inputmode="numeric" placeholder="e.g. 1000">
     <label for="currentMinutes">2 · Current clerk time per declaration (minutes)</label><input id="currentMinutes" name="currentMinutes" type="number" min="0.01" max="1440" step="any" required inputmode="decimal" placeholder="e.g. 24">
