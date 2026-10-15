@@ -7,6 +7,7 @@ import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
+import { agentFactsRoute } from './agent-facts.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
@@ -85,6 +86,7 @@ const expected = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  agentFactsRoute,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -517,6 +519,11 @@ for (const route of expected) {
     const url = new URL(href, site.origin)
     if (url.origin !== site.origin) continue
     if (url.pathname.startsWith('/downloads/')) continue
+    // Agent-layer files (Markdown twins, JSON, feeds, llms.txt) are files, not routes; they must exist.
+    if (/\.(?:md|json|xml|txt)$/.test(url.pathname)) {
+      await access(join(root, 'dist', url.pathname.slice(1)))
+      continue
+    }
     if (!expectedPaths.has(url.pathname)) throw new Error(`${route.path} links to unknown route ${url.pathname}`)
     inbound.set(url.pathname, inbound.get(url.pathname) + 1)
   }
@@ -681,5 +688,7 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
+
+await import('./verify-agent-layer.mjs')
 
 console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and owner-approved offer manifest ${site.claimsVersion}`)
