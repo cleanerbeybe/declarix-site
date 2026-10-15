@@ -459,6 +459,7 @@ function EntryGrid({ selected, setSelected }: { selected: number; setSelected: (
             className={`entry-grid-row ${index === selected ? 'is-selected' : ''} ${
               index === 2 || row.row.includes('COMMODITY') ? 'flag-row' : ''
             }`}
+            data-entry-row={index}
             key={`${row.row}-${row.value}`}
             type="button"
             onClick={() => {
@@ -477,7 +478,123 @@ function EntryGrid({ selected, setSelected }: { selected: number; setSelected: (
 
 function AssemblyScene({ source }: { source: string }) {
   const [selected, setSelected] = useState(2)
+  const stageRef = useRef<HTMLDivElement>(null)
   const row = packRows[selected]
+
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage) return
+
+    const svg = stage.querySelector<SVGSVGElement>('.tether-layer')
+    const packSide = stage.querySelector<HTMLElement>('.pack-side')
+    const rows = Array.from(stage.querySelectorAll<HTMLElement>('.entry-grid-row')).slice(
+      0,
+      flights.length,
+    )
+    const papers = Array.from(stage.querySelectorAll<HTMLElement>('.paper-doc'))
+    const paths = Array.from(stage.querySelectorAll<SVGPathElement>('.tether'))
+    const chips = Array.from(stage.querySelectorAll<HTMLElement>('.flight-chip'))
+    if (!svg || !packSide || rows.length !== flights.length || paths.length !== flights.length) return
+
+    let frame = 0
+    let trackingFrame = 0
+    let tracking = false
+    let visible = false
+    const wideViewport = window.matchMedia('(min-width: 981px)')
+    const sourceDocumentIndexes = flights.map((flight) => {
+      const match = flight.source.match(/D(\d)/)
+      return Math.max(0, Math.min(papers.length - 1, Number(match?.[1] || 1) - 1))
+    })
+    const sourceRatios = sourceDocumentIndexes.map((paperIndex, index) => {
+      const siblingCount = sourceDocumentIndexes.filter((candidate) => candidate === paperIndex).length
+      const siblingPosition = sourceDocumentIndexes
+        .slice(0, index + 1)
+        .filter((candidate) => candidate === paperIndex).length
+      return siblingPosition / (siblingCount + 1)
+    })
+
+    const measure = () => {
+      frame = 0
+      if (!wideViewport.matches) return
+
+      const stageRect = stage.getBoundingClientRect()
+      const packRect = packSide.getBoundingClientRect()
+      if (!stageRect.width || !stageRect.height) return
+
+      svg.setAttribute('viewBox', `0 0 ${stageRect.width} ${stageRect.height}`)
+
+      paths.forEach((path, index) => {
+        const rowRect = rows[index]?.getBoundingClientRect()
+        const paper = papers[sourceDocumentIndexes[index]]
+        const paperRect = paper?.getBoundingClientRect()
+        if (!rowRect || !paperRect) return
+
+        const endX = rowRect.left - stageRect.left + 1
+        const endY = rowRect.top - stageRect.top + rowRect.height / 2
+        const startX = Math.min(paperRect.right - stageRect.left - 12, endX - 136)
+        const startY = paperRect.top - stageRect.top + paperRect.height * sourceRatios[index]
+        const busX = Math.min(
+          endX - 22,
+          Math.max(startX + 24, endX - 112 + index * 10),
+        )
+
+        path.setAttribute(
+          'd',
+          `M ${startX.toFixed(1)} ${startY.toFixed(1)} H ${busX.toFixed(1)} V ${endY.toFixed(1)} H ${endX.toFixed(1)}`,
+        )
+        const pathLength = Math.ceil(path.getTotalLength() + 2)
+        path.style.setProperty('--tether-length', String(pathLength))
+
+        const chip = chips[index]
+        if (chip) {
+          const chipHeight = chip.getBoundingClientRect().height
+          chip.style.top = `${rowRect.top + rowRect.height / 2 - packRect.top - chipHeight / 2}px`
+        }
+      })
+    }
+
+    const scheduleMeasure = () => {
+      if (frame) window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(measure)
+    }
+    const trackGeometry = () => {
+      trackingFrame = 0
+      if (!tracking) return
+      measure()
+      trackingFrame = window.requestAnimationFrame(trackGeometry)
+    }
+    const updateTracking = () => {
+      tracking = visible && wideViewport.matches
+      if (tracking && !trackingFrame) trackingFrame = window.requestAnimationFrame(trackGeometry)
+      if (!tracking && trackingFrame) {
+        window.cancelAnimationFrame(trackingFrame)
+        trackingFrame = 0
+      }
+    }
+    const observer = new ResizeObserver(scheduleMeasure)
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      visible = entries.some((entry) => entry.isIntersecting)
+      updateTracking()
+    })
+    observer.observe(stage)
+    observer.observe(packSide)
+    rows.forEach((entryRow) => observer.observe(entryRow))
+    papers.forEach((paper) => observer.observe(paper))
+    visibilityObserver.observe(stage)
+    wideViewport.addEventListener('change', updateTracking)
+    window.addEventListener('resize', scheduleMeasure)
+    void document.fonts?.ready.then(scheduleMeasure)
+    scheduleMeasure()
+
+    return () => {
+      observer.disconnect()
+      visibilityObserver.disconnect()
+      wideViewport.removeEventListener('change', updateTracking)
+      window.removeEventListener('resize', scheduleMeasure)
+      if (frame) window.cancelAnimationFrame(frame)
+      if (trackingFrame) window.cancelAnimationFrame(trackingFrame)
+    }
+  }, [])
 
   return (
     <section className="box assembly-box" id="job" aria-labelledby="job-title">
@@ -494,7 +611,7 @@ function AssemblyScene({ source }: { source: string }) {
         className="assembly-pin"
         aria-label="A messy customs job assembles into a CDS-ready entry pack with evidence pinned to every field."
       >
-        <div className="assembly-stage">
+        <div className="assembly-stage" ref={stageRef}>
           <div className="mobile-story-steps" aria-label="Mobile assembly sequence">
             {mobileMovements.map((movement) => (
               <article className="mobile-story-step" key={movement.tag}>
@@ -534,28 +651,23 @@ function AssemblyScene({ source }: { source: string }) {
               <PaperDocument doc={doc} index={index} key={doc.tag} />
             ))}
           </div>
-          <svg className="tether-layer" aria-hidden="true" viewBox="0 0 1000 620" preserveAspectRatio="none">
+          <svg className="tether-layer" aria-hidden="true">
             {/* v2.5 B4.1 — orthogonal routed connectors: horizontal → elbow → vertical → grid row.
-                Routed lines read as engineering; each flight gets its own bus lane so nothing crosses. */}
-            {flights.map((flight, index) => {
-              const startX = 245 + index * 9
-              const startY = 120 + index * 42
-              const busX = 640 - index * 12
-              const endY = 118 + index * 38
-              return (
-                <path
-                  className={`tether tether-${index}`}
-                  d={`M ${startX} ${startY} H ${busX} V ${endY} H 700`}
-                  key={flight.row}
-                />
-              )
-            })}
+                Runtime geometry keeps every endpoint attached to its responsive grid row. */}
+            {flights.map((flight, index) => (
+              <path
+                className={`tether tether-${index}`}
+                data-tether-index={index}
+                d="M 0 0"
+                key={flight.row}
+              />
+            ))}
           </svg>
           <div className="pack-side">
             <EntryGrid selected={selected} setSelected={setSelected} />
             <div className="flight-deck" aria-hidden="true">
               {flights.map((flight, index) => (
-                <span className={`flight-chip flight-${index}`} key={flight.row}>
+                <span className={`flight-chip flight-${index}`} data-flight-index={index} key={flight.row}>
                   {flight.value}
                   {flight.note ? <small>{flight.note}</small> : null}
                 </span>
@@ -1547,7 +1659,7 @@ function HomePage() {
         flights.forEach((_, index) => {
           const slot = 0.2 + index * 0.042
           timeline
-            .to(`.flight-${index}`, { autoAlpha: 1, x: 32 + index * 2, y: 16 + index * 3, duration: 0.034, ease: 'power3.out' }, slot)
+            .to(`.flight-${index}`, { autoAlpha: 1, x: 32 + index * 2, duration: 0.034, ease: 'power3.out' }, slot)
             .to(`.tether-${index}`, { strokeDashoffset: 0, duration: 0.03 }, slot + 0.006)
             .to(`.entry-grid-row:nth-child(${index + 1})`, { borderBottomColor: 'rgb(22 49 61 / 1)', duration: 0.008, yoyo: true, repeat: 1 }, slot + 0.036)
         })
@@ -1557,6 +1669,7 @@ function HomePage() {
           .to('.evidence-copy', { autoAlpha: 1, y: -10, duration: 0.1 }, 0.66)
           .to('.ghost-2', { borderColor: 'var(--cleared)', borderStyle: 'solid', duration: 0.04 }, 0.66)
           .to('.entry-grid-row:nth-child(3), .entry-grid-row:nth-child(4)', { scale: 1.015, duration: 0.08 }, 0.7)
+          .to('.tether, .flight-chip', { autoAlpha: 0, duration: 0.05 }, 0.77)
           .to('.handover-card', { autoAlpha: 1, x: 0, duration: 0.08 }, 0.82)
           .to('.entry-grid', { scale: 0.9, x: 16, duration: 0.1 }, 0.82)
           .to('.handover-caption', { autoAlpha: 1, y: 0, duration: 0.08 }, 0.88)
@@ -1589,14 +1702,29 @@ function HomePage() {
       )
     })
 
-    // v3.0 §3 — every anchor ride takes 900ms on --ease-inout, through Lenis when it runs
-    const scrollToTarget = (target: HTMLElement) => {
+    let userScrolled = false
+    let anchorRideTimer = 0
+    let anchorTargetTimer = 0
+    let activeAnchorTarget: HTMLElement | null = null
+    const scrollToTarget = (target: HTMLElement, userInitiated = false) => {
+      if (userInitiated) {
+        document.body.classList.add('is-anchor-riding')
+        window.clearTimeout(anchorRideTimer)
+        anchorRideTimer = window.setTimeout(
+          () => document.body.classList.remove('is-anchor-riding'),
+          700,
+        )
+      }
       if (reduceMotion) {
         target.scrollIntoView({ behavior: 'auto', block: 'start' })
         return
       }
       if (lenis) {
-        lenis.scrollTo(target, { offset: -120, duration: 0.9, easing: easeInOutCubic })
+        lenis.scrollTo(target, {
+          offset: -120,
+          duration: userInitiated ? 0.5 : 0.9,
+          easing: easeInOutCubic,
+        })
       } else {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
@@ -1611,7 +1739,15 @@ function HomePage() {
       if (!target) return
       event.preventDefault()
       history.pushState(null, '', hash)
-      scrollToTarget(target)
+      // A deliberate CTA ride owns the target. Do not let cold-load recovery
+      // timers walk it back through five Paper World scene wipes.
+      userScrolled = true
+      activeAnchorTarget = target
+      window.clearTimeout(anchorTargetTimer)
+      anchorTargetTimer = window.setTimeout(() => {
+        activeAnchorTarget = null
+      }, 6000)
+      scrollToTarget(target, true)
     }
     document.addEventListener('click', onAnchorClick)
 
@@ -1619,9 +1755,10 @@ function HomePage() {
     // pins AFTER the async frame manifest loads — that grows the page ~6000px and
     // moves every target below the world. Re-align as layout settles and on each
     // ScrollTrigger refresh, but never fight a user who has already scrolled.
-    let userScrolled = false
     const markScrolled = () => {
       userScrolled = true
+      activeAnchorTarget = null
+      window.clearTimeout(anchorTargetTimer)
     }
     window.addEventListener('wheel', markScrolled, { passive: true })
     window.addEventListener('touchstart', markScrolled, { passive: true })
@@ -1638,7 +1775,26 @@ function HomePage() {
     const hashTimers = [60, 500, 1200, 2200, 3400, 5000].map((delay) =>
       window.setTimeout(scrollToHash, delay),
     )
-    ScrollTrigger.addEventListener('refresh', scrollToHash)
+    const alignOnRefresh = () => {
+      if (!activeAnchorTarget) {
+        scrollToHash()
+        return
+      }
+      // Paper World's late pins can move BOX 2 after a very fast hero click.
+      // Correct that layout shift once without replaying the smooth ride.
+      document.body.classList.add('is-anchor-riding')
+      const rect = activeAnchorTarget.getBoundingClientRect()
+      window.scrollTo({
+        top: window.scrollY + rect.top - 120,
+        behavior: 'instant',
+      })
+      window.clearTimeout(anchorRideTimer)
+      anchorRideTimer = window.setTimeout(
+        () => document.body.classList.remove('is-anchor-riding'),
+        350,
+      )
+    }
+    ScrollTrigger.addEventListener('refresh', alignOnRefresh)
     const onHashChange = () => {
       userScrolled = false
       scrollToHash()
@@ -1652,8 +1808,11 @@ function HomePage() {
       window.removeEventListener('wheel', markScrolled)
       window.removeEventListener('touchstart', markScrolled)
       window.removeEventListener('keydown', markScrolled)
-      ScrollTrigger.removeEventListener('refresh', scrollToHash)
+      ScrollTrigger.removeEventListener('refresh', alignOnRefresh)
       hashTimers.forEach((timer) => window.clearTimeout(timer))
+      window.clearTimeout(anchorRideTimer)
+      window.clearTimeout(anchorTargetTimer)
+      document.body.classList.remove('is-anchor-riding')
       ctx.revert()
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }
