@@ -10,6 +10,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
     "submit:indexnow": "node scripts/submit-indexnow.mjs",
+    "radar:check": "node scripts/radar-check-sources.mjs",
     "test:economics": "node --test tests/preparation-economics.test.mjs",
     "test:roi": "node --test tests/roi-calculator.test.mjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs"
