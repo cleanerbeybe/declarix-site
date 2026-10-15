@@ -48,6 +48,11 @@ const escapeHtml = (value) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
 
+// lastmod / dateModified = the latest of the route's review, publication and content-change dates.
+function lastmodFor(route) {
+  return [route.reviewedOn, route.publishedOn, route.modifiedOn].filter(Boolean).sort().at(-1) || site.reviewedOn
+}
+
 function webmasterTags() {
   return [
     ['google-site-verification', process.env.VITE_GOOGLE_SITE_VERIFICATION],
@@ -212,7 +217,7 @@ function jsonLd(route) {
         headline: route.h1,
         description: route.description,
         datePublished: route.publishedOn,
-        dateModified: route.reviewedOn || site.reviewedOn,
+        dateModified: lastmodFor(route),
         isPartOf: { '@id': `${site.origin}/#website` },
         about: { '@id': `${site.origin}/#organization` },
         author: { '@id': `${site.origin}/#organization` },
@@ -670,10 +675,11 @@ const roiTarget = join(dist, roiRoute.path.slice(1), 'index.html')
 await mkdir(dirname(roiTarget), { recursive: true })
 await writeFile(roiTarget, renderRoiCalculator(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
 
+const homeLastmod = [site.reviewedOn, site.homeModifiedOn].filter(Boolean).sort().at(-1)
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${site.origin}/</loc><lastmod>${site.reviewedOn}</lastmod></url>
-${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${route.reviewedOn || site.reviewedOn}</lastmod></url>`).join('\n')}
+  <url><loc>${site.origin}/</loc><lastmod>${homeLastmod}</lastmod></url>
+${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${lastmodFor(route)}</lastmod></url>`).join('\n')}
 </urlset>
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)

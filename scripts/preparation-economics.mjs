@@ -7,6 +7,7 @@ export const economicsRoute = {
   h1: 'Compare the cost of two preparation workflows.',
   description: 'Compare in-house assisted preparation and outsourced data preparation using your own fees, time and review assumptions. No default savings or provider rates.',
   reviewedOn: '2026-09-15',
+  modifiedOn: '2026-10-15',
 }
 
 export const economicsFields = [

@@ -5,6 +5,8 @@ export const site = {
   contact: 'pack@getdeclarix.com',
   booking: 'https://declarixlimited.zohobookings.eu/#/declarixlimited',
   reviewedOn: '2026-07-17',
+  // Sitemap lastmod for the home page: last content or structured-data change.
+  homeModifiedOn: '2026-10-15',
   claimsVersion: '2.0.0',
 }
 
@@ -129,6 +131,7 @@ export const routes = [
   },
   {
     path: '/supported-scope/',
+    modifiedOn: '2026-10-15',
     ref: 'SCHEDULE 03 · PRODUCT FIT',
     title: 'Supported customs workflows and integrations | Declarix',
     description:
@@ -227,6 +230,7 @@ export const routes = [
   },
   {
     path: '/pricing-policy/',
+    modifiedOn: '2026-09-29',
     ref: 'BUYER SHEET 05 · PRICING RULES',
     title: 'How Declarix pricing works: entries, rework and pilot',
     description:
@@ -274,6 +278,7 @@ export const routes = [
   },
   {
     path: '/how-it-works/',
+    modifiedOn: '2026-10-15',
     ref: 'FORM 06 · OPERATING FLOW',
     title: 'How Declarix builds CDS-ready customs entry packs',
     description:

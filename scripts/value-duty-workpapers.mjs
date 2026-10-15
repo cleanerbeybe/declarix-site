@@ -7,6 +7,7 @@ export const valueDutyWorkpapers = [
     title: 'Customs value, ad valorem duty and VAT calculator | Free UK tool',
     schemaName: 'Customs value, ad valorem duty and VAT planning workpaper',
     reviewedOn: '2026-07-17',
+    modifiedOn: '2026-10-15',
     description:
       'Build a transparent UK customs value, ad valorem import duty, import VAT value, and tax scenario using only the exchange rates and charges you enter.',
     eyebrow: 'FREE CUSTOMS VALUE WORKPAPER · YOUR RATES · NO SIGN-UP',

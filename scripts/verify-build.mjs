@@ -698,6 +698,12 @@ const sitemap = await readFile(join(root, 'dist/sitemap.xml'), 'utf8')
 for (const route of expected) {
   if (!sitemap.includes(`<loc>${site.origin}${route.path}</loc>`)) throw new Error(`Sitemap missing ${route.path}`)
 }
+for (const route of expected) {
+  const lastmod = sitemap.match(new RegExp(`<loc>${site.origin}${route.path}</loc><lastmod>(\\d{4}-\\d{2}-\\d{2})</lastmod>`))?.[1]
+  const floor = [route.reviewedOn, route.publishedOn, route.modifiedOn].filter(Boolean).sort().at(-1)
+  if (!lastmod) throw new Error(`Sitemap is missing a lastmod for ${route.path}`)
+  if (floor && lastmod < floor) throw new Error(`Sitemap lastmod for ${route.path} is older than its own dates`)
+}
 const sitemapLocations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1])
 if (sitemapLocations.length !== expected.length || new Set(sitemapLocations).size !== expected.length) {
   throw new Error('Sitemap route count or uniqueness mismatch')
