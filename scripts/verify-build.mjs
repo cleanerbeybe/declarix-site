@@ -754,6 +754,16 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
   if (!content.includes('Declarix does not submit to HMRC')) throw new Error(`${filename} is missing the filing boundary`)
 }
 
+{
+  const llmsFull = await readFile(join(root, 'dist/llms-full.txt'), 'utf8')
+  const llmsIndex = await readFile(join(root, 'dist/llms.txt'), 'utf8')
+  for (const phrase of ['# Full text of the main pages', 'Desk', '£500', 'Up to 3', 'CDS-ready', 'Sequoia']) {
+    if (!llmsFull.includes(phrase)) throw new Error(`llms-full.txt is missing full-text content: ${phrase}`)
+  }
+  if (llmsFull.length < llmsIndex.length * 3) throw new Error('llms-full.txt is not materially fuller than llms.txt')
+  if (/<[a-z][^>]*>/i.test(llmsFull.split('# Full text of the main pages')[1])) throw new Error('llms-full.txt full text contains HTML tags')
+}
+
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
 

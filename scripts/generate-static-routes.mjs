@@ -11,6 +11,7 @@ import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHu
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
+import { llmsFullText } from './llms-full.mjs'
 import { renderPricingTable } from './pricing.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
@@ -709,18 +710,27 @@ ${llmsRoutes}
 - Product and workflow enquiries: ${site.contact}
 - Sources and corrections: ${site.origin}/editorial-policy/
 `
-const llmsFull = `${llms}
-## Publication record
-- Owner-approved offer version: ${site.claimsVersion}
-- Last editorial review: ${site.reviewedOn}
-
-## Citation guidance
-Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and published packages.
-`
 await writeFile(join(dist, 'llms.txt'), llms)
-await writeFile(join(dist, 'llms-full.txt'), llmsFull)
 
 await writeFile(join(dist, '404.html'), renderNotFound())
 await mkdir(join(dist, 'booking-confirmed'), { recursive: true })
 await writeFile(join(dist, 'booking-confirmed', 'index.html'), renderBookingConfirmed())
 await writeFile(join(dist, '.nojekyll'), '')
+
+// llms-full.txt last: it reads the pages written above.
+const lastEditorialReview = [homeLastmod, ...indexableRoutes.map(lastmodFor)].sort().at(-1)
+const llmsFull = `${llms}
+## Publication record
+- Owner-approved offer version: ${site.claimsVersion}
+- Last editorial review: ${lastEditorialReview}
+
+## Citation guidance
+Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and published packages.
+
+# Full text of the main pages
+
+The sections below are generated from the published HTML of each page at build time.
+
+${await llmsFullText(dist, site, new Map(indexableRoutes.map((route) => [route.path, route])))}
+`
+await writeFile(join(dist, 'llms-full.txt'), llmsFull)
