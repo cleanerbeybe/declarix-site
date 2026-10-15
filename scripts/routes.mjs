@@ -644,8 +644,8 @@ export const routes = [
       'The consultation has closed. The proposals are not a current registration duty. Check the official consultation page for the government response and legislative next steps.',
     schemaType: 'Article',
     publishedOn: '2026-07-16',
-    reviewedOn: '2026-09-25',
-    expiresOn: '2026-11-30',
+    reviewedOn: '2026-10-15',
+    expiresOn: '2027-02-28',
     sections: [
       {
         label: '01 · DIRECT ANSWER',
@@ -662,6 +662,7 @@ export const routes = [
           ['Consultation status', 'Closed; government response and legislative next steps to follow'],
           ['Published', '23 June 2026'],
           ['Consultation closed', 'Monday 21 September 2026'],
+          ['Government response', 'Not yet published on GOV.UK (checked 15 October 2026)'],
           ['Proposed coverage', 'UK-wide; imports and exports; customs activity across declaration types'],
           ['Proposed focus', 'Intermediaries interacting with HMRC for traders'],
           ['Proposed exclusions', 'Advice-only work, specified carrier activity, and trader self-representation'],
@@ -698,7 +699,7 @@ export const routes = [
         label: '06 · EXPIRY RULE',
         title: 'This page changes when the source changes.',
         paragraphs: [
-          'Declarix will review this resource when the government publishes its response, announces legislation, or sets an implementation timetable. The next scheduled review is 30 October 2026; check the official consultation page for a newer announcement in the meantime.',
+          'Declarix will review this resource when the government publishes its response, announces legislation, or sets an implementation timetable. This edition was checked against GOV.UK on 15 October 2026, when the consultation page still showed no government response. The next scheduled review is 15 January 2027; check the official consultation page for a newer announcement in the meantime.',
         ],
       },
     ],
@@ -742,13 +743,13 @@ export const routes = [
         title: 'Introduction of Mandatory Registration for Customs Intermediaries',
         publisher: 'HM Revenue & Customs',
         url: 'https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration',
-        checked: '2026-07-17',
+        checked: '2026-10-15',
       },
       {
         title: 'Standard for Customs Intermediaries',
         publisher: 'HM Revenue & Customs',
         url: 'https://www.gov.uk/government/publications/standard-for-customs-intermediaries',
-        checked: '2026-07-17',
+        checked: '2026-10-15',
       },
     ],
   },
