@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
-import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
+import { radarCsv, radarDigests, radarHub, radarJson, radarLastObservedAt, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes } from './authority-library.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
@@ -35,6 +35,7 @@ const publicSources = [
   'scripts/roi-calculator.mjs',
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
+  'scripts/radar-observations.mjs',
   'scripts/authority-library.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
@@ -56,7 +57,10 @@ for (const phrase of contract.required_product_language) {
   }
 }
 
-if (radarRecords.length !== 5) throw new Error(`Radar must release exactly five source-verified records, found ${radarRecords.length}`)
+if (radarRecords.length < 5) throw new Error(`Radar must keep every released source-verified record, found ${radarRecords.length}`)
+for (const legacyId of ['cds-service-status-current', 'cds-workarounds-release-5-2-0', 'cds-technical-documentation-2026-07-09', 'cds-document-code-9001-uk-india-fta-2026-07-15', 'cds-aggregation-eu-eori-2026-07-04']) {
+  if (!radarRecords.some((record) => record.id === legacyId)) throw new Error(`Radar record was deleted instead of superseded: ${legacyId}`)
+}
 for (const record of radarRecords) {
   if (
     !record.review.publicationReady ||
@@ -71,6 +75,24 @@ for (const record of radarRecords) {
   if (!/^[a-f0-9]{64}$/.test(record.source.sha256) || record.source.bytes < 1 || record.impacts.length < 2) {
     throw new Error(`Radar source or workflow evidence is incomplete for ${record.id}`)
   }
+  for (const source of record.supportingSources) {
+    if (!/^[a-f0-9]{64}$/.test(source.sha256) || source.bytes < 1 || !source.url.startsWith('https://')) {
+      throw new Error(`Radar supporting source evidence is incomplete for ${record.id}`)
+    }
+  }
+  const lastEvent = record.history.reduce((max, event) => (Date.parse(event.observedAt) > Date.parse(max) ? event.observedAt : max), record.history[0].observedAt)
+  if (record.modifiedAt !== lastEvent || Date.parse(record.observedAt) > Date.parse(record.modifiedAt)) {
+    throw new Error(`Radar record ${record.id} dateModified does not follow its append-only history`)
+  }
+  if (Date.parse(record.freshUntil) <= Date.parse(record.observedAt)) throw new Error(`Radar record ${record.id} has no freshness window`)
+  if (record.supersededBy && !radarRecords.some((candidate) => candidate.id === record.supersededBy && candidate.supersedes === record.id)) {
+    throw new Error(`Radar supersession link is not reciprocal for ${record.id}`)
+  }
+  const route = radarRoutes.find((candidate) => candidate.path === record.path)
+  if (!route || route.reviewedOn !== record.modifiedAt.slice(0, 10)) throw new Error(`Radar route date drifted from record history: ${record.id}`)
+}
+if (radarRoutes.find((route) => route.kind === 'hub').reviewedOn !== radarLastObservedAt.slice(0, 10)) {
+  throw new Error('Radar hub dateModified must equal the latest record observation')
 }
 
 const expected = [
@@ -377,9 +399,25 @@ for (const route of expected) {
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
 
-    if (route.path === radarHub.path) {
+    const schemaText = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}'
+    const schemaGraph = JSON.parse(schemaText)['@graph'] || []
+    const dated = schemaGraph.find((item) => item.dateModified)
+    if (!dated || dated.dateModified !== route.reviewedOn) throw new Error(`${route.path} JSON-LD dateModified differs from its sitemap lastmod`)
+    if (route.kind === 'digest') {
+      const digest = radarDigests.find((candidate) => candidate.id === route.digestId)
+      for (const section of digest.sections) {
+        for (const id of section.recordIds) {
+          const record = radarRecords.find((candidate) => candidate.id === id)
+          if (!html.includes(`href="${record.path}"`)) throw new Error(`${route.path} is missing digest record link ${id}`)
+        }
+      }
+      for (const item of digest.watchList) if (!html.includes(item.source.url)) throw new Error(`${route.path} is missing watch-list source ${item.source.url}`)
+      for (const required of ['"@type":"Article"', '"@type":"BreadcrumbList"', 'KEY DATES', 'ON THE WATCH LIST', 'data-radar-booking="bottom_cta"', '<meta property="og:type" content="article"']) {
+        if (!html.includes(required)) throw new Error(`${route.path} is missing digest contract: ${required}`)
+      }
+    } else if (route.path === radarHub.path) {
       if (
-        (html.match(/data-radar-result(?:\s|>)/g) || []).length !== 5 ||
+        (html.match(/data-radar-result(?:\s|>)/g) || []).length !== radarRecords.length ||
         !html.includes('data-radar-filters') ||
         !html.includes('name="q"') ||
         !html.includes('name="topic"') ||
@@ -420,6 +458,10 @@ for (const route of expected) {
       if (/human[- ]reviewed|reviewed by (?:an?|the) human/i.test(html)) {
         throw new Error(`${route.path} falsely represents agent source verification as human review`)
       }
+      for (const source of record.supportingSources) {
+        if (!html.includes(source.url) || !html.includes(source.sha256)) throw new Error(`${route.path} is missing supporting source proof ${source.url}`)
+      }
+      if (record.supersededBy && !html.includes('SUPERSEDED BY A NEWER RECORD')) throw new Error(`${route.path} hides its superseded state`)
       for (const impact of record.impacts) {
         if (!html.includes(impact.impact) || !html.includes(impact.action)) {
           throw new Error(`${route.path} is missing bounded workflow impact ${impact.stage}`)
@@ -540,9 +582,15 @@ const radarJsonDownload = await readFile(join(root, 'dist/downloads/cds-operatio
 const radarCsvDownload = await readFile(join(root, 'dist/downloads/cds-operations-radar-v1.csv'), 'utf8')
 if (radarJsonDownload !== radarJson()) throw new Error('Radar JSON download differs from its deterministic data model')
 if (radarCsvDownload !== radarCsv()) throw new Error('Radar CSV download differs from its deterministic data model')
-if (radarCsvDownload.trim().split('\n').length !== 6) throw new Error('Radar CSV must contain one header and five records')
+if (radarCsvDownload.trim().split('\n').length !== radarRecords.length + 1) throw new Error('Radar CSV must contain one header and one row per record')
 const parsedRadar = JSON.parse(radarJsonDownload)
-if (parsedRadar.record_count !== 5 || parsedRadar.records.length !== 5) throw new Error('Radar JSON record count drifted')
+if (parsedRadar.record_count !== radarRecords.length || parsedRadar.records.length !== radarRecords.length) throw new Error('Radar JSON record count drifted')
+const sitemapXml = await readFile(join(root, 'dist/sitemap.xml'), 'utf8')
+for (const route of radarRoutes) {
+  if (!sitemapXml.includes(`<loc>${site.origin}${route.path}</loc><lastmod>${route.reviewedOn}</lastmod>`)) {
+    throw new Error(`Sitemap lastmod for ${route.path} must equal its Radar dateModified ${route.reviewedOn}`)
+  }
+}
 
 const formulaFixture = calculateValueDutyScenario({
   goodsAmount: 10000,
