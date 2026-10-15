@@ -518,6 +518,8 @@ export function renderEoriChecker(checker, site, { apiOrigin, navHtml, webmaster
             <a data-eori-pack="related" href="/tools/customs-document-pack-check/"><span>FREE TOOL</span><strong>Customs document pack checker</strong><b>OPEN ↗</b></a>
             <a href="/customs-intermediary-registration-2026/"><span>RESPONSE KIT</span><strong>Customs intermediary registration 2026</strong><b>OPEN ↗</b></a>
             <a href="/how-it-works/"><span>WORKFLOW</span><strong>How Declarix builds a CDS-ready pack</strong><b>OPEN ↗</b></a>
+            <a href="/tools/commercial-invoice-generator/"><span>FREE GENERATOR</span><strong>Commercial invoice template with EORI fields</strong><b>OPEN ↗</b></a>
+            <a href="/tools/packing-list-generator/"><span>FREE GENERATOR</span><strong>Shipping packing list template</strong><b>OPEN ↗</b></a>
           </nav>
         </section>
 

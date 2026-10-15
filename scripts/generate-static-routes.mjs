@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { calculators, renderCalculator } from './calculators.mjs'
+import { documentGenerators, renderDocumentGenerator, templateCsv } from './document-generators.mjs'
 import {
   eoriChecker,
   renderEoriChecker,
@@ -557,6 +558,33 @@ if (publicEori.enabled) {
   )
 }
 
+for (const generator of documentGenerators) {
+  if (!generator.path.startsWith('/') || !generator.path.endsWith('/')) throw new Error(`Generator must use a trailing slash: ${generator.path}`)
+  if (paths.has(generator.path)) throw new Error(`Duplicate route: ${generator.path}`)
+  if (titles.has(generator.title)) throw new Error(`Duplicate title: ${generator.title}`)
+  if (headings.has(generator.h1)) throw new Error(`Duplicate H1: ${generator.h1}`)
+  if (generator.questions.length < 4) throw new Error(`Generator needs visible question support: ${generator.path}`)
+  if (generator.sources.length < 3) throw new Error(`Generator needs primary source coverage: ${generator.path}`)
+  paths.add(generator.path)
+  titles.add(generator.title)
+  headings.add(generator.h1)
+
+  const target = join(dist, generator.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderDocumentGenerator(generator, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+      eoriEnabled: publicEori.enabled,
+    }),
+  )
+  await mkdir(join(dist, 'downloads'), { recursive: true })
+  await writeFile(join(dist, generator.templateCsv.slice(1)), templateCsv(generator))
+}
+
 if (paths.has(radarHub.path)) throw new Error(`Duplicate route: ${radarHub.path}`)
 if (titles.has(radarHub.title)) throw new Error(`Duplicate title: ${radarHub.title}`)
 if (headings.has(radarHub.h1)) throw new Error(`Duplicate H1: ${radarHub.h1}`)
@@ -650,6 +678,7 @@ const indexableRoutes = [
   ...calculators,
   ...reports,
   ...valueDutyWorkpapers,
+  ...documentGenerators,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
