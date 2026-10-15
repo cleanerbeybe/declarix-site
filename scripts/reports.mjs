@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 const percent = (count, denominator) => Number(((count / denominator) * 100).toFixed(1))
 
 export const reports = [
@@ -98,15 +99,7 @@ function jsonLd(report, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'Report',
         '@id': reportId,
@@ -156,13 +149,7 @@ function jsonLd(report, site) {
         url: `${site.origin}/`,
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: report.h1, item: `${site.origin}${report.path}` },
-        ],
-      },
+      breadcrumbList(site, report.path),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -303,7 +290,7 @@ export function renderReport(report, site, options) {
     <meta name="theme-color" content="#16313d" />
     ${options.webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/report.css" />
     <meta property="og:type" content="article" />
@@ -331,7 +318,7 @@ export function renderReport(report, site, options) {
         <a class="masthead-cta" data-report-booking="masthead" href="${bookingHref(report, 'masthead')}">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${options.navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → RESEARCH → UK CUSTOMS OPERATIONS SIGNALS</div>
+      <div class="breadcrumbs">${breadcrumbHtml(report.path, 'UK CUSTOMS OPERATIONS SIGNALS')}</div>
       <main>
         <header class="hero report-hero">
           <div class="hero-copy">

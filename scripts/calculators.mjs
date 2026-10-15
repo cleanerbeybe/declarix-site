@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 export const calculators = [
   {
     path: '/tools/customs-declaration-cost-calculator/',
@@ -67,15 +68,7 @@ function jsonLd(calculator, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'WebApplication',
         '@id': `${site.origin}${calculator.path}#application`,
@@ -91,13 +84,7 @@ function jsonLd(calculator, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: calculator.schemaName, item: `${site.origin}${calculator.path}` },
-        ],
-      },
+      breadcrumbList(site, calculator.path),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -292,7 +279,7 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
     <meta name="theme-color" content="#16313d" />
     ${webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/calculator.css" />
     <meta property="og:type" content="website" />
@@ -318,7 +305,7 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
         <a class="masthead-cta" href="/?src=tool_customs_declaration_cost_calculator#book">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → FREE TOOLS → DECLARATION COST CALCULATOR</div>
+      <div class="breadcrumbs">${breadcrumbHtml(calculator.path, 'DECLARATION COST CALCULATOR')}</div>
       <main>
         <header class="hero calculator-hero">
           <div class="hero-copy">

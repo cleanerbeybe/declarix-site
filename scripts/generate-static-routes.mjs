@@ -13,9 +13,13 @@ import { alternativesRoutes, renderAlternativesRoute } from './alternatives.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { comparisonRoutes, renderComparison, validateComparisons } from './comparisons.mjs'
+import { llmsFullText } from './llms-full.mjs'
 import { renderPricingTable } from './pricing.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
+import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
+import { hubChildren, hubItemList, renderHubRegister, sectionHubs } from './section-hubs.mjs'
+import { breadcrumbHtml, breadcrumbList, organizationNode, registerRoutes, shortName } from './site-graph.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -25,12 +29,35 @@ const posthogKey = process.env.VITE_POSTHOG_KEY || ''
 const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
 const publicEori = resolvePublicEoriReleaseConfig()
 
+const indexableRoutes = [
+  roiRoute,
+  economicsRoute,
+  ...comparisonRoutes.map((page) => ({ ...page, reviewedOn: '2026-10-15' })),
+  ...routes,
+  ...sectionHubs,
+  ...tools,
+  ...calculators,
+  ...reports,
+  ...valueDutyWorkpapers,
+  ...(publicEori.enabled ? [eoriChecker] : []),
+  ...radarRoutes,
+  ...authorityRoutes,
+  ...alternativesRoutes,
+]
+registerRoutes(indexableRoutes)
+for (const hub of sectionHubs) hub.hubChildren = hubChildren(hub, indexableRoutes)
+
 const escapeHtml = (value) =>
   String(value)
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
+
+// lastmod / dateModified = the latest of the route's review, publication and content-change dates.
+function lastmodFor(route) {
+  return [route.reviewedOn, route.publishedOn, route.modifiedOn].filter(Boolean).sort().at(-1) || site.reviewedOn
+}
 
 function webmasterTags() {
   return [
@@ -62,10 +89,13 @@ function routeLinks() {
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
-    ['RESEARCH', '/research/uk-customs-operations-signal-report-2026/'],
+    ['FREE TOOLS', '/tools/'],
+    ['RESEARCH', '/research/'],
+    ['SIGNAL REPORT', '/research/uk-customs-operations-signal-report-2026/'],
     ['RADAR', '/research/cds-operations-radar/'],
     ['INCOTERMS', '/customs-reference/incoterms/'],
-    ['WORKFLOWS', '/customs-workflows/gmr-gvms-checklist/'],
+    ['WORKFLOWS', '/customs-workflows/'],
+    ['REFERENCE', '/customs-reference/'],
     ['HMRC BURDEN', '/research/hmrc-customs-administrative-burden-explorer-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
@@ -88,10 +118,16 @@ function renderSection(section, index) {
         )
         .join('')}</div>`
     : ''
+  // linkSentence: an added sentence mixing text and [label, href] links.
+  const linkSentence = section.linkSentence
+    ? `<p>${section.linkSentence
+        .map((part) => (Array.isArray(part) ? `<a href="${escapeHtml(part[1])}">${escapeHtml(part[0])}</a>` : escapeHtml(part)))
+        .join('')}</p>`
+    : ''
   return `<section class="sheet">
     <span class="section-label">${escapeHtml(section.label || String(index + 1).padStart(2, '0'))}</span>
     <h2>${escapeHtml(section.title)}</h2>
-    ${paragraphs}${list}${facts}
+    ${paragraphs}${list}${facts}${linkSentence}
   </section>`
 }
 
@@ -193,15 +229,7 @@ function jsonLd(route) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': route.schemaType || 'WebPage',
         '@id': `${site.origin}${route.path}#webpage`,
@@ -210,13 +238,14 @@ function jsonLd(route) {
         headline: route.h1,
         description: route.description,
         datePublished: route.publishedOn,
-        dateModified: route.reviewedOn || site.reviewedOn,
+        dateModified: lastmodFor(route),
         isPartOf: { '@id': `${site.origin}/#website` },
         about: { '@id': `${site.origin}/#organization` },
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
         image: `${site.origin}/og.jpg`,
         citation: route.sources?.map((source) => source.url),
+        ...(route.hubChildren ? { mainEntity: hubItemList(site, route.hubChildren) } : {}),
       },
       {
         '@type': 'WebSite',
@@ -225,13 +254,8 @@ function jsonLd(route) {
         url: `${site.origin}/`,
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: route.h1, item: `${site.origin}${route.path}` },
-        ],
-      },
+      breadcrumbList(site, route.path),
+      ...(softwareSchemaPaths.includes(route.path) ? [softwareApplicationNode(site)] : []),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -248,7 +272,7 @@ function renderRoute(route) {
     <meta name="theme-color" content="#16313d" />
     ${webmasterTags()}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     ${route.path === '/pricing/' ? '<link rel="stylesheet" href="/pricing.css" />' : ''}
     <meta property="og:type" content="website" />
@@ -274,7 +298,7 @@ function renderRoute(route) {
         <a class="masthead-cta" ${route.resourceKit ? 'data-kit-booking="masthead"' : ''} href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div>
+      <div class="breadcrumbs">${breadcrumbHtml(route.path, escapeHtml(route.kind === 'section-hub' ? shortName(route).toUpperCase() : route.eyebrow))}</div>
       <main>
         <header class="hero">
           <div class="hero-copy">
@@ -289,6 +313,7 @@ function renderRoute(route) {
           </aside>
         </header>
         ${renderHeroStrip(route)}
+        ${route.hubChildren ? renderHubRegister(route, route.hubChildren) : ''}
         ${route.path === '/pricing/' ? renderPricingTable() : ''}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
@@ -320,7 +345,7 @@ function renderNotFound() {
     <meta name="robots" content="noindex,follow" />
     <meta name="theme-color" content="#16313d" />
     ${webmasterTags()}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <title>Page not found | Declarix</title>
   </head>
@@ -362,7 +387,7 @@ function renderBookingConfirmed() {
     <meta name="robots" content="noindex,follow" />
     <meta name="theme-color" content="#16313d" />
     ${webmasterTags()}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <title>Workflow call booked | Declarix</title>
   </head>
@@ -434,6 +459,19 @@ for (const route of routes) {
   const target = join(dist, route.path.slice(1), 'index.html')
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, renderRoute(route))
+}
+
+for (const hub of sectionHubs) {
+  if (paths.has(hub.path)) throw new Error(`Duplicate route: ${hub.path}`)
+  if (titles.has(hub.title)) throw new Error(`Duplicate title: ${hub.title}`)
+  if (headings.has(hub.h1)) throw new Error(`Duplicate H1: ${hub.h1}`)
+  if (hub.hubChildren.length < 2) throw new Error(`Section hub needs at least two children: ${hub.path}`)
+  paths.add(hub.path)
+  titles.add(hub.title)
+  headings.add(hub.h1)
+  const target = join(dist, hub.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderRoute(hub))
 }
 
 for (const tool of tools) {
@@ -693,25 +731,11 @@ for (const page of comparisonRoutes) {
   await writeFile(target, renderComparison(page, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags(), bookingHref: bookingHref(page) }))
 }
 
-const indexableRoutes = [
-  roiRoute,
-  economicsRoute,
-  ...comparisonRoutes.map((page) => ({ ...page, reviewedOn: '2026-10-15' })),
-  ...routes,
-  ...tools,
-  ...calculators,
-  ...reports,
-  ...valueDutyWorkpapers,
-  ...(publicEori.enabled ? [eoriChecker] : []),
-  ...radarRoutes,
-  ...authorityRoutes,
-  ...alternativesRoutes,
-]
-
+const homeLastmod = [site.reviewedOn, site.homeModifiedOn].filter(Boolean).sort().at(-1)
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${site.origin}/</loc><lastmod>${site.reviewedOn}</lastmod></url>
-${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${route.reviewedOn || site.reviewedOn}</lastmod></url>`).join('\n')}
+  <url><loc>${site.origin}/</loc><lastmod>${homeLastmod}</lastmod></url>
+${indexableRoutes.map((route) => `  <url><loc>${site.origin}${route.path}</loc><lastmod>${lastmodFor(route)}</lastmod></url>`).join('\n')}
 </urlset>
 `
 await writeFile(join(dist, 'sitemap.xml'), sitemap)
@@ -741,18 +765,27 @@ ${llmsRoutes}
 - Product and workflow enquiries: ${site.contact}
 - Sources and corrections: ${site.origin}/editorial-policy/
 `
-const llmsFull = `${llms}
-## Publication record
-- Owner-approved offer version: ${site.claimsVersion}
-- Last editorial review: ${site.reviewedOn}
-
-## Citation guidance
-Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and published packages.
-`
 await writeFile(join(dist, 'llms.txt'), llms)
-await writeFile(join(dist, 'llms-full.txt'), llmsFull)
 
 await writeFile(join(dist, '404.html'), renderNotFound())
 await mkdir(join(dist, 'booking-confirmed'), { recursive: true })
 await writeFile(join(dist, 'booking-confirmed', 'index.html'), renderBookingConfirmed())
 await writeFile(join(dist, '.nojekyll'), '')
+
+// llms-full.txt last: it reads the pages written above.
+const lastEditorialReview = [homeLastmod, ...indexableRoutes.map(lastmodFor)].sort().at(-1)
+const llmsFull = `${llms}
+## Publication record
+- Owner-approved offer version: ${site.claimsVersion}
+- Last editorial review: ${lastEditorialReview}
+
+## Citation guidance
+Use the supported-scope, pricing, security, and editorial-policy pages for detail. The homepage shows a worked model. The free customs declaration cost calculator uses buyer-entered inputs and assumes no Declarix rate; the 20-minute numbers call tests the model against the buyer’s workflow and published packages.
+
+# Full text of the main pages
+
+The sections below are generated from the published HTML of each page at build time.
+
+${await llmsFullText(dist, site, new Map(indexableRoutes.map((route) => [route.path, route])))}
+`
+await writeFile(join(dist, 'llms-full.txt'), llmsFull)

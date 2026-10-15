@@ -10,7 +10,7 @@
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#16313D" />
     <link rel="canonical" href="https://getdeclarix.com/" />
-    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" /><link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
     <!-- v3.0 §4.3 — critical faces preloaded so font-display: optional always lands -->
     <link
       rel="preload"
@@ -74,18 +74,181 @@
           {
             "@type": "Organization",
             "@id": "https://getdeclarix.com/#organization",
-            "name": "Declarix Limited",
+            "name": "Declarix",
             "legalName": "Declarix Limited",
-            "identifier": "17288258",
             "url": "https://getdeclarix.com/",
-            "email": "pack@getdeclarix.com"
+            "email": "pack@getdeclarix.com",
+            "logo": {
+              "@type": "ImageObject",
+              "@id": "https://getdeclarix.com/#logo",
+              "url": "https://getdeclarix.com/logo.png",
+              "contentUrl": "https://getdeclarix.com/logo.png",
+              "width": 512,
+              "height": 512,
+              "caption": "Declarix"
+            },
+            "image": {
+              "@id": "https://getdeclarix.com/#logo"
+            },
+            "description": "UK customs declaration software for freight forwarders and customs brokers.",
+            "areaServed": {
+              "@type": "Country",
+              "name": "United Kingdom",
+              "identifier": "GB"
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Leicester",
+              "addressRegion": "England",
+              "addressCountry": "GB"
+            },
+            "foundingDate": "2026-06-19",
+            "founder": {
+              "@type": "Person",
+              "@id": "https://getdeclarix.com/#founder",
+              "name": "Ihusan Adam",
+              "honorificPrefix": "Dr"
+            },
+            "identifier": {
+              "@type": "PropertyValue",
+              "propertyID": "Companies House company number",
+              "value": "17288258"
+            },
+            "sameAs": [
+              "https://find-and-update.company-information.service.gov.uk/company/17288258"
+            ]
           },
           {
             "@type": "WebSite",
             "@id": "https://getdeclarix.com/#website",
             "name": "Declarix",
             "url": "https://getdeclarix.com/",
-            "publisher": { "@id": "https://getdeclarix.com/#organization" }
+            "publisher": {
+              "@id": "https://getdeclarix.com/#organization"
+            }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://getdeclarix.com/#software",
+            "name": "Declarix",
+            "url": "https://getdeclarix.com/",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "description": "Up to 3× more customs declarations per clerk with no new headcount. Declarix builds CDS-ready entry packs for Sequoia, Descartes and customer integrations.",
+            "image": "https://getdeclarix.com/og.jpg",
+            "publisher": {
+              "@id": "https://getdeclarix.com/#organization"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Desk",
+                "description": "£500 / month · 100 packs included · £5.00 / extra pack",
+                "price": "500.00",
+                "priceCurrency": "GBP",
+                "url": "https://getdeclarix.com/pricing/",
+                "priceSpecification": [
+                  {
+                    "@type": "UnitPriceSpecification",
+                    "price": "500.00",
+                    "priceCurrency": "GBP",
+                    "referenceQuantity": {
+                      "@type": "QuantitativeValue",
+                      "value": 1,
+                      "unitCode": "MON"
+                    }
+                  },
+                  {
+                    "@type": "UnitPriceSpecification",
+                    "name": "Extra pack",
+                    "price": "5.00",
+                    "priceCurrency": "GBP",
+                    "referenceQuantity": {
+                      "@type": "QuantitativeValue",
+                      "value": 1,
+                      "unitText": "pack"
+                    }
+                  }
+                ],
+                "eligibleQuantity": {
+                  "@type": "QuantitativeValue",
+                  "value": 100,
+                  "unitText": "packs per month"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Team",
+                "description": "£4,000 / month · 1,000 packs included · £4.00 / extra pack",
+                "price": "4000.00",
+                "priceCurrency": "GBP",
+                "url": "https://getdeclarix.com/pricing/",
+                "priceSpecification": [
+                  {
+                    "@type": "UnitPriceSpecification",
+                    "price": "4000.00",
+                    "priceCurrency": "GBP",
+                    "referenceQuantity": {
+                      "@type": "QuantitativeValue",
+                      "value": 1,
+                      "unitCode": "MON"
+                    }
+                  },
+                  {
+                    "@type": "UnitPriceSpecification",
+                    "name": "Extra pack",
+                    "price": "4.00",
+                    "priceCurrency": "GBP",
+                    "referenceQuantity": {
+                      "@type": "QuantitativeValue",
+                      "value": 1,
+                      "unitText": "pack"
+                    }
+                  }
+                ],
+                "eligibleQuantity": {
+                  "@type": "QuantitativeValue",
+                  "value": 1000,
+                  "unitText": "packs per month"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Scale",
+                "description": "£9,000 / month · 3,000 packs included · £3.00 / extra pack",
+                "price": "9000.00",
+                "priceCurrency": "GBP",
+                "url": "https://getdeclarix.com/pricing/",
+                "priceSpecification": [
+                  {
+                    "@type": "UnitPriceSpecification",
+                    "price": "9000.00",
+                    "priceCurrency": "GBP",
+                    "referenceQuantity": {
+                      "@type": "QuantitativeValue",
+                      "value": 1,
+                      "unitCode": "MON"
+                    }
+                  },
+                  {
+                    "@type": "UnitPriceSpecification",
+                    "name": "Extra pack",
+                    "price": "3.00",
+                    "priceCurrency": "GBP",
+                    "referenceQuantity": {
+                      "@type": "QuantitativeValue",
+                      "value": 1,
+                      "unitText": "pack"
+                    }
+                  }
+                ],
+                "eligibleQuantity": {
+                  "@type": "QuantitativeValue",
+                  "value": 3000,
+                  "unitText": "packs per month"
+                }
+              }
+            ]
           }
         ]
       }
@@ -286,6 +449,9 @@
           <a href="/how-it-works/">HOW IT WORKS</a>
           <a href="/supported-scope/">SUPPORTED SCOPE</a>
           <a href="/tools/customs-document-pack-check/">FREE PACK CHECK</a>
+          <a href="/tools/">FREE TOOLS</a>
+          <a href="/roi-calculator/">ROI CALCULATOR</a>
+          <a href="/research/">RESEARCH</a>
           <a href="/customs-declaration-software/">CUSTOMS SOFTWARE GUIDE</a>
           <a href="/customs-clearance-software/">CLEARANCE SOFTWARE</a>
           <a href="/customs-intermediary-registration-2026/">REGISTRATION 2026</a>

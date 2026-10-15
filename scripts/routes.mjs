@@ -5,6 +5,8 @@ export const site = {
   contact: 'pack@getdeclarix.com',
   booking: 'https://declarixlimited.zohobookings.eu/#/declarixlimited',
   reviewedOn: '2026-07-17',
+  // Sitemap lastmod for the home page: last content or structured-data change.
+  homeModifiedOn: '2026-10-15',
   claimsVersion: '2.0.0',
 }
 
@@ -129,6 +131,7 @@ export const routes = [
   },
   {
     path: '/supported-scope/',
+    modifiedOn: '2026-10-15',
     ref: 'SCHEDULE 03 · PRODUCT FIT',
     title: 'Supported customs workflows and integrations | Declarix',
     description:
@@ -159,6 +162,13 @@ export const routes = [
           ['Evidence', 'Source reference retained beside each proposed field'],
           ['Approval', 'Your clerk checks and approves'],
           ['Submission', 'Your existing customs system and permissions'],
+        ],
+        linkSentence: [
+          'Read how the CDS-ready pack works as ',
+          ['customs declaration software for Sequoia and Descartes desks', '/customs-declaration-software/'],
+          ', or compare the filing and preparation layers in the ',
+          ['customs clearance software buyer file', '/customs-clearance-software/'],
+          '.',
         ],
       },
       {
@@ -226,6 +236,7 @@ export const routes = [
   },
   {
     path: '/pricing-policy/',
+    modifiedOn: '2026-09-29',
     ref: 'BUYER SHEET 05 · PRICING RULES',
     title: 'How Declarix pricing works: entries, rework and pilot',
     description:
@@ -273,6 +284,7 @@ export const routes = [
   },
   {
     path: '/how-it-works/',
+    modifiedOn: '2026-10-15',
     ref: 'FORM 06 · OPERATING FLOW',
     title: 'How Declarix builds CDS-ready customs entry packs',
     description:
@@ -318,6 +330,13 @@ export const routes = [
         title: 'The CDS-ready export reaches your system.',
         paragraphs: [
           'Declarix supports Sequoia, Descartes e-Customs and customer integrations. Your team keeps the filing screen, badge, permissions and submission process it already knows.',
+        ],
+        linkSentence: [
+          'Comparing products? See how Declarix fits as ',
+          ['customs declaration software', '/customs-declaration-software/'],
+          ' beside your filing system, and what to ask when you shortlist ',
+          ['customs clearance software', '/customs-clearance-software/'],
+          '.',
         ],
       },
       {
@@ -655,8 +674,8 @@ export const routes = [
       'The consultation has closed. The proposals are not a current registration duty. Check the official consultation page for the government response and legislative next steps.',
     schemaType: 'Article',
     publishedOn: '2026-07-16',
-    reviewedOn: '2026-09-25',
-    expiresOn: '2026-11-30',
+    reviewedOn: '2026-10-15',
+    expiresOn: '2027-02-28',
     sections: [
       {
         label: '01 · DIRECT ANSWER',
@@ -673,6 +692,7 @@ export const routes = [
           ['Consultation status', 'Closed; government response and legislative next steps to follow'],
           ['Published', '23 June 2026'],
           ['Consultation closed', 'Monday 21 September 2026'],
+          ['Government response', 'Not yet published on GOV.UK (checked 15 October 2026)'],
           ['Proposed coverage', 'UK-wide; imports and exports; customs activity across declaration types'],
           ['Proposed focus', 'Intermediaries interacting with HMRC for traders'],
           ['Proposed exclusions', 'Advice-only work, specified carrier activity, and trader self-representation'],
@@ -709,7 +729,7 @@ export const routes = [
         label: '06 · EXPIRY RULE',
         title: 'This page changes when the source changes.',
         paragraphs: [
-          'Declarix will review this resource when the government publishes its response, announces legislation, or sets an implementation timetable. The next scheduled review is 30 October 2026; check the official consultation page for a newer announcement in the meantime.',
+          'Declarix will review this resource when the government publishes its response, announces legislation, or sets an implementation timetable. This edition was checked against GOV.UK on 15 October 2026, when the consultation page still showed no government response. The next scheduled review is 15 January 2027; check the official consultation page for a newer announcement in the meantime.',
         ],
       },
     ],
@@ -753,13 +773,13 @@ export const routes = [
         title: 'Introduction of Mandatory Registration for Customs Intermediaries',
         publisher: 'HM Revenue & Customs',
         url: 'https://www.gov.uk/government/consultations/introduction-of-mandatory-registration-for-customs-intermediaries/customs-intermediaries-introduction-of-mandatory-registration',
-        checked: '2026-07-17',
+        checked: '2026-10-15',
       },
       {
         title: 'Standard for Customs Intermediaries',
         publisher: 'HM Revenue & Customs',
         url: 'https://www.gov.uk/government/publications/standard-for-customs-intermediaries',
-        checked: '2026-07-17',
+        checked: '2026-10-15',
       },
     ],
   },

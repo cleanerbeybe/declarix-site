@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 export const tools = [
   {
     path: '/tools/customs-document-pack-check/',
@@ -132,15 +133,7 @@ function jsonLd(tool, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'WebApplication',
         '@id': `${site.origin}${tool.path}#application`,
@@ -156,13 +149,7 @@ function jsonLd(tool, site) {
         publisher: { '@id': `${site.origin}/#organization` },
         citation: tool.sources.map((source) => source.url),
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: tool.h1, item: `${site.origin}${tool.path}` },
-        ],
-      },
+      breadcrumbList(site, tool.path),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -378,7 +365,7 @@ export function renderTool(tool, site, { navHtml, webmasterHtml, posthogKey, pos
     <meta name="theme-color" content="#16313d" />
     ${webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/tool.css" />
     <meta property="og:type" content="website" />
@@ -402,7 +389,7 @@ export function renderTool(tool, site, { navHtml, webmasterHtml, posthogKey, pos
         <a class="masthead-cta" href="/?src=tool_customs_document_pack_check#book">BOOK THE 20-MINUTE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → FREE TOOLS → CUSTOMS DOCUMENT PACK CHECK</div>
+      <div class="breadcrumbs">${breadcrumbHtml(tool.path, 'CUSTOMS DOCUMENT PACK CHECK')}</div>
       <main>
         <header class="hero tool-hero">
           <div class="hero-copy">

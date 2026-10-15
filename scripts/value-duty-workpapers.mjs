@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 export const valueDutyWorkpapers = [
   {
     path: '/tools/customs-value-import-duty-vat-calculator/',
@@ -6,6 +7,7 @@ export const valueDutyWorkpapers = [
     title: 'Customs value, ad valorem duty and VAT calculator | Free UK tool',
     schemaName: 'Customs value, ad valorem duty and VAT planning workpaper',
     reviewedOn: '2026-07-17',
+    modifiedOn: '2026-10-15',
     description:
       'Build a transparent UK customs value, ad valorem import duty, import VAT value, and tax scenario using only the exchange rates and charges you enter.',
     eyebrow: 'FREE CUSTOMS VALUE WORKPAPER · YOUR RATES · NO SIGN-UP',
@@ -146,15 +148,7 @@ function jsonLd(workpaper, site) {
   return JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${site.origin}/#organization`,
-        name: site.company,
-        legalName: site.company,
-        url: `${site.origin}/`,
-        email: site.contact,
-        identifier: site.companyNumber,
-      },
+      organizationNode(site),
       {
         '@type': 'WebApplication',
         '@id': `${site.origin}${workpaper.path}#application`,
@@ -177,13 +171,7 @@ function jsonLd(workpaper, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: workpaper.schemaName, item: `${site.origin}${workpaper.path}` },
-        ],
-      },
+      breadcrumbList(site, workpaper.path),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -401,7 +389,7 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
     <meta name="theme-color" content="#16313d" />
     ${webmasterHtml}
     <link rel="canonical" href="${canonical}" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/static-routes.css" />
     <link rel="stylesheet" href="/calculator.css" />
     <link rel="stylesheet" href="/value-duty-workpaper.css" />
@@ -428,7 +416,7 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
         <a class="masthead-cta" href="/?src=tool_customs_value_duty_vat#book">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → FREE TOOLS → CUSTOMS VALUE + DUTY</div>
+      <div class="breadcrumbs">${breadcrumbHtml(workpaper.path, 'CUSTOMS VALUE + DUTY')}</div>
       <main>
         <header class="hero calculator-hero value-duty-hero">
           <div class="hero-copy">
@@ -460,6 +448,18 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
             <a href="https://www.gov.uk/guidance/customs-valuation/method-1-transaction-value"><span>01 · VALUE</span><strong>Check the valuation method, sale, additions and deductions.</strong><b>HMRC GUIDANCE →</b></a>
             <a href="https://www.gov.uk/guidance/customs-valuation/exchange-rates"><span>02 · FX</span><strong>Check the exchange rate applicable to the valuation.</strong><b>HMRC GUIDANCE →</b></a>
             <a href="https://www.gov.uk/trade-tariff"><span>03 · RATES</span><strong>Check the commodity code, measures, duty and VAT rates.</strong><b>UK TRADE TARIFF →</b></a>
+          </div>
+        </section>
+
+        <section class="official-checkpoints value-duty-incoterms" aria-labelledby="incoterms-bridge-heading">
+          <header><span class="section-label">TRADE TERM FIRST</span><h2 id="incoterms-bridge-heading">Know which costs the price already includes.</h2><p>The Incoterm on the invoice tells you who paid for carriage and insurance and where risk moved. Open the matching sheet to see which freight and insurance amounts belong in fields 03 and 04.</p></header>
+          <div>
+            <a href="/customs-reference/incoterms/fob/"><span>FOB · FREE ON BOARD</span><strong>Buyer pays main carriage, so freight and insurance to the UK border are usually added.</strong><b>OPEN THE FOB SHEET →</b></a>
+            <a href="/customs-reference/incoterms/cif/"><span>CIF · COST, INSURANCE AND FREIGHT</span><strong>Seller-paid freight and insurance may already be in the invoice price. Do not add them twice.</strong><b>OPEN THE CIF SHEET →</b></a>
+            <a href="/customs-reference/incoterms/fca/"><span>FCA · FREE CARRIER</span><strong>Find the named-place carrier handoff, then add buyer-paid transport to the border.</strong><b>OPEN THE FCA SHEET →</b></a>
+            <a href="/customs-reference/incoterms/dap/"><span>DAP · DELIVERED AT PLACE</span><strong>Split delivery cost before and after the UK border to find the border value.</strong><b>OPEN THE DAP SHEET →</b></a>
+            <a href="/customs-reference/incoterms/ddp/"><span>DDP · DELIVERED DUTY PAID</span><strong>Unpack duty, import VAT and post-border costs from the delivered price.</strong><b>OPEN THE DDP SHEET →</b></a>
+            <a href="/customs-reference/incoterms/"><span>NOT SURE WHICH TERM?</span><strong>Answer four questions in the Incoterms chooser to find the closest sheet.</strong><b>OPEN THE CHOOSER →</b></a>
           </div>
         </section>
 

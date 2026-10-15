@@ -12,6 +12,9 @@ import { economicsRoute } from './preparation-economics.mjs'
 import { comparisonRoutes, pageSources } from './comparisons.mjs'
 import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
+import { sectionHubs } from './section-hubs.mjs'
+import { organizationNode } from './site-graph.mjs'
+import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -44,6 +47,9 @@ const publicSources = [
   'scripts/comparison-sources.mjs',
   'scripts/alternatives.mjs',
   'scripts/alternatives-vendors.mjs',
+  'scripts/section-hubs.mjs',
+  'scripts/site-graph.mjs',
+  'scripts/software-schema.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -85,6 +91,7 @@ const expected = [
   ...comparisonRoutes,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
+  ...sectionHubs,
   ...tools,
   ...calculators,
   ...reports,
@@ -100,6 +107,7 @@ const titles = new Set()
 const canonicals = new Set()
 const headings = new Set()
 const inbound = new Map(expected.map((route) => [route.path, 0]))
+const inboundPages = new Map(expected.map((route) => [route.path, new Set()]))
 for (const route of expected) {
   const file = route.path === '/' ? join(root, 'dist/index.html') : join(root, 'dist', route.path.slice(1), 'index.html')
   const html = await readFile(file, 'utf8')
@@ -236,8 +244,8 @@ for (const route of expected) {
     }
     const reportSchema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
     const breadcrumbs = reportSchema['@graph']?.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
-    if (breadcrumbs.length !== 2 || new Set(breadcrumbs.map((item) => item.item)).size !== 2) {
-      throw new Error(`${route.path} must expose a two-level, non-duplicated breadcrumb trail`)
+    if (breadcrumbs.length < 2 || new Set(breadcrumbs.map((item) => item.item)).size !== breadcrumbs.length) {
+      throw new Error(`${route.path} must expose a non-duplicated breadcrumb trail of at least two levels`)
     }
     if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
       throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
@@ -470,8 +478,8 @@ for (const route of expected) {
       throw new Error(`${route.path} is missing Dataset structured data`)
     }
     const breadcrumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
-    if (breadcrumbs.length !== 2 || new Set(breadcrumbs.map((item) => item.item)).size !== 2) {
-      throw new Error(`${route.path} must expose a two-level, non-duplicated breadcrumb trail`)
+    if (breadcrumbs.length < 2 || new Set(breadcrumbs.map((item) => item.item)).size !== breadcrumbs.length) {
+      throw new Error(`${route.path} must expose a non-duplicated breadcrumb trail of at least two levels`)
     }
     for (const asset of authorityAssets(route)) {
       if (!html.includes(`href="${asset.href}"`) || !html.includes('data-authority-download=')) {
@@ -563,6 +571,66 @@ for (const route of expected) {
     if (!schema['@graph']?.some((item) => item['@type'] === 'BreadcrumbList')) throw new Error(`${route.path} is missing BreadcrumbList`)
   }
 
+  if (route.path !== '/') {
+    const graphs = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]))
+    const nodes = graphs.flatMap((schema) => schema['@graph'] || [schema])
+    const trail = nodes.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (trail.length < 2) throw new Error(`${route.path} is missing its BreadcrumbList`)
+    if (trail.at(-1).item !== `${site.origin}${route.path}`) throw new Error(`${route.path} breadcrumb does not end at the page`)
+    trail.forEach((item, index) => {
+      if (item.position !== index + 1) throw new Error(`${route.path} breadcrumb positions are not sequential`)
+      if (!item.name || item.name.length > 60 || /[.!?]$/.test(item.name)) throw new Error(`${route.path} breadcrumb name is not a short page name: ${item.name}`)
+      const itemPath = new URL(item.item).pathname
+      if (!expectedPaths.has(itemPath)) throw new Error(`${route.path} breadcrumb links to unknown route ${itemPath}`)
+      if (!route.path.startsWith(itemPath)) throw new Error(`${route.path} breadcrumb level ${itemPath} is not an ancestor`)
+    })
+    for (const ancestor of expected) {
+      if (ancestor.path !== '/' && ancestor.path !== route.path && route.path.startsWith(ancestor.path) && !trail.some((item) => item.item === `${site.origin}${ancestor.path}`)) {
+        throw new Error(`${route.path} breadcrumb skips published level ${ancestor.path}`)
+      }
+    }
+  }
+  if (route.path !== '/') {
+    for (const tag of ['og:image', 'og:title', 'og:description', 'og:url']) {
+      if (!html.includes(`property="${tag}"`)) throw new Error(`${route.path} is missing ${tag}`)
+    }
+    if (!html.includes('name="twitter:card" content="summary_large_image"')) throw new Error(`${route.path} is missing its Twitter card`)
+    if (title.length > 70) throw new Error(`${route.path} title is ${title.length} characters`)
+  }
+  if (route === roiRoute && !html.includes('"@type":"WebApplication"')) throw new Error(`${route.path} is missing WebApplication structured data`)
+  if (route === economicsRoute && !html.includes('"@type":"WebPage"')) throw new Error(`${route.path} is missing WebPage structured data`)
+  if (route === economicsRoute && title.length > 60) throw new Error(`${route.path} title exceeds 60 characters`)
+  {
+    const expectedOrganization = JSON.stringify(organizationNode(site))
+    const organizations = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+      .flatMap((match) => JSON.parse(match[1])['@graph'] || [])
+      .filter((item) => item['@type'] === 'Organization')
+    if (organizations.length !== 1 || JSON.stringify(organizations[0]) !== expectedOrganization) {
+      throw new Error(`${route.path} Organization entity differs from site-graph organizationNode()`)
+    }
+  }
+  {
+    const softwareNodes = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+      .flatMap((match) => JSON.parse(match[1])['@graph'] || [])
+      .filter((item) => item['@type'] === 'SoftwareApplication')
+    if (softwareSchemaPaths.includes(route.path)) {
+      if (softwareNodes.length !== 1 || JSON.stringify(softwareNodes[0]) !== JSON.stringify(softwareApplicationNode(site))) {
+        throw new Error(`${route.path} SoftwareApplication entity differs from software-schema.mjs`)
+      }
+    } else if (softwareNodes.length) {
+      throw new Error(`${route.path} carries a SoftwareApplication node outside the approved pages`)
+    }
+  }
+  if (sectionHubs.includes(route)) {
+    const children = expected.filter((candidate) => candidate.path !== route.path && candidate.path.startsWith(route.path))
+    if (children.length < 2) throw new Error(`${route.path} hub has fewer than two children`)
+    for (const child of children) {
+      if (!html.includes(`href="${child.path}"`)) throw new Error(`${route.path} hub does not link ${child.path}`)
+    }
+    if (!html.includes('"@type":"CollectionPage"') || !html.includes('"@type":"ItemList"') || !html.includes(`"numberOfItems":${children.length}`)) {
+      throw new Error(`${route.path} hub is missing CollectionPage / ItemList structured data`)
+    }
+  }
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
@@ -573,6 +641,7 @@ for (const route of expected) {
     if (!expectedPaths.has(url.pathname) && crossLaneLinks.has(url.pathname)) continue
     if (!expectedPaths.has(url.pathname)) throw new Error(`${route.path} links to unknown route ${url.pathname}`)
     inbound.set(url.pathname, inbound.get(url.pathname) + 1)
+    if (url.pathname !== route.path) inboundPages.get(url.pathname).add(route.path)
   }
 
   if (route.path !== '/') {
@@ -678,10 +747,30 @@ try {
 for (const [path, count] of inbound) {
   if (path !== '/' && count === 0) throw new Error(`Orphan route: ${path}`)
 }
+for (const [path, sources] of inboundPages) {
+  if (path !== '/' && sources.size < 2) throw new Error(`Weakly linked route: ${path} has ${sources.size} linking page(s); add a contextual link`)
+}
+const valueDutyHtml = await readFile(join(root, 'dist/tools/customs-value-import-duty-vat-calculator/index.html'), 'utf8')
+for (const route of authorityRoutes.filter((candidate) => candidate.kind === 'incoterm-term')) {
+  if (!valueDutyHtml.includes(`href="${route.path}"`)) throw new Error(`Customs value calculator does not link ${route.path}`)
+}
+for (const path of ['how-it-works', 'supported-scope']) {
+  const html = await readFile(join(root, 'dist', path, 'index.html'), 'utf8')
+  const body = html.slice(html.indexOf('<div class="content-grid">'), html.indexOf('</main>'))
+  for (const money of ['/customs-declaration-software/', '/customs-clearance-software/']) {
+    if (!body.includes(`href="${money}"`)) throw new Error(`/${path}/ body copy does not link ${money}`)
+  }
+}
 
 const sitemap = await readFile(join(root, 'dist/sitemap.xml'), 'utf8')
 for (const route of expected) {
   if (!sitemap.includes(`<loc>${site.origin}${route.path}</loc>`)) throw new Error(`Sitemap missing ${route.path}`)
+}
+for (const route of expected) {
+  const lastmod = sitemap.match(new RegExp(`<loc>${site.origin}${route.path}</loc><lastmod>(\\d{4}-\\d{2}-\\d{2})</lastmod>`))?.[1]
+  const floor = [route.reviewedOn, route.publishedOn, route.modifiedOn].filter(Boolean).sort().at(-1)
+  if (!lastmod) throw new Error(`Sitemap is missing a lastmod for ${route.path}`)
+  if (floor && lastmod < floor) throw new Error(`Sitemap lastmod for ${route.path} is older than its own dates`)
 }
 const sitemapLocations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1])
 if (sitemapLocations.length !== expected.length || new Set(sitemapLocations).size !== expected.length) {
@@ -712,7 +801,10 @@ for (const crawler of [
   'OAI-SearchBot',
   'ChatGPT-User',
   'ClaudeBot',
+  'Claude-SearchBot',
+  'Claude-User',
   'PerplexityBot',
+  'Perplexity-User',
   'Applebot-Extended',
   'Google-Extended',
   'CCBot',
@@ -731,6 +823,16 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
     if (!content.includes(`${site.origin}${route.path}`)) throw new Error(`${filename} is missing ${route.path}`)
   }
   if (!content.includes('Declarix does not submit to HMRC')) throw new Error(`${filename} is missing the filing boundary`)
+}
+
+{
+  const llmsFull = await readFile(join(root, 'dist/llms-full.txt'), 'utf8')
+  const llmsIndex = await readFile(join(root, 'dist/llms.txt'), 'utf8')
+  for (const phrase of ['# Full text of the main pages', 'Desk', '£500', 'Up to 3', 'CDS-ready', 'Sequoia']) {
+    if (!llmsFull.includes(phrase)) throw new Error(`llms-full.txt is missing full-text content: ${phrase}`)
+  }
+  if (llmsFull.length < llmsIndex.length * 3) throw new Error('llms-full.txt is not materially fuller than llms.txt')
+  if (/<[a-z][^>]*>/i.test(llmsFull.split('# Full text of the main pages')[1])) throw new Error('llms-full.txt full text contains HTML tags')
 }
 
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
