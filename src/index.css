@@ -67,6 +67,8 @@
   --cleared: #1b7a4b;
   --muted: #5c6e76;
   --manifest: #c77b27;
+  /* text-safe amber: 4.9:1 on white and on the selected-row tint (WCAG AA) */
+  --manifest-text: #9a5b16;
   --border-w: 1.5px;
   --frame-w: 2px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -654,6 +656,7 @@ main,
 }
 
 .peek-doc span {
+  color: var(--ink);
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 9px;
   letter-spacing: 0.04em;
@@ -1046,7 +1049,7 @@ main,
 
 .flag-row:nth-child(3),
 .entry-grid-row:nth-child(14) {
-  color: var(--manifest);
+  color: var(--manifest-text);
 }
 
 .flight-deck {
@@ -1093,7 +1096,7 @@ main,
 
 .flag-cards span,
 .flag-cards em {
-  color: var(--manifest);
+  color: var(--manifest-text);
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 10px;
   font-style: normal;

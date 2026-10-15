@@ -778,7 +778,7 @@ function SecuritySection() {
             <p className="ledger-link-row">
               <span>FULL SECURITY NOTES</span>
               <strong>
-                <a href={appPath('/security/')}>→ /SECURITY</a>
+                <a href={appPath('/security/')} tabIndex={-1}>→ /SECURITY</a>
               </strong>
             </p>
           </div>
@@ -1346,9 +1346,11 @@ function HomePage() {
         if (heroReveals.includes(element)) return
         gsap.fromTo(
           element,
-          { autoAlpha: 0, y: reduceMotion ? 0 : 24 },
+          // opacity, not autoAlpha: headings parked before their reveal stay in
+          // the accessibility tree, so heading order is valid before scroll.
+          { opacity: 0, y: reduceMotion ? 0 : 24 },
           {
-            autoAlpha: 1,
+            opacity: 1,
             y: 0,
             duration: reduceMotion ? 0.2 : 0.45,
             ease: 'power3.out',
