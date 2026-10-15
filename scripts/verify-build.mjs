@@ -6,6 +6,7 @@ import { calculators } from './calculators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes } from './authority-library.mjs'
+import { alternativesRoutes, crossLaneLinks } from './alternatives.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
@@ -38,6 +39,8 @@ const publicSources = [
   'scripts/authority-library.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
+  'scripts/alternatives.mjs',
+  'scripts/alternatives-vendors.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -85,6 +88,7 @@ const expected = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...alternativesRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -511,12 +515,32 @@ for (const route of expected) {
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
+  if (alternativesRoutes.includes(route)) {
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    if (!html.includes('class="verdict"') || (html.match(/class="faq-item"/g) || []).length < 4) {
+      throw new Error(`${route.path} is missing its answer-first verdict or visible buyer questions`)
+    }
+    if (route.options && (!html.includes('<table class="compare-table">') || !html.includes('<th scope="row">Declarix</th>'))) {
+      throw new Error(`${route.path} is missing its semantic comparison table with Declarix first`)
+    }
+    if (route.kind === 'hub' && !html.includes('"@type":"ItemList"')) throw new Error(`${route.path} is missing ItemList structured data`)
+    for (const source of route.sources) {
+      if (!html.includes(source.url)) throw new Error(`${route.path} is missing source ${source.url}`)
+    }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    if (!schema['@graph']?.some((item) => item['@type'] === 'BreadcrumbList')) throw new Error(`${route.path} is missing BreadcrumbList`)
+  }
+
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
     const url = new URL(href, site.origin)
     if (url.origin !== site.origin) continue
     if (url.pathname.startsWith('/downloads/')) continue
+    // Sibling-lane routes (e.g. /compare/ from lane L2) are allowed until that lane merges.
+    if (!expectedPaths.has(url.pathname) && crossLaneLinks.has(url.pathname)) continue
     if (!expectedPaths.has(url.pathname)) throw new Error(`${route.path} links to unknown route ${url.pathname}`)
     inbound.set(url.pathname, inbound.get(url.pathname) + 1)
   }

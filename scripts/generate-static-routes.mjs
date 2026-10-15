@@ -9,6 +9,7 @@ import {
 } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
+import { alternativesRoutes, renderAlternativesRoute } from './alternatives.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { renderPricingTable } from './pricing.mjs'
@@ -151,6 +152,20 @@ function renderResourceKit(route) {
   </section>`
 }
 
+function renderRelated(route) {
+  if (!route.related?.length) return ''
+  const relatedId = `related-${route.path.split('/').filter(Boolean).join('-')}`
+  return `<section class="source-register" aria-labelledby="${relatedId}">
+    <header>
+      <span class="section-label">BUYER GUIDES</span>
+      <h2 id="${relatedId}">Compare before you choose.</h2>
+    </header>
+    <ol>${route.related
+      .map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a><span>${escapeHtml(link.copy)}</span></li>`)
+      .join('')}</ol>
+  </section>`
+}
+
 function routeAnalyticsScript(route) {
   if (!route.resourceKit) return ''
   return `<script>
@@ -275,6 +290,7 @@ function renderRoute(route) {
         ${route.path === '/pricing/' ? renderPricingTable() : ''}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
+        ${renderRelated(route)}
         ${renderSources(route)}
         <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${route.reviewedOn || site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
         <section class="cta-band">
@@ -284,7 +300,7 @@ function renderRoute(route) {
       </main>
       <footer class="footer">
         <span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span>
-        <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
+        <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/alternatives/">ALTERNATIVES</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
       </footer>
     </div>
     ${routeAnalyticsScript(route)}
@@ -632,6 +648,26 @@ for (const authorityRoute of authorityRoutes) {
   }
 }
 
+for (const alternativesRoute of alternativesRoutes) {
+  if (!alternativesRoute.path.startsWith('/') || !alternativesRoute.path.endsWith('/')) {
+    throw new Error(`Alternatives route must use a trailing slash: ${alternativesRoute.path}`)
+  }
+  if (paths.has(alternativesRoute.path)) throw new Error(`Duplicate route: ${alternativesRoute.path}`)
+  if (titles.has(alternativesRoute.title)) throw new Error(`Duplicate title: ${alternativesRoute.title}`)
+  if (headings.has(alternativesRoute.h1)) throw new Error(`Duplicate H1: ${alternativesRoute.h1}`)
+  if (alternativesRoute.title.length > 60) throw new Error(`Title over 60 characters: ${alternativesRoute.path}`)
+  if (alternativesRoute.description.length > 155) throw new Error(`Description over 155 characters: ${alternativesRoute.path}`)
+  if (alternativesRoute.sources.length < 2) throw new Error(`Alternatives route needs at least two sources: ${alternativesRoute.path}`)
+  if (alternativesRoute.faqs.length < 4) throw new Error(`Alternatives route needs visible buyer questions: ${alternativesRoute.path}`)
+  paths.add(alternativesRoute.path)
+  titles.add(alternativesRoute.title)
+  headings.add(alternativesRoute.h1)
+
+  const target = join(dist, alternativesRoute.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderAlternativesRoute(alternativesRoute, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
+}
+
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
 const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
@@ -653,6 +689,7 @@ const indexableRoutes = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...alternativesRoutes,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
