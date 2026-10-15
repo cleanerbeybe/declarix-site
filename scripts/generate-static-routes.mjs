@@ -14,6 +14,8 @@ import { economicsRoute, renderPreparationEconomics } from './preparation-econom
 import { renderPricingTable } from './pricing.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
+import { hubChildren, hubItemList, renderHubRegister, sectionHubs } from './section-hubs.mjs'
+import { breadcrumbHtml, breadcrumbList, registerRoutes, shortName } from './site-graph.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -22,6 +24,22 @@ const dist = join(root, 'dist')
 const posthogKey = process.env.VITE_POSTHOG_KEY || ''
 const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
 const publicEori = resolvePublicEoriReleaseConfig()
+
+const indexableRoutes = [
+  roiRoute,
+  economicsRoute,
+  ...routes,
+  ...sectionHubs,
+  ...tools,
+  ...calculators,
+  ...reports,
+  ...valueDutyWorkpapers,
+  ...(publicEori.enabled ? [eoriChecker] : []),
+  ...radarRoutes,
+  ...authorityRoutes,
+]
+registerRoutes(indexableRoutes)
+for (const hub of sectionHubs) hub.hubChildren = hubChildren(hub, indexableRoutes)
 
 const escapeHtml = (value) =>
   String(value)
@@ -59,10 +77,12 @@ function routeLinks() {
     ['FREE PACK CHECK', '/tools/customs-document-pack-check/'],
     ['CLEARANCE SOFTWARE', '/customs-clearance-software/'],
     ['REGISTRATION KIT', '/customs-intermediary-registration-2026/'],
-    ['RESEARCH', '/research/uk-customs-operations-signal-report-2026/'],
+    ['FREE TOOLS', '/tools/'],
+    ['RESEARCH', '/research/'],
     ['RADAR', '/research/cds-operations-radar/'],
     ['INCOTERMS', '/customs-reference/incoterms/'],
-    ['WORKFLOWS', '/customs-workflows/gmr-gvms-checklist/'],
+    ['WORKFLOWS', '/customs-workflows/'],
+    ['REFERENCE', '/customs-reference/'],
     ['HMRC BURDEN', '/research/hmrc-customs-administrative-burden-explorer-2026/'],
     ['SECURITY', '/security/'],
     ['ABOUT', '/about/'],
@@ -200,6 +220,7 @@ function jsonLd(route) {
         publisher: { '@id': `${site.origin}/#organization` },
         image: `${site.origin}/og.jpg`,
         citation: route.sources?.map((source) => source.url),
+        ...(route.hubChildren ? { mainEntity: hubItemList(site, route.hubChildren) } : {}),
       },
       {
         '@type': 'WebSite',
@@ -208,13 +229,7 @@ function jsonLd(route) {
         url: `${site.origin}/`,
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: route.h1, item: `${site.origin}${route.path}` },
-        ],
-      },
+      breadcrumbList(site, route.path, route.kind === 'section-hub' ? undefined : route.h1),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -257,7 +272,7 @@ function renderRoute(route) {
         <a class="masthead-cta" ${route.resourceKit ? 'data-kit-booking="masthead"' : ''} href="${bookingHref(route)}">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${routeLinks()}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div>
+      <div class="breadcrumbs">${breadcrumbHtml(route.path, escapeHtml(route.kind === 'section-hub' ? shortName(route).toUpperCase() : route.eyebrow))}</div>
       <main>
         <header class="hero">
           <div class="hero-copy">
@@ -272,6 +287,7 @@ function renderRoute(route) {
           </aside>
         </header>
         ${renderHeroStrip(route)}
+        ${route.hubChildren ? renderHubRegister(route, route.hubChildren) : ''}
         ${route.path === '/pricing/' ? renderPricingTable() : ''}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
         ${renderResourceKit(route)}
@@ -416,6 +432,19 @@ for (const route of routes) {
   const target = join(dist, route.path.slice(1), 'index.html')
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, renderRoute(route))
+}
+
+for (const hub of sectionHubs) {
+  if (paths.has(hub.path)) throw new Error(`Duplicate route: ${hub.path}`)
+  if (titles.has(hub.title)) throw new Error(`Duplicate title: ${hub.title}`)
+  if (headings.has(hub.h1)) throw new Error(`Duplicate H1: ${hub.h1}`)
+  if (hub.hubChildren.length < 2) throw new Error(`Section hub needs at least two children: ${hub.path}`)
+  paths.add(hub.path)
+  titles.add(hub.title)
+  headings.add(hub.h1)
+  const target = join(dist, hub.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderRoute(hub))
 }
 
 for (const tool of tools) {
@@ -641,19 +670,6 @@ if (paths.has(roiRoute.path) || titles.has(roiRoute.title) || headings.has(roiRo
 const roiTarget = join(dist, roiRoute.path.slice(1), 'index.html')
 await mkdir(dirname(roiTarget), { recursive: true })
 await writeFile(roiTarget, renderRoiCalculator(site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
-
-const indexableRoutes = [
-  roiRoute,
-  economicsRoute,
-  ...routes,
-  ...tools,
-  ...calculators,
-  ...reports,
-  ...valueDutyWorkpapers,
-  ...(publicEori.enabled ? [eoriChecker] : []),
-  ...radarRoutes,
-  ...authorityRoutes,
-]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

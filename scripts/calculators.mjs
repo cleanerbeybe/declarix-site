@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
 export const calculators = [
   {
     path: '/tools/customs-declaration-cost-calculator/',
@@ -91,13 +92,7 @@ function jsonLd(calculator, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: calculator.schemaName, item: `${site.origin}${calculator.path}` },
-        ],
-      },
+      breadcrumbList(site, calculator.path, calculator.schemaName),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -318,7 +313,7 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
         <a class="masthead-cta" href="/?src=tool_customs_declaration_cost_calculator#book">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → FREE TOOLS → DECLARATION COST CALCULATOR</div>
+      <div class="breadcrumbs">${breadcrumbHtml(calculator.path, 'DECLARATION COST CALCULATOR')}</div>
       <main>
         <header class="hero calculator-hero">
           <div class="hero-copy">

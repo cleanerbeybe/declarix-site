@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
 const escapeHtml = (value) =>
   String(value)
     .replaceAll('&', '&amp;')
@@ -358,13 +359,7 @@ function jsonLdHub(site) {
           })),
         },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: 'CDS Operations Radar', item: `${site.origin}${radarHub.path}` },
-        ],
-      },
+      breadcrumbList(site, radarHub.path, 'CDS Operations Radar'),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -396,14 +391,7 @@ function jsonLdRecord(record, site) {
         citation: [record.source.url],
         about: record.topics,
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: 'CDS Operations Radar', item: `${site.origin}${radarHub.path}` },
-          { '@type': 'ListItem', position: 3, name: record.title, item: `${site.origin}${record.path}` },
-        ],
-      },
+      breadcrumbList(site, record.path, record.title),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -576,7 +564,7 @@ export function renderRadarHub(site, options) {
   const stages = [...new Set(radarRecords.flatMap((record) => record.impacts.map((impact) => impact.stage)))].sort()
   const booking = '/?src=research_cds_operations_radar_hub#book'
   const body = `${masthead(site, options.navHtml, booking)}
-    <div class="breadcrumbs"><a href="/">HOME</a> → CDS OPERATIONS RADAR</div>
+    <div class="breadcrumbs">${breadcrumbHtml(radarHub.path, 'CDS OPERATIONS RADAR')}</div>
     <main>
       <header class="hero radar-hero">
         <div class="hero-copy">
@@ -650,7 +638,7 @@ export function renderRadarRecord(record, site, options) {
     .map((candidate) => `<a href="${candidate.path}" data-radar-record-link="${candidate.id}"><span>${escapeHtml(candidate.label)}</span><strong>${escapeHtml(candidate.title)}</strong><b>OPEN →</b></a>`)
     .join('')
   const body = `${masthead(site, options.navHtml, booking)}
-    <div class="breadcrumbs"><a href="/">HOME</a> → <a href="${radarHub.path}">CDS OPERATIONS RADAR</a> → ${escapeHtml(record.label)}</div>
+    <div class="breadcrumbs">${breadcrumbHtml(record.path, escapeHtml(record.label))}</div>
     <main>
       <header class="hero radar-record-hero">
         <div class="hero-copy">

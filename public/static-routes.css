@@ -582,6 +582,73 @@ a:focus-visible {
   color: var(--ink);
 }
 
+.hub-register {
+  padding: clamp(30px, 5vw, 60px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.hub-register h2 {
+  max-width: 24ch;
+  margin: 12px 0 22px;
+  font-size: clamp(27px, 3.4vw, 44px);
+  line-height: 1.02;
+}
+
+.hub-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--ink);
+}
+
+.hub-list li {
+  padding: 16px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.35);
+}
+
+.hub-list a {
+  font-size: 19px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.hub-list p {
+  max-width: 72ch;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.hub-list .hub-list {
+  margin: 14px 0 0 clamp(12px, 3vw, 28px);
+  border-top: 1px solid rgb(22 49 61 / 0.35);
+}
+
+.hub-list .hub-list li:last-child {
+  border-bottom: 0;
+}
+
+.hub-list .hub-list a {
+  font-size: 16px;
+}
+
+.hub-related {
+  margin-top: 34px;
+}
+
+.hub-related .hub-list {
+  margin-top: 12px;
+}
+
+.hub-register ~ .content-grid > .sheet:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  border-right: 0;
+}
+
 @media (max-width: 760px) {
   .docket {
     width: min(100% - 16px, 1180px);

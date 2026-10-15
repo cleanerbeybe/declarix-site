@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
 export const valueDutyWorkpapers = [
   {
     path: '/tools/customs-value-import-duty-vat-calculator/',
@@ -177,13 +178,7 @@ function jsonLd(workpaper, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: workpaper.schemaName, item: `${site.origin}${workpaper.path}` },
-        ],
-      },
+      breadcrumbList(site, workpaper.path, workpaper.schemaName),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -428,7 +423,7 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
         <a class="masthead-cta" href="/?src=tool_customs_value_duty_vat#book">BOOK THE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → FREE TOOLS → CUSTOMS VALUE + DUTY</div>
+      <div class="breadcrumbs">${breadcrumbHtml(workpaper.path, 'CUSTOMS VALUE + DUTY')}</div>
       <main>
         <header class="hero calculator-hero value-duty-hero">
           <div class="hero-copy">

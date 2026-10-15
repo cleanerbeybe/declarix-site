@@ -1,3 +1,4 @@
+import { breadcrumbHtml, breadcrumbList } from './site-graph.mjs'
 export const eoriChecker = {
   path: '/tools/eori-checker/',
   id: 'gb_eori_checker',
@@ -135,13 +136,7 @@ function jsonLd(checker, site) {
         author: { '@id': `${site.origin}/#organization` },
         publisher: { '@id': `${site.origin}/#organization` },
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.origin}/` },
-          { '@type': 'ListItem', position: 2, name: checker.schemaName, item: `${site.origin}${checker.path}` },
-        ],
-      },
+      breadcrumbList(site, checker.path, checker.schemaName),
     ],
   }).replaceAll('<', '\\u003c')
 }
@@ -427,7 +422,7 @@ export function renderEoriChecker(checker, site, { apiOrigin, navHtml, webmaster
         <a class="masthead-cta" data-eori-booking="masthead" href="/?src=tool_gb_eori_checker#book">BOOK THE 20-MINUTE NUMBERS CALL</a>
       </header>
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
-      <div class="breadcrumbs"><a href="/">HOME</a> → FREE TOOLS → GB EORI CHECKER</div>
+      <div class="breadcrumbs">${breadcrumbHtml(checker.path, 'GB EORI CHECKER')}</div>
       <main>
         <header class="hero eori-hero">
           <div class="hero-copy">

@@ -10,6 +10,7 @@ import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
+import { sectionHubs } from './section-hubs.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -78,6 +79,7 @@ const expected = [
   economicsRoute,
   { path: '/', title: 'Up to 3× more declarations per clerk | Declarix' },
   ...routes,
+  ...sectionHubs,
   ...tools,
   ...calculators,
   ...reports,
@@ -228,8 +230,8 @@ for (const route of expected) {
     }
     const reportSchema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
     const breadcrumbs = reportSchema['@graph']?.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
-    if (breadcrumbs.length !== 2 || new Set(breadcrumbs.map((item) => item.item)).size !== 2) {
-      throw new Error(`${route.path} must expose a two-level, non-duplicated breadcrumb trail`)
+    if (breadcrumbs.length < 2 || new Set(breadcrumbs.map((item) => item.item)).size !== breadcrumbs.length) {
+      throw new Error(`${route.path} must expose a non-duplicated breadcrumb trail of at least two levels`)
     }
     if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
       throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
@@ -462,8 +464,8 @@ for (const route of expected) {
       throw new Error(`${route.path} is missing Dataset structured data`)
     }
     const breadcrumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
-    if (breadcrumbs.length !== 2 || new Set(breadcrumbs.map((item) => item.item)).size !== 2) {
-      throw new Error(`${route.path} must expose a two-level, non-duplicated breadcrumb trail`)
+    if (breadcrumbs.length < 2 || new Set(breadcrumbs.map((item) => item.item)).size !== breadcrumbs.length) {
+      throw new Error(`${route.path} must expose a non-duplicated breadcrumb trail of at least two levels`)
     }
     for (const asset of authorityAssets(route)) {
       if (!html.includes(`href="${asset.href}"`) || !html.includes('data-authority-download=')) {
@@ -511,6 +513,34 @@ for (const route of expected) {
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }
 
+  if (route.path !== '/') {
+    const graphs = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]))
+    const nodes = graphs.flatMap((schema) => schema['@graph'] || [schema])
+    const trail = nodes.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (graphs.length && trail.length < 2) throw new Error(`${route.path} is missing its BreadcrumbList`)
+    if (trail.length && trail.at(-1).item !== `${site.origin}${route.path}`) throw new Error(`${route.path} breadcrumb does not end at the page`)
+    trail.forEach((item, index) => {
+      if (item.position !== index + 1) throw new Error(`${route.path} breadcrumb positions are not sequential`)
+      const itemPath = new URL(item.item).pathname
+      if (!expectedPaths.has(itemPath)) throw new Error(`${route.path} breadcrumb links to unknown route ${itemPath}`)
+      if (!route.path.startsWith(itemPath)) throw new Error(`${route.path} breadcrumb level ${itemPath} is not an ancestor`)
+    })
+    for (const ancestor of expected) {
+      if (ancestor.path !== '/' && ancestor.path !== route.path && route.path.startsWith(ancestor.path) && !trail.some((item) => item.item === `${site.origin}${ancestor.path}`)) {
+        throw new Error(`${route.path} breadcrumb skips published level ${ancestor.path}`)
+      }
+    }
+  }
+  if (sectionHubs.includes(route)) {
+    const children = expected.filter((candidate) => candidate.path !== route.path && candidate.path.startsWith(route.path))
+    if (children.length < 2) throw new Error(`${route.path} hub has fewer than two children`)
+    for (const child of children) {
+      if (!html.includes(`href="${child.path}"`)) throw new Error(`${route.path} hub does not link ${child.path}`)
+    }
+    if (!html.includes('"@type":"CollectionPage"') || !html.includes('"@type":"ItemList"') || !html.includes(`"numberOfItems":${children.length}`)) {
+      throw new Error(`${route.path} hub is missing CollectionPage / ItemList structured data`)
+    }
+  }
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
     const href = match[1]
     if (href.startsWith('#') || href.startsWith('mailto:')) continue
