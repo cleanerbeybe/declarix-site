@@ -7,9 +7,6 @@ import { declarix, hmrcList, HMRC_LIST_UPDATED, VENDOR_CHECKED, vendors } from '
 
 export const ALTERNATIVES_REVIEWED_ON = '2026-10-15'
 
-// Routes built in a sibling lane. The link is intentional; verify-build allows it until that lane merges.
-export const crossLaneLinks = new Set(['/compare/'])
-
 const PUBLISHED = '2026-10-15'
 
 const escapeHtml = (value) =>

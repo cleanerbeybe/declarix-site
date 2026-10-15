@@ -7,7 +7,7 @@ import { documentGenerators, templateCsv } from './document-generators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarDigests, radarHub, radarJson, radarLastObservedAt, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes, incotermExample } from './authority-library.mjs'
-import { alternativesRoutes, crossLaneLinks } from './alternatives.mjs'
+import { alternativesRoutes } from './alternatives.mjs'
 import { additionalRecords, documentRecords, errorRecords, procedureRecords, referenceAssets, referenceRoutes } from './customs-reference.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { agentFactsRoute } from './agent-facts.mjs'
@@ -867,8 +867,6 @@ for (const route of expected) {
     const url = new URL(href, site.origin)
     if (url.origin !== site.origin) continue
     if (url.pathname.startsWith('/downloads/')) continue
-    // Sibling-lane routes (e.g. /compare/ from lane L2) are allowed until that lane merges.
-    if (!expectedPaths.has(url.pathname) && crossLaneLinks.has(url.pathname)) continue
     // Agent-layer files (Markdown twins, JSON, feeds, llms.txt) are files, not routes; they must exist.
     if (/\.(?:md|json|xml|txt)$/.test(url.pathname)) {
       await access(join(root, 'dist', url.pathname.slice(1)))
@@ -1078,6 +1076,19 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
+
+// Owner ruling 15 Oct 2026: the site never mentions other organisations that use the name Declarix.
+// Scans every published text file (pages, Markdown twins, llms, JSON, feeds, SKILL.md).
+{
+  const { readdir } = await import('node:fs/promises')
+  const walk = async (dir) => (await Promise.all((await readdir(dir, { withFileTypes: true })).map((entry) => (entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)])))).flat()
+  const banned = /other organi[sz]ations (?:use|using|called|named|with) |use the name declarix|not connected to (?:them|us|declarix)|disambiguat/i
+  for (const file of await walk(join(root, 'dist'))) {
+    if (!/\.(?:html|md|txt|json|xml)$/.test(file)) continue
+    const hit = (await readFile(file, 'utf8')).match(banned)
+    if (hit) throw new Error(`${file.slice(root.length)} mentions other organisations using the Declarix name: "${hit[0]}"`)
+  }
+}
 
 await import('./verify-agent-layer.mjs')
 

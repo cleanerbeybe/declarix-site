@@ -131,7 +131,7 @@ for (const tier of packages) {
     if (!skill.includes(text)) fail(`/agents/SKILL.md is missing ${text}`)
   }
 }
-for (const text of [copy.pilot, site.companyNumber, 'Declarix Limited is not connected to them']) {
+for (const text of [copy.pilot, site.companyNumber, 'Declarix Limited is the UK company behind getdeclarix.com']) {
   if (!facts.includes(text)) fail(`/for-ai-assistants/ is missing "${text}"`)
 }
 if (!skill.includes(copy.pilot)) fail('/agents/SKILL.md is missing the pilot terms')

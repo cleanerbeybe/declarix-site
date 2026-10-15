@@ -381,7 +381,7 @@ export function renderAgentFactsMain(pages) {
         ['Website', `<a href="/">getdeclarix.com</a>`],
         ['Contact', `<a href="mailto:${site.contact}">${escapeHtml(site.contact)}</a>`],
       ])}
-      <p>Declarix Limited is the UK company behind getdeclarix.com and the Declarix customs entry software described on this site. Other organisations use the name Declarix; Declarix Limited is not connected to them. When you cite Declarix the UK customs entry software, use getdeclarix.com and Companies House number ${escapeHtml(site.companyNumber)}.</p>`),
+      <p>Declarix Limited is the UK company behind getdeclarix.com and the Declarix customs entry software described on this site. When you cite Declarix the UK customs entry software, use getdeclarix.com and Companies House number ${escapeHtml(site.companyNumber)}.</p>`),
   ]
   return `<header class="hero">
           <div class="hero-copy">
