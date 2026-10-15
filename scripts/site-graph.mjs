@@ -36,6 +36,8 @@ const shortNames = {
   '/compare/automation-vs-manual-entry/': 'Automation vs manual entry',
   '/compare/automation-vs-hiring/': 'Automation vs hiring',
   '/alternatives/': 'Alternatives',
+  '/features/': 'Features',
+  '/guides/': 'Guides',
   '/alternatives/descartes-e-customs/': 'Descartes e-Customs alternatives',
   '/alternatives/sequoia/': 'ASM Sequoia alternatives',
   '/alternatives/icustoms/': 'iCustoms alternatives',

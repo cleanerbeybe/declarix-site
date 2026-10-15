@@ -584,6 +584,11 @@ a:focus-visible {
 
 .hub-register {
   padding: clamp(30px, 5vw, 60px);
+}
+
+/* Related-links block, shared by static routes and product pages. */
+.pp-related {
+  padding: clamp(28px, 5vw, 56px);
   border-bottom: 1.5px solid var(--ink);
   background: var(--field);
 }
@@ -647,6 +652,34 @@ a:focus-visible {
 .hub-register ~ .content-grid > .sheet:last-child:nth-child(odd) {
   grid-column: 1 / -1;
   border-right: 0;
+}
+
+.pp-related ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0;
+  margin: 16px 0 0;
+  padding: 0;
+  border-top: 1.5px solid var(--ink);
+  list-style: none;
+}
+
+.pp-related li {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px 14px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.35);
+}
+
+.pp-related a {
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.pp-related span {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 @media (max-width: 760px) {

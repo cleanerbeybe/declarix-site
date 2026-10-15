@@ -18,6 +18,7 @@ import { economicsRoute, renderPreparationEconomics } from './preparation-econom
 import { comparisonRoutes, renderComparison, validateComparisons } from './comparisons.mjs'
 import { llmsFullText } from './llms-full.mjs'
 import { renderPricingTable } from './pricing.mjs'
+import { productPages, renderProductPage } from './product-pages.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
@@ -49,6 +50,7 @@ const indexableRoutes = [
   ...authorityRoutes,
   ...alternativesRoutes,
   ...referenceRoutes,
+  ...productPages,
 ]
 // The /customs-reference/ hub link (L5 strip, breadcrumbs) switches on once the L1 section hub is published.
 referenceHub.available = indexableRoutes.some((route) => route.path === referenceHub.path)
@@ -198,19 +200,24 @@ function renderResourceKit(route) {
   </section>`
 }
 
+function relatedItems(route) {
+  // One related list per route. Accepts both lane formats:
+  // objects {href, label, copy} (L2/L3) and arrays [label, path, note] (L7). Duplicate links are dropped.
+  const seen = new Set()
+  return (route.related || [])
+    .map((item) => (Array.isArray(item) ? { href: item[1], label: item[0], copy: item[2] } : item))
+    .filter((item) => !seen.has(item.href) && seen.add(item.href))
+}
+
 function renderRelated(route) {
   // Section hubs render their own related list inside the hub register.
   if (!route.related?.length || route.kind === 'section-hub') return ''
-  const relatedId = `related-${route.path.split('/').filter(Boolean).join('-')}`
-  return `<section class="source-register" aria-labelledby="${relatedId}">
-    <header>
-      <span class="section-label">BUYER GUIDES</span>
-      <h2 id="${relatedId}">Compare before you choose.</h2>
-    </header>
-    <ol>${route.related
-      .map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a><span>${escapeHtml(link.copy)}</span></li>`)
-      .join('')}</ol>
-  </section>`
+  return `<nav class="pp-related" aria-label="Related pages">
+      <span class="section-label">GO DEEPER</span>
+      <ul>${relatedItems(route)
+        .map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a><span>${escapeHtml(link.copy)}</span></li>`)
+        .join('')}</ul>
+    </nav>`
 }
 
 function routeAnalyticsScript(route) {
@@ -336,7 +343,7 @@ function renderRoute(route) {
       </main>
       <footer class="footer">
         <span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span>
-        <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/alternatives/">ALTERNATIVES</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
+        <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/alternatives/">ALTERNATIVES</a><a href="/features/">FEATURES</a><a href="/guides/">GUIDES</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
       </footer>
     </div>
     ${routeAnalyticsScript(route)}
@@ -769,6 +776,22 @@ for (const referenceRoute of referenceRoutes) {
     await mkdir(dirname(assetTarget), { recursive: true })
     await writeFile(assetTarget, asset.content)
   }
+}
+
+for (const page of productPages) {
+  if (!page.path.startsWith('/') || !page.path.endsWith('/')) throw new Error(`Product page must use a trailing slash: ${page.path}`)
+  if (paths.has(page.path)) throw new Error(`Duplicate route: ${page.path}`)
+  if (titles.has(page.title)) throw new Error(`Duplicate title: ${page.title}`)
+  if (headings.has(page.h1)) throw new Error(`Duplicate H1: ${page.h1}`)
+  if (page.title.length > 60) throw new Error(`Product page title over 60 characters: ${page.path}`)
+  if (page.description.length > 155) throw new Error(`Product page description over 155 characters: ${page.path}`)
+  if (page.family !== 'hub' && (page.faqs?.length || 0) < 4) throw new Error(`Product page needs visible answer-first FAQs: ${page.path}`)
+  paths.add(page.path)
+  titles.add(page.title)
+  headings.add(page.h1)
+  const target = join(dist, page.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderProductPage(page, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
 }
 
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')

@@ -194,6 +194,10 @@ export const routes = [
       },
     ],
     related: [
+      ['Customs preparation for ASM Sequoia', '/customs-workflows/customs-preparation-for-sequoia/', 'How the entry reaches Sequoia.'],
+      ['Customs preparation for Descartes e-Customs', '/customs-workflows/customs-preparation-for-descartes/', 'How the entry reaches e-Customs.'],
+      ['Customs preparation for CargoWise', '/customs-workflows/customs-preparation-for-cargowise/', 'The customer-integration route for CargoWise desks.'],
+      ['Automate customs without changing software', '/guides/automate-customs-without-changing-software/', 'Plan the first workflow.'],
       { href: '/customs-automation-software/', label: 'Customs automation software', copy: 'What Declarix automates at each stage and what your clerk decides.' },
       { href: '/alternatives/sequoia/', label: 'ASM Sequoia alternatives', copy: 'Keep Sequoia and add up to 3× more declarations per clerk.' },
       { href: '/alternatives/descartes-e-customs/', label: 'Descartes e-Customs alternatives', copy: 'Keep e-Customs and grow the desk without a migration.' },
@@ -348,6 +352,11 @@ export const routes = [
       },
     ],
     related: [
+      ['Customs document intake', '/features/customs-document-intake/', 'Step 01 in detail.'],
+      ['Customs exception management', '/features/customs-exception-management/', 'Step 03 in detail.'],
+      ['Customs approval workflow', '/features/customs-approval-workflow/', 'Maker and checker for flagged decisions.'],
+      ['Customs audit trail', '/features/customs-audit-trail/', 'Every decision and source kept.'],
+      ['CDS preflight checks', '/features/cds-preflight/', 'The schema check before handoff.'],
       { href: '/customs-automation-software/', label: 'Customs automation software', copy: 'The automation map, the exception path and the numbers.' },
       { href: '/best-customs-software/', label: 'Best customs declaration software UK', copy: 'Eight options compared on the criteria a UK desk uses.' },
       { href: '/alternatives/', label: 'Customs software alternatives', copy: 'Alternatives to Descartes, Sequoia, iCustoms, Flytta, Customaite, CargoWise and Customs4trade.' },
@@ -510,6 +519,11 @@ export const routes = [
   },
   {
     path: '/customs-declaration-software/',
+    related: [
+      ['All Declarix features', '/features/', 'Intake, exceptions, approval, audit trail and preflight.'],
+      ['Customs data validation guide', '/guides/customs-data-validation/', 'The four layers of checks.'],
+      ['Customs declaration document checklist', '/guides/customs-declaration-document-checklist/', 'What a complete import job contains.'],
+    ],
     ref: 'GUIDE 10 · CATEGORY',
     title: 'Customs declaration automation for Sequoia and Descartes',
     description:
@@ -566,6 +580,11 @@ export const routes = [
   },
   {
     path: '/customs-clearance-software/',
+    related: [
+      ['Automate customs without changing software', '/guides/automate-customs-without-changing-software/', 'Keep the filing layer; automate preparation.'],
+      ['Customs preparation for ASM Sequoia', '/customs-workflows/customs-preparation-for-sequoia/', 'The Sequoia workflow.'],
+      ['Customs preparation for Descartes e-Customs', '/customs-workflows/customs-preparation-for-descartes/', 'The e-Customs workflow.'],
+    ],
     ref: 'BUYER FILE 12 · CLEARANCE SOFTWARE',
     title: 'Customs clearance automation for broker workflows | Declarix',
     description:

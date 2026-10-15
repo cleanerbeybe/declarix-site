@@ -13,6 +13,7 @@ import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { comparisonRoutes, pageSources } from './comparisons.mjs'
 import { roiRoute } from './roi-calculator.mjs'
+import { productPages } from './product-pages.mjs'
 import { routes, site } from './routes.mjs'
 import { sectionHubs } from './section-hubs.mjs'
 import { organizationNode } from './site-graph.mjs'
@@ -55,6 +56,8 @@ const publicSources = [
   'scripts/site-graph.mjs',
   'scripts/software-schema.mjs',
   'scripts/document-generators.mjs',
+  'scripts/product-pages.mjs',
+  'scripts/product-pages-content.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -107,6 +110,7 @@ const expected = [
   ...authorityRoutes,
   ...alternativesRoutes,
   ...referenceRoutes,
+  ...productPages,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -730,6 +734,31 @@ for (const route of expected) {
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (productPages.includes(route)) {
+    if (/<script\s[^>]*src=/i.test(html) || /<form/i.test(html)) throw new Error(`${route.path} must stay static and collect no data`)
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const graph = schema['@graph'] || []
+    if (!graph.some((item) => item['@type'] === route.schemaType)) throw new Error(`${route.path} is missing ${route.schemaType} structured data`)
+    const crumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (crumbs.length < 2 || crumbs.at(-1).item !== `${site.origin}${route.path}`) throw new Error(`${route.path} has a broken breadcrumb trail`)
+    if (!html.includes('class="pp-answer"')) throw new Error(`${route.path} is missing its answer-first block`)
+    if (route.family !== 'hub' && (html.match(/class="pp-faq-item"/g) || []).length < 4) throw new Error(`${route.path} is missing visible FAQs`)
+    if (!html.includes('#book')) throw new Error(`${route.path} is missing the booking CTA`)
+    for (const image of html.matchAll(/<img\s[^>]*>/gi)) {
+      const src = image[0].match(/src="([^"]+)"/)?.[1]
+      const alt = image[0].match(/alt="([^"]*)"/)?.[1]
+      if (!alt || alt.length < 20) throw new Error(`${route.path} has an image without descriptive alt text`)
+      if (!/width="\d+"/.test(image[0]) || !/height="\d+"/.test(image[0])) throw new Error(`${route.path} image lacks dimensions`)
+      await access(join(root, 'dist', src.slice(1)))
+    }
+    for (const source of route.sources || []) {
+      if (!html.includes(source.url)) throw new Error(`${route.path} is missing source ${source.url}`)
+    }
   }
 
   for (const match of html.matchAll(/<a\s[^>]*href="([^"]+)"/gi)) {
