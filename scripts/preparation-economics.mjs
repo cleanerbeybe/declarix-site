@@ -5,7 +5,7 @@ export const economicsRoute = {
   path: '/compare/automation-vs-outsourcing/',
   title: 'Customs automation vs outsourcing cost model | Declarix',
   h1: 'Compare the cost of two preparation workflows.',
-  description: 'Compare in-house assisted preparation and outsourced data preparation using your own fees, time and review assumptions. No default savings or provider rates.',
+  description: 'Compare in-house assisted preparation and outsourced preparation using your own fees, time and review assumptions. No default savings or provider rates.',
   reviewedOn: '2026-09-15',
   modifiedOn: '2026-10-15',
 }
