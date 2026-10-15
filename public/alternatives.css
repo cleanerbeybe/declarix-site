@@ -1,0 +1,305 @@
+/* Alternatives hub, alternatives pages, buyer shortlist and automation page (lane L3, 15 Oct 2026). */
+.verdict {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  border-bottom: 2px solid var(--ink);
+  background: var(--field);
+}
+.verdict-answer,
+.verdict-takeaways {
+  padding: clamp(28px, 5vw, 60px);
+}
+.verdict-answer {
+  border-right: 1.5px solid var(--ink);
+}
+.verdict h2 {
+  max-width: 22ch;
+  margin: 12px 0 18px;
+  font-size: clamp(27px, 3.4vw, 44px);
+  line-height: 1.04;
+}
+.verdict p,
+.verdict li {
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.verdict-answer .answer-lead {
+  font-size: 19px;
+  font-weight: 700;
+}
+.verdict-takeaways {
+  background: #e7f3ec;
+}
+.verdict-takeaways ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.verdict-takeaways li + li {
+  margin-top: 10px;
+}
+.publisher-note {
+  margin: 0;
+  padding: 14px 24px;
+  border-bottom: 1.5px solid var(--ink);
+  font: 500 10px/1.6 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  background: var(--paper);
+}
+.block {
+  padding: clamp(28px, 5vw, 60px);
+  border-bottom: 1.5px solid var(--ink);
+  background: rgb(255 255 255 / 0.42);
+}
+.block > h2 {
+  max-width: 24ch;
+  margin: 12px 0 14px;
+  font-size: clamp(27px, 3.4vw, 44px);
+  line-height: 1.04;
+}
+.block > p {
+  max-width: 72ch;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.table-wrap {
+  margin-top: 24px;
+  overflow-x: auto;
+  border: 1.5px solid var(--ink);
+  background: var(--field);
+}
+.table-wrap:focus-visible {
+  outline: 3px solid var(--manifest);
+  outline-offset: 3px;
+}
+.compare-table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  text-align: left;
+}
+.compare-table caption {
+  padding: 14px 16px;
+  font: 500 11px/1.5 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: var(--muted);
+}
+.compare-table th,
+.compare-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #aebdc1;
+  font-size: 14px;
+  line-height: 1.5;
+  vertical-align: top;
+}
+.compare-table thead th {
+  color: #fff;
+  background: var(--ink);
+  font: 500 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.compare-table tbody th {
+  font-size: 16px;
+  font-weight: 900;
+}
+.compare-table tbody tr.is-declarix {
+  background: #e7f3ec;
+}
+.compare-table a {
+  font-weight: 700;
+}
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1.5px solid var(--ink);
+}
+.option {
+  padding: clamp(26px, 4vw, 48px);
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  background: rgb(255 255 255 / 0.42);
+}
+.option:nth-child(2n) {
+  border-right: 0;
+}
+.option.is-declarix {
+  grid-column: 1 / -1;
+  border-right: 0;
+  color: var(--paper);
+  background: var(--ink);
+}
+.option h3 {
+  margin: 10px 0 6px;
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.08;
+}
+.option .best-for {
+  display: inline-block;
+  margin: 6px 0 12px;
+  padding: 6px 10px;
+  color: var(--paper);
+  background: var(--cleared);
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+}
+.option p,
+.option li {
+  max-width: 70ch;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.option ul {
+  padding-left: 20px;
+}
+.option .fact-source {
+  font: 500 10px/1.6 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+.option.is-declarix .section-label {
+  color: rgb(247 246 241 / 0.7);
+}
+.option.is-declarix .button {
+  margin-top: 12px;
+}
+.faq-list {
+  margin: 20px 0 0;
+  border-top: 1.5px solid var(--ink);
+}
+.faq-item {
+  padding: 18px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.45);
+}
+.faq-item h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+  line-height: 1.3;
+}
+.faq-item p {
+  max-width: 72ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.related-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 20px 0 0;
+  padding: 0;
+  border-top: 1.5px solid var(--ink);
+  list-style: none;
+}
+.related-links li {
+  padding: 16px 16px 16px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.45);
+}
+.related-links a {
+  font-weight: 700;
+}
+.related-links span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.hub-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border-bottom: 1.5px solid var(--ink);
+  list-style: none;
+}
+.hub-list li {
+  padding: clamp(24px, 4vw, 44px);
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  background: rgb(255 255 255 / 0.42);
+}
+.hub-list li:nth-child(2n) {
+  border-right: 0;
+}
+.hub-list h3 {
+  margin: 10px 0 8px;
+  font-size: clamp(21px, 2.4vw, 30px);
+  line-height: 1.1;
+}
+.hub-list p {
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.6;
+}
+@media (max-width: 760px) {
+  .hero h1 {
+    max-width: none;
+    font-size: clamp(34px, 10vw, 52px);
+    overflow-wrap: break-word;
+  }
+  .verdict,
+  .options,
+  .hub-list {
+    grid-template-columns: 1fr;
+  }
+  .verdict-answer,
+  .option,
+  .hub-list li {
+    border-right: 0;
+  }
+  .verdict-answer {
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .verdict-answer,
+  .verdict-takeaways,
+  .block,
+  .option,
+  .hub-list li {
+    padding: 24px 16px;
+  }
+  .publisher-note {
+    padding: 12px 16px;
+  }
+  .table-wrap {
+    overflow-x: visible;
+    border: 0;
+    background: transparent;
+  }
+  .compare-table {
+    min-width: 0;
+  }
+  .compare-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .compare-table caption {
+    padding: 0 0 12px;
+  }
+  .compare-table tbody tr {
+    display: block;
+    margin-bottom: 14px;
+    border: 1.5px solid var(--ink);
+    background: var(--field);
+  }
+  .compare-table tbody th,
+  .compare-table tbody td {
+    display: block;
+    padding: 10px 14px;
+    border-bottom: 1px solid #d5dee0;
+    overflow-wrap: anywhere;
+  }
+  .compare-table tbody td::before {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    content: attr(data-label);
+    font: 500 10px/1.4 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+}
