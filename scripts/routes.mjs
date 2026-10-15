@@ -129,6 +129,12 @@ export const routes = [
   },
   {
     path: '/supported-scope/',
+    related: [
+      ['Customs preparation for ASM Sequoia', '/customs-workflows/customs-preparation-for-sequoia/', 'How the entry reaches Sequoia.'],
+      ['Customs preparation for Descartes e-Customs', '/customs-workflows/customs-preparation-for-descartes/', 'How the entry reaches e-Customs.'],
+      ['Customs preparation for CargoWise', '/customs-workflows/customs-preparation-for-cargowise/', 'The customer-integration route for CargoWise desks.'],
+      ['Automate customs without changing software', '/guides/automate-customs-without-changing-software/', 'Plan the first workflow.'],
+    ],
     ref: 'SCHEDULE 03 · PRODUCT FIT',
     title: 'Supported customs workflows and integrations | Declarix',
     description:
@@ -267,6 +273,13 @@ export const routes = [
   },
   {
     path: '/how-it-works/',
+    related: [
+      ['Customs document intake', '/features/customs-document-intake/', 'Step 01 in detail.'],
+      ['Customs exception management', '/features/customs-exception-management/', 'Step 03 in detail.'],
+      ['Customs approval workflow', '/features/customs-approval-workflow/', 'Maker and checker for flagged decisions.'],
+      ['Customs audit trail', '/features/customs-audit-trail/', 'Every decision and source kept.'],
+      ['CDS preflight checks', '/features/cds-preflight/', 'The schema check before handoff.'],
+    ],
     ref: 'FORM 06 · OPERATING FLOW',
     title: 'How Declarix builds CDS-ready customs entry packs',
     description:
@@ -480,6 +493,11 @@ export const routes = [
   },
   {
     path: '/customs-declaration-software/',
+    related: [
+      ['All Declarix features', '/features/', 'Intake, exceptions, approval, audit trail and preflight.'],
+      ['Customs data validation guide', '/guides/customs-data-validation/', 'The four layers of checks.'],
+      ['Customs declaration document checklist', '/guides/customs-declaration-document-checklist/', 'What a complete import job contains.'],
+    ],
     ref: 'GUIDE 10 · CATEGORY',
     title: 'Customs declaration automation for Sequoia and Descartes',
     description:
@@ -536,6 +554,11 @@ export const routes = [
   },
   {
     path: '/customs-clearance-software/',
+    related: [
+      ['Automate customs without changing software', '/guides/automate-customs-without-changing-software/', 'Keep the filing layer; automate preparation.'],
+      ['Customs preparation for ASM Sequoia', '/customs-workflows/customs-preparation-for-sequoia/', 'The Sequoia workflow.'],
+      ['Customs preparation for Descartes e-Customs', '/customs-workflows/customs-preparation-for-descartes/', 'The e-Customs workflow.'],
+    ],
     ref: 'BUYER FILE 12 · CLEARANCE SOFTWARE',
     title: 'Customs clearance automation for broker workflows | Declarix',
     description:

@@ -12,6 +12,7 @@ import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './author
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { renderPricingTable } from './pricing.mjs'
+import { productPages, renderProductPage } from './product-pages.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -151,6 +152,16 @@ function renderResourceKit(route) {
   </section>`
 }
 
+function renderRouteRelated(route) {
+  if (!route.related?.length) return ''
+  return `<nav class="pp-related" aria-label="Related pages">
+      <span class="section-label">GO DEEPER</span>
+      <ul>${route.related
+        .map(([label, path, note]) => `<li><a href="${path}">${escapeHtml(label)}</a><span>${escapeHtml(note)}</span></li>`)
+        .join('')}</ul>
+    </nav>`
+}
+
 function routeAnalyticsScript(route) {
   if (!route.resourceKit) return ''
   return `<script>
@@ -274,6 +285,7 @@ function renderRoute(route) {
         ${renderHeroStrip(route)}
         ${route.path === '/pricing/' ? renderPricingTable() : ''}
         <div class="content-grid">${route.sections.map(renderSection).join('')}</div>
+        ${renderRouteRelated(route)}
         ${renderResourceKit(route)}
         ${renderSources(route)}
         <div class="source-stamp">SOURCE AND CORRECTIONS · REVIEWED ${route.reviewedOn || site.reviewedOn} · <a href="/editorial-policy/">READ THE POLICY</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
@@ -284,7 +296,7 @@ function renderRoute(route) {
       </main>
       <footer class="footer">
         <span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span>
-        <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
+        <nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/pricing-policy/">PRICING POLICY</a><a href="/customs-declaration-software/">CUSTOMS SOFTWARE</a><a href="/features/">FEATURES</a><a href="/guides/">GUIDES</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav>
       </footer>
     </div>
     ${routeAnalyticsScript(route)}
@@ -632,6 +644,22 @@ for (const authorityRoute of authorityRoutes) {
   }
 }
 
+for (const page of productPages) {
+  if (!page.path.startsWith('/') || !page.path.endsWith('/')) throw new Error(`Product page must use a trailing slash: ${page.path}`)
+  if (paths.has(page.path)) throw new Error(`Duplicate route: ${page.path}`)
+  if (titles.has(page.title)) throw new Error(`Duplicate title: ${page.title}`)
+  if (headings.has(page.h1)) throw new Error(`Duplicate H1: ${page.h1}`)
+  if (page.title.length > 60) throw new Error(`Product page title over 60 characters: ${page.path}`)
+  if (page.description.length > 155) throw new Error(`Product page description over 155 characters: ${page.path}`)
+  if (page.family !== 'hub' && (page.faqs?.length || 0) < 4) throw new Error(`Product page needs visible answer-first FAQs: ${page.path}`)
+  paths.add(page.path)
+  titles.add(page.title)
+  headings.add(page.h1)
+  const target = join(dist, page.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderProductPage(page, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
+}
+
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
 const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
@@ -653,6 +681,7 @@ const indexableRoutes = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...productPages,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
