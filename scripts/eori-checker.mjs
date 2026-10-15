@@ -4,7 +4,7 @@ export const eoriChecker = {
   ref: 'PUBLIC TOOL 04 · GB EORI',
   title: 'GB EORI number checker | Free HMRC registry check',
   schemaName: 'Free GB EORI number checker',
-  reviewedOn: '2026-07-17',
+  reviewedOn: '2026-10-12',
   description:
     'Check one GB EORI number against HMRC’s current registry, see the source and timestamp, and get the right XI or EU checker handoff without signing up.',
   eyebrow: 'FREE GB EORI CHECKER · HMRC REGISTRY RESULT · NO SIGN-UP',
@@ -15,25 +15,25 @@ export const eoriChecker = {
     {
       title: 'Check an EORI Number API v1.0',
       publisher: 'HM Revenue & Customs · Developer Hub',
-      checked: '17 JULY 2026',
+      checked: '12 OCTOBER 2026',
       url: 'https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/check-eori-number-api/1.0',
     },
     {
       title: 'Finding and checking an EORI',
       publisher: 'HM Revenue & Customs · GOV.UK',
-      checked: '17 JULY 2026',
-      url: 'https://www.gov.uk/guidance/economic-operators-registration-and-identification-eori/finding-and-checking-an-eori',
+      checked: '12 OCTOBER 2026',
+      url: 'https://www.gov.uk/guidance/economic-operators-registration-and-identification-eori/finding-and-checking-an-eori-number',
     },
     {
       title: 'Check an EORI number',
       publisher: 'European Commission · Taxation and Customs Union',
-      checked: '17 JULY 2026',
+      checked: '12 OCTOBER 2026',
       url: 'https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en',
     },
     {
       title: 'Get an EORI number',
       publisher: 'HM Revenue & Customs · GOV.UK',
-      checked: '17 JULY 2026',
+      checked: '12 OCTOBER 2026',
       url: 'https://www.gov.uk/eori',
     },
   ],
@@ -272,10 +272,16 @@ function checkerScript(checker, apiOrigin, posthogKey, posthogHost) {
           payload,
           showActions: false,
         });
+        status.textContent = heading.textContent;
         track('eori_check_unavailable', { reason });
       };
-      const assertContract = (payload) => {
+      // Match the backend's NFKC, case, Python whitespace and common dash rules.
+      // Other punctuation is retained, so it cannot silently change identity.
+      const normalizeEori = (value) => value.normalize('NFKC').toUpperCase()
+        .replace(/[\\t-\\r\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\u002d\\u2013\\u2014]/g, '');
+      const assertContract = (payload, submittedEori) => {
         if (!payload || typeof payload !== 'object' || typeof payload.normalized_eori !== 'string') throw new Error('contract');
+        if (payload.normalized_eori !== submittedEori) throw new Error('contract');
         if (!payload.format || !['valid', 'invalid', 'not_supported'].includes(payload.format.status)) throw new Error('contract');
         if (!payload.registry || !['valid', 'invalid', 'unavailable', 'not_checked'].includes(payload.registry.status)) throw new Error('contract');
         if (payload.format.status === 'valid' && ['valid', 'invalid'].includes(payload.registry.status)) {
@@ -296,6 +302,7 @@ function checkerScript(checker, apiOrigin, posthogKey, posthogHost) {
           return;
         }
         input.setCustomValidity('');
+        const submittedEori = normalizeEori(candidate);
         button.disabled = true;
         button.textContent = 'CHECKING HMRC…';
         status.textContent = 'Checking one GB EORI number with HMRC.';
@@ -320,7 +327,7 @@ function checkerScript(checker, apiOrigin, posthogKey, posthogHost) {
             unavailable('api_response', 'The checker could not reach the registry service. Try again shortly.');
             return;
           }
-          const payload = assertContract(await response.json());
+          const payload = assertContract(await response.json(), submittedEori);
           if (payload.format.status === 'not_supported') {
             showResult({
               state: 'unsupported',
