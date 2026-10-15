@@ -5,13 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:economics && npm run test:roi && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
+    "build": "npm run test:economics && npm run test:roi && npm run test:eori && npm run test:generators && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/verify-build.mjs",
     "lint": "oxlint",
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
     "submit:indexnow": "node scripts/submit-indexnow.mjs",
     "test:economics": "node --test tests/preparation-economics.test.mjs",
     "test:roi": "node --test tests/roi-calculator.test.mjs",
+    "test:eori": "node --test tests/eori-checker.test.mjs",
+    "test:eori:browser": "node tests/eori-checker.browser.cjs",
+    "test:generators": "node --test tests/document-generators.test.mjs",
+    "test:generators:browser": "node tests/document-generators.browser.cjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs"
   },
   "dependencies": {

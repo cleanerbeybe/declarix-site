@@ -6,7 +6,7 @@ export const valueDutyWorkpapers = [
     ref: 'WORKPAPER 03 · VALUATION + DUTY',
     title: 'Customs value, ad valorem duty and VAT calculator | Free UK tool',
     schemaName: 'Customs value, ad valorem duty and VAT planning workpaper',
-    reviewedOn: '2026-07-17',
+    reviewedOn: '2026-10-15',
     modifiedOn: '2026-10-15',
     description:
       'Build a transparent UK customs value, ad valorem import duty, import VAT value, and tax scenario using only the exchange rates and charges you enter.',
@@ -44,6 +44,21 @@ export const valueDutyWorkpapers = [
         question: 'Does this calculate specific or compound customs duties?',
         answer:
           'No. This version applies only an ad valorem percentage to customs value. If the tariff measure uses an amount per weight or unit, or combines that amount with a percentage, use the applicable tariff calculation instead of this duty result.',
+      },
+      {
+        question: 'How is import duty calculated in the UK?',
+        answer:
+          'For a percentage (ad valorem) duty, multiply the customs value in pounds by the duty rate for the commodity code. The customs value under the transaction-value method usually starts from the price paid, converted to pounds, plus transport and insurance to the UK border and any other required additions. This calculator shows each of those steps.',
+      },
+      {
+        question: 'Is import VAT charged on top of the duty?',
+        answer:
+          'Yes. HMRC builds the VAT value from the customs value plus customs duty, any other import charges and relevant incidental expenses, then applies the VAT rate. That is why import VAT is usually more than 20% of the goods price alone.',
+      },
+      {
+        question: 'Do goods from the EU pay import duty?',
+        answer:
+          'Goods that originate in the EU can qualify for a 0% preferential rate under the UK–EU Trade and Cooperation Agreement when the rules of origin are met and the importer holds the required proof of origin. Otherwise the standard rate for the commodity code applies. Enter the rate you have established for the movement.',
       },
     ],
     sources: [
@@ -199,6 +214,57 @@ function renderQuestions(workpaper) {
         <p>${escapeHtml(item.answer)}</p>
       </details>`,
     )
+    .join('')
+}
+
+const workedExamples = [
+  {
+    id: 'A',
+    title: 'EU goods invoiced in euros',
+    story: 'A UK importer buys €10,000 of machine parts. Freight to the UK border is £500 and insurance £100. The tariff rate entered is 4%, with £150 of incidental expenses and 20% VAT.',
+    currency: '€',
+    input: { goodsAmount: 10000, fxRate: 1.1564, freight: 500, insurance: 100, additions: 0, deductions: 0, dutyRate: 4, otherImportCharges: 0, incidentalExpenses: 150, vatRate: 20 },
+  },
+  {
+    id: 'B',
+    title: 'US goods at a 0% duty rate',
+    story: 'A $2,500 order of goods whose commodity code carries a 0% rate. Freight is £180 and insurance £20. Duty is nil, but import VAT at 20% still applies to the full VAT value.',
+    currency: '$',
+    input: { goodsAmount: 2500, fxRate: 1.3, freight: 180, insurance: 20, additions: 0, deductions: 0, dutyRate: 0, otherImportCharges: 0, incidentalExpenses: 0, vatRate: 20 },
+  },
+  {
+    id: 'C',
+    title: 'Sterling invoice with a royalty addition',
+    story: 'A £1,200 invoice with £60 freight and a £100 royalty that must be added to the customs value. The tariff rate entered is 12%, with £40 of incidental expenses and 20% VAT.',
+    currency: '£',
+    input: { goodsAmount: 1200, fxRate: 1, freight: 60, insurance: 0, additions: 100, deductions: 0, dutyRate: 12, otherImportCharges: 0, incidentalExpenses: 40, vatRate: 20 },
+  },
+]
+
+function renderWorkedExamples() {
+  const gbp = (value) => new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
+  const num = (value) => value.toLocaleString('en-GB', { maximumFractionDigits: 4 })
+  return workedExamples
+    .map((example) => {
+      const i = example.input
+      const r = calculateValueDutyScenario(i)
+      const goods = example.currency === '£' ? gbp(i.goodsAmount) : `${example.currency}${num(i.goodsAmount)} ÷ ${num(i.fxRate)}`
+      return `<article class="duty-example">
+        <span class="section-label">WORKED EXAMPLE ${example.id}</span>
+        <h3>${escapeHtml(example.title)}</h3>
+        <p>${escapeHtml(example.story)}</p>
+        <div class="duty-example-scroll" tabindex="0" role="region" aria-label="Worked example ${example.id}"><table>
+          <tbody>
+            <tr><th scope="row">Converted goods</th><td>${goods}</td><td>${gbp(r.convertedGoods)}</td></tr>
+            <tr><th scope="row">Customs value</th><td>+ freight ${gbp(i.freight)} + insurance ${gbp(i.insurance)}${i.additions ? ` + additions ${gbp(i.additions)}` : ''}</td><td>${gbp(r.customsValue)}</td></tr>
+            <tr><th scope="row">Import duty</th><td>${gbp(r.customsValue)} × ${num(i.dutyRate)}%</td><td>${gbp(r.customsDuty)}</td></tr>
+            <tr><th scope="row">VAT value</th><td>Customs value + duty${i.incidentalExpenses ? ` + incidentals ${gbp(i.incidentalExpenses)}` : ''}</td><td>${gbp(r.importVatValue)}</td></tr>
+            <tr><th scope="row">Import VAT</th><td>${gbp(r.importVatValue)} × ${num(i.vatRate)}%</td><td>${gbp(r.importVat)}</td></tr>
+            <tr class="duty-example-total"><th scope="row">Duty + VAT</th><td>Import duty + import VAT</td><td>${gbp(r.taxDutyTotal)}</td></tr>
+          </tbody>
+        </table></div>
+      </article>`
+    })
     .join('')
 }
 
@@ -522,7 +588,19 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
 
         <section class="formula-register value-duty-formulas" aria-labelledby="value-duty-formulas-heading"><header><span class="section-label">FORMULA CONTRACT</span><h2 id="value-duty-formulas-heading">Every step is inspectable.</h2><p>The arithmetic is deterministic and runs in this browser. Change one input and rebuild the scenario; no hidden rate or tariff table changes the result.</p></header><div><p><b>CONVERTED GOODS</b><code>GOODS AMOUNT ÷ INVOICE-CURRENCY UNITS PER £1</code></p><p><b>CUSTOMS VALUE</b><code>CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS</code></p><p><b>AD VALOREM DUTY</b><code>CUSTOMS VALUE × YOUR PERCENTAGE DUTY RATE ÷ 100</code></p><p><b>IMPORT VAT VALUE</b><code>CUSTOMS VALUE + DUTY + OTHER IMPORT CHARGES + INCIDENTAL EXPENSES</code></p><p><b>IMPORT VAT</b><code>IMPORT VAT VALUE × YOUR VAT RATE ÷ 100</code></p><p><b>DUTIES + TAXES</b><code>DUTY + OTHER IMPORT CHARGES + IMPORT VAT</code></p></div></section>
 
-        <section class="related-workpapers" aria-labelledby="related-workpapers-heading"><header><span class="section-label">KEEP WORKING</span><h2 id="related-workpapers-heading">Take the number into the operation.</h2><p>Use the Declarix research and free workbench to test desk economics, map the document handoff, and prepare for the customs intermediary registration next steps.</p></header><nav aria-label="Related free Declarix resources"><a href="/research/uk-customs-operations-signal-report-2026/"><span>ORIGINAL RESEARCH</span><strong>UK customs operations signals</strong><b>READ THE REPORT →</b></a><a href="/tools/customs-declaration-cost-calculator/"><span>FREE CALCULATOR</span><strong>Customs desk economics</strong><b>RUN THE COST MODEL →</b></a><a href="/tools/customs-document-pack-check/"><span>FREE WORKPAPER</span><strong>Customs document pack check</strong><b>MAP THE HANDOFF →</b></a><a href="/customs-intermediary-registration-2026/"><span>FREE RESPONSE KIT</span><strong>Customs intermediary registration 2026</strong><b>OPEN THE KIT →</b></a></nav></section>
+        <section class="duty-guide" id="import-duty-calculator-uk" aria-labelledby="duty-guide-heading">
+          <header><span class="section-label">IMPORT DUTY CALCULATOR UK</span><h2 id="duty-guide-heading">Import duty calculator UK: how duty and VAT are worked out</h2><p>UK import duty on a percentage-rate commodity is the customs value in pounds multiplied by the tariff rate. Import VAT is then charged on the customs value plus the duty, other import charges and incidental expenses. The calculator above runs both steps with your own rates and shows every line.</p></header>
+          <ol class="duty-steps">
+            <li><b>01</b><div><strong>Find the commodity code and rate.</strong><p>Look the goods up in the <a href="https://www.gov.uk/trade-tariff">UK Trade Tariff</a>. Note the duty rate for the origin and any preference you can prove.</p></div></li>
+            <li><b>02</b><div><strong>Convert the invoice to pounds.</strong><p>Use the HMRC exchange rate for the period. Enter it as currency units per £1, the way HMRC publishes it.</p></div></li>
+            <li><b>03</b><div><strong>Build the customs value.</strong><p>Add freight and insurance to the UK border and any required additions, such as royalties or assists. Take off permitted deductions.</p></div></li>
+            <li><b>04</b><div><strong>Apply duty, then VAT.</strong><p>Duty is the customs value × rate. VAT is the VAT value × VAT rate, where the VAT value includes the duty.</p></div></li>
+          </ol>
+          <div class="duty-examples">${renderWorkedExamples()}</div>
+          <p class="duty-guide-note">The rates in these examples show how the arithmetic works. Take the rate for your own goods from the UK Trade Tariff. Need the invoice first? <a href="/tools/commercial-invoice-generator/">Build a commercial invoice with the free generator</a>.</p>
+        </section>
+
+        <section class="related-workpapers" aria-labelledby="related-workpapers-heading"><header><span class="section-label">KEEP WORKING</span><h2 id="related-workpapers-heading">Take the number into the operation.</h2><p>Use the Declarix research and free workbench to test desk economics, map the document handoff, and prepare for the customs intermediary registration next steps.</p></header><nav aria-label="Related free Declarix resources"><a href="/research/uk-customs-operations-signal-report-2026/"><span>ORIGINAL RESEARCH</span><strong>UK customs operations signals</strong><b>READ THE REPORT →</b></a><a href="/tools/customs-declaration-cost-calculator/"><span>FREE CALCULATOR</span><strong>Customs desk economics</strong><b>RUN THE COST MODEL →</b></a><a href="/tools/customs-document-pack-check/"><span>FREE WORKPAPER</span><strong>Customs document pack check</strong><b>MAP THE HANDOFF →</b></a><a href="/tools/commercial-invoice-generator/"><span>FREE GENERATOR</span><strong>Commercial invoice template and generator</strong><b>BUILD THE INVOICE →</b></a><a href="/customs-intermediary-registration-2026/"><span>FREE RESPONSE KIT</span><strong>Customs intermediary registration 2026</strong><b>OPEN THE KIT →</b></a></nav></section>
 
         <section class="calculator-cta value-duty-cta"><div><span class="section-label">20-MINUTE NUMBERS CALL</span><h2>Now connect value, workflow and desk economics.</h2><p>Bring a representative document flow, the customs system your team files through, and the desk numbers you want to test. Leave with the integration route and recommended first workflow.</p></div><a class="button" id="value-duty-booking" href="/?src=tool_customs_value_duty_vat#book">BOOK THE 20-MINUTE NUMBERS CALL</a></section>
 

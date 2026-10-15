@@ -50,6 +50,8 @@ const shortNames = {
   '/tools/customs-declaration-cost-calculator/': 'Declaration cost calculator',
   '/tools/customs-value-import-duty-vat-calculator/': 'Customs value, duty and VAT calculator',
   '/tools/eori-checker/': 'GB EORI checker',
+  '/tools/commercial-invoice-generator/': 'Commercial invoice generator',
+  '/tools/packing-list-generator/': 'Packing list generator',
   '/research/': 'Research',
   '/research/uk-customs-operations-signal-report-2026/': 'UK customs operations signal report 2026',
   '/research/hmrc-customs-administrative-burden-explorer-2026/': 'HMRC customs burden explorer 2026',

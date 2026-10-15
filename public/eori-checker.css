@@ -594,3 +594,178 @@
     color: var(--ink) !important;
   }
 }
+
+/* EORI guide sections (how to check, GB vs EU, errors, how to get one). */
+.eori-guide {
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+
+.eori-guide > header {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.42fr) minmax(250px, 0.75fr) minmax(260px, 0.83fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: start;
+  padding: clamp(38px, 6vw, 72px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.eori-guide > header h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.6vw, 46px);
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.eori-guide > header p {
+  max-width: 62ch;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.eori-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eori-steps li {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: clamp(24px, 3.5vw, 40px);
+  border-right: 1.5px solid var(--ink);
+}
+
+.eori-steps li:last-child {
+  border-right: 0;
+}
+
+.eori-steps b,
+.eori-get span {
+  color: var(--manifest);
+  font: 600 11px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+}
+
+.eori-steps strong,
+.eori-errors strong {
+  display: block;
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.eori-steps p,
+.eori-errors p,
+.eori-get p,
+.eori-get li {
+  margin: 8px 0 0;
+  line-height: 1.6;
+}
+
+.eori-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: clamp(24px, 4vw, 48px);
+}
+
+.eori-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.eori-table th,
+.eori-table td {
+  padding: 12px 14px;
+  border: 1px solid rgb(22 49 61 / 0.45);
+  text-align: left;
+  vertical-align: top;
+}
+
+.eori-table thead th {
+  color: var(--paper);
+  background: var(--ink);
+  font: 600 11px/1.3 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.eori-errors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.eori-errors article {
+  padding: clamp(24px, 3.5vw, 40px);
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.eori-errors article:nth-child(3n) {
+  border-right: 0;
+}
+
+.eori-errors article:nth-last-child(-n + 3) {
+  border-bottom: 0;
+}
+
+.eori-get {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.eori-get article {
+  padding: clamp(28px, 4vw, 48px);
+}
+
+.eori-get article:first-child {
+  border-right: 1.5px solid var(--ink);
+}
+
+.eori-get ul {
+  margin: 12px 0 0;
+  padding-left: 20px;
+}
+
+.eori-related nav a:nth-child(3) {
+  border-right: 0;
+}
+
+.eori-related nav a:nth-child(n + 4) {
+  border-top: 1.5px solid var(--ink);
+}
+
+@media (max-width: 760px) {
+  .eori-guide > header,
+  .eori-steps,
+  .eori-errors,
+  .eori-get {
+    grid-template-columns: 1fr;
+  }
+
+  .eori-guide > header {
+    padding: 34px 22px;
+  }
+
+  .eori-steps li,
+  .eori-errors article,
+  .eori-errors article:nth-child(3n),
+  .eori-get article:first-child {
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .eori-steps li:last-child,
+  .eori-errors article:last-child {
+    border-bottom: 0;
+  }
+
+  .eori-table-scroll {
+    padding: 22px;
+  }
+}

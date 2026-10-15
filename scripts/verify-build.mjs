@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Script } from 'node:vm'
 import { calculators } from './calculators.mjs'
+import { documentGenerators, templateCsv } from './document-generators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes, incotermExample } from './authority-library.mjs'
@@ -53,6 +54,7 @@ const publicSources = [
   'scripts/section-hubs.mjs',
   'scripts/site-graph.mjs',
   'scripts/software-schema.mjs',
+  'scripts/document-generators.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -99,6 +101,7 @@ const expected = [
   ...calculators,
   ...reports,
   ...valueDutyWorkpapers,
+  ...documentGenerators,
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
@@ -320,6 +323,53 @@ for (const route of expected) {
     ]) {
       if (!html.includes(`id="${outputId}"`)) throw new Error(`${route.path} is missing output ${outputId}`)
     }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (documentGenerators.includes(route)) {
+    if (/type="email"/i.test(html) || /type="password"/i.test(html) || /<form[^>]*action=/i.test(html)) {
+      throw new Error(`${route.path} must not post or collect contact data`)
+    }
+    if (/fetch\(config\.apiUrl|XMLHttpRequest/.test(html)) throw new Error(`${route.path} must keep document data in the browser`)
+    for (const phrase of [
+      'Your data never leaves your browser.',
+      'id="gen-preview"',
+      'id="gen-print"',
+      'id="gen-csv"',
+      'id="gen-json"',
+      'id="gen-print-blank"',
+      'window.print()',
+      '@media print',
+      'tool_started',
+      'tool_completed',
+      'tool_result_printed',
+      'tool_result_downloaded',
+      'tool_booking_clicked',
+      'data-gen-pack="result"',
+      'href="/tools/customs-document-pack-check/"',
+      `href="${route.templateCsv}"`,
+      '<td>DE 6/8</td>',
+      'SYNTHETIC WORKED EXAMPLE',
+      "sessionStorage.getItem(key)",
+    ]) {
+      const haystack = phrase === '@media print' ? await readFile(join(root, 'dist/document-generator.css'), 'utf8') : html
+      if (!haystack.includes(phrase)) throw new Error(`${route.path} is missing generator contract: ${phrase}`)
+    }
+    if (!html.includes('"@type":"WebApplication"') || !html.includes('"isAccessibleForFree":true')) {
+      throw new Error(`${route.path} is missing truthful WebApplication structured data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit restricted FAQPage or HowTo structured data`)
+    }
+    if ((html.match(/class="gen-question"/g) || []).length < 4) {
+      throw new Error(`${route.path} is missing visible question-and-answer support`)
+    }
+    if ((html.match(/data-line-field/g) || []).length < route.schema.lineFields.length * 2) {
+      throw new Error(`${route.path} is missing its repeatable line template`)
+    }
+    const csvTemplate = await readFile(join(root, 'dist', route.templateCsv.slice(1)), 'utf8')
+    if (csvTemplate !== templateCsv(route)) throw new Error(`${route.path} blank CSV template drifted`)
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
   }

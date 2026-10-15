@@ -455,6 +455,13 @@ export function renderTool(tool, site, { navHtml, webmasterHtml, posthogKey, pos
           <article><span class="section-label">USE IT ON THE DESK</span><h2>Make ownership visible before work stalls.</h2><p>Use the ordered list at intake, before preparation, or in a process review. Copy it into a job note, print it for a stand-up, or share the checker with the person sending the next pack.</p></article>
           <article><span class="section-label">USE IT ON THE CALL</span><h2>Find the recurring handoff cost.</h2><p>Bring the top open actions, weekly declaration volume, minutes per declaration, and current customs system. The 20-minute numbers call maps where better document intake can return clerk time.</p></article>
         </section>
+        <section class="tool-intro tool-generators" aria-labelledby="tool-generators-heading">
+          <div><span class="section-label">FREE DOCUMENT GENERATORS</span><h2 id="tool-generators-heading">Missing a document? Build it here first.</h2></div>
+          <div>
+            <p>If the pack has no usable commercial invoice or packing list, create one in your browser with fields mapped to the CDS data elements, then come back and tick the shipment rows.</p>
+            <p><a href="/tools/commercial-invoice-generator/">Commercial invoice template and generator →</a><br /><a href="/tools/packing-list-generator/">Shipping packing list template and generator →</a><br /><a href="/tools/customs-value-import-duty-vat-calculator/">Import duty and VAT calculator for the valuation rows →</a></p>
+          </div>
+        </section>
         ${renderSources(tool)}
         <div class="source-stamp">FREE TOOL · VERSION ${escapeHtml(tool.version)} · REVIEWED ${site.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div>
       </main>
