@@ -8,7 +8,7 @@ import {
   renderEoriChecker,
   resolvePublicEoriReleaseConfig,
 } from './eori-checker.mjs'
-import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
+import { freshnessState, radarBuildTime, radarCsv, radarDigests, radarHub, radarJson, radarRecords, radarRoutes, renderRadarDigest, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
 import { alternativesRoutes, renderAlternativesRoute } from './alternatives.mjs'
 import { referenceAssets, referenceRoutes, renderReferenceRoute } from './customs-reference.mjs'
@@ -695,6 +695,25 @@ for (const record of radarRecords) {
   const target = join(dist, record.path.slice(1), 'index.html')
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, renderRadarRecord(record, site, radarOptions))
+}
+
+for (const digest of radarDigests) {
+  if (!digest.path.startsWith(radarHub.path) || !digest.path.endsWith('/')) throw new Error(`Radar digest must sit under the Radar hub: ${digest.path}`)
+  if (paths.has(digest.path)) throw new Error(`Duplicate route: ${digest.path}`)
+  if (titles.has(digest.title)) throw new Error(`Duplicate title: ${digest.title}`)
+  if (headings.has(digest.h1)) throw new Error(`Duplicate H1: ${digest.h1}`)
+  paths.add(digest.path)
+  titles.add(digest.title)
+  headings.add(digest.h1)
+  const target = join(dist, digest.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderRadarDigest(digest, site, radarOptions))
+}
+
+const radarBuiltAt = radarBuildTime()
+const radarDue = radarRecords.filter((record) => ['stale', 'expired'].includes(freshnessState(record, radarBuiltAt)))
+if (radarDue.length) {
+  console.warn(`Radar: ${radarDue.length} record(s) need a source recheck at build time ${radarBuiltAt.toISOString()} (run npm run radar:check): ${radarDue.map((record) => record.id).join(', ')}`)
 }
 
 await mkdir(join(dist, 'downloads'), { recursive: true })

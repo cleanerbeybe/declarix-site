@@ -787,3 +787,195 @@
     padding: 24px;
   }
 }
+
+/* October 2026 edition: digest, supersession and supporting sources */
+.radar-result-copy h3 {
+  max-width: 24ch;
+  margin: 0;
+  font-size: clamp(23px, 2.6vw, 34px);
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.radar-result-copy h3 a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.radar-result[data-freshness-state='superseded'] .radar-result-meta strong,
+.radar-record-ledger[data-freshness-state='superseded'] .review-cell span,
+.radar-timing-grid[data-freshness-state='superseded'] [data-freshness-label] {
+  color: var(--radar-neutral);
+}
+
+.radar-record-ledger[data-freshness-state='superseded'] .review-cell span {
+  color: #f0a36b;
+}
+
+.radar-result[data-freshness-state='superseded'] {
+  background: var(--paper);
+}
+
+.radar-digest-callout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(24px, 5vw, 64px);
+  align-items: end;
+  padding: clamp(40px, 6vw, 72px);
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.radar-digest-callout h2 {
+  max-width: 22ch;
+  margin: 12px 0 16px;
+  font-size: clamp(30px, 4.2vw, 52px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.radar-digest-callout p,
+.radar-digest-headlines p {
+  max-width: 66ch;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.radar-digest-headlines ol {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding-left: 1.4em;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.radar-lineage-note {
+  max-width: 66ch;
+  padding: 14px 16px;
+  border: 1.5px solid currentColor;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.radar-lineage-note a {
+  overflow-wrap: anywhere;
+}
+
+.radar-supporting {
+  margin: 28px 0;
+}
+
+.radar-supporting h3 {
+  margin: 0 0 12px;
+  font: 600 11px/1.45 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+}
+
+.radar-supporting ol {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.radar-supporting li {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 0;
+  border-top: 1px solid rgb(22 49 61 / 0.42);
+}
+
+.radar-supporting li a {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.radar-supporting li span,
+.radar-supporting li code,
+.radar-watch-list li span {
+  font: 500 11px/1.5 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.radar-more-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  margin: 28px 0 0;
+}
+
+.radar-watch-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--ink);
+}
+
+.radar-watch-list li {
+  display: grid;
+  gap: 10px;
+  padding: 24px 0;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.radar-watch-list li strong {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.radar-watch-list li p {
+  max-width: 66ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.radar-digest-dates td a {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 680px) {
+  .radar-digest-callout {
+    grid-template-columns: 1fr;
+    padding: 36px 16px;
+  }
+
+  .radar-digest-callout .button {
+    justify-self: stretch;
+    text-align: center;
+  }
+
+  .radar-digest-headlines ol {
+    font-size: 16px;
+  }
+}
+
+.radar-record-hero > *,
+.radar-digest-hero > * {
+  min-width: 0;
+}
+
+.radar-record-hero h1,
+.radar-digest-hero h1 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.radar-record-ledger .route-ref,
+.radar-hero-ledger .route-ref {
+  overflow-wrap: anywhere;
+}
+
+.radar-digest-hero h1 {
+  max-width: 16ch;
+  font-size: clamp(38px, 5.4vw, 72px);
+  hyphens: manual;
+}

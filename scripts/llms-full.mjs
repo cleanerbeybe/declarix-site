@@ -21,6 +21,28 @@ export const llmsFullPaths = [
   '/tools/customs-value-import-duty-vat-calculator/',
   '/tools/eori-checker/',
   '/compare/automation-vs-outsourcing/',
+  // Integration build (15 Oct 2026): product, buyer and hub pages. Paths that are not published
+  // (for example held routes) are skipped.
+  '/customs-automation-software/',
+  '/customs-entry-checking-software/',
+  '/features/',
+  '/features/customs-document-intake/',
+  '/features/customs-exception-management/',
+  '/features/customs-approval-workflow/',
+  '/features/customs-audit-trail/',
+  '/features/cds-preflight/',
+  '/customs-workflows/',
+  '/customs-workflows/customs-preparation-for-sequoia/',
+  '/customs-workflows/customs-preparation-for-descartes/',
+  '/customs-workflows/customs-preparation-for-cargowise/',
+  '/use-cases/',
+  '/for/small-customs-brokerages/',
+  '/best-customs-software/',
+  '/compare/',
+  '/alternatives/',
+  '/guides/',
+  '/customs-reference/',
+  '/research/',
 ]
 
 const entities = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&nbsp;': ' ' }
