@@ -247,9 +247,11 @@ const workflowDefinitions = [
   {
     slug: 'ens-ics2-entry-summary-declaration-checklist',
     code: 'ENS / ICS2',
-    title: 'ENS and ICS2 entry summary declaration checklist',
+    title: 'ENS and ICS2 entry summary declaration guide and checklist',
     description:
-      'Choose S&S GB or ICS2, assign carrier responsibility, meet mode-specific timing and connect the MRN, amendment and arrival handoff.',
+      'Step-by-step ENS and ICS2 guide: choose S&S GB or ICS2, who files (carrier or house filer), key data elements, timings by mode, MRN and amendments.',
+    guide: 'ens',
+    sourcesNote: 'The checklist facts were traced to the source editions checked on 17 July 2026. The step-by-step guide, data, filer and timing tables were checked against the sources marked 15 October 2026. Operational prompts organise the job; they do not replace the current official instruction.',
     h1: 'Choose the ENS system from the movement—not the habit.',
     standfirst:
       'Great Britain and Northern Ireland movements use different safety-and-security routes. Start with where the goods enter, then lock responsibility, timing, data and amendment ownership.',
@@ -267,6 +269,9 @@ const workflowDefinitions = [
       source('Entry summary declaration requirements', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/safety-and-security-declarations/safety-and-security-import-requirements-entry-summary-declarations'),
       source('Making an entry summary declaration', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/making-an-entry-summary-declaration'),
       source('S&S import declarations service guide', 'HM Revenue & Customs · Developer Hub', 'https://developer.service.hmrc.gov.uk/guides/safety-and-security-import-declarations-end-to-end-service-guide/'),
+      source('Entry summary declaration requirements (time limits and responsibility)', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/safety-and-security-declarations/safety-and-security-import-requirements-entry-summary-declarations#time-limits', '15 OCTOBER 2026'),
+      source('Making an entry summary declaration (ICS2 for Northern Ireland, amendments)', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/making-an-entry-summary-declaration#ics2', '15 OCTOBER 2026'),
+      source('Import Control System 2 (ICS2)', 'European Commission · Taxation and Customs Union', 'https://taxation-customs.ec.europa.eu/customs-4/customs-security/import-control-system-2-ics2-0_en', '15 OCTOBER 2026'),
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
@@ -460,7 +465,7 @@ function jsonLd(route, site) {
 
 function renderSources(route) {
   return `<section class="authority-sources" aria-labelledby="${sourceId(route)}">
-    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>Facts above are traced to the source edition checked on 17 July 2026. Operational prompts organise the job; they do not replace the current official instruction.</p></header>
+    <header><span>PRIMARY SOURCE REGISTER</span><h2 id="${sourceId(route)}">Keep the official page open.</h2><p>${escapeHtml(route.sourcesNote || 'Facts above are traced to the source edition checked on 17 July 2026. Operational prompts organise the job; they do not replace the current official instruction.')}</p></header>
     <ol>${route.sources.map((item) => `<li><a href="${escapeHtml(item.url)}">${escapeHtml(item.title)}</a><span>${escapeHtml(item.publisher)} · CHECKED ${escapeHtml(item.checked)}</span></li>`).join('')}</ol>
   </section>`
 }
@@ -560,6 +565,71 @@ function renderWorkflow(route) {
   return `<section class="direct-answer"><span>DIRECT ANSWER · ${escapeHtml(route.code)}</span><h2>${escapeHtml(route.direct)}</h2></section><section class="workflow-path" aria-labelledby="workflow-path-heading"><header><span>FIVE-CHECK HANDOFF</span><h2 id="workflow-path-heading">Move the job in order.</h2><p>Each checkpoint produces evidence for the next person or system. A failed checkpoint stays visible.</p></header><ol>${route.steps.map(([number, title, copy]) => `<li><b>${number}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section><div class="responsibility-grid"><section><span>HAVE READY</span><h2>Inputs</h2><ul>${route.inputs.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>STOP AND RESOLVE</span><h2>Do not hand off green</h2><ul>${route.stop.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><div class="download-row">${renderDownload(route, asset, `${route.code} workflow diagram`)}</div><section class="authority-bridge"><span>RELATED DESK JOB</span><h2>Carry the handoff into the pack.</h2><p>The diagram is ungated. Use the related browser workpaper to turn the movement into a reviewable action list.</p><a data-authority-related="workflow_tool" href="${route.related}">${escapeHtml(route.relatedLabel).toUpperCase()} →</a></section>`
 }
 
+function renderEnsGuide(eoriEnabled) {
+  const table = (label, head, rows) => `<div tabindex="0" role="region" aria-label="${escapeHtml(label)}"><table><thead><tr>${head.map((cell) => `<th scope="col">${escapeHtml(cell)}</th>`).join('')}</tr></thead><tbody>${rows.map(([first, ...rest]) => `<tr><th scope="row">${escapeHtml(first)}</th>${rest.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+  const steps = [
+    ['Find the first place of entry', 'Goods entering Great Britain use HMRC’s Safety and Security GB (S&S GB) service. Goods entering Northern Ireland use ICS2, which HMRC uses for movements into Northern Ireland from 31 December 2025. Goods entering the EU use the EU’s ICS2.'],
+    ['Confirm who lodges it', 'The carrier is legally responsible. A forwarder, customs agent or other third party can lodge the ENS for the carrier, but only with the carrier’s knowledge and consent. Put that agreement in writing.'],
+    ['Collect the data from the documents', 'Take parties, goods descriptions, commodity codes, packages and gross mass from the commercial invoice and packing list, and transport references from the bill of lading, air waybill or CMR.'],
+    ['Check the parties and EORI numbers', 'Make sure the consignor, consignee, carrier and person lodging are named correctly, with EORI numbers where they hold them.'],
+    ['Work back from arrival', 'Use the time limit for the mode in the table below. For deep-sea containers the clock runs from loading at the port of departure, not from arrival.'],
+    ['Lodge, fix errors and keep the MRN', 'Submit through S&S GB or ICS2, resolve any validation errors, and record the movement reference number (MRN) HMRC returns on acceptance.'],
+    ['Amend before arrival if anything changes', 'You can amend the ENS until the goods arrive at the border. You cannot change the details of the person lodging it or their representative.'],
+    ['Hand the MRN to the arrival team', 'Pass the MRN with the transport schedule and document pack to whoever handles presentation and the import declaration.'],
+  ]
+  const data = [
+    ['Consignor and consignee', 'Full name, address and EORI number where held', 'Commercial invoice'],
+    ['Carrier and person lodging', 'Name and EORI number', 'Carrier booking or contract'],
+    ['Goods description', 'Plain, specific wording such as “stainless steel ball bearings”, not “general cargo” or “parts”', 'Commercial invoice, packing list'],
+    ['Commodity code', 'The goods’ HS code (first 6 digits of the commodity code)', 'Commercial invoice, UK Trade Tariff'],
+    ['Packages', 'Number, type and shipping marks', 'Packing list'],
+    ['Gross mass', 'Gross weight in kilograms', 'Packing list'],
+    ['Transport documents', 'Master and house bill of lading, air waybill or CMR numbers', 'Transport document'],
+    ['Container and seals', 'Container or trailer number and seal numbers', 'Transport document, loading record'],
+    ['Route and arrival', 'Place of loading, countries of routing, first place of arrival and expected arrival time', 'Carrier schedule'],
+  ]
+  const filers = [
+    ['Carrier', 'Operates the means of transport that brings the goods in: the shipping line, airline, rail operator or haulier', 'Lodges the ENS or makes sure it is lodged on time. The legal requirement lies with the carrier.'],
+    ['Third party or house filer', 'Freight forwarder, NVOCC, customs agent or express operator that holds the house-level shipment data', 'May lodge for the carrier with the carrier’s knowledge and contractual agreement. The carrier’s legal liability remains.'],
+    ['Both file for one shipment', 'Carrier and third party each submit data', 'Customs may use both declarations for risk analysis, or accept the carrier’s declaration and not the third party’s.'],
+  ]
+  const timings = [
+    ['Deep-sea containerised cargo', '24 hours before loading at the port of departure'],
+    ['Deep-sea bulk and break bulk', '4 hours before arrival'],
+    ['Short-sea journeys', '2 hours before arrival'],
+    ['Roll-on roll-off, accompanied or unaccompanied', '2 hours before arrival'],
+    ['Short-haul flights (under 4 hours)', 'At the time of actual take-off'],
+    ['Long-haul flights (4 hours or more)', '4 hours before arrival'],
+    ['Rail, journey under 2 hours', '1 hour before arrival'],
+    ['Rail, journey over 2 hours', '2 hours before arrival'],
+    ['Road, including the Channel Tunnel', '1 hour before arrival at the Eurotunnel terminal'],
+  ]
+  const systems = [
+    ['Great Britain (England, Scotland, Wales)', 'S&S GB, run by HMRC', 'Lodge the ENS through S&S GB; HMRC returns the MRN.'],
+    ['Northern Ireland', 'ICS2, run by HMRC for Northern Ireland', 'Used for movements into Northern Ireland from 31 December 2025.'],
+    ['EU member states', 'EU ICS2', 'From 1 June 2026, every consignment entering the EU by any means of transport should have a valid ENS, lodged directly in ICS2 or in a combined transit declaration through NCTS Phase 6 in opt-in countries.'],
+  ]
+  const tools = [
+    ['/tools/commercial-invoice-generator/', 'FREE GENERATOR', 'Commercial invoice with commodity codes and EORI fields'],
+    ['/tools/packing-list-generator/', 'FREE GENERATOR', 'Packing list with packages, marks and gross mass'],
+    ['/tools/customs-document-pack-check/', 'FREE TOOL', 'Customs document pack check'],
+    ...(eoriEnabled ? [['/tools/eori-checker/', 'FREE CHECKER', 'GB EORI number checker']] : []),
+  ]
+  return `<section class="burden-table ens-guide" id="ens-guide" aria-labelledby="ens-guide-heading"><header><span>ICS / ENS DECLARATION GUIDE</span><h2 id="ens-guide-heading">ICS2 and ENS declaration guide, step by step</h2><p>An entry summary declaration (ENS) gives customs the safety and security data for goods before they arrive. The carrier is legally responsible for it. Use S&amp;S GB for goods entering Great Britain and ICS2 for goods entering Northern Ireland or the EU.</p></header><ol class="ens-steps">${steps.map(([title, copy], index) => `<li><b>${String(index + 1).padStart(2, '0')}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section>`
+    + `<section class="burden-table ens-guide" id="ens-systems" aria-labelledby="ens-systems-heading"><header><span>S&amp;S GB OR ICS2</span><h2 id="ens-systems-heading">Which ENS system applies</h2><p>The first place of entry decides the system, not the habit of the team filing it.</p></header>${table('Which ENS system applies', ['Goods enter', 'System', 'What it means'], systems)}</section>`
+    + `<section class="burden-table ens-guide" id="ens-data" aria-labelledby="ens-data-heading"><header><span>KEY DATA ELEMENTS</span><h2 id="ens-data-heading">Key ENS data elements and where they come from</h2><p>Most ENS rejections and holds trace back to the source documents. Get these right on the invoice, packing list and transport document, and the ENS follows.</p></header>${table('Key ENS data elements', ['Data', 'What to give', 'Usual source'], data)}</section>`
+    + `<section class="burden-table ens-guide" id="ens-filers" aria-labelledby="ens-filers-heading"><header><span>WHO FILES WHAT</span><h2 id="ens-filers-heading">Who files the ENS: carrier, house filer or third party</h2><p>HMRC is clear that the carrier holds the legal requirement, even when someone else prepares the data.</p></header>${table('Who files the ENS', ['Party', 'Who that is', 'Position'], filers)}</section>`
+    + `<section class="burden-table ens-guide" id="ens-timings" aria-labelledby="ens-timings-heading"><header><span>TIMINGS BY MODE</span><h2 id="ens-timings-heading">ENS time limits by transport mode</h2><p>HMRC’s minimum time limits for an ENS into Great Britain. For delays of more than 2 hours on roll-on roll-off and road, an amendment is not needed if the vehicle moves on the same route with the same carrier within 12 hours of the scheduled departure.</p></header>${table('ENS time limits by transport mode', ['Mode', 'Lodge the ENS no later than'], timings)}</section>`
+    + `<section class="burden-table ens-guide" id="ens-tools" aria-labelledby="ens-tools-heading"><header><span>FREE TOOLS FOR THE ENS DATA</span><h2 id="ens-tools-heading">Build the source documents the ENS depends on</h2><p>Clean commercial invoices and packing lists give the filer the descriptions, commodity codes, packages and weights the ENS needs.</p></header><nav class="ens-tools" aria-label="Free Declarix tools for ENS data">${tools.map(([href, label, title]) => `<a href="${href}" data-authority-related="ens_${href.split('/')[2].replaceAll('-', '_')}"><span>${label}</span><strong>${escapeHtml(title)}</strong><b>OPEN →</b></a>`).join('')}</nav></section>`
+    + `<section class="burden-table ens-guide ens-faq" aria-labelledby="ens-faq-heading"><header><span>QUESTIONS</span><h2 id="ens-faq-heading">ENS and ICS2 questions, answered</h2></header>${[
+      ['What is an ENS?', 'An entry summary declaration is a safety and security filing with advance data about goods coming into Great Britain, into Northern Ireland, or into the EU. Customs uses it for risk analysis before the goods arrive.'],
+      ['Who submits the ENS?', 'The carrier is responsible. A forwarder, customs agent or other third party can submit it for the carrier with the carrier’s knowledge and consent, but the legal liability stays with the carrier.'],
+      ['What is the difference between ENS and ICS2?', 'The ENS is the declaration. ICS2 is the system that receives it for Northern Ireland and the EU. For Great Britain, the ENS goes to HMRC’s S&S GB service.'],
+      ['Can I amend an ENS?', 'Yes, until the goods arrive at the border. You cannot change the details of the person lodging the declaration or their representative.'],
+      ['What do I get when the ENS is accepted?', 'A movement reference number (MRN) from S&S GB or ICS2. Keep it with the shipment and pass it to the arrival team.'],
+    ].map(([q, a], index) => `<details class="ens-question"><summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(q)}</summary><p>${escapeHtml(a)}</p></details>`).join('')}</section>`
+}
+
 function renderWorkflowCluster(currentRoute) {
   const links = workflowDefinitions
     .map((workflow) => {
@@ -608,8 +678,8 @@ function analyticsScript(route, posthogKey, posthogHost) {
   })();</script>`
 }
 
-export function renderAuthorityRoute(route, site, { navHtml, webmasterHtml, posthogKey = '', posthogHost = 'https://eu.i.posthog.com' }) {
+export function renderAuthorityRoute(route, site, { navHtml, webmasterHtml, posthogKey = '', posthogHost = 'https://eu.i.posthog.com', eoriEnabled = false }) {
   const canonical = `${site.origin}${route.path}`
-  const content = route.kind === 'incoterms-hub' ? renderIncotermsHub(route) : route.kind === 'incoterm-term' ? renderTerm(route) : route.kind === 'burden-report' ? renderBurden(route) : `${renderWorkflow(route)}${renderWorkflowCluster(route)}`
+  const content = route.kind === 'incoterms-hub' ? renderIncotermsHub(route) : route.kind === 'incoterm-term' ? renderTerm(route) : route.kind === 'burden-report' ? renderBurden(route) : `${renderWorkflow(route)}${route.guide === 'ens' ? renderEnsGuide(eoriEnabled) : ''}${renderWorkflowCluster(route)}`
   return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/><meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs"><a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>REVIEWED<br/>${route.reviewedOn}</small></aside></header>${content}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
 }

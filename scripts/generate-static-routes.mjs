@@ -650,6 +650,7 @@ for (const authorityRoute of authorityRoutes) {
       webmasterHtml: webmasterTags(),
       posthogKey,
       posthogHost,
+      eoriEnabled: publicEori.enabled,
     }),
   )
   const assets = authorityAssets(authorityRoute)
