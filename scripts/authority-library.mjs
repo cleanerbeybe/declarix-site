@@ -300,6 +300,7 @@ const workflowDefinitions = [
     ],
     related: '/tools/customs-value-import-duty-vat-calculator/',
     relatedLabel: 'Cross-foot the duty and VAT scenario',
+    extraTools: [['/tools/import-duty-repayment-checker/', 'Reclaim overpaid import duty']],
   },
   {
     slug: 't1-ncts-transit-checklist',

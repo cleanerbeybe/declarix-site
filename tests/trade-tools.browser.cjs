@@ -49,7 +49,7 @@ const scenarios = {
   '/tools/import-duty-repayment-checker/': async (page, record, width) => {
     await page.getByRole('button', { name: 'TRY THE WORKED EXAMPLE' }).click();
     const text = await page.locator('#tt-result').innerText();
-    record(width + ' c285 example routes', text.includes('Customs Declaration Service claim') && text.includes('VAT Return adjustment') && text.includes('2028-02-03'));
+    record(width + ' c285 example routes', text.includes('Customs Declaration Service claim') && text.includes('VAT Return adjustment') && text.includes('3 February 2028'));
     await page.locator('input[name="eori"][value="no"]').check();
     await page.locator('input[name="vatRegistered"][value="no"]').check();
     await page.getByRole('button', { name: 'SHOW MY ROUTE' }).click();

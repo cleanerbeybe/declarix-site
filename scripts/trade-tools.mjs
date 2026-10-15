@@ -9,6 +9,7 @@ import { PACK_CHECK, REVIEWED, escapeHtml, isLive, publishedTradeTools } from '.
 import mrnChecker from './trade-tools/pages/mrn.mjs'
 import gmrChecker from './trade-tools/pages/gmr.mjs'
 import pvaChecker from './trade-tools/pages/pva.mjs'
+import repaymentChecker from './trade-tools/pages/c285.mjs'
 
 // Inline a logic module for the browser: drop import lines and export keywords.
 export function inlineModule(name) {
@@ -17,7 +18,7 @@ export function inlineModule(name) {
     .replace(/^export (const|function|class|let) /gm, '$1 ')
 }
 
-export const tradeTools = [mrnChecker, gmrChecker, pvaChecker]
+export const tradeTools = [mrnChecker, gmrChecker, pvaChecker, repaymentChecker]
 for (const tool of tradeTools) publishedTradeTools.add(tool.path)
 
 const RELATED_NAMES = {
