@@ -10,6 +10,7 @@ import { authorityAssets, authorityRoutes, incotermExample } from './authority-l
 import { alternativesRoutes, crossLaneLinks } from './alternatives.mjs'
 import { additionalRecords, documentRecords, errorRecords, procedureRecords, referenceAssets, referenceRoutes } from './customs-reference.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
+import { agentFactsRoute } from './agent-facts.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { comparisonRoutes, pageSources } from './comparisons.mjs'
 import { roiRoute } from './roi-calculator.mjs'
@@ -137,6 +138,7 @@ const expected = [
   ...referenceRoutes,
   ...productPages,
   ...useCaseRoutes,
+  agentFactsRoute,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -867,6 +869,11 @@ for (const route of expected) {
     if (url.pathname.startsWith('/downloads/')) continue
     // Sibling-lane routes (e.g. /compare/ from lane L2) are allowed until that lane merges.
     if (!expectedPaths.has(url.pathname) && crossLaneLinks.has(url.pathname)) continue
+    // Agent-layer files (Markdown twins, JSON, feeds, llms.txt) are files, not routes; they must exist.
+    if (/\.(?:md|json|xml|txt)$/.test(url.pathname)) {
+      await access(join(root, 'dist', url.pathname.slice(1)))
+      continue
+    }
     if (!expectedPaths.has(url.pathname)) throw new Error(`${route.path} links to unknown route ${url.pathname}`)
     inbound.set(url.pathname, inbound.get(url.pathname) + 1)
     if (url.pathname !== route.path) inboundPages.get(url.pathname).add(route.path)
@@ -1071,5 +1078,7 @@ for (const filename of ['llms.txt', 'llms-full.txt']) {
 
 const indexNowKey = (await readFile(join(root, 'dist/indexnow.txt'), 'utf8')).trim()
 if (!/^[A-Za-z0-9-]{8,128}$/.test(indexNowKey)) throw new Error('IndexNow key is invalid')
+
+await import('./verify-agent-layer.mjs')
 
 console.log(`Verified ${expected.length} indexable routes, one conversion receipt, one real 404, and owner-approved offer manifest ${site.claimsVersion}`)

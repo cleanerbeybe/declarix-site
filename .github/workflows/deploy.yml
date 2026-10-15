@@ -30,6 +30,9 @@ jobs:
           VITE_BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
           VITE_PUBLIC_EORI_RELEASE_ENABLED: ${{ vars.PUBLIC_EORI_RELEASE_ENABLED }}
           VITE_PUBLIC_EORI_API_ORIGIN: ${{ vars.PUBLIC_EORI_API_ORIGIN }}
+      - name: Save the live sitemap for IndexNow change detection
+        continue-on-error: true
+        run: curl --fail --silent --show-error https://getdeclarix.com/sitemap.xml -o "$RUNNER_TEMP/previous-sitemap.xml" || true
       - name: Publish gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +45,7 @@ jobs:
           git commit -m "Deploy ${GITHUB_SHA}"
           git branch -M gh-pages
           git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
-      - name: Notify IndexNow of the deployed sitemap URLs
+      - name: Notify IndexNow of new and changed sitemap URLs
         continue-on-error: true
         run: |
           for attempt in 1 2 3 4 5 6; do
@@ -51,4 +54,4 @@ jobs:
             fi
             sleep 5
           done
-          npm run submit:indexnow
+          npm run submit:indexnow -- --changed --previous "$RUNNER_TEMP/previous-sitemap.xml"
