@@ -1010,9 +1010,9 @@ function renderEnsGuide(eoriEnabled) {
     ['Confirm who lodges it', 'The carrier is legally responsible. A forwarder, customs agent or other third party can lodge the ENS for the carrier, but only with the carrier’s knowledge and consent. Put that agreement in writing.'],
     ['Collect the data from the documents', 'Take parties, goods descriptions, commodity codes, packages and gross mass from the commercial invoice and packing list, and transport references from the bill of lading, air waybill or CMR.'],
     ['Check the parties and EORI numbers', 'Make sure the consignor, consignee, carrier and person lodging are named correctly, with EORI numbers where they hold them.'],
-    ['Work back from arrival', 'Use the time limit for the mode in the table below. For deep-sea containers the clock runs from loading at the port of departure, not from arrival.'],
-    ['Lodge, fix errors and keep the MRN', 'Submit through S&S GB or ICS2, resolve any validation errors, and record the movement reference number (MRN) HMRC returns on acceptance.'],
-    ['Amend before arrival if anything changes', 'You can amend the ENS until the goods arrive at the border. You cannot change the details of the person lodging it or their representative.'],
+    ['Work back from arrival', 'Use the time limit for the mode in the table below. For maritime containerised cargo the clock runs from loading at the port of departure, not from arrival.'],
+    ['Lodge, fix errors and keep the MRN', 'Submit through S&S GB or ICS2, resolve any validation errors, and record the movement reference number (MRN) returned when the ENS is accepted.'],
+    ['Amend before arrival if anything changes', 'You can amend the ENS until the goods arrive at the border. If the person lodging it or their representative changes, submit a new declaration instead of an amendment.'],
     ['Hand the MRN to the arrival team', 'Pass the MRN with the transport schedule and document pack to whoever handles presentation and the import declaration.'],
   ]
   const data = [
@@ -1027,20 +1027,20 @@ function renderEnsGuide(eoriEnabled) {
     ['Route and arrival', 'Place of loading, countries of routing, first place of arrival and expected arrival time', 'Carrier schedule'],
   ]
   const filers = [
-    ['Carrier', 'Operates the means of transport that brings the goods in: the shipping line, airline, rail operator or haulier', 'Lodges the ENS or makes sure it is lodged on time. The legal requirement lies with the carrier.'],
+    ['Carrier', 'Operates the means of transport that brings the goods in: the shipping line, airline, rail operator, haulier (accompanied RoRo and Eurotunnel) or ferry operator (unaccompanied RoRo)', 'Lodges the ENS or makes sure it is lodged on time. The legal requirement lies with the carrier.'],
     ['Third party or house filer', 'Freight forwarder, NVOCC, customs agent or express operator that holds the house-level shipment data', 'May lodge for the carrier with the carrier’s knowledge and contractual agreement. The carrier’s legal liability remains.'],
     ['Both file for one shipment', 'Carrier and third party each submit data', 'Customs may use both declarations for risk analysis, or accept the carrier’s declaration and not the third party’s.'],
   ]
   const timings = [
-    ['Deep-sea containerised cargo', '24 hours before loading at the port of departure'],
-    ['Deep-sea bulk and break bulk', '4 hours before arrival'],
+    ['Maritime containerised cargo', '24 hours before loading at the port of departure'],
+    ['Maritime bulk or break bulk cargo', '4 hours before arrival'],
     ['Short-sea journeys', '2 hours before arrival'],
     ['Roll-on roll-off, accompanied or unaccompanied', '2 hours before arrival'],
     ['Short-haul flights (under 4 hours)', 'At the time of actual take-off'],
     ['Long-haul flights (4 hours or more)', '4 hours before arrival'],
     ['Rail, journey under 2 hours', '1 hour before arrival'],
     ['Rail, journey over 2 hours', '2 hours before arrival'],
-    ['Road, including the Channel Tunnel', '1 hour before arrival at the Eurotunnel terminal'],
+    ['Road traffic (Channel Tunnel)', '1 hour before arrival at the Eurotunnel terminal (at Coquelles, France)'],
   ]
   const systems = [
     ['Great Britain (England, Scotland, Wales)', 'S&S GB, run by HMRC', 'Lodge the ENS through S&S GB; HMRC returns the MRN.'],
@@ -1063,7 +1063,7 @@ function renderEnsGuide(eoriEnabled) {
       ['What is an ENS?', 'An entry summary declaration is a safety and security filing with advance data about goods coming into Great Britain, into Northern Ireland, or into the EU. Customs uses it for risk analysis before the goods arrive.'],
       ['Who submits the ENS?', 'The carrier is responsible. A forwarder, customs agent or other third party can submit it for the carrier with the carrier’s knowledge and consent, but the legal liability stays with the carrier.'],
       ['What is the difference between ENS and ICS2?', 'The ENS is the declaration. ICS2 is the system that receives it for Northern Ireland and the EU. For Great Britain, the ENS goes to HMRC’s S&S GB service.'],
-      ['Can I amend an ENS?', 'Yes, until the goods arrive at the border. You cannot change the details of the person lodging the declaration or their representative.'],
+      ['Can I amend an ENS?', 'Yes, until the goods arrive at the border. If the person lodging it or their representative changes, submit a new declaration instead of an amendment.'],
       ['What do I get when the ENS is accepted?', 'A movement reference number (MRN) from S&S GB or ICS2. Keep it with the shipment and pass it to the arrival team.'],
     ].map(([q, a], index) => `<details class="ens-question"><summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(q)}</summary><p>${escapeHtml(a)}</p></details>`).join('')}</section>`
 }

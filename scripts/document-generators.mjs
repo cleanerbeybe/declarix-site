@@ -100,7 +100,7 @@ const invoiceSchema = {
     { id: 'description', label: 'Goods description', type: 'text', required: true, cds: 'DE 6/8', help: 'What the goods are, what they are made of and what they do. Avoid “parts” or “samples” alone.', example: 'Stainless steel ball bearings, 22 mm bore, for industrial pumps' },
     { id: 'commodityCode', label: 'Commodity code', type: 'text', commodity: true, cds: 'DE 6/14', help: '6, 8 or 10 digits from the UK Trade Tariff.', example: '848210' },
     { id: 'origin', label: 'Origin', type: 'text', country: true, required: true, cds: 'DE 5/15', help: 'Two-letter country of origin code.', example: 'DE' },
-    { id: 'quantity', label: 'Quantity', type: 'number', required: true, positive: true, cds: 'DE 6/2', help: 'Number of units in the unit shown.', example: '400' },
+    { id: 'quantity', label: 'Quantity', type: 'number', required: true, positive: true, cds: 'DE 6/2 (supplementary units, where the tariff requires them)', help: 'Number of units in the unit shown.', example: '400' },
     { id: 'unit', label: 'Unit', type: 'select', options: UNITS, help: 'Unit of the quantity.', example: 'pcs' },
     { id: 'netMass', label: 'Net kg', type: 'number', cds: 'DE 6/1', help: 'Net mass of the line in kilograms, without packaging.', example: '96' },
     { id: 'grossMass', label: 'Gross kg', type: 'number', cds: 'DE 6/5', help: 'Gross mass of the line in kilograms, with packaging.', example: '104' },
@@ -550,7 +550,7 @@ export const documentGenerators = [
       { question: 'Which Incoterm should I put on the invoice?', answer: 'Use the Incoterms® 2020 rule agreed in the sale contract, with its named place, for example “FCA Hamburg”. The Incoterm tells the declarant which costs are inside the price.' },
     ],
     sources: [
-      { title: 'Customs checklist for goods moving to and from the UK', publisher: 'Department for Business and Trade · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/international-events/customs-checklist' },
+      { title: 'Customs checklist (international events guidance)', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/international-events/customs-checklist' },
       { title: 'Making a full import declaration', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/making-a-full-import-declaration' },
       { title: 'CDS Declaration Completion Instructions for Imports', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/government/publications/cds-uk-trade-tariff-volume-3-import-declaration-completion-guide/uk-trade-tariff-cds-volume-3-import-declaration-completion-guide' },
       { title: 'Customs valuation: Method 1 — transaction value', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/customs-valuation/method-1-transaction-value' },
@@ -588,7 +588,7 @@ export const documentGenerators = [
       { question: 'Should the packing list match the commercial invoice?', answer: 'Yes. Descriptions, quantities and weights should agree with the invoice. Put the invoice number on the packing list so the reviewer can match the two quickly.' },
     ],
     sources: [
-      { title: 'Customs checklist for goods moving to and from the UK', publisher: 'Department for Business and Trade · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/international-events/customs-checklist' },
+      { title: 'Customs checklist (international events guidance)', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/international-events/customs-checklist' },
       { title: 'Making a full import declaration', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/guidance/making-a-full-import-declaration' },
       { title: 'CDS Declaration Completion Instructions for Imports', publisher: 'HM Revenue & Customs · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/government/publications/cds-uk-trade-tariff-volume-3-import-declaration-completion-guide/uk-trade-tariff-cds-volume-3-import-declaration-completion-guide' },
       { title: 'Export goods from the UK: step by step', publisher: 'HM Government · GOV.UK', checked: '15 OCTOBER 2026', url: 'https://www.gov.uk/export-goods' },
