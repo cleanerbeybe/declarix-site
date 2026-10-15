@@ -20,6 +20,8 @@ import { organizationNode } from './site-graph.mjs'
 import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
+import { useCaseRoutes } from './use-cases.mjs'
+import { packages } from './pricing.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
@@ -58,6 +60,7 @@ const publicSources = [
   'scripts/document-generators.mjs',
   'scripts/product-pages.mjs',
   'scripts/product-pages-content.mjs',
+  'scripts/use-cases.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -111,6 +114,7 @@ const expected = [
   ...alternativesRoutes,
   ...referenceRoutes,
   ...productPages,
+  ...useCaseRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -731,6 +735,58 @@ for (const route of expected) {
       const published = await readFile(join(root, 'dist', asset.href.slice(1)), 'utf8')
       if (published !== asset.content) throw new Error(`${route.path} download drifted: ${asset.href}`)
       if (!html.includes(`href="${asset.href}"`)) throw new Error(`${route.path} does not link its download ${asset.href}`)
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (useCaseRoutes.includes(route)) {
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html) || /<form/i.test(html)) {
+      throw new Error(`${route.path} must not collect prospect or document data`)
+    }
+    if (html.includes('[PHONE]') || /\[your (?:name|firm)\]/i.test(html)) throw new Error(`${route.path} contains an unresolved placeholder`)
+    for (const phrase of [
+      'UP TO 3× MORE DECLARATIONS PER CLERK',
+      'DIRECT ANSWER',
+      'PRIMARY SOURCE REGISTER',
+      'usecase_booking_clicked',
+      'usecase_related_clicked',
+      'data-usecase-booking="masthead"',
+      'data-usecase-booking="bottom"',
+      'Declarix',
+    ]) {
+      if (!html.includes(phrase)) throw new Error(`${route.path} is missing use-case contract: ${phrase}`)
+    }
+    if ((html.match(/class="uc-faq"/g) || []).length < 3) throw new Error(`${route.path} is missing visible question-and-answer support`)
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const graph = schema['@graph'] || []
+    const requiredType = route.kind === 'hub' ? 'CollectionPage' : 'WebPage'
+    if (!graph.some((item) => item['@type'] === requiredType)) throw new Error(`${route.path} is missing ${requiredType} structured data`)
+    if (route.kind === 'hub' && !graph.some((item) => item['@type'] === 'ItemList')) throw new Error(`${route.path} is missing ItemList structured data`)
+    const breadcrumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    const expectedDepth = route.path.startsWith('/use-cases/') && route.path !== '/use-cases/' ? 3 : 2
+    if (breadcrumbs.length !== expectedDepth || breadcrumbs.at(-1)?.item !== `${site.origin}${route.path}` || new Set(breadcrumbs.map((item) => item.item)).size !== expectedDepth) {
+      throw new Error(`${route.path} has an unexpected breadcrumb trail`)
+    }
+    if (route.title.length > 60 || route.description.length > 155) throw new Error(`${route.path} title or description is too long`)
+    for (const match of html.matchAll(/<img\s[^>]*src="([^"]+)"[^>]*>/gi)) {
+      if (!/\salt="[^"]{20,}"/.test(match[0])) throw new Error(`${route.path} has an image without descriptive alt text`)
+      await access(join(root, 'dist', match[1].slice(1)))
+    }
+    if (html.includes('worked-example-v3-page-') && !html.includes('WORKED EXAMPLE · FICTIONAL SHIPMENT')) {
+      throw new Error(`${route.path} shows the worked example without its fictional-example label`)
+    }
+    if (route.path === '/for/small-customs-brokerages/') {
+      for (const tier of packages) {
+        const row = `<th scope="row">${tier.name}</th><td>£${tier.monthly.toLocaleString('en-GB')} / month</td><td>${tier.included.toLocaleString('en-GB')} packs</td><td>£${tier.rate.toFixed(2)} / pack</td><td>£${tier.rate.toFixed(2)} / extra pack</td>`
+        if (!html.includes(row)) throw new Error(`${route.path} package row differs from pricing.mjs: ${tier.name}`)
+      }
+      for (const phrase of ['£0 upfront. £1 per declaration, capped at £500. The pilot fee is fully waived if the agreed success criteria are missed.', 'Month to month. Cancel anytime. No seat fees. No hosting fees.']) {
+        if (!html.includes(phrase)) throw new Error(`${route.path} lost verbatim commercial copy: ${phrase}`)
+      }
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })

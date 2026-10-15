@@ -26,6 +26,7 @@ import { hubChildren, hubItemList, renderHubRegister, sectionHubs } from './sect
 import { breadcrumbHtml, breadcrumbList, organizationNode, registerRoutes, shortName } from './site-graph.mjs'
 import { renderTool, tools } from './tools.mjs'
 import { renderValueDutyWorkpaper, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
+import { renderUseCase, useCaseRoutes } from './use-cases.mjs'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 
@@ -51,6 +52,7 @@ const indexableRoutes = [
   ...alternativesRoutes,
   ...referenceRoutes,
   ...productPages,
+  ...useCaseRoutes,
 ]
 // The /customs-reference/ hub link (L5 strip, breadcrumbs) switches on once the L1 section hub is published.
 referenceHub.available = indexableRoutes.some((route) => route.path === referenceHub.path)
@@ -92,6 +94,7 @@ function routeLinks() {
     ['ROI CALCULATOR', roiRoute.path],
     ['PILOT', '/pilot/'],
     ['COMPARE', '/compare/'],
+    ['USE CASES', '/use-cases/'],
     ['PREPARATION OPTIONS', economicsRoute.path],
     ['FREE COST CALCULATOR', '/tools/customs-declaration-cost-calculator/'],
     ['VALUE + DUTY', '/tools/customs-value-import-duty-vat-calculator/'],
@@ -792,6 +795,23 @@ for (const page of productPages) {
   const target = join(dist, page.path.slice(1), 'index.html')
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, renderProductPage(page, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags() }))
+}
+
+for (const useCase of useCaseRoutes) {
+  if (!useCase.path.startsWith('/') || !useCase.path.endsWith('/')) throw new Error(`Use case must use a trailing slash: ${useCase.path}`)
+  if (paths.has(useCase.path)) throw new Error(`Duplicate route: ${useCase.path}`)
+  if (titles.has(useCase.title)) throw new Error(`Duplicate title: ${useCase.title}`)
+  if (headings.has(useCase.h1)) throw new Error(`Duplicate H1: ${useCase.h1}`)
+  if (useCase.title.length > 60) throw new Error(`Use case title is too long: ${useCase.path}`)
+  if (useCase.description.length > 155) throw new Error(`Use case description is too long: ${useCase.path}`)
+  if (useCase.faqs.length < 3) throw new Error(`Use case needs visible question support: ${useCase.path}`)
+  if (useCase.sources.length < 2) throw new Error(`Use case needs at least two primary sources: ${useCase.path}`)
+  paths.add(useCase.path)
+  titles.add(useCase.title)
+  headings.add(useCase.h1)
+  const target = join(dist, useCase.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(target, renderUseCase(useCase, site, { navHtml: routeLinks(), webmasterHtml: webmasterTags(), posthogKey, posthogHost }))
 }
 
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
