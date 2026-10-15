@@ -12,6 +12,7 @@ import { roiRoute } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
 import { sectionHubs } from './section-hubs.mjs'
 import { organizationNode } from './site-graph.mjs'
+import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
 import { tools } from './tools.mjs'
 import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-workpapers.mjs'
 
@@ -42,6 +43,7 @@ const publicSources = [
   'scripts/value-duty-workpapers.mjs',
   'scripts/section-hubs.mjs',
   'scripts/site-graph.mjs',
+  'scripts/software-schema.mjs',
 ]
 const publicSourceText = []
 for (const source of publicSources) {
@@ -553,6 +555,18 @@ for (const route of expected) {
       .filter((item) => item['@type'] === 'Organization')
     if (organizations.length !== 1 || JSON.stringify(organizations[0]) !== expectedOrganization) {
       throw new Error(`${route.path} Organization entity differs from site-graph organizationNode()`)
+    }
+  }
+  {
+    const softwareNodes = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+      .flatMap((match) => JSON.parse(match[1])['@graph'] || [])
+      .filter((item) => item['@type'] === 'SoftwareApplication')
+    if (softwareSchemaPaths.includes(route.path)) {
+      if (softwareNodes.length !== 1 || JSON.stringify(softwareNodes[0]) !== JSON.stringify(softwareApplicationNode(site))) {
+        throw new Error(`${route.path} SoftwareApplication entity differs from software-schema.mjs`)
+      }
+    } else if (softwareNodes.length) {
+      throw new Error(`${route.path} carries a SoftwareApplication node outside the approved pages`)
     }
   }
   if (sectionHubs.includes(route)) {

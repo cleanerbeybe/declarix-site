@@ -15,6 +15,7 @@ import { llmsFullText } from './llms-full.mjs'
 import { renderPricingTable } from './pricing.mjs'
 import { roiRoute, renderRoiCalculator } from './roi-calculator.mjs'
 import { routes, site } from './routes.mjs'
+import { softwareApplicationNode, softwareSchemaPaths } from './software-schema.mjs'
 import { hubChildren, hubItemList, renderHubRegister, sectionHubs } from './section-hubs.mjs'
 import { breadcrumbHtml, breadcrumbList, organizationNode, registerRoutes, shortName } from './site-graph.mjs'
 import { renderTool, tools } from './tools.mjs'
@@ -235,6 +236,7 @@ function jsonLd(route) {
         publisher: { '@id': `${site.origin}/#organization` },
       },
       breadcrumbList(site, route.path),
+      ...(softwareSchemaPaths.includes(route.path) ? [softwareApplicationNode(site)] : []),
     ],
   }).replaceAll('<', '\\u003c')
 }
