@@ -9,6 +9,7 @@ import {
 } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes, renderRadarHub, renderRadarRecord } from './radar.mjs'
 import { authorityAssets, authorityRoutes, renderAuthorityRoute } from './authority-library.mjs'
+import { procedureRoutes, renderProcedureRoute, setKnownPaths } from './customs-procedures.mjs'
 import { aggregateCsv, pressChartSvg, renderReport, reports } from './reports.mjs'
 import { economicsRoute, renderPreparationEconomics } from './preparation-economics.mjs'
 import { renderPricingTable } from './pricing.mjs'
@@ -22,6 +23,15 @@ const dist = join(root, 'dist')
 const posthogKey = process.env.VITE_POSTHOG_KEY || ''
 const posthogHost = process.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
 const publicEori = resolvePublicEoriReleaseConfig()
+
+// Customs reference pages link to routes owned by other modules only when those routes are published.
+setKnownPaths([
+  '/',
+  roiRoute.path,
+  economicsRoute.path,
+  ...[...routes, ...tools, ...calculators, ...reports, ...valueDutyWorkpapers, ...radarRoutes, ...authorityRoutes].map((route) => route.path),
+  ...(publicEori.enabled ? [eoriChecker.path] : []),
+])
 
 const escapeHtml = (value) =>
   String(value)
@@ -632,6 +642,32 @@ for (const authorityRoute of authorityRoutes) {
   }
 }
 
+for (const procedureRoute of procedureRoutes) {
+  if (!procedureRoute.path.startsWith('/') || !procedureRoute.path.endsWith('/')) {
+    throw new Error(`Customs reference route must use a trailing slash: ${procedureRoute.path}`)
+  }
+  if (paths.has(procedureRoute.path)) throw new Error(`Duplicate route: ${procedureRoute.path}`)
+  if (titles.has(procedureRoute.title)) throw new Error(`Duplicate title: ${procedureRoute.title}`)
+  if (headings.has(procedureRoute.h1)) throw new Error(`Duplicate H1: ${procedureRoute.h1}`)
+  if (procedureRoute.sources.length < 3) throw new Error(`Customs reference route needs at least three GOV.UK sources: ${procedureRoute.path}`)
+  if (procedureRoute.title.length > 60) throw new Error(`Customs reference title over 60 characters: ${procedureRoute.path}`)
+  if (procedureRoute.description.length > 155) throw new Error(`Customs reference description over 155 characters: ${procedureRoute.path}`)
+  paths.add(procedureRoute.path)
+  titles.add(procedureRoute.title)
+  headings.add(procedureRoute.h1)
+  const target = join(dist, procedureRoute.path.slice(1), 'index.html')
+  await mkdir(dirname(target), { recursive: true })
+  await writeFile(
+    target,
+    renderProcedureRoute(procedureRoute, site, {
+      navHtml: routeLinks(),
+      webmasterHtml: webmasterTags(),
+      posthogKey,
+      posthogHost,
+    }),
+  )
+}
+
 if (paths.has(economicsRoute.path) || titles.has(economicsRoute.title) || headings.has(economicsRoute.h1)) throw new Error('Duplicate economics route')
 const economicsTarget = join(dist, economicsRoute.path.slice(1), 'index.html')
 await mkdir(dirname(economicsTarget), { recursive: true })
@@ -653,6 +689,7 @@ const indexableRoutes = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...procedureRoutes,
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

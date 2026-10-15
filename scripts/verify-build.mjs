@@ -6,6 +6,7 @@ import { calculators } from './calculators.mjs'
 import { eoriChecker, resolvePublicEoriReleaseConfig } from './eori-checker.mjs'
 import { radarCsv, radarHub, radarJson, radarRecords, radarRoutes } from './radar.mjs'
 import { authorityAssets, authorityRoutes } from './authority-library.mjs'
+import { procedureRoutes } from './customs-procedures.mjs'
 import { aggregateCsv, reports } from './reports.mjs'
 import { economicsRoute } from './preparation-economics.mjs'
 import { roiRoute } from './roi-calculator.mjs'
@@ -36,6 +37,8 @@ const publicSources = [
   'scripts/eori-checker.mjs',
   'scripts/radar.mjs',
   'scripts/authority-library.mjs',
+  'scripts/customs-procedures.mjs',
+  'scripts/customs-procedures-content.mjs',
   'scripts/reports.mjs',
   'scripts/value-duty-workpapers.mjs',
 ]
@@ -85,6 +88,7 @@ const expected = [
   ...(publicEori.enabled ? [eoriChecker] : []),
   ...radarRoutes,
   ...authorityRoutes,
+  ...procedureRoutes,
 ]
 const expectedPaths = new Set(expected.map((route) => route.path))
 const detailedHeroBoundaryRoutes = new Set(['/privacy/', '/security/', '/terms/', '/editorial-policy/'])
@@ -506,6 +510,39 @@ for (const route of expected) {
       if ((html.match(/class="workflow-path"/g) || []).length !== 1 || !html.includes('FIVE-CHECK HANDOFF')) {
         throw new Error(`${route.path} is missing its five-step workflow`)
       }
+    }
+    const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
+  }
+
+  if (procedureRoutes.includes(route)) {
+    if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
+      throw new Error(`${route.path} must not collect prospect, document, or newsletter data`)
+    }
+    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    }
+    for (const phrase of ['PRIMARY SOURCE REGISTER', 'DIRECT ANSWER', 'authority_related_clicked', 'authority_booking_clicked', 'BOOK THE 20-MINUTE NUMBERS CALL']) {
+      if (!html.includes(phrase)) throw new Error(`${route.path} is missing customs reference contract: ${phrase}`)
+    }
+    if (route.kind !== 'glossary') {
+      for (const phrase of ['WORKED UK EXAMPLE', 'COMMON ERRORS', 'HOW DECLARIX PRE-CHECKS THE ENTRY', '/tools/customs-document-pack-check/']) {
+        if (!html.includes(phrase)) throw new Error(`${route.path} is missing customs reference section: ${phrase}`)
+      }
+    }
+    if (!route.sources.every((source) => /^https:\/\/(www\.gov\.uk|www\.trade-tariff\.service\.gov\.uk|developer\.service\.hmrc\.gov\.uk|assets\.publishing\.service\.gov\.uk)\//.test(source.url))) {
+      throw new Error(`${route.path} cites a rule source outside GOV.UK`)
+    }
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')
+    const graph = schema['@graph'] || []
+    const requiredType = route.kind === 'glossary' ? 'CollectionPage' : 'TechArticle'
+    if (!graph.some((item) => item['@type'] === requiredType)) throw new Error(`${route.path} is missing ${requiredType} structured data`)
+    if (route.kind === 'glossary' && !graph.some((item) => item['@type'] === 'DefinedTermSet')) {
+      throw new Error(`${route.path} is missing DefinedTermSet structured data`)
+    }
+    const breadcrumbs = graph.find((item) => item['@type'] === 'BreadcrumbList')?.itemListElement || []
+    if (breadcrumbs.length < 2 || breadcrumbs.at(-1).item !== `${site.origin}${route.path}`) {
+      throw new Error(`${route.path} has an incomplete breadcrumb trail`)
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
     for (const [, source] of inlineScripts) new Script(source, { filename: route.path })
