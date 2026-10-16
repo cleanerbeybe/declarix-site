@@ -806,6 +806,29 @@ a:focus-visible {
     min-height: 0;
   }
 
+  /* Phone order on hubs: intro, then the page list, then the review ledger. Nothing is hidden. */
+  main:has(> .hub-register) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  main:has(> .hub-register) > .hero {
+    display: contents;
+  }
+
+  main:has(> .hub-register) > .hero > .hero-copy {
+    order: -3;
+  }
+
+  main:has(> .hub-register) > .hub-register {
+    order: -2;
+  }
+
+  main:has(> .hub-register) > .hero > .hero-ledger {
+    order: -1;
+    border-bottom: 2px solid var(--ink);
+  }
+
   .sheet,
   .sheet:nth-child(2n) {
     min-height: 0;
