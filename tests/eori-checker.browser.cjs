@@ -89,6 +89,10 @@ function record(name, value) { checks.push({ name, pass: Boolean(value) }); asse
           ariaLive: document.getElementById('eori-status').getAttribute('aria-live'), normalized: document.getElementById('eori-normalized').textContent,
           disabled: document.getElementById('eori-submit').disabled, detailsHidden: document.getElementById('eori-company-details').hidden,
           euHidden: document.getElementById('eori-result-eu').hidden, actionsHidden: document.getElementById('eori-result-actions').hidden,
+          nextHidden: document.getElementById('eori-result-next').hidden,
+          nextVisible: (() => { const n = document.getElementById('eori-result-next'); return !n.hidden && n.getBoundingClientRect().height > 0 && getComputedStyle(n).display !== 'none'; })(),
+          actionsVisible: (() => { const n = document.getElementById('eori-result-actions'); return !n.hidden && getComputedStyle(n).display !== 'none'; })(),
+          copyText: document.getElementById('eori-result-copy').textContent,
           overflow: document.documentElement.scrollWidth > innerWidth, analytics: window.dataLayer || [],
           storage: JSON.stringify({ ...sessionStorage, ...localStorage }), url: location.href, fetchOptions: window.qaFetchOptions, xss: window.qaXss,
         }));
@@ -107,6 +111,13 @@ function record(name, value) { checks.push({ name, pass: Boolean(value) }); asse
           record(prefix + ' no result actions', snap.actionsHidden);
           record(prefix + ' unavailable not registry verdict', !snap.className.includes('is-registry_valid') && !snap.className.includes('is-registry_invalid'));
         }
+        if (s.id === 'invalid') {
+          record(prefix + ' not confirmed hides the valid next-job box', snap.actionsHidden && !snap.actionsVisible);
+          record(prefix + ' not confirmed shows the next-step block', snap.nextVisible);
+          record(prefix + ' not confirmed sub-line differs from heading', snap.copyText !== snap.title && snap.copyText.startsWith('HMRC’s live register has no active GB EORI'));
+        }
+        if (s.state === 'registry_valid') record(prefix + ' valid keeps the next-job box, no not-confirmed block', snap.actionsVisible && snap.nextHidden);
+        if (s.state && s.state !== 'registry_invalid') record(prefix + ' next-step block only for not confirmed', snap.nextHidden);
         if (s.id.startsWith('mismatch_') || s.id.endsWith('_identifier')) record(prefix + ' no untrusted identifier shown', snap.normalized === 'Not checked');
         if (typeof s.details === 'boolean') record(prefix + ' public details visibility', snap.detailsHidden === !s.details);
         if (s.eu) record(prefix + ' EU handoff shown', !snap.euHidden);
@@ -117,15 +128,38 @@ function record(name, value) { checks.push({ name, pass: Boolean(value) }); asse
           const options = snap.fetchOptions.find(r => r.url.endsWith('/public/v1/eori/check'));
           record(prefix + ' omit credentials and no-store', options.credentials === 'omit' && options.cache === 'no-store');
         }
-        if (['valid_details', 'unavailable', 'mismatch_valid'].includes(s.id)) await page.screenshot({ path: path.join(output, `${s.id}-${width}.png`), fullPage: true });
+        if (['valid_details', 'invalid', 'unavailable', 'mismatch_valid'].includes(s.id)) await page.screenshot({ path: path.join(output, `${s.id}-${width}.png`), fullPage: true });
         observations.push({ width, scenario: s.id, snapshot: snap, requests });
         await page.close();
       }
       await context.close();
     }
+    // Live ICP issue 2: the number box and the button sit on the first screen at phone and laptop sizes.
+    for (const [width, height] of [[375, 812], [1280, 800]]) {
+      const context = await browser.newContext({ viewport: { width, height }, serviceWorkers: 'block', reducedMotion: 'reduce' });
+      const page = await context.newPage();
+      await page.route('**/*', async route => {
+        const u = new URL(route.request().url());
+        if (u.pathname === '/tools/eori-checker/') return route.fulfill({ contentType: 'text/html', body: html });
+        if (['/static-routes.css', '/eori-checker.css'].includes(u.pathname)) return route.fulfill({ contentType: 'text/css', body: fs.readFileSync(path.join(root, u.pathname.slice(1))) });
+        return route.fulfill({ status: 204, body: '' });
+      });
+      await page.goto('https://fixture.invalid/tools/eori-checker/', { waitUntil: 'load' });
+      const fold = await page.evaluate(() => {
+        const box = (id) => document.getElementById(id).getBoundingClientRect();
+        return { input: box('eori-number').bottom, button: box('eori-submit').bottom, h1: document.querySelector('h1').getBoundingClientRect().bottom, overflow: document.documentElement.scrollWidth > innerWidth, height: innerHeight };
+      });
+      record(`${width}x${height} number box on the first screen`, fold.input <= fold.height);
+      record(`${width}x${height} Check with HMRC button on the first screen`, fold.button <= fold.height);
+      record(`${width}x${height} tool directly under the H1`, fold.input > fold.h1);
+      record(`${width}x${height} no horizontal scroll`, !fold.overflow);
+      await page.screenshot({ path: path.join(output, `first-screen-${width}x${height}.png`) });
+      observations.push({ width, scenario: 'first_screen', snapshot: fold });
+      await context.close();
+    }
   } finally {
     await browser.close();
-    fs.writeFileSync(path.join(output, 'BROWSER_TESTS.json'), JSON.stringify({ status: checks.every(x => x.pass) && observations.length === specs.length * 2 ? 'PASS' : 'FAIL', checks: checks.length, passed: checks.filter(x => x.pass).length, scenario_count: specs.length, widths: [1440, 375], html_sha256: crypto.createHash('sha256').update(html).digest('hex'), environment: 'Actual local built page; all browser requests intercepted locally; synthetic registry fixtures only; not live registry/provider acceptance', results: checks }, null, 2) + '\n');
+    fs.writeFileSync(path.join(output, 'BROWSER_TESTS.json'), JSON.stringify({ status: checks.every(x => x.pass) && observations.length === specs.length * 2 + 2 ? 'PASS' : 'FAIL', checks: checks.length, passed: checks.filter(x => x.pass).length, scenario_count: specs.length, widths: [1440, 375], html_sha256: crypto.createHash('sha256').update(html).digest('hex'), environment: 'Actual local built page; all browser requests intercepted locally; synthetic registry fixtures only; not live registry/provider acceptance', results: checks }, null, 2) + '\n');
     fs.writeFileSync(path.join(output, 'OBSERVATIONS.json'), JSON.stringify(observations, null, 2) + '\n');
   }
   console.log(JSON.stringify({ status: 'PASS', checks: checks.length, scenarios: specs.length, widths: [1440, 375] }));

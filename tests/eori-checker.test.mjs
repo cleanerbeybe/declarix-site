@@ -159,15 +159,15 @@ test('response matching uses the submitted snapshot, not later edited input', as
 })
 
 test('Q6 record keeps its four 12 October check stamps; the 15 October guide adds two sources', () => {
-  assert.equal(eoriChecker.reviewedOn, '2026-10-15')
+  assert.equal(eoriChecker.reviewedOn, '2026-10-16')
   assert.equal(eoriChecker.sources.length, 6)
   assert.deepEqual(eoriChecker.sources.slice(0, 4).map(source => source.checked), Array(4).fill('12 OCTOBER 2026'))
   assert.deepEqual(eoriChecker.sources.slice(4).map(source => source.checked), Array(2).fill('15 OCTOBER 2026'))
 })
 
 test('Q6 renderer agrees on visible, structured and footer review dates', () => {
-  assert.match(html, /SOURCE REVIEW<\/span><strong>2026-10-15<\/strong>/)
-  assert.match(html, /REVIEWED 2026-10-15/)
+  assert.match(html, /HMRC SOURCES REVIEWED<\/span><strong>16 OCT 2026 · EVERY RESULT IS LIVE<\/strong>/)
+  assert.match(html, /REVIEWED 2026-10-16/)
   assert.equal((html.match(/CHECKED 12 OCTOBER 2026/g) || []).length, 4)
   assert.equal((html.match(/CHECKED 15 OCTOBER 2026/g) || []).length, 2)
   const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])
@@ -199,4 +199,50 @@ test('failure followed by retry never retains stale result details', async () =>
   assertUnavailable(c)
   assert.equal(c.element('eori-company-details').hidden, true)
   assert.equal(c.element('eori-normalized').textContent, 'Not checked')
+})
+
+test('not confirmed: valid next-job box hidden, next-step block and fixed sub-line shown', async () => {
+  const c = client(() => response(fixture({ registry: { status: 'invalid', provider, message: 'HMRC does not confirm this GB EORI as valid.' } })))
+  await c.submit()
+  assert.match(c.element('eori-result').className, /\bis-registry_invalid\b/)
+  assert.equal(c.element('eori-result-heading').textContent, 'HMRC does not confirm this GB EORI as valid.')
+  assert.equal(c.element('eori-result-copy').textContent, 'HMRC’s live register has no active GB EORI for this number. Check for a typo, then ask the holder for their HMRC confirmation.')
+  assert.equal(c.element('eori-result-actions').hidden, true)
+  assert.equal(c.element('eori-result-next').hidden, false)
+  assert.equal(c.element('eori-normalized-label').textContent, 'NUMBER WE CHECKED WITH HMRC')
+})
+
+test('valid result keeps the next-job box and hides the not-confirmed block', async () => {
+  const c = client(() => response(fixture()))
+  await c.submit()
+  assert.equal(c.element('eori-result-actions').hidden, false)
+  assert.equal(c.element('eori-result-next').hidden, true)
+})
+
+test('format and XI results say the number was not sent to HMRC', async () => {
+  const c = client(() => response(fixture({ normalized_eori: 'XI123456789012', format: { status: 'not_supported' }, registry: { status: 'not_checked' } })), 'XI123456789012')
+  await c.submit()
+  assert.equal(c.element('eori-normalized-label').textContent, 'NUMBER YOU ENTERED')
+  assert.equal(c.element('eori-result-next').hidden, true)
+})
+
+test('page copy: tool sits directly under the H1; labels, sections and FAQs from iteration 1', () => {
+  assert.equal(eoriChecker.title, 'EORI Checker UK: Check a GB or XI EORI Number Free')
+  assert.ok(eoriChecker.title.length <= 60)
+  assert.ok(eoriChecker.description.length >= 140 && eoriChecker.description.length <= 155)
+  assert.match(html, /<h1 id="eori-h1">EORI number checker: check a GB EORI with HMRC<\/h1>\s*<p class="eori-subhead">Check a GB EORI number with HMRC\.<\/p>\s*<form id="eori-form"/)
+  assert.ok(html.indexOf('id="eori-number"') < html.indexOf('class="hero-ledger"'))
+  assert.ok(html.indexOf('id="eori-result"') < html.indexOf('DIRECT ANSWER'))
+  assert.match(html, /LIVE FROM HMRC’S OFFICIAL CHECK AN EORI NUMBER API \(V1\.0 BETA\)/)
+  assert.doesNotMatch(html, /NORMALIZED NUMBER|SOURCE REVIEW</)
+  assert.match(html, /<h2 id="eori-format-heading">EORI number format<\/h2>/)
+  assert.match(html, /<h2 id="eori-name-heading">Can I find an EORI number by company name\?<\/h2>/)
+  assert.match(html, /What does not confirmed mean\?/)
+  assert.match(html, /How do I validate an EU EORI number\?/)
+  assert.match(html, /class="eori-chips"[\s\S]*?>GB<\/b>[\s\S]*?XI ↗[\s\S]*?EU ↗/)
+  assert.match(html, /Number not confirmed\. Fix the party, then check the declaration handoff in minutes\./)
+  assert.match(html, /Got the party identifier\. Now check the declaration handoff\./)
+  assert.match(html, /data-eori-pack="not_confirmed"/)
+  assert.match(html, /data-eori-booking="not_confirmed"/)
+  assert.equal((html.match(/data-label="/g) || []).length, 24)
 })
