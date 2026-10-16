@@ -15,6 +15,23 @@ export const hmrcList = {
 
 const src = (title, publisher, url) => ({ title, publisher, url, checked: VENDOR_CHECKED })
 
+// GOV.UK pages behind the "Is there free CDS software?" answer on /best-customs-software/ (checked 16 Oct 2026).
+// "Subscribe to the Customs Declaration Service" (updated 6 July 2026): "use your own purchased customs software
+// for Customs Declaration Service import and export declarations".
+// "Get someone to deal with customs for you" (updated 6 February 2025): agents, brokers and freight forwarders.
+export const govSubscribe = {
+  title: 'Subscribe to the Customs Declaration Service',
+  publisher: 'HM Revenue & Customs · GOV.UK',
+  url: 'https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service',
+  checked: '2026-10-16',
+}
+export const govAgent = {
+  title: 'Get someone to deal with customs for you',
+  publisher: 'HM Revenue & Customs · GOV.UK',
+  url: 'https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf',
+  checked: '2026-10-16',
+}
+
 export const declarix = {
   id: 'declarix',
   name: 'Declarix',
