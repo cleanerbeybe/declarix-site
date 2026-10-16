@@ -158,7 +158,9 @@ export default {
       let closestNote = '';
       const outLink = (cls, url, label) => { const a = document.createElement('a'); a.className = cls; a.href = url; a.textContent = label; return a.outerHTML; };
       // Issue CC6: Copy and Print show only on a result worth keeping.
-      const setResultActions = (show) => ['tt-copy', 'tt-print'].forEach((id) => { const button = document.getElementById(id); if (button) button.hidden = !show; });
+      const applyResultActions = (show) => ['tt-copy', 'tt-print'].forEach((id) => { const button = document.getElementById(id); if (button) button.hidden = !show; });
+      // The shell's showResult() resets the buttons, so apply the choice again once the result is on screen.
+      const setResultActions = (show) => { applyResultActions(show); setTimeout(() => applyResultActions(show), 0); };
       const takeNote = () => { const note = closestNote; closestNote = ''; return note; };
       const getJson = async (path) => {
         if (cache.has(path)) return cache.get(path);

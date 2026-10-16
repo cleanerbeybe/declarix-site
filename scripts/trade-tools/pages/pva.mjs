@@ -172,7 +172,9 @@ export default {
       });
       // A hand edit after loading a file means the rows are no longer that file's rows.
       [[statementText, 'statement'], [importsText, 'imports']].forEach(([area, side]) => area.addEventListener('input', () => { fileNames[side] = ''; }));
-      const setResultActions = (show) => ['tt-copy', 'tt-print'].forEach((id) => { const button = document.getElementById(id); if (button) button.hidden = !show; });
+      const applyResultActions = (show) => ['tt-copy', 'tt-print'].forEach((id) => { const button = document.getElementById(id); if (button) button.hidden = !show; });
+      // The shell's showResult() resets the buttons, so apply the choice again once the result is on screen.
+      const setResultActions = (show) => { applyResultActions(show); setTimeout(() => applyResultActions(show), 0); };
       const money = (value) => value === null || value === '' || Number.isNaN(Number(value)) ? '–' : (Number(value) < 0 ? '−' : '') + '£' + Math.abs(Number(value)).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const table = (caption, head, rows, cls) => rows.length ? '<div class="tt-table-wrap"><table class="' + (cls || '') + '"><caption>' + caption + '</caption><thead><tr>' + head.map((cell) => '<th scope="col">' + cell + '</th>').join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>' : '';
       const cell = (label, value) => '<td data-label="' + label + '">' + value + '</td>';
