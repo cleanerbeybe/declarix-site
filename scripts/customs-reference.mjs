@@ -338,7 +338,7 @@ const errorNextChecks = {
   CDS12156: 'Enter the acceptance date against previous document code CLE in yyyymmdd format.',
   CDS12157: 'Check that each relevant party on the NI declaration is established in Northern Ireland or the EU, or change the party.',
   CDS12158: 'Add the NI movement AI statement (NIIMP, NIDOM or NIEXP) in DE 2/2, or use the correct EORI.',
-  CDS12170: 'Check the VAT number. For Onward Supply Relief, the business must be identified as trading under the Windsor Framework for VAT.',
+  CDS12170: 'Check the importer’s VAT number in DE 3/40. For Onward Supply Relief, the importer must be UK VAT-registered and identified as a business in Northern Ireland for VAT (Windsor Framework).',
   CDS12171: 'Complete the third data element named in the error with a valid value for the combination already declared.',
   CDS12172: 'Complete the further data elements named in the error, for example a container ID when transport is containerised.',
   CDS12174: 'Re-add the item prices in DE 4/14 and make DE 4/11 equal their total.',
