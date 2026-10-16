@@ -1,5 +1,123 @@
-.eori-hero .hero-copy {
-  align-content: end;
+/* Tool first (live ICP issue 2, S1): eyebrow, H1, subhead, then the number box and button. */
+.eori-top {
+  padding: clamp(30px, 4.5vw, 56px) clamp(22px, 7vw, 92px) clamp(28px, 4vw, 48px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.eori-top h1 {
+  max-width: 24ch;
+  margin: 12px 0 10px;
+  font-size: clamp(30px, 4.4vw, 58px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.eori-subhead {
+  max-width: 52ch;
+  margin: 0 0 clamp(18px, 2.6vw, 28px);
+  font-size: clamp(17px, 1.7vw, 21px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.eori-top #eori-form {
+  max-width: 860px;
+}
+
+.eori-form-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px 18px;
+}
+
+.eori-form-head label {
+  flex: 1 1 260px;
+}
+
+.eori-chips {
+  display: inline-flex;
+  border: 1.5px solid var(--ink);
+}
+
+.eori-chips b,
+.eori-chips a {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding: 6px 12px;
+  border-right: 1px solid var(--ink);
+  color: var(--ink);
+  font: 600 11px/1 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.eori-chips b {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.eori-chips a:last-child {
+  border-right: 0;
+}
+
+.eori-chips a:hover,
+.eori-chips a:focus-visible {
+  background: var(--manifest);
+}
+
+/* Explainer moved below the result: standfirst, trust strip and the review ledger. */
+.eori-about {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.eori-about-copy {
+  padding: clamp(38px, 6vw, 72px);
+  border-right: 1.5px solid var(--ink);
+}
+
+.eori-about-copy h2 {
+  max-width: 16ch;
+  margin: 12px 0 18px;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.eori-about-copy p {
+  max-width: 66ch;
+  line-height: 1.6;
+}
+
+.eori-about .hero-ledger {
+  min-height: 0;
+}
+
+.eori-about .review-cell strong {
+  text-align: right;
+}
+
+.eori-masthead-source strong {
+  display: block;
+  max-width: 34ch;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.eori-guide-note {
+  max-width: 76ch;
+  margin: 0;
+  padding: 0 clamp(24px, 4vw, 48px) clamp(24px, 4vw, 48px);
+  line-height: 1.6;
 }
 
 .visually-hidden {
@@ -12,11 +130,6 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-.eori-hero h1 {
-  max-width: 11ch;
-  text-wrap: balance;
 }
 
 .eori-hero-trust {
@@ -38,23 +151,6 @@
   border-right: 0;
 }
 
-.eori-check-panel {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
-  border-bottom: 1.5px solid var(--ink);
-  background: var(--field);
-}
-
-.eori-check-panel > header,
-.eori-check-panel > form {
-  padding: clamp(38px, 6vw, 72px);
-}
-
-.eori-check-panel > header {
-  border-right: 1.5px solid var(--ink);
-}
-
-.eori-check-panel h2,
 .eori-explainer h2,
 .eori-related h2,
 .eori-questions h2 {
@@ -65,7 +161,6 @@
   text-wrap: balance;
 }
 
-.eori-check-panel p,
 .eori-explainer p,
 .eori-related p,
 .eori-questions p {
@@ -76,8 +171,7 @@
 #eori-form {
   display: grid;
   align-content: center;
-  gap: 16px;
-  background: rgb(255 255 255 / 0.42);
+  gap: 12px;
 }
 
 #eori-form label {
@@ -178,7 +272,8 @@
 .eori-result[hidden],
 .eori-company-details[hidden],
 .eori-result-eu[hidden],
-.eori-result-actions[hidden] {
+.eori-result-actions[hidden],
+.eori-result-next[hidden] {
   display: none;
 }
 
@@ -192,7 +287,8 @@
 
 .eori-result > header > span,
 .eori-company-details > span,
-.eori-result-actions span {
+.eori-result-actions span,
+.eori-result-next > div > span {
   color: rgb(247 246 241 / 0.68);
   font: 600 10px/1.45 'IBM Plex Mono', monospace;
   letter-spacing: 0.07em;
@@ -253,7 +349,7 @@
 
 .eori-result-ledger dd {
   margin: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   font: 600 clamp(15px, 2vw, 22px)/1.35 'IBM Plex Mono', monospace;
 }
 
@@ -301,6 +397,48 @@
   margin: 10px 0 0;
   font-size: clamp(22px, 3vw, 34px);
   line-height: 1.05;
+}
+
+/* Not-confirmed next step (live ICP issue 1). */
+.eori-result-next {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+  gap: 22px clamp(28px, 5vw, 64px);
+  padding: clamp(30px, 5vw, 58px);
+  background: #0f242d;
+}
+
+.eori-result-next h3 {
+  max-width: 24ch;
+  margin: 10px 0 0;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.08;
+}
+
+.eori-result-next ol {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding-left: 22px;
+  color: rgb(247 246 241 / 0.86);
+  line-height: 1.55;
+}
+
+.eori-result-next ol strong {
+  color: var(--paper);
+}
+
+.eori-result-next ol a {
+  color: var(--paper);
+  text-underline-offset: 4px;
+}
+
+.eori-result-next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 16px;
+  align-items: center;
 }
 
 .eori-secondary-action {
@@ -464,7 +602,8 @@
 
 @media (max-width: 760px) {
   .eori-hero-trust,
-  .eori-check-panel,
+  .eori-about,
+  .eori-result-next,
   .eori-input-line,
   .eori-eu-handoff,
   .eori-result > header,
@@ -488,18 +627,35 @@
     border-bottom: 0;
   }
 
-  .eori-check-panel > header {
+  .eori-top {
+    padding: 18px 16px 22px;
+  }
+
+  .eori-top .eyebrow {
+    margin: 0;
+  }
+
+  .eori-top h1 {
+    margin: 8px 0 6px;
+    font-size: clamp(28px, 8.4vw, 40px);
+  }
+
+  .eori-subhead {
+    margin-bottom: 14px;
+  }
+
+  .eori-about-copy {
+    padding: 34px 20px;
     border-right: 0;
     border-bottom: 1.5px solid var(--ink);
   }
 
-  .eori-check-panel > header,
-  .eori-check-panel > form {
-    padding: 34px 20px;
+  .eori-input-line input {
+    padding: 13px 14px;
   }
 
   .eori-input-line .button {
-    min-height: 58px;
+    min-height: 52px;
     border-width: 1.5px 0 0;
   }
 
@@ -555,9 +711,12 @@
   .masthead-cta,
   .route-nav,
   .breadcrumbs,
-  .eori-check-panel,
+  #eori-form,
   .eori-eu-handoff,
   .eori-result-actions,
+  .eori-result-next-actions,
+  .eori-about,
+  .eori-guide,
   .eori-explainer,
   .eori-related,
   .eori-questions,
@@ -566,10 +725,6 @@
   .source-stamp,
   .footer {
     display: none !important;
-  }
-
-  .eori-hero {
-    min-height: 0;
   }
 
   .eori-result:not([hidden]) {
@@ -767,5 +922,89 @@
 
   .eori-table-scroll {
     padding: 22px;
+  }
+}
+
+/* Tables (S5): codes never break inside a word; under 480px each row becomes a labelled card. */
+.eori-table th[scope="row"],
+.eori-table code {
+  white-space: nowrap;
+}
+
+.eori-table td,
+.eori-table th {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+}
+
+@media (max-width: 480px) {
+  .eori-table-scroll {
+    overflow-x: visible;
+    padding: 16px;
+  }
+
+  .eori-table-cards {
+    min-width: 0;
+  }
+
+  .eori-table-cards thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .eori-table-cards,
+  .eori-table-cards tbody,
+  .eori-table-cards tr,
+  .eori-table-cards th,
+  .eori-table-cards td {
+    display: block;
+    width: 100%;
+  }
+
+  .eori-table-cards tr {
+    margin-bottom: 14px;
+    border: 1.5px solid var(--ink);
+    background: rgb(255 255 255 / 0.42);
+  }
+
+  .eori-table-cards th,
+  .eori-table-cards td {
+    border: 0;
+    border-bottom: 1px solid rgb(22 49 61 / 0.25);
+    white-space: normal;
+  }
+
+  .eori-table-cards tr > :last-child {
+    border-bottom: 0;
+  }
+
+  .eori-table-cards th[scope="row"] {
+    color: var(--paper);
+    background: var(--ink);
+    font-weight: 700;
+  }
+
+  .eori-table-cards [data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font: 600 10px/1.3 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .eori-table-cards th[scope="row"]::before {
+    color: rgb(247 246 241 / 0.7);
+  }
+
+  .eori-chips b,
+  .eori-chips a {
+    min-height: 30px;
+    padding: 5px 10px;
   }
 }

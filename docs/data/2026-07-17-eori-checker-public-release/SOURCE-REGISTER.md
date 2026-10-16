@@ -30,3 +30,16 @@ The page gained how-to-check, GB/XI/EU checker, common-error and how-to-get-an-E
 |---|---|
 | [Apply for an EORI number](https://www.gov.uk/eori/apply-for-eori) | What you need to apply, "immediately unless HMRC needs to make any checks… up to 5 working days", XI requires a GB application first, XI within 5 days. |
 | [Get an EORI number for Northern Ireland (XI)](https://www.gov.uk/eori/eori-northern-ireland) | The four activities that need an XI EORI number. |
+
+## 16 October 2026 iteration-1 additions
+
+The page gained a not-confirmed next step, an "EORI number format" section, a "Can I find an EORI number by company name?" section and two FAQs. Sources re-read on **16 October 2026**; the six source stamps above are unchanged.
+
+| Source | Supports |
+|---|---|
+| [Finding and checking an EORI](https://www.gov.uk/guidance/economic-operators-registration-and-identification-eori/finding-and-checking-an-eori-number) (publisher update 10 September 2025) | GB checker for GB numbers; the EU checker covers every XI number and the numbers of the 27 member states; name and address only with the holder's consent; find your own number by signing in to the EORI digital registration service. |
+| [European Commission EORI validation](https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp?Lang=en) | Returned HTTP 200 on 16 October 2026; official handoff for XI and EU numbers. |
+| [Get an EORI number](https://www.gov.uk/eori) (publisher update 7 August 2025) | GB and XI prefixes; a GB EORI comes first; cancelling a GB EORI also cancels the XI EORI. |
+| [Apply for an EORI number](https://www.gov.uk/eori/apply-for-eori) | Up to 5 working days when HMRC makes checks (the "not live yet" cause). |
+
+The "GB + 12 digits, sometimes 15" layout repeats the page's existing format hint and the HMRC Check an EORI Number API v1.0 documentation.
