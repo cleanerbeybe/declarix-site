@@ -673,3 +673,335 @@ ol.tt-cards li strong::before {
     display: none;
   }
 }
+
+/* ==========================================================================
+   Lane tt-data (iteration 1, 16 Oct 2026): commodity code checker and
+   postponed VAT statement checker. Appended block; scoped to these tools.
+   ========================================================================== */
+.tt-secondary[hidden],
+.tt-result-actions [hidden] {
+  display: none !important;
+}
+
+/* Commodity: code line with COPY CODE (CC5) */
+.tt-code-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 4px 0 10px;
+}
+
+.tt-code-line .tt-code {
+  font: 700 clamp(22px, 3vw, 30px)/1.1 'IBM Plex Mono', monospace;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tt-copy-code {
+  min-height: 40px;
+  padding: 10px 14px;
+}
+
+.tt-closest {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--manifest);
+  background: rgb(199 123 39 / 0.1);
+  line-height: 1.5;
+}
+
+/* Preference rate with its proof of origin (CC3) */
+.tt-facts .tt-fact-wide {
+  grid-column: 1 / -1;
+}
+
+.tt-pref-rate,
+.tt-proof,
+.tt-proof-link {
+  display: block;
+}
+
+.tt-proof {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px dashed rgb(22 49 61 / 0.5);
+  background: var(--field);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  user-select: all;
+}
+
+.tt-proof-link {
+  margin: 6px 0 4px;
+  font: 500 11px/1.4 'IBM Plex Mono', monospace;
+}
+
+.tt-proof-link a {
+  color: var(--ink);
+}
+
+/* Special end uses grouped away from the origin's documents (CC2) */
+.tt-enduse {
+  margin: 18px 0;
+  padding: 12px 14px;
+  border: 1px solid rgb(22 49 61 / 0.35);
+}
+
+.tt-enduse summary {
+  cursor: pointer;
+  font: 600 11px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tt-enduse p,
+.tt-enduse li {
+  line-height: 1.5;
+}
+
+.tt-enduse ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.tt-doc-table code,
+.tt-enduse code,
+.tt-table-wrap tbody th code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tt-doc-table tbody th,
+.tt-pva-table tbody th {
+  min-width: 6ch;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* GRI list */
+.tt-gri {
+  display: grid;
+  gap: 0;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--ink);
+}
+
+.tt-gri li {
+  display: grid;
+  grid-template-columns: 9ch minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgb(22 49 61 / 0.3);
+  line-height: 1.5;
+}
+
+.tt-gri strong {
+  font: 600 12px/1.6 'IBM Plex Mono', monospace;
+  white-space: nowrap;
+}
+
+/* PVA: how to get your statement (intent §4.1), VAT Return line (PV1) */
+.tt-pva-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.tt-pva-panel > header {
+  order: -2;
+}
+
+.tt-getstatement {
+  order: -1;
+  margin: 18px 0 6px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.tt-getstatement h2 {
+  margin: 0 0 10px;
+  font: 600 12px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tt-panel .tt-getstatement h2 {
+  font-size: 12px;
+}
+
+.tt-getstatement ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tt-getstatement li {
+  display: grid;
+  gap: 2px;
+  line-height: 1.4;
+}
+
+.tt-getstatement li b {
+  font: 700 11px/1 'IBM Plex Mono', monospace;
+  color: var(--manifest);
+}
+
+.tt-getstatement li span {
+  font-size: 14px;
+}
+
+.tt-getstatement p {
+  margin: 10px 0 0;
+  font: 500 11px/1.4 'IBM Plex Mono', monospace;
+}
+
+.tt-getstatement a {
+  color: var(--ink);
+}
+
+.tt-standfirst {
+  max-width: 76ch;
+  margin: 18px 0 0;
+  line-height: 1.6;
+}
+
+.tt-vat-return {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--cleared);
+  background: rgb(27 122 75 / 0.08);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.tt-print-meta {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font: 500 11px/1.5 'IBM Plex Mono', monospace;
+}
+
+.tt-print-brand {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  /* Phone: the upload panels come before the 4-step box (lane brief: tool on the first screen). */
+  .tt-getstatement {
+    order: 1;
+  }
+
+  .tt-standfirst {
+    order: 2;
+  }
+
+  .tt-getstatement ol {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tt-gri li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tt-doc-table thead,
+  .tt-pva-table thead,
+  .tt-compare thead {
+    display: none;
+  }
+
+  .tt-doc-table tr,
+  .tt-pva-table tr,
+  .tt-compare tr {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid rgb(22 49 61 / 0.3);
+  }
+
+  .tt-doc-table th,
+  .tt-doc-table td,
+  .tt-pva-table th,
+  .tt-pva-table td,
+  .tt-compare th,
+  .tt-compare td {
+    display: block;
+    padding: 3px 0;
+    border: 0;
+  }
+
+  .tt-doc-table td[data-label]::before,
+  .tt-pva-table td[data-label]::before,
+  .tt-compare td[data-label]::before {
+    content: attr(data-label) ': ';
+    color: var(--muted);
+    font: 600 10px/1.4 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .tt-getstatement ol {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* PVA print (PV4): start with the result, dated, brand in the footer. */
+@media print {
+  body:has(#statement-text) .masthead,
+  body:has(#statement-text) .route-nav,
+  body:has(#statement-text) .breadcrumbs,
+  body:has(#statement-text) .tt-hero,
+  body:has(#statement-text) .hero-value-strip,
+  body:has(#statement-text) .tt-answer,
+  body:has(#statement-text) .tt-panel,
+  body:has(#statement-text) .tt-steps,
+  body:has(#statement-text) .tt-example,
+  body:has(#statement-text) .tt-explainer,
+  body:has(#statement-text) .tt-declarix,
+  body:has(#statement-text) .tt-faq,
+  body:has(#statement-text) .tt-related,
+  body:has(#statement-text) .source-register,
+  body:has(#statement-text) .cta-band,
+  body:has(#statement-text) .source-stamp,
+  body:has(#statement-text) .tt-result-actions,
+  body:has(#statement-text) .tt-result .tt-actions {
+    display: none !important;
+  }
+
+  body:has(#statement-text) .tt-result {
+    padding: 0 0 18px;
+    border: 0;
+  }
+
+  body:has(#statement-text) .tt-print-meta {
+    color: #000;
+    font-size: 12px;
+  }
+
+  body:has(#statement-text) .tt-print-brand {
+    display: block;
+    margin: 18px 0 0;
+    font: 500 10px/1.4 'IBM Plex Mono', monospace;
+  }
+
+  body:has(#statement-text) .tt-table-wrap {
+    overflow: visible;
+  }
+
+  body:has(#statement-text) tr {
+    break-inside: avoid;
+  }
+
+  /* Commodity: no tool chrome on paper either. */
+  body:has(#tariff-query) .tt-copy-code {
+    display: none;
+  }
+}
