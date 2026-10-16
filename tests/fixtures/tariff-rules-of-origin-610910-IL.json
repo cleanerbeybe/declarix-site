@@ -1,0 +1,64 @@
+{
+ "data": [
+  {
+   "id": "israel",
+   "type": "rules_of_origin_scheme",
+   "attributes": {
+    "scheme_code": "israel",
+    "title": "UK-Israel Trade and Partnership Agreement",
+    "countries": [
+     "IL"
+    ],
+    "proof_codes": {},
+    "show_proofs_for_geographical_areas": []
+   },
+   "relationships": {
+    "proofs": {
+     "data": [
+      {
+       "id": "1ee9999dbbf8e6e00b6c62effc95077d",
+       "type": "rules_of_origin_proof"
+      },
+      {
+       "id": "cd6341ecf0a4d65f845ef821658baa80",
+       "type": "rules_of_origin_proof"
+      },
+      {
+       "id": "345994200764a0863ec49fedf996c772",
+       "type": "rules_of_origin_proof"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "included": [
+  {
+   "id": "1ee9999dbbf8e6e00b6c62effc95077d",
+   "type": "rules_of_origin_proof",
+   "attributes": {
+    "summary": "EUR.1 movement certificate",
+    "subtext": "",
+    "url": null
+   }
+  },
+  {
+   "id": "cd6341ecf0a4d65f845ef821658baa80",
+   "type": "rules_of_origin_proof",
+   "attributes": {
+    "summary": "EUR-MED movement certificate",
+    "subtext": "",
+    "url": null
+   }
+  },
+  {
+   "id": "345994200764a0863ec49fedf996c772",
+   "type": "rules_of_origin_proof",
+   "attributes": {
+    "summary": "Origin declaration",
+    "subtext": "or origin declaration EUR-MED including UK Approved Exporter number for consignments with a value over £5500  / 6000 euros",
+    "url": "https://www.gov.uk/guidance/get-proof-of-origin-for-your-goods#origin-declaration"
+   }
+  }
+ ]
+}

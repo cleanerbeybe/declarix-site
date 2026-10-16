@@ -16,6 +16,62 @@ export function normaliseCodeQuery(input) {
   return { kind: 'text', query: raw.replace(/\s+/g, ' ').slice(0, 120), level: null, valid: raw.length >= 2 }
 }
 
+// Plain-language searches (issue CC1, 16 Oct 2026). The UK Trade Tariff search
+// (GET /uk/api/search?q=…) matches every word, so "mens t-shirts cotton knitted"
+// returns nothing while "t-shirts cotton knitted" returns 6109 10 00 10. Checked with
+// curl on 16 Oct 2026. The page tries the words as typed first, then these variants in order.
+const PEOPLE_WORDS = new Set(['men', 'mens', 'man', 'male', 'gents', 'gentlemen', 'women', 'womens', 'woman', 'female', 'ladies', 'lady', 'boys', 'boy', 'girls', 'girl', 'kids', 'kid', 'children', 'childrens', 'child', 'baby', 'babies', 'babys', 'infant', 'infants', 'toddler', 'toddlers', 'unisex', 'adult', 'adults', 'youth', 'junior', 'juniors'])
+const FILLER_WORDS = new Set(['a', 'an', 'the', 'for', 'of', 'with', 'and', 'in', 'on', 'to', 'new', 'pcs', 'pc', 'piece', 'pieces', 'assorted', 'various', 'style', 'quality', 'premium', 'brand', 'branded', 'x'])
+const CONSTRUCTION_WORDS = new Set(['knitted', 'knit', 'knits', 'crocheted', 'crochet', 'woven', 'handmade', 'hand-made'])
+const SYNONYMS = new Map([['tshirt', 't-shirts'], ['tshirts', 't-shirts'], ['tee', 't-shirts'], ['tees', 't-shirts'], ['teeshirt', 't-shirts'], ['teeshirts', 't-shirts'], ['sneakers', 'trainers'], ['sneaker', 'trainers']])
+const KEEP_S = /(ss|us|is|ics|ous|shoes|clothes|trousers|jeans|glasses|scissors|pliers|tongs)$/
+
+export function singularWord(word) {
+  if (word.length <= 3 || KEEP_S.test(word)) return word
+  if (/ies$/.test(word)) return word.slice(0, -3) + 'y'
+  if (/(ches|shes|xes|sses|zes)$/.test(word)) return word.slice(0, -2)
+  if (/s$/.test(word)) return word.slice(0, -1)
+  return word
+}
+
+export function goodsWords(input) {
+  const words = String(input || '')
+    .toLowerCase()
+    .replace(/\bt\s+shirts?\b/g, 't-shirts')
+    .replace(/[’']s?\b/g, '')
+    .replace(/[^a-z0-9\- ]+/g, ' ')
+    .split(/\s+/)
+    .map((word) => word.replace(/^-+|-+$/g, ''))
+    .filter(Boolean)
+    .map((word) => SYNONYMS.get(word) || word)
+  return [...new Set(words)].filter((word) => !PEOPLE_WORDS.has(word) && !FILLER_WORDS.has(word))
+}
+
+// Ordered retry queries for a description that found nothing: drop people and filler
+// words, then construction words, then singular forms, then the last two words (usually the goods
+// noun), then one word at a time, then pairs. Two-word searches fall back to the last word.
+export function searchVariants(input, { limit = 8 } = {}) {
+  const typed = String(input || '').trim().replace(/\s+/g, ' ').toLowerCase()
+  const words = goodsWords(input)
+  const core = words.filter((word) => !CONSTRUCTION_WORDS.has(word))
+  const base = core.length ? core : words
+  const list = [words, base, base.map(singularWord)]
+  if (base.length >= 3) list.push(base.slice(-2))
+  if (base.length >= 3) base.forEach((_, skip) => list.push(base.filter((__, index) => index !== skip)))
+  if (base.length >= 4) for (let i = 0; i < base.length; i += 1) for (let j = i + 1; j < base.length; j += 1) list.push([base[i], base[j]])
+  if (base.length === 2) list.push([base[1]], [base[0]])
+  const seen = new Set([typed])
+  const variants = []
+  for (const option of list) {
+    const query = option.join(' ')
+    if (!query || query.length < 2 || seen.has(query)) continue
+    seen.add(query)
+    variants.push(query)
+    if (variants.length >= limit) break
+  }
+  return variants
+}
+
 export function formatCode(code) {
   const digits = String(code || '').replace(/\D/g, '')
   if (digits.length !== 10) return digits
@@ -90,6 +146,16 @@ export function parseHeading(json) {
 
 const ALL_AREAS = new Set(['1011', '1400'])
 
+// "20.00%" -> "20%", "12.00 %" -> "12%"; other duty expressions are left as the tariff gives them.
+export const shortRate = (value) => String(value || '').replace(/^(\d+)(?:\.0+)?\s?%$/, '$1%').replace(/^(\d+\.\d*?[1-9])0+\s?%$/, '$1%')
+
+// Measures that only apply to goods put to a special end use (ships, aircraft, platforms)
+// or held under an end-use authorisation. Issue CC2: these sit apart from the origin's documents.
+const END_USE_CODES = /^(C990|N990)$/
+export const isEndUseMeasure = (measure) =>
+  /suspension|end[- ]use|airworth|ships|platforms|aircraft/i.test(measure.type) || measure.documents.some((doc) => END_USE_CODES.test(doc.code))
+const isPreference = (measure) => /tariff preference|preferential tariff quota/i.test(measure.type)
+
 // Summarises a /commodities/{code} response, optionally for one origin country.
 export function parseCommodity(json, { origin = '' } = {}) {
   const data = json?.data
@@ -119,6 +185,8 @@ export function parseCommodity(json, { origin = '' } = {}) {
     const duty = get(measure.relationships?.duty_expression?.data)
     const excluded = (measure.relationships?.excluded_countries?.data || []).map((item) => item.id)
     const conditions = (measure.relationships?.measure_conditions?.data || []).map((ref) => get(ref)?.attributes).filter(Boolean)
+    const additional = get(measure.relationships?.additional_code?.data)?.attributes
+    const footnotes = (measure.relationships?.footnotes?.data || []).map((ref) => stripHtml(get(ref)?.attributes?.description)).filter(Boolean)
     return {
       type: type?.attributes?.description || '',
       typeId: type?.id || '',
@@ -127,26 +195,44 @@ export function parseCommodity(json, { origin = '' } = {}) {
       area: area?.attributes?.description || areaId,
       duty: stripHtml(duty?.attributes?.verbose_duty || duty?.attributes?.base),
       excluded,
+      additionalCode: additional?.code || '',
+      additionalDescription: stripHtml(additional?.description || ''),
+      footnotes,
       documents: conditions
         .filter((condition) => condition.document_code)
         .map((condition) => ({ code: condition.document_code, description: stripHtml(condition.certificate_description || condition.requirement), action: condition.action })),
     }
   })
   const applies = (measure) => areaCovers(measure.areaId, origin) && !(origin && measure.excluded.includes(origin))
-  const vat = [...new Set(measures.filter((measure) => measure.typeId === '305' || /value added tax/i.test(measure.type)).map((measure) => measure.duty).filter(Boolean))]
+  const vatMeasures = measures.filter((measure) => measure.typeId === '305' || /value added tax/i.test(measure.type))
+  const vat = [...new Set(vatMeasures.map((measure) => measure.duty).filter(Boolean))]
+  // Issue CC4: the standard VAT measure carries no additional code (footnote "UK VAT standard
+  // rate"); zero and reduced rates carry a VAT additional code (VATZ, VATR) for a listed relief.
+  const standardVat = vatMeasures.find((measure) => !measure.additionalCode) || null
+  const vatReliefs = vatMeasures
+    .filter((measure) => measure !== standardVat && measure.duty)
+    .map((measure) => ({ rate: shortRate(measure.duty), code: measure.additionalCode, description: measure.additionalDescription || measure.footnotes[0] || '' }))
+  const vatSummary = standardVat
+    ? `${shortRate(standardVat.duty)} (standard).${vatReliefs.length ? ' ' + [...new Set(vatReliefs.map((relief) => relief.rate))].join(' or ') + ' applies only to the listed reliefs: ' + vatReliefs.map((relief) => (relief.description || 'relief') + (relief.code ? ' (' + relief.code + ')' : '')).join('; ') + '.' : ''}`
+    : vat.map(shortRate).join(' or ')
   const preferences = measures
-    .filter((measure) => /tariff preference|preferential tariff quota/i.test(measure.type))
+    .filter(isPreference)
     .map((measure) => ({ area: measure.area, areaId: measure.areaId, duty: measure.duty, quota: /quota/i.test(measure.type), documents: measure.documents }))
   const relevant = measures.filter(applies)
-  const documentMap = new Map()
-  for (const measure of relevant) {
-    for (const doc of measure.documents) {
-      if (!documentMap.has(doc.code)) documentMap.set(doc.code, { code: doc.code, description: doc.description, measures: new Set() })
-      documentMap.get(doc.code).measures.add(measure.type)
+  const endUse = relevant.filter((measure) => !isPreference(measure) && isEndUseMeasure(measure))
+  const originMeasures = relevant.filter((measure) => !isPreference(measure) && !isEndUseMeasure(measure))
+  const collect = (list) => {
+    const documentMap = new Map()
+    for (const measure of list) {
+      for (const doc of measure.documents) {
+        if (!documentMap.has(doc.code)) documentMap.set(doc.code, { code: doc.code, description: doc.description, measures: new Set() })
+        documentMap.get(doc.code).measures.add(measure.type)
+      }
     }
+    return [...documentMap.values()].map((doc) => ({ code: doc.code, description: doc.description, measures: [...doc.measures] }))
   }
   const supplementary = measures.find((measure) => /supplementary unit/i.test(measure.type))
-  const originPreference = origin ? relevant.filter((measure) => /tariff preference|preferential tariff quota/i.test(measure.type)) : []
+  const originPreference = origin ? relevant.filter(isPreference) : []
   return {
     code: data.attributes.goods_nomenclature_item_id,
     formatted: formatCode(data.attributes.goods_nomenclature_item_id),
@@ -155,13 +241,59 @@ export function parseCommodity(json, { origin = '' } = {}) {
     path,
     thirdCountryDuty: stripHtml(summary?.attributes?.basic_third_country_duty) || (measures.find((measure) => measure.typeId === '103')?.duty ?? ''),
     vat,
+    vatSummary,
+    vatReliefs,
     supplementaryUnit: supplementary ? supplementary.duty : '',
     preferences,
-    originPreference: originPreference.map((measure) => ({ area: measure.area, duty: measure.duty, type: measure.type })),
-    additionalDuties: relevant.filter((measure) => /additional duties|anti-dumping|countervailing|safeguard/i.test(measure.type)).map((measure) => ({ type: measure.type, area: measure.area, duty: measure.duty })),
-    controls: relevant.filter((measure) => measure.series === 'B' || /restriction|control|prohibition|licen/i.test(measure.type)).map((measure) => ({ type: measure.type, area: measure.area })),
-    documents: [...documentMap.values()].map((doc) => ({ code: doc.code, description: doc.description, measures: [...doc.measures] })),
+    originPreference: originPreference.map((measure) => ({ area: measure.area, areaId: measure.areaId, duty: measure.duty, type: measure.type, documents: measure.documents.map(({ code, description }) => ({ code, description })) })),
+    additionalDuties: originMeasures.filter((measure) => /additional duties|anti-dumping|countervailing|safeguard/i.test(measure.type)).map((measure) => ({ type: measure.type, area: measure.area, duty: measure.duty })),
+    controls: originMeasures.filter((measure) => measure.series === 'B' || /restriction|control|prohibition|licen/i.test(measure.type)).map((measure) => ({ type: measure.type, area: measure.area })),
+    // Document codes for the chosen origin at its normal rate: no preference proofs (shown under
+    // the preference) and no end-use authorisations (shown under "Other measures on this line").
+    documents: collect(originMeasures),
+    endUse: endUse.map((measure) => ({ type: measure.type, area: measure.area, duty: measure.duty, documents: measure.documents.map(({ code, description }) => ({ code, description })) })),
+    endUseDocuments: collect(endUse),
     officialUrl: tariffLinks(data.attributes.goods_nomenclature_item_id),
     btiUrl: data.attributes.bti_url || 'https://www.gov.uk/guidance/apply-for-a-binding-tariff-information-decision',
   }
+}
+
+// Issue CC3: the proof of origin behind a preference. GET /uk/api/rules_of_origin_schemes/{6 digits}/{country}
+// (UK Trade Tariff, CORS-open, checked 16 Oct 2026) lists each scheme's accepted proofs and, for some
+// schemes, the DE 2/3 document codes (DCTS: 9001 origin declaration, N865 Form A). GOV.UK "Get proof
+// of origin for your goods" (updated 6 Nov 2024): the proof is noted on the customs declaration.
+export const ORIGIN_PROOF_GUIDE = 'https://www.gov.uk/guidance/get-proof-of-origin-for-your-goods'
+
+export function parseRulesOfOrigin(json) {
+  const included = new Map((json?.included || []).map((item) => [`${item.type}:${item.id}`, item]))
+  return (json?.data || []).map((scheme) => {
+    const attributes = scheme.attributes || {}
+    const proofs = (scheme.relationships?.proofs?.data || [])
+      .map((ref) => included.get(`${ref.type}:${ref.id}`)?.attributes)
+      .filter(Boolean)
+      .map((proof) => ({ summary: stripHtml(proof.summary), subtext: stripHtml(proof.subtext), url: proof.url && proof.url !== 'None' ? proof.url : '' }))
+    const codeText = String(attributes.proof_codes?.['DE 2/3'] || '')
+    const codes = [...codeText.matchAll(/\*\*([A-Z0-9]{4})\*\*\s*\(([^)]+)\)/g)].map((match) => ({ code: match[1], label: match[2].trim() }))
+    return { scheme: attributes.scheme_code || scheme.id, title: stripHtml(attributes.title), proofs, codes }
+  })
+}
+
+// One copyable line per preference: the proof the exporter (or importer) provides, and the DE 2/3 codes.
+export function originProofLine(schemes, preferenceDocuments = []) {
+  const parts = []
+  for (const scheme of schemes || []) {
+    const names = scheme.proofs.map((proof) => {
+      const code = scheme.codes.find((item) => item.label.toLowerCase().includes(proof.summary.toLowerCase().replace(/^generalised scheme of preferences /, '').toLowerCase()) || proof.summary.toLowerCase().includes(item.label.toLowerCase()))
+      return proof.summary + (code ? ` (code ${code.code})` : '')
+    })
+    const unmatched = scheme.codes.filter((item) => !names.some((name) => name.includes(`code ${item.code}`)))
+    names.push(...unmatched.map((item) => `${item.label} (code ${item.code})`))
+    if (names.length) parts.push(names.join(' or '))
+  }
+  const docs = preferenceDocuments.filter((doc) => doc.code).map((doc) => `${doc.code}: ${doc.description}`)
+  if (!parts.length && !docs.length) return ''
+  const lines = parts.length ? [`Proof of origin: ${parts.join('; ')}.`] : []
+  if (docs.length) lines.push(`Declare in DE 2/3: ${docs.join('; ').replace(/\.$/, '')}.`)
+  else if ((schemes || []).some((scheme) => scheme.codes.length)) lines.push('Declare the code in DE 2/3.')
+  return lines.join(' ')
 }

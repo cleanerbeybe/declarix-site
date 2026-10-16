@@ -1,0 +1,101 @@
+{
+ "data": [
+  {
+   "id": "dcts-ldcs",
+   "type": "rules_of_origin_scheme",
+   "attributes": {
+    "scheme_code": "dcts-ldcs",
+    "title": "Developing Countries Trading Scheme (DCTS) - Comprehensive Preferences",
+    "countries": [
+     "AF",
+     "AO",
+     "BD",
+     "BJ",
+     "BT",
+     "BF",
+     "BI",
+     "KH",
+     "CF",
+     "TD",
+     "KM",
+     "CD",
+     "DJ",
+     "ER",
+     "ET",
+     "GM",
+     "GN",
+     "GW",
+     "HT",
+     "KI",
+     "LA",
+     "LS",
+     "LR",
+     "MG",
+     "MW",
+     "ML",
+     "MR",
+     "MZ",
+     "MM",
+     "NP",
+     "NE",
+     "RW",
+     "ST",
+     "SN",
+     "SL",
+     "SB",
+     "SO",
+     "SS",
+     "SD",
+     "TL",
+     "TG",
+     "TV",
+     "UG",
+     "TZ",
+     "YE",
+     "ZM"
+    ],
+    "proof_codes": {
+     "DE 2/3": "You must include one of the following document codes, as appropriate:\n\n- **9001** (origin declaration)\n\n- **N865** (Form A)",
+     "DE 4/17": "The data element must include a preference code in the 200 series."
+    },
+    "show_proofs_for_geographical_areas": [
+     "1062"
+    ]
+   },
+   "relationships": {
+    "proofs": {
+     "data": [
+      {
+       "id": "9e737666481606cf084086985c7441ad",
+       "type": "rules_of_origin_proof"
+      },
+      {
+       "id": "b57109318775a504603f29b5c875dfff",
+       "type": "rules_of_origin_proof"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "included": [
+  {
+   "id": "9e737666481606cf084086985c7441ad",
+   "type": "rules_of_origin_proof",
+   "attributes": {
+    "summary": "Generalised Scheme of Preferences Form A",
+    "subtext": "",
+    "url": "https://www.gov.uk/guidance/get-proof-of-origin-for-your-goods#generalised-scheme-of-preferences-form-a"
+   }
+  },
+  {
+   "id": "b57109318775a504603f29b5c875dfff",
+   "type": "rules_of_origin_proof",
+   "attributes": {
+    "summary": "Origin declaration",
+    "subtext": "",
+    "url": "https://www.gov.uk/guidance/get-proof-of-origin-for-your-goods#origin-declaration"
+   }
+  }
+ ]
+}
