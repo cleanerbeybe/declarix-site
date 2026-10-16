@@ -4,13 +4,14 @@ export const calculators = [
     path: '/tools/customs-declaration-cost-calculator/',
     id: 'customs_declaration_cost_calculator',
     ref: 'WORKPAPER 02 · DESK ECONOMICS',
-    title: 'Customs declaration cost calculator | Free desk economics tool',
+    title: 'Customs Declaration Cost Calculator: Cost per Entry',
     schemaName: 'Customs declaration cost calculator',
-    reviewedOn: '2026-07-17',
+    reviewedOn: '2026-10-16',
     description:
-      'Calculate annual customs declaration labour cost, recoverable clerk capacity, labour headroom, and a break-even price per entry using your desk inputs.',
+      'Calculate the UK cost of each customs declaration: annual labour cost, clerk capacity, headroom and a break-even price per entry from your desk inputs.',
     eyebrow: 'FREE CUSTOMS DESK CALCULATOR · YOUR INPUTS · NO SIGN-UP',
-    h1: 'Calculate your customs desk cost per declaration.',
+    h1: 'How much does a customs declaration cost? Calculate yours.',
+    subhead: 'Calculate your customs desk cost per declaration.',
     standfirst:
       'Put five desk numbers into a transparent labour model. See the annual hours, cost, recoverable capacity, and labour-only break-even price before you discuss software.',
     sources: [
@@ -25,6 +26,18 @@ export const calculators = [
         publisher: 'HM Revenue & Customs · GOV.UK',
         checked: '16 JULY 2026',
         url: 'https://www.gov.uk/government/publications/standard-for-customs-intermediaries',
+      },
+      {
+        title: 'Get someone to deal with customs for you',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf',
+      },
+      {
+        title: 'Check when you can account for import VAT on your VAT Return',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/check-when-you-can-account-for-import-vat-on-your-vat-return',
       },
     ],
     faqs: [
@@ -52,6 +65,11 @@ export const calculators = [
         question: 'Does this calculation include the price of Declarix?',
         answer:
           'No. The calculator does not invent or assume a Declarix rate. The 20-minute numbers call replaces the model inputs with your desk data and tests the commercial case including the proposed per-entry rate.',
+      },
+      {
+        question: 'Is the clearance fee separate from duty and VAT?',
+        answer:
+          'Yes. The clearance fee is what a customs agent or your own desk charges to prepare and submit the declaration. Import duty and import VAT are taxes owed to HMRC on the goods. They are paid on top of the fee, either by the importer or by the agent on the importer\'s behalf, and VAT-registered importers can account for import VAT on their VAT Return instead of paying it at the border.',
       },
     ],
   },
@@ -232,7 +250,15 @@ function calculatorScript(calculator, posthogKey, posthogHost) {
         status.textContent = 'Desk model updated. Results use the five inputs shown.';
         document.getElementById('calculator-results').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
       });
-      document.getElementById('share-model').addEventListener('click', async () => {
+      const shareButton = document.getElementById('share-model');
+      let flashTimer = null;
+      const flashButton = (button, text) => {
+        clearTimeout(flashTimer);
+        button.textContent = text;
+        button.classList.add('is-flashed');
+        flashTimer = setTimeout(() => { button.textContent = button.dataset.label; button.classList.remove('is-flashed'); }, 2000);
+      };
+      shareButton.addEventListener('click', async () => {
         if (!form.reportValidity() || !update()) return;
         const value = values();
         const url = new URL(location.href);
@@ -245,9 +271,11 @@ function calculatorScript(calculator, posthogKey, posthogHost) {
         try {
           await navigator.clipboard.writeText(url.toString());
           status.textContent = 'Share link copied. It includes the five model inputs shown on this page.';
+          flashButton(shareButton, 'COPIED ✓');
           track('tool_result_copied', { result_type: 'share_link' });
         } catch {
           status.textContent = 'Copy was blocked by the browser. Use Print or save instead.';
+          flashButton(shareButton, 'COPY BLOCKED · USE PRINT');
         }
       });
       document.getElementById('print-model').addEventListener('click', () => {
@@ -307,29 +335,14 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
       <div class="breadcrumbs">${breadcrumbHtml(calculator.path, 'DECLARATION COST CALCULATOR')}</div>
       <main>
-        <header class="hero calculator-hero">
-          <div class="hero-copy">
-            <p class="eyebrow">${escapeHtml(calculator.eyebrow)}</p>
-            <h1>${escapeHtml(calculator.h1)}</h1>
-            <p>${escapeHtml(calculator.standfirst)}</p>
-            <div class="calculator-trust"><strong>NO ACCOUNT</strong><strong>CALCULATES IN YOUR BROWSER</strong><strong>PRINT OR SHARE</strong></div>
-          </div>
-          <aside class="hero-ledger">
-            <span class="route-ref">${escapeHtml(calculator.ref)}</span>
-            <div class="stamp">RUN<br />YOUR NUMBERS</div>
-            <div class="review-cell"><span>EDITION</span><strong>${calculator.reviewedOn}</strong></div>
-          </aside>
+        <header class="hero calculator-hero tool-first-hero">
+          <p class="eyebrow">${escapeHtml(calculator.eyebrow)}</p>
+          <h1>${escapeHtml(calculator.h1)}</h1>
+          <p class="tool-subhead">${escapeHtml(calculator.subhead)}</p>
         </header>
 
-        <section class="calculator-answer" aria-labelledby="direct-answer">
-          <span class="section-label">DIRECT ANSWER</span>
-          <div>
-            <h2 id="direct-answer">What does a customs declaration cost to prepare?</h2>
-            <p>For a labour view, multiply the clerk minutes used per declaration by the loaded hourly cost, then divide by 60. Add weekly volume and working weeks to see the annual load. This calculator also compares that baseline with a target review-time scenario chosen by you.</p>
-            <code>LABOUR COST / ENTRY = MINUTES / ENTRY × LOADED HOURLY COST ÷ 60</code>
-          </div>
-        </section>
-
+        <div class="tool-first-grid">
+          <div class="tool-first-main">
         <section class="calculator-workpaper" aria-labelledby="calculator-heading">
           <header>
             <span class="section-label">BUYER-CONTROLLED MODEL</span>
@@ -401,11 +414,35 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
           </div>
           <div class="calculator-actions">
             <div><span class="section-label">TAKE IT TO THE DESK</span><p>A share link includes the five visible inputs. Print produces a clean model for an internal discussion.</p></div>
-            <button class="secondary-button" id="share-model" type="button">COPY SHARE LINK</button>
+            <button class="secondary-button" id="share-model" type="button" data-label="COPY SHARE LINK">COPY SHARE LINK</button>
             <button class="secondary-button" id="print-model" type="button">PRINT / SAVE</button>
           </div>
         </section>
         <p class="visually-hidden" id="calculator-status" aria-live="polite"></p>
+          </div>
+
+        <aside class="calculator-answer tool-first-answer" aria-labelledby="direct-answer">
+          <span class="section-label">DIRECT ANSWER</span>
+          <div>
+            <h2 id="direct-answer">What does a customs declaration cost to prepare?</h2>
+            <p>For a labour view, multiply the clerk minutes used per declaration by the loaded hourly cost, then divide by 60. Add weekly volume and working weeks to see the annual load. This calculator also compares that baseline with a target review-time scenario chosen by you.</p>
+            <code>LABOUR COST / ENTRY = MINUTES / ENTRY × LOADED HOURLY COST ÷ 60</code>
+            <p class="tool-first-answer-link">Paying duty and VAT too? <a href="/tools/customs-value-import-duty-vat-calculator/">Work them out with the UK import duty and VAT calculator</a>.</p>
+          </div>
+        </aside>
+        </div>
+
+        <section class="tool-first-about" aria-label="About this calculator">
+          <div class="tool-first-about-copy">
+            <p>${escapeHtml(calculator.standfirst)}</p>
+            <div class="calculator-trust"><strong>NO ACCOUNT</strong><strong>CALCULATES IN YOUR BROWSER</strong><strong>PRINT OR SHARE</strong></div>
+          </div>
+          <aside class="hero-ledger">
+            <span class="route-ref">${escapeHtml(calculator.ref)}</span>
+            <div class="stamp">RUN<br />YOUR NUMBERS</div>
+            <div class="review-cell"><span>EDITION</span><strong>${calculator.reviewedOn}</strong></div>
+          </aside>
+        </section>
 
         <section class="formula-register" aria-labelledby="formula-heading">
           <header><span class="section-label">FORMULA REGISTER</span><h2 id="formula-heading">Every output, in plain sight.</h2><p>All calculations are deterministic and run in this browser. The page sends only aggregate interaction events when analytics is configured, never the five input values.</p></header>
@@ -417,6 +454,21 @@ export function renderCalculator(calculator, site, { navHtml, webmasterHtml, pos
             <p><b>CAPACITY EQUIVALENT</b><code>RECOVERABLE HOURS ÷ (TARGET MINUTES ÷ 60)</code></p>
             <p><b>BREAK-EVEN / ENTRY</b><code>MAX(0, CURRENT COST / ENTRY − TARGET COST / ENTRY)</code></p>
           </div>
+        </section>
+
+        <section class="cost-drivers" id="what-drives-the-cost" aria-labelledby="cost-drivers-heading">
+          <header><span class="section-label">COST PER DECLARATION</span><h2 id="cost-drivers-heading">What drives the cost per declaration</h2><p>The cost of a customs declaration is mostly clerk time. Four things move that time: how many goods lines the entry has, the port and system charges around it, rework after an error, and the queries that follow. Put your own figures into the calculator above to see what each minute is worth.</p></header>
+          <div class="cost-table-wrap"><table class="cost-drivers-table">
+            <caption>What moves the cost of one customs declaration</caption>
+            <thead><tr><th scope="col">Driver</th><th scope="col">Why it moves the cost</th><th scope="col">Where it shows in this calculator</th></tr></thead>
+            <tbody>
+              <tr><th scope="row" data-label="Driver">Lines per entry</th><td data-label="Why it moves the cost">Each goods line needs its own commodity code, origin, value and procedure code. A 40-line entry takes far longer to key and check than a 2-line entry.</td><td data-label="Where it shows">Field 02, current minutes per declaration</td></tr>
+              <tr><th scope="row" data-label="Driver">Port and CDS charges</th><td data-label="Why it moves the cost">Port inventory systems, community system providers and software licences can charge per entry or per month, on top of clerk time.</td><td data-label="Where it shows">Add them to your fee per entry when you compare with the break-even price</td></tr>
+              <tr><th scope="row" data-label="Driver">Rework</th><td data-label="Why it moves the cost">A wrong code, value or document reference means an amendment or a fresh submission, so the same entry is paid for twice.</td><td data-label="Where it shows">Field 02 (average minutes, including rework)</td></tr>
+              <tr><th scope="row" data-label="Driver">Queries</th><td data-label="Why it moves the cost">Missing invoices, unclear goods descriptions and HMRC document checks pull a clerk back to the entry and delay release.</td><td data-label="Where it shows">Field 02 and field 03, loaded clerk cost per hour</td></tr>
+            </tbody>
+          </table></div>
+          <p class="cost-drivers-note">Working out the duty and VAT on the goods as well? Use the <a href="/tools/customs-value-import-duty-vat-calculator/">UK import duty and VAT calculator</a>. To see how many more declarations your team could take on, run the <a href="/roi-calculator/">customs automation ROI calculator</a>.</p>
         </section>
 
         <section class="assumption-grid" aria-label="Model assumptions and next decision">
