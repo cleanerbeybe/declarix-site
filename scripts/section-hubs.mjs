@@ -10,9 +10,23 @@ export const sectionHubs = [
   {
     path: '/tools/',
     ref: 'INDEX 01 · FREE TOOLS',
-    title: 'Free UK customs tools for brokers and importers | Declarix',
+    title: 'Free UK Customs Tools: Duty, EORI, MRN, GMR and More',
     description:
-      'Free browser tools for UK customs desks: document pack check, declaration cost calculator, customs value and duty workpaper and GB EORI check.',
+      'Free UK customs tools: import duty and VAT calculator, commodity code checker, EORI, MRN and GMR checkers, invoice and packing list generators and more.',
+    // The phrase each tool answers in search, shown on its card (intent review §4.1, 16 Oct 2026).
+    searchPhrases: {
+      '/tools/customs-document-pack-check/': 'Customs document checker',
+      '/tools/customs-declaration-cost-calculator/': 'Customs declaration cost calculator',
+      '/tools/customs-value-import-duty-vat-calculator/': 'Import duty calculator UK',
+      '/tools/commodity-code-checker/': 'Commodity code checker',
+      '/tools/eori-checker/': 'EORI number checker',
+      '/tools/mrn-checker/': 'MRN checker',
+      '/tools/gmr-checker/': 'GMR checker',
+      '/tools/postponed-vat-statement-checker/': 'Postponed VAT statement checker',
+      '/tools/import-duty-repayment-checker/': 'Reclaim import duty (C285)',
+      '/tools/commercial-invoice-generator/': 'Commercial invoice template',
+      '/tools/packing-list-generator/': 'Shipping packing list template',
+    },
     eyebrow: 'FREE TOOLS · NO SIGN-UP · UNGATED',
     h1: 'Free customs tools for the work before the filing screen.',
     standfirst:
@@ -49,6 +63,13 @@ export const sectionHubs = [
         title: 'Turn one result into a capacity plan.',
         paragraphs: [
           'Declarix builds CDS-ready entry packs from customer documents, so each clerk can handle up to 3× more declarations. Put your volume and clerk minutes into the ROI calculator to see what the released time could support, then book the 20-minute numbers call.',
+        ],
+      },
+      {
+        label: '04 · QUESTIONS',
+        title: 'Are the tools free?',
+        paragraphs: [
+          'Yes. Every tool on this page is free to use, with no account and no email address. The invoice and packing list generators and the document checker run in your browser, and every tool shows the GOV.UK or HMRC source it was checked against.',
         ],
       },
     ],
@@ -198,12 +219,12 @@ const escapeHtml = (value) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
 
-function renderBranch(children, parent) {
+function renderBranch(children, parent, phrases = {}) {
   const items = children.filter((child) => child.parent === parent)
   if (!items.length) return ''
   return `<ol class="hub-list">${items
     .map(
-      (child) => `<li><a href="${child.path}">${escapeHtml(child.name)}</a><p>${escapeHtml(child.description)}</p>${renderBranch(children, child.path)}</li>`,
+      (child) => `<li><a href="${child.path}">${escapeHtml(child.name)}</a><p>${phrases[child.path] ? `<b>${escapeHtml(phrases[child.path])}.</b> ` : ''}${escapeHtml(child.description)}</p>${renderBranch(children, child.path, phrases)}</li>`,
     )
     .join('')}</ol>`
 }
@@ -216,7 +237,7 @@ export function renderHubRegister(hub, children) {
     : ''
   return `<section class="hub-register" aria-labelledby="hub-register-heading">
     <header><span class="section-label">IN THIS SECTION · ${children.length} PAGES</span><h2 id="hub-register-heading">${escapeHtml(hub.registerTitle)}</h2></header>
-    ${renderBranch(children, hub.path)}${related}
+    ${renderBranch(children, hub.path, hub.searchPhrases)}${related}
   </section>`
 }
 
