@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { C285_LIMITS, claimDeadline, repaymentRoute } from '../scripts/trade-tools/c285.mjs'
+import { BROKER_AUTHORITY, C285_LIMITS, C285_START, PROOF_OF_ORIGIN, claimDeadline, repaymentRoute } from '../scripts/trade-tools/c285.mjs'
 
 const today = new Date('2026-10-15T12:00:00Z')
 const base = { reason: 'overpaid', postal: 'no', who: 'importer', eori: 'yes', system: 'cds', taxes: 'both', vatRegistered: 'yes', acceptedOn: '2025-02-03' }
@@ -63,4 +63,31 @@ test('deadline status: expired, urgent and open', () => {
   assert.equal(repaymentRoute({ ...base, acceptedOn: '2023-11-20' }, { today }).status, 'urgent')
   assert.equal(repaymentRoute({ ...base, reason: 'withdrawn', acceptedOn: '2026-08-01' }, { today }).status, 'urgent')
   assert.equal(repaymentRoute({ ...base, acceptedOn: '' }, { today }).deadline, null)
+})
+
+test('RP1: a missed preference adds proof of origin to the checklist', () => {
+  const outcome = repaymentRoute({ ...base, reason: 'preference' }, { today })
+  assert.ok(outcome.checklist.includes(PROOF_OF_ORIGIN))
+  assert.match(PROOF_OF_ORIGIN, /valid on the day you submit the claim/)
+  assert.equal(outcome.deadline, '2028-02-03')
+  assert.ok(!repaymentRoute(base, { today }).checklist.includes(PROOF_OF_ORIGIN))
+})
+
+test('RP2: the result links to the official start page for the route', () => {
+  assert.deepEqual(repaymentRoute(base, { today }).start, [C285_START.cds])
+  assert.equal(C285_START.cds.label, 'START YOUR CLAIM IN CDS ↗')
+  assert.match(C285_START.cds.url, /^https:\/\/www\.tax\.service\.gov\.uk\/claim-back-import-duty-vat\//)
+  assert.deepEqual(repaymentRoute({ ...base, eori: 'no', vatRegistered: 'no' }, { today }).start, [C285_START.c285])
+})
+
+test('RP3: who claims and the broker authority line, except for private individuals', () => {
+  assert.equal(repaymentRoute({ ...base, who: 'agent' }, { today }).authority, BROKER_AUTHORITY)
+  assert.match(BROKER_AUTHORITY, /written instructions/)
+  assert.equal(repaymentRoute({ ...base, who: 'individual' }, { today }).authority, null)
+})
+
+test('rejected imports without an EORI use the C&E1179 form (GOV.UK, 2 April 2026)', () => {
+  const outcome = repaymentRoute({ ...base, reason: 'rejected', eori: 'no', taxes: 'duty' }, { today })
+  assert.deepEqual(ids(outcome), ['ce1179'])
+  assert.deepEqual(outcome.start, [C285_START.ce1179])
 })
