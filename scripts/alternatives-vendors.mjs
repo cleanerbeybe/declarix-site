@@ -93,6 +93,7 @@ export const vendors = {
     worksWith: 'ASM Sequoia, Descartes, Sedna and Outlook (vendor list)',
     precheck: 'Reads commercial invoices, packing lists and CMRs in over 50 formats',
     throughput: 'Vendor states it creates declarations “instantly”',
+    // Prices re-checked verbatim on https://flytta.uk/ (pricing section) on 16 Oct 2026; comparison-sources.mjs fyHome agrees.
     pricing: 'Published: “£5 Per Trade”; Flytta Pro “£50 Per Month Per Seat”; Enterprise on request',
     uk: 'UK (HMRC, CDS and UK Tariff references)',
     summary:

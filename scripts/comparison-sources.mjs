@@ -53,6 +53,8 @@ export const sources = {
   seAcq: s('Sedna expands AI leadership in global trade with Flytta acquisition', 'Sedna', 'https://sedna.com/resources/sedna-expands-ai-leadership-in-global-trade-with-flytta-acquisition'),
   seCase: s('How Casper Customs transformed their operations with Sedna', 'Sedna', 'https://sedna.com/case-studies/how-casper-customs-transformed-their-operations-with-sedna'),
   seNews: s('Sedna steers AI innovation with takeover (4 Mar 2025)', 'Bdaily', 'https://bdaily.co.uk/articles/2025/03/04/sedna-steers-ai-innovation-with-takeover'),
+  // Flytta's own site, re-checked 16 Oct 2026 for the price section (two vendor files had disagreed).
+  fyHome: { title: 'Flytta homepage: pricing section', publisher: 'Flytta', url: 'https://flytta.uk/', checked: '16 Oct 2026' },
   // Customs4trade
   c4Home: s('Customs4trade CAS homepage', 'Customs4trade', 'https://www.customs4trade.com/'),
   c4Decl: s('CAS Declarations', 'Customs4trade', 'https://www.customs4trade.com/cas-customs-compliance/declarations'),
@@ -222,7 +224,7 @@ export const products = {
       intake: c('Extracts customs data from invoices and shipping paperwork arriving by email, including PDFs.', 'seCase'),
       evidence: c('Built-in compliance checks against HMRC requirements, per the Casper Customs case study.', 'seCase'),
       systems: c('Automatic output to ASM Sequoia and Descartes.', 'seCase'),
-      pricing: c('Not published on the pages checked.', 'seAcq'),
+      pricing: c('Published on flytta.uk: “£5 Per Trade” (pay as you trade); Flytta Pro “£50 Per Month Per Seat”; Flytta Enterprise on request.', 'fyHome'),
       trial: c('Not stated on the pages checked.', 'seAcq'),
       company: c('Sedna, with offices including London and Middlesbrough. Flytta began as an in-house tool at Casper Shipping.', 'seAcq'),
     },
@@ -231,7 +233,7 @@ export const products = {
       c('Bdaily reported the acquisition on 4 March 2025; the co-founders joined Sedna.', 'seNews'),
       c('The Casper Customs case study describes extraction from commercial documents and output to ASM Sequoia and Descartes.', 'seCase'),
       c('Customers named include Casper Customs, Pentagon Freight Services and Mobius Technology.', 'seAcq'),
-      c('flytta.com did not resolve when checked; the product is presented on sedna.com.', 'seAcq'),
+      c('Flytta’s own site, flytta.uk, carries the banner “Flytta Has Been Acquired By Sedna”; Sedna also presents the product on sedna.com.', 'fyHome', 'seAcq'),
     ],
   },
   customs4trade: {
@@ -332,6 +334,6 @@ export const hubMatrix = {
     extraction: c('Yes: invoices and shipping paperwork', 'seCase'),
     checks: c('Compliance checks against HMRC requirements', 'seCase'),
     fit: c('Yes: outputs to Sequoia and Descartes', 'seCase'),
-    price: c('Not published on the pages checked', 'seAcq'),
+    price: c('Published: “£5 Per Trade”; Pro “£50 Per Month Per Seat”', 'fyHome'),
   },
 }
