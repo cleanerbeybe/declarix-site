@@ -168,7 +168,7 @@ const packingSchema = {
     { id: 'shipperEori', group: 'seller', label: 'Shipper EORI', type: 'text', eori: true, cds: 'DE 3/2', help: 'Needed when the shipper holds one.', example: 'DE1234567' },
     { id: 'consigneeName', group: 'buyer', label: 'Consignee name', type: 'text', required: true, cds: 'DE 3/8', help: 'Legal name of the receiving party.', example: 'Harbour Example Trading Ltd' },
     { id: 'consigneeAddress', group: 'buyer', label: 'Consignee address', type: 'textarea', required: true, cds: 'DE 3/8', help: 'Delivery address including postcode and country.', example: 'Unit 4, Example Park, Leicester LE1 1AA, United Kingdom' },
-    { id: 'consigneeEori', group: 'buyer', label: 'Consignee or importer EORI', type: 'text', eori: true, cds: 'DE 3/16', help: 'A GB importer’s EORI starts with GB. The importer needs one to bring goods into the UK, so add it and the forwarder will not have to ask.', example: 'GB123456789000' },
+    { id: 'consigneeEori', group: 'buyer', label: 'Consignee or importer EORI', type: 'text', eori: true, cds: 'DE 3/16', help: 'Imports into the UK: the importer’s GB EORI (GB…). Exports to the EU: the customer’s EU EORI (for example IE… for Ireland). Add it and the forwarder will not have to ask.', example: 'GB123456789000' },
     { id: 'packingListNumber', group: 'refs', label: 'Packing list number', type: 'text', required: true, help: 'Your reference for this list.', example: 'PL-2026-0142' },
     { id: 'packingDate', group: 'refs', label: 'Date', type: 'date', required: true, help: 'Date the goods were packed.', example: '2026-10-15' },
     { id: 'invoiceNumber', group: 'refs', label: 'Commercial invoice number', type: 'text', linkInvoice: true, cds: 'DE 2/3 (N935)', help: 'The invoice this list supports. Reviewers match the two.', example: 'INV-2026-0142' },
@@ -296,7 +296,8 @@ export function missingDimensionLines(schema, state) {
 }
 
 // Shipping marks for a duplicated line. "HX/0142 1-4" with 4 packages becomes "HX/0142 5-8";
-// "HX/0142 5" with 1 package becomes "HX/0142 6". Anything else is copied unchanged.
+// "BGC/1-3" with 1 package (carton 1 of 3) becomes "BGC/2-3"; "HX/0142 5" with 1 package becomes
+// "HX/0142 6". Anything else is copied unchanged.
 export function nextMarks(marks, packageCount) {
   const text = String(marks == null ? '' : marks)
   const count = Number(String(packageCount == null ? '' : packageCount).trim())
@@ -307,7 +308,13 @@ export function nextMarks(marks, packageCount) {
     const end = Number(range[4])
     if (end < start) return text
     const size = end - start + 1
-    return range[1] + pad(end + 1, range[2]) + range[3] + pad(end + size, range[4])
+    // One package marked "x-n" is carton x of n ("BGC/1-3"): the next carton is x+1 of the same n.
+    // The last carton ("BGC/3-3") is copied unchanged.
+    if (count === 1) return start < end ? range[1] + pad(start + 1, range[2]) + range[3] + range[4] : text
+    // A range that covers exactly this line's packages ("1-4" on a 4-package line) moves on to the next block.
+    if (Number.isInteger(count) && count === size) return range[1] + pad(end + 1, range[2]) + range[3] + pad(end + size, range[4])
+    // Anything else: copy the marks exactly as they are, so nothing on the box is invented.
+    return text
   }
   const single = text.match(/^(.*\s)(\d+)\s*$/)
   if (single && Number.isInteger(count) && count >= 1) {

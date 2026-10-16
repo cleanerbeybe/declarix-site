@@ -268,7 +268,7 @@ export default {
           if (q.kind === 'code' && q.query.length === 2) { await showChapter(q.query); return; }
           if (q.kind === 'code') { await showHeading(q.query.length === 4 ? q.query : q.query.padEnd(10, '0')); return; }
           const { found, used } = await findLines(q.query);
-          if (used) closestNote = '<p class="tt-closest"><strong>Closest lines for “' + esc(used) + '”.</strong> No tariff line matched every word of “' + esc(q.query) + '”, so the checker searched with fewer words.</p>';
+          if (used) closestNote = '<p class="tt-closest"><strong>Closest lines for “' + esc(used) + '”.</strong> No tariff line matched every word of “' + esc(q.query) + '”, so the checker searched “' + esc(used) + '”. Words such as men’s or women’s rarely change the line, so check the result’s description covers your goods.</p>';
           if (found.type === 'exact') { await openFound(found); return; }
           if (!found.candidates.length) {
             lastCopy = '';
