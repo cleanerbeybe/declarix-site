@@ -342,8 +342,8 @@ for (const route of expected) {
     if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
       throw new Error(`${route.path} must not collect document data, identifiers, email, or free text`)
     }
-    if ((html.match(/type="number"/g) || []).length !== 10) {
-      throw new Error(`${route.path} must expose exactly ten explicit numerical inputs`)
+    if ((html.match(/type="number"/g) || []).length !== 11) {
+      throw new Error(`${route.path} must expose ten explicit numerical inputs plus the optional units input`)
     }
     for (const phrase of [
       'CONVERTED GOODS = GOODS AMOUNT ÷ CURRENCY UNITS PER £1',

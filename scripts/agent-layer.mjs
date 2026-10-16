@@ -171,7 +171,8 @@ function webmcpScript(path) {
               dutyRate: { type: 'number', minimum: 0, maximum: 1000, description: 'Ad valorem duty rate, percent' },
               otherImportCharges: { type: 'number', minimum: 0, description: 'Other import charges, GBP' },
               incidentalExpenses: { type: 'number', minimum: 0, description: 'Incidental expenses to the first UK destination, GBP' },
-              vatRate: { type: 'number', minimum: 0, maximum: 100, description: 'Import VAT rate, percent' }
+              vatRate: { type: 'number', minimum: 0, maximum: 100, description: 'Import VAT rate, percent' },
+              units: { type: 'number', exclusiveMinimum: 0, maximum: 100000000, description: 'Optional: units in the shipment, for duty + VAT and landed cost per unit' }
             },
             required: ['goodsAmount', 'fxRate', 'dutyRate', 'vatRate']
           },
@@ -179,9 +180,11 @@ function webmcpScript(path) {
             note('calculate_customs_value_duty_vat');
             const keys = ['goodsAmount', 'fxRate', 'freight', 'insurance', 'additions', 'deductions', 'dutyRate', 'otherImportCharges', 'incidentalExpenses', 'vatRate'];
             const value = Object.fromEntries(keys.map((key) => [key, Number(input && input[key] != null ? input[key] : 0)]));
+            if (input && input.units != null) value.units = Number(input.units);
             try {
               const scenario = calculateValueDutyScenario(value);
               const params = { g: value.goodsAmount, x: value.fxRate, f: value.freight, i: value.insurance, a: value.additions, d: value.deductions, r: value.dutyRate, o: value.otherImportCharges, e: value.incidentalExpenses, v: value.vatRate };
+              if ('units' in value) params.u = value.units;
               const url = new URL(page);
               Object.entries(params).forEach(([key, entry]) => url.searchParams.set(key, entry));
               return reply({ currency: 'GBP', inputs: value, results: Object.fromEntries(Object.entries(scenario).map(([key, entry]) => [key, round(entry)])), open_on_page: url.toString(), book_a_call: booking });
@@ -245,7 +248,8 @@ function webmcpScript(path) {
               currentMinutes: { type: 'number', exclusiveMinimum: 0, maximum: 1440, description: 'Current clerk minutes per declaration' },
               withDeclarixMinutes: { type: 'number', exclusiveMinimum: 0, maximum: 1440, description: 'Clerk minutes per declaration with Declarix' },
               clientFee: { type: 'number', minimum: 0, description: 'Optional: fee charged to clients per extra declaration, GBP' },
-              captureRate: { type: 'number', minimum: 0, maximum: 100, description: 'Optional: share of extra capacity expected to sell, percent' }
+              captureRate: { type: 'number', minimum: 0, maximum: 100, description: 'Optional: share of extra capacity expected to sell, percent' },
+              loadedCost: { type: 'number', exclusiveMinimum: 0, maximum: 10000000, description: 'Optional: loaded cost per clerk, GBP a year, for the net monthly saving after the plan fee' }
             },
             required: ['volume', 'currentMinutes', 'withDeclarixMinutes']
           },
@@ -253,8 +257,8 @@ function webmcpScript(path) {
             note('estimate_declarix_capacity_and_package');
             const text = (value) => value == null ? '' : String(value);
             try {
-              const model = calculateRoi({ volume: text(input && input.volume), currentMinutes: text(input && input.currentMinutes), withDeclarixMinutes: text(input && input.withDeclarixMinutes), clientFee: text(input && input.clientFee), captureRate: text(input && input.captureRate) });
-              return reply({ currency: 'GBP', clerk_hours_released_per_month: round(model.hours), extra_declarations_per_month: round(model.extraPacks), annual_extra_billable_revenue: model.annualCapturedRevenue === null ? null : round(model.annualCapturedRevenue), best_fit_package: model.packageFit, annual_package_cost: model.packageFit.total * 12, pricing: location.origin + '/pricing/', book_a_call: booking });
+              const model = calculateRoi({ volume: text(input && input.volume), currentMinutes: text(input && input.currentMinutes), withDeclarixMinutes: text(input && input.withDeclarixMinutes), clientFee: text(input && input.clientFee), captureRate: text(input && input.captureRate), loadedCost: text(input && input.loadedCost) });
+              return reply({ currency: 'GBP', clerk_hours_released_per_month: round(model.hours), extra_declarations_per_month: round(model.extraPacks), annual_extra_billable_revenue: model.annualCapturedRevenue === null ? null : round(model.annualCapturedRevenue), best_fit_package: model.packageFit, annual_package_cost: model.packageFit.total * 12, net_monthly_saving_after_plan_fee: model.netMonthlySaving === null ? null : round(model.netMonthlySaving), pricing: location.origin + '/pricing/', book_a_call: booking });
             } catch (error) {
               return reply({ error: String(error && error.message || error) });
             }

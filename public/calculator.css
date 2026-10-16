@@ -591,3 +591,328 @@ button:focus-visible {
     color: var(--muted);
   }
 }
+
+/* Tool-first layout (ICP issue S1 + intent review §4.1): H1, one subhead line, then the tool.
+   The Direct answer sits beside the tool on desktop and under it on phones. */
+.hero.tool-first-hero {
+  display: block;
+  min-height: 0;
+  padding: clamp(18px, 2.6vw, 30px) clamp(20px, 5vw, 60px) clamp(16px, 2vw, 22px);
+}
+
+.tool-first-hero .eyebrow {
+  margin: 0;
+}
+
+.calculator-hero.tool-first-hero h1 {
+  max-width: 30ch;
+  margin: 8px 0 6px;
+  font-size: clamp(32px, 4.2vw, 54px);
+}
+
+.tool-first-hero .tool-subhead {
+  max-width: 62ch;
+  margin: 0;
+  font-size: clamp(16px, 1.8vw, 20px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.tool-first-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.tool-first-main {
+  min-width: 0;
+  border-right: 1.5px solid var(--ink);
+}
+
+.tool-first-main > section:last-of-type {
+  border-bottom: 0;
+}
+
+.calculator-answer.tool-first-answer {
+  position: sticky;
+  top: 0;
+  display: block;
+  align-self: start;
+  padding: clamp(26px, 3vw, 40px);
+  border-bottom: 0;
+}
+
+.calculator-answer.tool-first-answer h2 {
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+
+.tool-first-answer code {
+  overflow-wrap: anywhere;
+}
+
+.tool-first-answer a {
+  color: #8ed2aa;
+}
+
+.tool-first-answer-link {
+  margin: 22px 0 0;
+}
+
+.tool-first-about {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.tool-first-about-copy {
+  padding: clamp(30px, 5vw, 60px);
+  border-right: 1.5px solid var(--ink);
+}
+
+.tool-first-about-copy > p {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.secondary-button.is-flashed {
+  color: var(--paper);
+  background: var(--cleared);
+}
+
+@media (max-width: 960px) {
+  .tool-first-grid,
+  .tool-first-about {
+    grid-template-columns: 1fr;
+  }
+
+  .tool-first-main {
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .calculator-answer.tool-first-answer {
+    position: static;
+  }
+
+  .tool-first-about-copy {
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero.tool-first-hero {
+    padding: 16px 16px 14px;
+  }
+
+  .calculator-hero.tool-first-hero h1 {
+    margin: 6px 0;
+    font-size: clamp(28px, 8.5vw, 40px);
+  }
+
+  .tool-first-hero .tool-subhead {
+    font-size: 15px;
+  }
+
+  .tool-first-about .hero-ledger {
+    min-height: 0;
+    gap: 18px;
+  }
+
+  .tool-first-about-copy {
+    padding: 30px 18px;
+  }
+}
+
+@media print {
+  .tool-first-answer,
+  .tool-first-about {
+    display: none !important;
+  }
+
+  .tool-first-grid {
+    display: block;
+  }
+}
+
+/* Cost calculator inside the tool-first column. */
+.tool-first-main .calculator-workpaper > header {
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: clamp(14px, 2vw, 22px) clamp(18px, 3vw, 32px);
+}
+
+.tool-first-main .calculator-workpaper > header h2 {
+  margin: 4px 0;
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.tool-first-main .calculator-workpaper > header p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tool-first-main .calculator-field {
+  gap: 12px;
+  padding: clamp(18px, 2.6vw, 28px);
+}
+
+.tool-first-main .calculator-field > span:first-child {
+  font-size: clamp(18px, 2vw, 24px);
+}
+
+.tool-first-main .result-lead {
+  grid-template-columns: 1fr;
+  padding: clamp(24px, 4vw, 44px);
+}
+
+.tool-first-main .result-lead .section-label {
+  grid-row: auto;
+}
+
+.tool-first-main .result-card {
+  min-height: 0;
+}
+
+.tool-first-main .calculator-actions {
+  grid-template-columns: 1fr;
+  justify-items: start;
+}
+
+/* What drives the cost per declaration (S5 table with labelled cards on phones). */
+.cost-drivers {
+  padding: clamp(30px, 5vw, 60px);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.cost-drivers h2 {
+  margin: 10px 0 16px;
+  font-size: clamp(29px, 4vw, 50px);
+  line-height: 1.02;
+}
+
+.cost-drivers p {
+  max-width: 75ch;
+  line-height: 1.6;
+}
+
+.cost-table-wrap {
+  max-width: 100%;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.cost-drivers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.cost-drivers-table caption {
+  padding-bottom: 10px;
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.cost-drivers-table th,
+.cost-drivers-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgb(22 49 61 / 0.35);
+  text-align: left;
+  vertical-align: top;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+.cost-drivers-table thead th {
+  border-bottom: 2px solid var(--ink);
+  font: 600 10px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cost-drivers-table tbody th {
+  min-width: 9em;
+}
+
+@media (max-width: 760px) {
+  .tool-first-main .calculator-workpaper > header {
+    padding: 14px 16px;
+  }
+
+  .tool-first-main .calculator-workpaper > header h2 {
+    font-size: 21px;
+  }
+
+  .tool-first-main .calculator-workpaper > header p {
+    font-size: 13px;
+  }
+
+  .tool-first-main .calculator-field,
+  .tool-first-main .calculator-field:nth-child(2n),
+  .tool-first-main .calculator-field:last-child {
+    padding: 16px;
+  }
+
+  .cost-drivers {
+    padding: 30px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cost-drivers-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .cost-drivers-table,
+  .cost-drivers-table tbody,
+  .cost-drivers-table tr,
+  .cost-drivers-table th,
+  .cost-drivers-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .cost-drivers-table caption {
+    display: block;
+    width: 100%;
+  }
+
+  .cost-drivers-table tr {
+    padding: 10px 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .cost-drivers-table th,
+  .cost-drivers-table td {
+    padding: 4px 0;
+    border-bottom: 0;
+  }
+
+  .cost-drivers-table [data-label]::before {
+    display: block;
+    color: var(--muted);
+    content: attr(data-label);
+    font: 600 10px/1.4 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+}
+
+@media print {
+  .cost-drivers {
+    display: none;
+  }
+}

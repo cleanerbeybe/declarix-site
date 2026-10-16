@@ -1,4 +1,4 @@
-.roi-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; margin:24px 0; }
+.roi-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; margin:16px 0 24px; }
 .roi-layout form,.roi-results,.roi-method { background:#fff; border:1.5px solid var(--ink); padding:clamp(20px,3vw,36px); }
 .roi-layout h2,.roi-method h2 { font-size:clamp(28px,3vw,42px); margin:12px 0; }
 .roi-layout p,.roi-method p { line-height:1.55; }
@@ -17,3 +17,29 @@
 .roi-plan h3 { font-size:40px; margin:12px 0; color:#8ed3aa; }
 .roi-method { margin-bottom:24px; }
 @media(max-width:760px) { .roi-layout { grid-template-columns:1fr; margin:16px 0; } }
+.roi-hint { margin:8px 0 0; font-size:14px; color:#4f646a; }
+.roi-net p { margin:6px 0 0; font-size:14px; color:#c9d6d9; }
+.roi-formulas { display:grid; gap:10px; margin:18px 0; }
+.roi-formulas p { display:grid; gap:4px; margin:0; padding:12px 0; border-bottom:1px solid #aebdc1; }
+.roi-formulas code { font:500 12px/1.5 'IBM Plex Mono',monospace; overflow-wrap:anywhere; }
+.roi-faq { background:#fff; border:1.5px solid var(--ink); padding:clamp(20px,3vw,36px); margin-bottom:24px; }
+.roi-faq h2 { font-size:clamp(28px,3vw,42px); margin:12px 0; }
+.roi-faq-item { border-top:1px solid #aebdc1; padding:14px 0; }
+.roi-faq-item summary { cursor:pointer; font-weight:700; font-size:18px; }
+.roi-faq-item p { line-height:1.55; }
+/* Tool-first (ICP issue S1): short hero, form straight after it; the ledger stamp sits below the tool. */
+.hero.roi-hero { display:block; min-height:0; }
+.roi-hero .hero-copy { padding:clamp(18px,2.6vw,30px) clamp(20px,5vw,60px); border-right:0; }
+.roi-hero h1 { margin:8px 0; font-size:clamp(32px,4.2vw,54px); max-width:30ch; }
+.roi-ledger { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:24px; min-height:0; }
+@media(max-width:760px) {
+  .roi-hero .hero-copy { min-height:0; padding:16px; border-bottom:0; }
+  .roi-hero h1 { font-size:clamp(28px,8.5vw,40px); margin:6px 0; }
+  .roi-hero .hero-copy > p:not(.eyebrow) { font-size:15px; }
+  .roi-layout form,.roi-results { padding:16px; }
+  .roi-layout form h2 { font-size:22px; margin:0 0 6px; }
+  .roi-layout form > p { margin:0; font-size:14px; }
+  .roi-layout label { margin:14px 0 6px; }
+  .hero-ledger.roi-ledger { min-height:0; }
+  .roi-ledger .stamp { width:120px; height:120px; font-size:14px; }
+}

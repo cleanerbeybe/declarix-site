@@ -239,9 +239,9 @@ export const toolNotes = {
   },
   '/tools/customs-value-import-duty-vat-calculator/': {
     answers: 'The UK customs value, ad valorem import duty, import VAT value and import VAT for a shipment, from rates you enter.',
-    inputs: 'Goods amount, currency units per £1, freight, insurance, additions, deductions, duty rate %, other import charges, incidental expenses, VAT rate %.',
-    outputs: 'Converted goods, net adjustments, customs value, customs duty, import VAT value, import VAT, tax and duty total, planning total.',
-    prefill: '?g={goods amount}&x={currency units per GBP}&f={freight}&i={insurance}&a={additions}&d={deductions}&r={duty %}&o={other import charges}&e={incidental expenses}&v={VAT %}',
+    inputs: 'Goods amount, currency units per £1, freight, insurance, additions, deductions, duty rate %, other import charges, incidental expenses, VAT rate %; optional units.',
+    outputs: 'Converted goods, net adjustments, customs value, customs duty, import VAT value, import VAT, tax and duty total, planning total (landed cost); with units, duty + VAT per unit and landed cost per unit.',
+    prefill: '?g={goods amount}&x={currency units per GBP}&f={freight}&i={insurance}&a={additions}&d={deductions}&r={duty %}&o={other import charges}&e={incidental expenses}&v={VAT %}&u={optional units}',
     prefillExample: '?g=10000&x=1.25&f=500&i=100&a=400&d=200&r=5&o=60&e=200&v=20',
     webmcp: 'calculate_customs_value_duty_vat',
   },
@@ -252,8 +252,8 @@ export const toolNotes = {
   },
   '/roi-calculator/': {
     answers: 'How many clerk hours Declarix releases, how many extra declarations those hours support and which Declarix package fits a monthly volume.',
-    inputs: 'Declaration packs per month, current clerk minutes per declaration, clerk minutes with Declarix; optional client fee and capture rate.',
-    outputs: 'Released hours per month, extra declarations per month, best-fit package and monthly and annual cost.',
+    inputs: 'Declaration packs per month, current clerk minutes per declaration, clerk minutes with Declarix; optional loaded cost per clerk (£/year), client fee and capture rate.',
+    outputs: 'Released hours per month, extra declarations per month, best-fit package, monthly and annual cost, and the net monthly saving after the plan fee.',
     webmcp: 'estimate_declarix_capacity_and_package',
   },
   '/compare/automation-vs-outsourcing/': {
