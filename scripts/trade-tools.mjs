@@ -6,7 +6,7 @@
 // worked example and behaviour lives in scripts/trade-tools/pages/.
 import { readFileSync } from 'node:fs'
 import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
-import { PACK_CHECK, REVIEWED, escapeHtml, isLive, publishedTradeTools } from './trade-tools/page-kit.mjs'
+import { PACK_CHECK, REVIEWED, escapeHtml, isLive, labelTables, publishedTradeTools } from './trade-tools/page-kit.mjs'
 import mrnChecker from './trade-tools/pages/mrn.mjs'
 import gmrChecker from './trade-tools/pages/gmr.mjs'
 import pvaChecker from './trade-tools/pages/pva.mjs'
@@ -71,19 +71,49 @@ function clientScript(tool, posthogKey, posthogHost) {
         if (navigator.sendBeacon && navigator.sendBeacon(config.posthogHost + '/capture/', body)) return;
         fetch(config.posthogHost + '/capture/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => null);
       };
-      const showResult = (html, properties = {}) => {
-        resultBody.innerHTML = html;
+      const labelTables = ${labelTables.toString()};
+      const copyButton = document.getElementById('tt-copy');
+      const printButton = document.getElementById('tt-print');
+      const messageButton = document.getElementById('tt-copy-message');
+      let lastMessage = '';
+      // showResult(html, properties, options)
+      //   options.actions === false  hides COPY RESULT and PRINT / SAVE (use it for "no match" results);
+      //                              the pack-check and booking CTAs always stay.
+      //   options.message = 'text'   shows a COPY AS MESSAGE button that copies this short text.
+      const showResult = (html, properties = {}, options = {}) => {
+        resultBody.innerHTML = labelTables(html);
+        const actions = options.actions !== false;
+        copyButton.hidden = !actions;
+        printButton.hidden = !actions;
+        lastMessage = actions && options.message ? String(options.message) : '';
+        messageButton.hidden = !lastMessage;
         result.hidden = false;
         track(started ? 'tool_completed' : 'tool_started', properties);
         if (!started) track('tool_completed', properties);
         started = true;
         result.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
       };
-      document.getElementById('tt-copy').addEventListener('click', async () => {
-        const text = lastCopy || resultBody.innerText;
-        try { await navigator.clipboard.writeText(text); status.textContent = 'Result copied.'; track('tool_result_copied'); }
-        catch { status.textContent = 'Copy was blocked by the browser. Use print instead.'; }
-      });
+      // Visible copy confirmation (issue S4): the button reads COPIED ✓ for 2 seconds,
+      // or a short error; the hidden live region still speaks it for screen readers.
+      const copyText = async (button, text, event) => {
+        const label = button.dataset.label || button.textContent;
+        button.dataset.label = label;
+        clearTimeout(button._ttTimer);
+        try {
+          await navigator.clipboard.writeText(text);
+          button.textContent = 'COPIED ✓';
+          button.classList.add('is-copied');
+          status.textContent = 'Result copied.';
+          track(event);
+        } catch {
+          button.textContent = 'COPY BLOCKED: USE PRINT';
+          button.classList.add('is-copy-failed');
+          status.textContent = 'Copy was blocked by the browser. Use print instead.';
+        }
+        button._ttTimer = setTimeout(() => { button.textContent = label; button.classList.remove('is-copied', 'is-copy-failed'); }, 2000);
+      };
+      copyButton.addEventListener('click', () => copyText(copyButton, lastCopy || resultBody.innerText, 'tool_result_copied'));
+      messageButton.addEventListener('click', () => copyText(messageButton, lastMessage, 'tool_message_copied'));
       document.getElementById('tt-print').addEventListener('click', () => { track('tool_result_printed'); window.print(); });
       document.querySelectorAll('[data-tt-pack]').forEach((link) => link.addEventListener('click', () => track('tool_pack_check_clicked', { placement: link.dataset.ttPack })));
       document.querySelectorAll('[data-tt-booking]').forEach((link) => link.addEventListener('click', () => track('tool_booking_clicked', { placement: link.dataset.ttBooking })));
@@ -137,10 +167,20 @@ function renderRelated(tool) {
     </section>`
 }
 
+// Phone-first layout (issue S1): only the H1 and one short line sit above the tool.
+// A tool can set `intro`; otherwise the first sentence of the standfirst is used and the
+// rest of the standfirst moves below the tool. No words are dropped.
+export function splitIntro(tool) {
+  if (tool.intro) return { intro: tool.intro, rest: tool.standfirst }
+  const match = tool.standfirst.match(/^(.+?[.!?])\s+(.+)$/s)
+  return match ? { intro: match[1], rest: match[2] } : { intro: tool.standfirst, rest: '' }
+}
+
 export function renderTradeTool(tool, site, { navHtml, webmasterHtml, posthogKey, posthogHost }) {
   const canonical = `${site.origin}${tool.path}`
   const { widget, content } = tool
   const src = `tool_${tool.id}`
+  const { intro, rest } = splitIntro(tool)
   return `<!doctype html>
 <html lang="en-GB">
   <head>
@@ -183,36 +223,41 @@ export function renderTradeTool(tool, site, { navHtml, webmasterHtml, posthogKey
           <div class="hero-copy">
             <p class="eyebrow">${escapeHtml(tool.eyebrow)}</p>
             <h1>${escapeHtml(tool.h1)}</h1>
-            <p>${escapeHtml(tool.standfirst)}</p>
+            ${tool.subhead ? `<p class="tt-subhead-line">${escapeHtml(tool.subhead)}</p>` : ''}
+            <p class="tt-lede">${escapeHtml(intro)}</p>
           </div>
-          <aside class="hero-ledger">
-            <span class="route-ref">${escapeHtml(tool.ref)}</span>
-            <div class="stamp">${escapeHtml(tool.stamp).replaceAll('\n', '<br />')}</div>
-            <div class="review-cell"><span>SOURCES CHECKED</span><strong>${tool.reviewedOn}</strong></div>
-          </aside>
         </header>
-        <div class="hero-value-strip">${tool.strip.map((item) => `<strong>${escapeHtml(item)}</strong>`).join('')}</div>
-        <section class="answer-block tt-answer" aria-labelledby="tt-direct-answer">
-          <span class="section-label">DIRECT ANSWER</span>
-          <div><h2 id="tt-direct-answer">${escapeHtml(tool.answer.question)}</h2><p>${escapeHtml(tool.answer.text)}</p></div>
-        </section>
-        ${widget()}
+        ${labelTables(widget())}
         <section class="tt-result" id="tt-result" aria-live="polite" aria-labelledby="tt-result-label" hidden>
           <span class="section-label" id="tt-result-label">YOUR RESULT</span>
           <div id="tt-result-body"></div>
           <div class="tt-result-actions">
             <button class="tt-secondary" id="tt-copy" type="button">COPY RESULT</button>
+            <button class="tt-secondary" id="tt-copy-message" type="button" hidden>COPY AS MESSAGE</button>
             <button class="tt-secondary" id="tt-print" type="button">PRINT / SAVE</button>
             <a class="tt-secondary" data-tt-pack="result" href="${PACK_CHECK}">CHECK THE WHOLE PACK FREE</a>
             <a class="button" data-tt-booking="result" href="/?src=${src}_result#book">BOOK THE 20-MINUTE NUMBERS CALL</a>
           </div>
         </section>
         <p class="visually-hidden" id="tt-status" aria-live="polite"></p>
+        <section class="tt-overview" aria-label="About the ${escapeHtml(tool.shortName)}">
+          <div class="tt-overview-copy">${rest ? `<p>${escapeHtml(rest)}</p>` : ''}</div>
+          <aside class="hero-ledger">
+            <span class="route-ref">${escapeHtml(tool.ref)}</span>
+            <div class="stamp">${escapeHtml(tool.stamp).replaceAll('\n', '<br />')}</div>
+            <div class="review-cell"><span>SOURCES CHECKED</span><strong>${tool.reviewedOn}</strong></div>
+          </aside>
+        </section>
+        <div class="hero-value-strip tt-value-strip">${tool.strip.map((item) => `<strong>${escapeHtml(item)}</strong>`).join('')}</div>
+        <section class="answer-block tt-answer" aria-labelledby="tt-direct-answer">
+          <span class="section-label">DIRECT ANSWER</span>
+          <div><h2 id="tt-direct-answer">${escapeHtml(tool.answer.question)}</h2><p>${escapeHtml(tool.answer.text)}</p></div>
+        </section>
         <section class="tt-steps" aria-labelledby="tt-steps-heading">
           <header><span class="section-label">HOW IT WORKS</span><h2 id="tt-steps-heading">Four steps, under a minute.</h2></header>
           <ol>${tool.steps.map(([number, title, copy]) => `<li><b>${number}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol>
         </section>
-        ${content()}
+        ${labelTables(content())}
         <section class="tt-declarix" aria-labelledby="tt-declarix-heading">
           <div><span class="section-label">FROM ONE REFERENCE TO THE WHOLE PACK</span><h2 id="tt-declarix-heading">Let the pack build itself.</h2><p>Declarix builds CDS-ready entry packs from customer documents, so each clerk can handle up to 3× more declarations. Every value keeps its document, page and line reference, and the clerk checks and approves before the broker files through Sequoia, Descartes e-Customs or its own system.</p></div>
           <div class="tt-declarix-actions"><a class="tt-secondary" data-tt-pack="declarix" href="${PACK_CHECK}">RUN THE FREE PACK CHECK</a><a class="tt-secondary" data-tt-pilot="declarix" href="/pilot/">SEE THE PILOT</a><a class="button" data-tt-booking="declarix" href="/?src=${src}_declarix#book">BOOK THE 20-MINUTE NUMBERS CALL</a></div>
