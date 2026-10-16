@@ -386,6 +386,7 @@ function renderNotFound() {
             <p class="eyebrow">404 · NO MATCHING DOCKET</p>
             <h1>That docket is not in this register.</h1>
             <p>The address may have changed. Use the evidence-backed routes above or return to the Declarix homepage.</p>
+            <p class="notfound-links"><a class="button" href="/?src=static_404#book">BOOK THE 20-MINUTE NUMBERS CALL</a> <a href="/pricing/">PRICING →</a> <a href="/how-it-works/">HOW IT WORKS →</a> <a href="/tools/">FREE TOOLS →</a></p>
           </div>
           <aside class="hero-ledger">
             <span class="route-ref">EXCEPTION 404 · ROUTE NOT FOUND</span>
