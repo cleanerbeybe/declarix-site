@@ -1,0 +1,912 @@
+{
+ "written_on": "2026-10-16",
+ "basis": "Plain-English reading and next check for each code, written from HMRC's Customs Declaration Service error codes list (edition updated 2026-06-23) and the CDS data element numbers in UK Trade Tariff Volume 3.",
+ "source_url": "https://www.gov.uk/government/publications/customs-declaration-service-error-codes",
+ "codes": {
+  "CDS10001": {
+   "plain": "A field CDS needs is empty, or only part of it is filled in.",
+   "next": "Find the data element named in the error pointer and complete every part of it. For a party, that means name, street and number, city, country and postcode, not the name alone.",
+   "link": null
+  },
+  "CDS10002": {
+   "plain": "You filled in a field that this declaration does not allow, or you put it at the wrong level (header or item).",
+   "next": "Open the data element named in the pointer and check whether it belongs at header or item level for this declaration type. Move it to the allowed level or delete it.",
+   "link": null
+  },
+  "CDS10003": {
+   "plain": "A field has more entries than CDS allows for it.",
+   "next": "Count the entries in the data element named in the pointer and remove the extras. For example, an item can carry only one preference code in DE 4/17.",
+   "link": null
+  },
+  "CDS10004": {
+   "plain": "The commodity code is missing, too short or has the wrong additional codes.",
+   "next": "Check DE 6/14 and DE 6/15 give the full commodity code with every digit. Then check the TARIC additional codes in DE 6/16 and national additional codes in DE 6/17 that the measures for that code need.",
+   "link": "tariff"
+  },
+  "CDS10010": {
+   "plain": "A field is too short, too long or uses characters it does not accept.",
+   "next": "Open the data element named in the pointer and compare its length and characters with the completion rule. For example, the country code in an address takes letters only, such as GB, never numbers.",
+   "link": null
+  },
+  "CDS10020": {
+   "plain": "A code on the declaration is not a recognised code, or it is a real code that this declaration or this level does not allow.",
+   "next": "Open the code named in the pointer and check it is allowed on this declaration type. For example, a DE 2/3 document code that is only for exports cannot go on an import declaration. If the code is right, check you entered it at the level it belongs to (header or item).",
+   "link": "doc-codes"
+  },
+  "CDS10021": {
+   "plain": "A negative number was entered where only zero or a positive number is allowed, usually the quantity written off a licence.",
+   "next": "Open the licence line in DE 2/3 and check the quantity written off. Enter zero or a positive figure, never a minus value.",
+   "link": "doc-codes"
+  },
+  "CDS10045": {
+   "plain": "After your deductions, the customs value of an item comes out below zero.",
+   "next": "Check the deductions in DE 4/9 against the item price in DE 4/14. When you spread one deduction across several items, make sure no single item drops to zero or below.",
+   "link": null
+  },
+  "CDS11003": {
+   "plain": "The total items figure does not match the number of goods items you actually declared.",
+   "next": "Count the goods items on the declaration and put that exact number in DE 1/9. For example, if the declaration has 12 items, DE 1/9 must say 12.",
+   "link": null
+  },
+  "CDS11004": {
+   "plain": "The procedure code (DE 1/10) or additional procedure code (DE 1/11) does not fit this declaration type (DE 1/1 and DE 1/2), or the two codes do not work together.",
+   "next": "Check the previous-procedure digits in DE 1/10. 4071 means the goods are leaving a customs warehouse; goods imported directly use 4000 with 000.",
+   "link": "cpc-checker"
+  },
+  "CDS11005": {
+   "plain": "The goods items use procedure codes (DE 1/10) that belong to different declaration categories, so CDS stops checking.",
+   "next": "Check the first two digits of DE 1/10 on every item. For example, an item with 40 and another with 71 need different declaration types, so split them into two declarations.",
+   "link": "cpc-checker"
+  },
+  "CDS11006": {
+   "plain": "The net mass is higher than the gross mass.",
+   "next": "Compare net mass in DE 6/1 with gross mass in DE 6/5 on each item. Net mass is the goods without packaging, so it must be lower than gross mass. Look for a swapped pair or a decimal slip.",
+   "link": null
+  },
+  "CDS11007": {
+   "plain": "Someone other than the original declarant sent a follow-up message, such as a cancellation, on this declaration.",
+   "next": "Send the amendment or cancellation from the same EORI and identity that lodged the original declaration. Check the declarant in DE 3/18 on the original.",
+   "link": null
+  },
+  "CDS11012": {
+   "plain": "You tried to change a field that cannot be changed by amendment on this declaration type.",
+   "next": "Check what your amendment changes. For example, you cannot turn a pre-lodged declaration (D in DE 1/2) into an arrived one (A) by amendment; send a goods arrival notification instead.",
+   "link": null
+  },
+  "CDS12003": {
+   "plain": "You reused a local reference number (LRN, DE 2/5) within 48 hours.",
+   "next": "Give the declaration a new LRN in DE 2/5, or add a version ending such as V2, using letters and numbers only.",
+   "link": null
+  },
+  "CDS12005": {
+   "plain": "CDS does not recognise an EORI or VAT number on the declaration, or that number is not allowed in that field.",
+   "next": "Open each party number on the declaration, such as the importer in DE 3/16, the declarant in DE 3/18 and fiscal references in DE 3/40. Check every EORI is active and typed in full, and that a VAT number sits only in a field that takes one.",
+   "link": null
+  },
+  "CDS12006": {
+   "plain": "The licence you declared failed a check. The usual causes are an expired or unknown licence, a licence held by another trader, too little balance left, or a licence that does not cover these goods or this country.",
+   "next": "Open the licence in DE 2/3 and check its expiry date, its ID and that it belongs to the EORI on the declaration. Then check the balance, quantity, country of origin and DUCR match the licence.",
+   "link": "doc-codes"
+  },
+  "CDS12007": {
+   "plain": "An authorisation on the declaration has expired, is unknown, or belongs to another party.",
+   "next": "Check the authorisation number and holder in DE 3/39 and the matching document in DE 2/3. Make sure the authorisation is current and is held by the EORI declared.",
+   "link": "doc-codes"
+  },
+  "CDS12013": {
+   "plain": "The VAT number given cannot receive the VAT transfer.",
+   "next": "Check the VAT number in DE 3/40 for typing errors and confirm it belongs to the party who should take the VAT.",
+   "link": null
+  },
+  "CDS12014": {
+   "plain": "A pre-lodged declaration needs a goods arrival notification before it can go further.",
+   "next": "Send the goods arrival notification for this pre-lodged declaration once the goods arrive.",
+   "link": null
+  },
+  "CDS12015": {
+   "plain": "Your arrive, amend or cancel request points at a declaration CDS cannot find, or at one whose status blocks that request.",
+   "next": "Check the declaration reference in your request matches the original. Then check the declaration's current status allows the action you asked for.",
+   "link": null
+  },
+  "CDS12016": {
+   "plain": "The acceptance date for the earlier simplified declaration or EIDR entry is in the future or too far in the past.",
+   "next": "Check the acceptance date you quote in DE 2/1 against the date the goods were accepted. It cannot be a future date, and it must fall within the time limit for this declaration type.",
+   "link": null
+  },
+  "CDS12022": {
+   "plain": "A goods item number (DE 1/6) is higher than the number of items on the declaration.",
+   "next": "Renumber the items in DE 1/6 in sequence from 1. For example, a 5-item declaration cannot have item 6.",
+   "link": null
+  },
+  "CDS12024": {
+   "plain": "You repeated a value that must be unique.",
+   "next": "Look for duplicates: an additional procedure code in DE 1/11 used twice on one item, a repeated item number in DE 1/6, or the same DE 4/9 addition or deduction code twice at one level. Also check a licence ID is not repeated on one item and a C651 ARC is not already used on another declaration.",
+   "link": "doc-codes"
+  },
+  "CDS12026": {
+   "plain": "Your amendment changes the same field more than once.",
+   "next": "Combine the changes so each data element appears only once in the amendment. Send any further change in a new amendment after this one is processed.",
+   "link": null
+  },
+  "CDS12031": {
+   "plain": "The goods arrival notification came 30 or more days after the pre-lodged declaration was first received.",
+   "next": "Resubmit the declaration as arrived where this is allowed, or pre-lodge it again and send the arrival notification within 30 days.",
+   "link": null
+  },
+  "CDS12034": {
+   "plain": "The amendment came through a different submission channel from the original declaration.",
+   "next": "Send the amendment through the same channel you used for the original declaration, for example the same software route.",
+   "link": null
+  },
+  "CDS12036": {
+   "plain": "You sent a new request while an earlier amendment or cancellation request is still waiting for a reply.",
+   "next": "Wait for the response to the earlier request, then send the new one.",
+   "link": null
+  },
+  "CDS12042": {
+   "plain": "One goods item carries more than one quota order number.",
+   "next": "Check DE 8/1 on the item and keep one quota order number. Split the goods into separate items if they really fall under different quotas.",
+   "link": "tariff"
+  },
+  "CDS12044": {
+   "plain": "The MUCR in DE 2/1 failed validation.",
+   "next": "Check the MUCR in DE 2/1 for format, ownership and whether the consolidation is still open.",
+   "link": null
+  },
+  "CDS12046": {
+   "plain": "No goods arrival notification arrived within 30 days of the pre-lodged declaration, so it must start again.",
+   "next": "Resubmit the declaration as arrived (where permitted) or pre-lodge it again and send the arrival in time.",
+   "link": null
+  },
+  "CDS12050": {
+   "plain": "An item has no procedure code (DE 1/10) or an invalid one, so CDS stops checking.",
+   "next": "Check every item has a four-digit procedure code in DE 1/10, such as 4000 for goods released to free circulation with no previous procedure.",
+   "link": "cpc-checker"
+  },
+  "CDS12052": {
+   "plain": "The additional declaration type (DE 1/2) is missing or invalid, so CDS stops checking.",
+   "next": "Enter a valid code in DE 1/2. It shows the declaration type (standard, simplified, supplementary or clearance) and whether it is pre-lodged or arrived.",
+   "link": "cpc-checker"
+  },
+  "CDS12056": {
+   "plain": "Two values on the declaration do not work together, or one value needs another value that is missing.",
+   "next": "Read the AddInfo lines to find the second value involved. Then check three things: a DE 2/3 document code with a status it does not accept, a DE 1/11 code that needs a second DE 1/11 code, and ABDIN in DE 2/2 used to enter a customs procedure where it is not allowed.",
+   "link": "cpc-checker"
+  },
+  "CDS12057": {
+   "plain": "The goods items use different invoice currencies.",
+   "next": "Check the currency against the item price in DE 4/14 on every item and use one currency throughout.",
+   "link": null
+  },
+  "CDS12058": {
+   "plain": "Every package line on a combined package shows zero, so no item carries the package count.",
+   "next": "Give the package count to one item and use zero only on the other items packed with it, all under the same marks and numbers.",
+   "link": null
+  },
+  "CDS12062": {
+   "plain": "The DUCR in DE 2/1 is a duplicate or failed validation.",
+   "next": "Check the DUCR in DE 2/1 is unique, correctly formatted and not already used on another declaration.",
+   "link": null
+  },
+  "CDS12066": {
+   "plain": "A value you declared needs another field filled in a certain way, or the combination of fields is not allowed.",
+   "next": "Find the second data element named in the pointer or AddInfo and either complete it with the value the rule needs or remove the combination.",
+   "link": null
+  },
+  "CDS12067": {
+   "plain": "Several fields together break a rule. A field does not belong on this declaration, is filled in wrongly, or needs other codes alongside it.",
+   "next": "Check each data element in the pointers. For example, remove a quota in DE 8/1 when NIDOM and NIQUO are in DE 2/2, or add A04 or 1VW in DE 1/11 or PVA01 in DE 2/2 when DE 3/40 is at header on an H8.",
+   "link": "cpc-checker"
+  },
+  "CDS12068": {
+   "plain": "A document code in DE 2/3 needs a document identifier, and none was given.",
+   "next": "Open the DE 2/3 code named in the error and add its document identifier, such as the licence, certificate or invoice reference. Check the code and status in the document code list.",
+   "link": "doc-codes"
+  },
+  "CDS12069": {
+   "plain": "The Office of Exit is still processing an earlier invalidation of this declaration.",
+   "next": "Wait for the Office of Exit to finish processing the invalidation before sending another request.",
+   "link": null
+  },
+  "CDS12070": {
+   "plain": "A value you entered needs another field filled in, or it makes another value invalid.",
+   "next": "Read the pointer to find the first field and the field it needs. For example, a deferment account in DE 2/6 needs a deferred method of payment in DE 4/8.",
+   "link": null
+  },
+  "CDS12071": {
+   "plain": "A field was filled at both header and item level, but only one is allowed.",
+   "next": "Keep the field at one level only. Check DE 3/9, DE 5/8, DE 5/14, DE 7/10 and DE 8/5 first, as these cause this error most often on exports.",
+   "link": null
+  },
+  "CDS12072": {
+   "plain": "You gave two things where only one of them is allowed.",
+   "next": "Check for gross mass in DE 6/5 at both header and item level, and keep one. For the consignee, consignor or buyer, give either the EORI or the name and address, not both.",
+   "link": null
+  },
+  "CDS12073": {
+   "plain": "A required field is missing, or it is at the wrong level (header or item).",
+   "next": "Check DE 2/1, the exporter, and DE 8/5 appear at least once at header or item. Add DE 7/10 when DE 7/2 is 1, and put the importer (DE 3/15 or 3/16) at header level.",
+   "link": null
+  },
+  "CDS12074": {
+   "plain": "Neither of two fields is filled in, and one of them is required.",
+   "next": "Give one of the pair named in the pointer. For example, for the exporter, consignor or carrier, enter either the EORI or the full name and address.",
+   "link": null
+  },
+  "CDS12075": {
+   "plain": "A field has a value that is not allowed alongside the value in another field.",
+   "next": "Remove the second field named in the pointer. For example, if a DE 2/3 document code does not take a status code, delete the status.",
+   "link": "status-codes"
+  },
+  "CDS12077": {
+   "plain": "A value you entered needs a matching value somewhere else, or a field is only partly filled in or holds a value it cannot take.",
+   "next": "Read the pointer to find the trigger value. For example, add 00100 in DE 2/2 when ABDIN is there, complete the address when a name is given in DE 7/14, and do not put zero against measurement units KTC or CTG in DE 4/4.",
+   "link": null
+  },
+  "CDS12078": {
+   "plain": "No deferment account is given in DE 2/6, so DE 4/8 needs an immediate payment method.",
+   "next": "Either declare the deferment account in DE 2/6 with a deferred method of payment, or give an immediate method of payment in DE 4/8.",
+   "link": null
+  },
+  "CDS12079": {
+   "plain": "Two values you declared cannot appear together.",
+   "next": "Remove one of the two values, or move the data element to the one level (header or item) the rule allows. For example, do not put a MUCR in DE 2/1 when DE 5/23 holds a GVMS location code.",
+   "link": null
+  },
+  "CDS12080": {
+   "plain": "The addition and deduction codes in DE 4/9 are mixed in a way that is not allowed.",
+   "next": "Check DE 4/9. Declare an addition or deduction once at header if it covers every item, or once per item if it covers only some. Never use the same code at both levels.",
+   "link": null
+  },
+  "CDS12081": {
+   "plain": "The importer (DE 3/16) and exporter (DE 3/2) are the same party.",
+   "next": "Check the importer and exporter identities in DE 3/16 and DE 3/2 and correct the party that was copied across.",
+   "link": null
+  },
+  "CDS12082": {
+   "plain": "The currency for the total invoiced (DE 4/11) differs from the currency of the item prices (DE 4/14).",
+   "next": "Use the same currency code in DE 4/11 and DE 4/14. For example, if items are priced in EUR, the total must be in EUR too.",
+   "link": null
+  },
+  "CDS12083": {
+   "plain": "Preferential origin (DE 5/16) holds both a country and a country group.",
+   "next": "Keep one entry in DE 5/16. If the proof of origin names a group of countries, use the group code, then put the actual country of origin in DE 5/15.",
+   "link": "tariff"
+  },
+  "CDS12084": {
+   "plain": "You gave both the consignee name (DE 3/9) and the consignee EORI (DE 3/10).",
+   "next": "Keep one. Use the EORI in DE 3/10 when you know it and delete the name and address in DE 3/9.",
+   "link": null
+  },
+  "CDS12086": {
+   "plain": "You gave both the carrier name (DE 3/31) and the carrier EORI (DE 3/32).",
+   "next": "Keep one. Use the EORI in DE 3/32 when you know it and delete the name and address in DE 3/31.",
+   "link": null
+  },
+  "CDS12087": {
+   "plain": "The VAT number of the additional fiscal party (DE 3/40) is at both header and item level, or it is missing where procedure code 1042 needs it.",
+   "next": "Keep DE 3/40 at header or item level, not both. If DE 1/10 is 1042, add the additional fiscal reference in DE 3/40.",
+   "link": "cpc-checker"
+  },
+  "CDS12088": {
+   "plain": "The representative's details are missing.",
+   "next": "Add the representative's EORI (DE 3/20) or their name and address (DE 3/19). Do this even when you are the declarant acting as direct representative.",
+   "link": null
+  },
+  "CDS12089": {
+   "plain": "The consignee name and address (DE 3/9) are missing on a C21e.",
+   "next": "Add the consignee name and address in DE 3/9 at header or item level. Leave it out only when the procedure code is 0019.",
+   "link": null
+  },
+  "CDS12090": {
+   "plain": "Additional procedure code 17X needs carrier details, and none were given.",
+   "next": "On a C21e with 17X in DE 1/11, add the carrier name and address in DE 3/31 or the carrier EORI in DE 3/32 at header level.",
+   "link": null
+  },
+  "CDS12091": {
+   "plain": "The consignee and the exporter have the same EORI.",
+   "next": "Check the consignee in DE 3/10 and the exporter in DE 3/1. The receiver of the goods must be a different party from the exporter.",
+   "link": null
+  },
+  "CDS12092": {
+   "plain": "The seller (DE 3/25) and the exporter (DE 3/1) are the same party.",
+   "next": "Delete the seller in DE 3/25 when the seller is the exporter. Fill DE 3/25 only when the seller is a different party, with its EORI where it has one.",
+   "link": null
+  },
+  "CDS12095": {
+   "plain": "Additional procedure code 1IL or 1LV (DE 1/11) is used, but the goods did not come from a third country.",
+   "next": "Check the country of dispatch in DE 5/14. Use 1IL or 1LV in DE 1/11 only when that country is a third country; otherwise remove the code.",
+   "link": "cpc-checker"
+  },
+  "CDS12096": {
+   "plain": "The authorisation type in DE 3/39 needs document code C505 in DE 2/3.",
+   "next": "When DE 3/39 holds CGU, EUS, IPO or TEA, add C505 (Customs Comprehensive Guarantee) in DE 2/3. Use a waiver status such as XW where needed.",
+   "link": "doc-codes"
+  },
+  "CDS12097": {
+   "plain": "Additional procedure code F75 (DE 1/11) is used with a destination it does not allow.",
+   "next": "Check DE 5/8. With F75, the destination must be a special fiscal territory or a territory in a customs union with the EU.",
+   "link": "cpc-checker"
+  },
+  "CDS12098": {
+   "plain": "The mode of transport (DE 7/4) does not fit the delivery terms (DE 4/1).",
+   "next": "Check the Incoterm in DE 4/1 matches how the goods travel in DE 7/4.",
+   "link": null
+  },
+  "CDS12099": {
+   "plain": "The goods location code (DE 5/23) is not one CDS recognises.",
+   "next": "Check the code in DE 5/23 against Appendix 16 and the Tariff supplements, where new location codes appear. Rebuild it part by part if needed.",
+   "link": null
+  },
+  "CDS12100": {
+   "plain": "The delivery terms (DE 4/1) do not fit the addition or deduction code (DE 4/9).",
+   "next": "Check what the Incoterm in DE 4/1 already includes, then remove or change the DE 4/9 code that clashes with it.",
+   "link": null
+  },
+  "CDS12101": {
+   "plain": "The additional procedure code (DE 1/11) is not allowed with the tax type (DE 4/3).",
+   "next": "Check DE 1/11 against DE 4/3. For example, 32D, 31D, 1IL and 1LV cannot go with an excise tax type.",
+   "link": "cpc-checker"
+  },
+  "CDS12102": {
+   "plain": "A deferment account is given in DE 2/6, but DE 4/8 has no deferred payment method.",
+   "next": "Add the deferred method of payment in DE 4/8 to match the deferment account in DE 2/6, or remove the account if you pay immediately.",
+   "link": null
+  },
+  "CDS12103": {
+   "plain": "A CO declaration (DE 1/1) has a destination country that is not allowed.",
+   "next": "Check DE 5/8. On a CO declaration the destination must be a special fiscal territory or a territory in a customs union with the EU.",
+   "link": "cpc-checker"
+  },
+  "CDS12104": {
+   "plain": "An IM declaration (DE 1/1) has a procedure code (DE 1/10) that is not an import procedure.",
+   "next": "Check DE 1/10 against Appendix 1 of the Import Tariff. For example, 4000 is an import code, while 1000 is an export code and cannot go on IM.",
+   "link": "cpc-checker"
+  },
+  "CDS12105": {
+   "plain": "You declared additions or deductions (DE 4/9) with additional procedure code E01 or E02 (DE 1/11).",
+   "next": "Remove the DE 4/9 entries when DE 1/11 holds E01 (simplified procedure value) or E02 (standard import value).",
+   "link": "cpc-checker"
+  },
+  "CDS12106": {
+   "plain": "Additional procedure code 1CL (DE 1/11) needs a matching additional information code in DE 2/2.",
+   "next": "Add the AI statement code that goes with 1CL in DE 2/2 on the same item.",
+   "link": "cpc-checker"
+  },
+  "CDS12107": {
+   "plain": "The declaration uses AI code 00600 but also lists licence document codes, which that simplification does not allow.",
+   "next": "Remove all licence document codes from DE 2/3 when DE 2/2 holds 00600, including waiver or exemption lines.",
+   "link": "doc-codes"
+  },
+  "CDS12108": {
+   "plain": "The export declaration has no DUCR.",
+   "next": "Add the DUCR in DE 2/1 at header level.",
+   "link": null
+  },
+  "CDS12109": {
+   "plain": "You used a fixed exchange rate (DE 4/15), so the values must be in GBP.",
+   "next": "Convert the values to GBP at the agreed rate. On an import, put the item price in DE 4/14 in GBP; on an export, put the total invoiced in DE 4/11 in GBP.",
+   "link": null
+  },
+  "CDS12110": {
+   "plain": "The preference code (DE 4/17) cannot be used with a quota claim (DE 8/1).",
+   "next": "Check the preference code in DE 4/17 against the quota claim in DE 8/1. Change the preference code to one that goes with the quota, or remove DE 8/1.",
+   "link": "tariff"
+  },
+  "CDS12111": {
+   "plain": "A tax amount (DE 4/6 or 4/7) is in a currency other than GBP.",
+   "next": "Declare every tax amount in DE 4/6 and 4/7 with currency code GBP.",
+   "link": null
+  },
+  "CDS12112": {
+   "plain": "The place of loading (DE 5/21) is an airport, but no airfreight addition or deduction code is in DE 4/9.",
+   "next": "Add the airfreight addition or deduction code in DE 4/9 for the airport in DE 5/21.",
+   "link": null
+  },
+  "CDS12113": {
+   "plain": "Authorisation type CGU in DE 3/39 needs guarantee type 0 or 1 in DE 8/2.",
+   "next": "Enter 0 (guarantee waiver) or 1 (comprehensive guarantee) in DE 8/2 when DE 3/39 holds CGU.",
+   "link": null
+  },
+  "CDS12114": {
+   "plain": "A percentage addition or deduction in DE 4/9 is 100 or more.",
+   "next": "Enter the DE 4/9 percentage as a number below 100, for example 15 for 15%.",
+   "link": null
+  },
+  "CDS12115": {
+   "plain": "The procedure code (DE 1/10 or 1/11) needs document code 185C in DE 2/3.",
+   "next": "Add 185C (Claim to Visiting Forces Relief for goods removed from a customs warehouse) in DE 2/3.",
+   "link": "doc-codes"
+  },
+  "CDS12117": {
+   "plain": "The importer (DE 3/16) and the buyer (DE 3/27) have the same EORI.",
+   "next": "Delete the buyer in DE 3/27 when the buyer is the importer. Fill it only when the buyer is a different party.",
+   "link": null
+  },
+  "CDS12118": {
+   "plain": "Consignor details for additional procedure code 17X are at both header and item level.",
+   "next": "Keep the consignor in DE 3/1 at header or item level, not both, when DE 1/11 holds 17X.",
+   "link": null
+  },
+  "CDS12119": {
+   "plain": "A document code in DE 2/3 is not allowed with the procedure code, or a required one is missing.",
+   "next": "Check the DE 2/3 codes against DE 1/10 and DE 1/11. For example, C512 (SDP) and C514 (EIDR) are not allowed with some procedure codes, and some special procedures need their authorisation listed.",
+   "link": "doc-codes"
+  },
+  "CDS12120": {
+   "plain": "The declaration type (DE 1/2) needs an authorisation that is missing, expired, unknown or held by someone else.",
+   "next": "Add C512 in DE 2/3 for SDP or C514 for EIDR. For an arrived export, add CSE or EXRR in DE 3/39, and check the number belongs to the party declared.",
+   "link": "doc-codes"
+  },
+  "CDS12121": {
+   "plain": "The additional information codes (DE 2/2) on one item clash, or one of them needs another that is missing.",
+   "next": "Check the DE 2/2 codes on the item named in the pointer. Remove the code that clashes, or add the AI code it requires.",
+   "link": null
+  },
+  "CDS12123": {
+   "plain": "A value is zero or negative where it must be larger.",
+   "next": "Check the field in the pointer. For example, the item price in DE 4/14 must be more than 0, and the package count in DE 6/10 cannot be negative.",
+   "link": null
+  },
+  "CDS12125": {
+   "plain": "The deferment account or guarantee reference is unknown, suspended or revoked, or the parties declared cannot use it.",
+   "next": "Check the number in DE 2/6 or DE 8/3 and the account status on the CDS financial dashboard. If it belongs to another trader, check you hold standing authority to use it.",
+   "link": null
+  },
+  "CDS12132": {
+   "plain": "The DUCR is not in the correct format.",
+   "next": "Rebuild the DUCR in DE 2/1 in the published format and resubmit.",
+   "link": null
+  },
+  "CDS12133": {
+   "plain": "The MUCR (master consignment reference) in DE 2/1 is not in a format CDS accepts.",
+   "next": "Open DE 2/1 and check the MUCR character by character. If someone else gave you the MUCR, ask them to confirm it. If you built it yourself, rebuild it in HMRC's published MUCR format and resubmit.",
+   "link": null
+  },
+  "CDS12134": {
+   "plain": "The MUCR or the DUCR (declaration unique consignment reference) in DE 2/1 is not in a format CDS accepts.",
+   "next": "Open DE 2/1 and check both references against HMRC's published UCR format. If you quoted a previous declaration, such as an earlier import, check the DUCR on that previous declaration too, as the fault often sits there.",
+   "link": null
+  },
+  "CDS12135": {
+   "plain": "You declared an additional procedure code that needs a country of export, but Country of dispatch/export (DE 5/14) is empty at both header and item level.",
+   "next": "Check DE 1/11 for 1CD, 1CG, 2CG or 2CD, and on a C21I check DE 1/10 for 0002 to 0007. If any of these is present, enter the country of export in DE 5/14 at header or item level.",
+   "link": "cpc-checker"
+  },
+  "CDS12136": {
+   "plain": "The additional procedure code in DE 1/11 can only be used with indirect representation, but the representative status code (DE 3/21) shows something else.",
+   "next": "Open DE 3/21 and set it to code 3 (indirect representation) if you act in your own name for the importer. DE 3/21 describes your relationship with the importer, not with a sub-agent. If you are not an indirect representative, review the DE 1/11 code instead.",
+   "link": "cpc-checker"
+  },
+  "CDS12137": {
+   "plain": "Your import declaration carries more than one MUCR at header level in DE 2/1. An import allows only one.",
+   "next": "Open the header-level DE 2/1 entries and keep only one MUCR. Remove the extra MUCR lines and resubmit.",
+   "link": null
+  },
+  "CDS12138": {
+   "plain": "You used an additional procedure code in DE 1/11 that is not allowed on an EIDR (entry in the declarant's records) C21 declaration, type J or K.",
+   "next": "Check DE 1/11 for 1CD (controlled drugs using simplified procedures) or 1CG (controlled goods using simplified procedures). These codes cannot go on a type J or K EIDR declaration, so remove them or declare the goods on a different declaration type.",
+   "link": "cpc-checker"
+  },
+  "CDS12139": {
+   "plain": "You entered a manual tax amount in DE 4/6 or DE 4/7 without the AI statement code OVR01 in DE 2/2.",
+   "next": "Add AI statement OVR01 in DE 2/2 on the goods item that has the manual tax amount. If you did not mean to override the tax, remove the manual amount from DE 4/6 or DE 4/7 instead.",
+   "link": null
+  },
+  "CDS12141": {
+   "plain": "DE 2/2 carries both NIDOM and NIIMP on the same declaration. These two Northern Ireland movement statements describe different movements and cannot appear together.",
+   "next": "Decide which movement applies. NIDOM covers goods moving from Great Britain into Northern Ireland; NIIMP covers goods imported into Northern Ireland from outside the UK. Keep the correct one in DE 2/2 on every item and remove the other.",
+   "link": null
+  },
+  "CDS12143": {
+   "plain": "One goods item carries both NIREM and NIAID in DE 2/2. These two Northern Ireland AI statements cannot sit on the same item.",
+   "next": "Open DE 2/2 on the item named in the error and keep only the one statement that fits the goods. Remove the other and resubmit.",
+   "link": null
+  },
+  "CDS12144": {
+   "plain": "DE 8/1 holds a quota order number that starts with 09. Numbers starting 09 are EU quotas and cannot be used for any import into the UK.",
+   "next": "Open DE 8/1 and replace the 09 number with the UK quota order number shown for the commodity code on the UK Trade Tariff. If no UK quota applies, remove the quota claim.",
+   "link": "tariff"
+  },
+  "CDS12145": {
+   "plain": "Requested procedure 42 in DE 1/10 needs the AI statement NIIMP in DE 2/2, and NIIMP is missing.",
+   "next": "Open DE 1/10. If the first two digits are 42, add NIIMP in DE 2/2 on that goods item. If 42 was a keying slip, correct DE 1/10 to the procedure you meant.",
+   "link": "cpc-checker"
+  },
+  "CDS12146": {
+   "plain": "Requested procedure 42 (DE 1/10) and AI statement OSR42 (DE 2/2) must go on the same goods item. Your item has one without the other.",
+   "next": "Check DE 1/10 and DE 2/2 on the item named in the error. If you claim procedure 42, add OSR42 in DE 2/2 on that item. If you entered OSR42 by mistake, remove it.",
+   "link": "cpc-checker"
+  },
+  "CDS12147": {
+   "plain": "You put AI statement UVC01 in DE 2/2 on an original declaration. UVC01 is only allowed on an amendment request.",
+   "next": "Remove UVC01 from DE 2/2 and submit the original declaration. If you need UVC01, add it later when you send the amendment.",
+   "link": null
+  },
+  "CDS12148": {
+   "plain": "You declared document code C506 in DE 2/3, but the method of payment in DE 4/8 is not a deferred one.",
+   "next": "Open DE 4/8 on the item with C506 and set a deferred method of payment, with the deferment account in DE 2/6. If you do not pay by deferment, remove C506 from DE 2/3.",
+   "link": "doc-codes"
+  },
+  "CDS12149": {
+   "plain": "DE 1/11 holds 000 together with another additional procedure code. 000 means 'no other additional procedure' and must stand alone.",
+   "next": "Open DE 1/11 on the item named in the error. If the goods need another additional procedure code, remove 000. If they need none, keep 000 and delete the other code.",
+   "link": "cpc-checker"
+  },
+  "CDS12150": {
+   "plain": "An authorisation number on the declaration is not valid, or it does not belong to the party you named. This covers authorisations such as a special procedure, SDP, EIDR, CCG or customs warehousing.",
+   "next": "Check the authorisation number in DE 2/3 and the holder in DE 3/39. The EORI in DE 3/39 must be the business the authorisation was issued to. For a warehouse, also check DE 2/7.",
+   "link": "doc-codes"
+  },
+  "CDS12151": {
+   "plain": "The same licence identifier appears more than once in DE 2/3 on one goods item.",
+   "next": "Open DE 2/3 on the item named in the error and look for the licence ID entered twice. Keep one entry and remove the duplicate.",
+   "link": "doc-codes"
+  },
+  "CDS12152": {
+   "plain": "An H7/SRDS declaration needs additional procedure code 1H7 in DE 1/11 on every goods item. One or more items do not have it.",
+   "next": "Open DE 1/11 on each goods item and add 1H7. Use 1H7 only on H7/SRDS declarations.",
+   "link": "cpc-checker"
+  },
+  "CDS12153": {
+   "plain": "An EORI for the importer (DE 3/16), exporter (DE 3/2), declarant (DE 3/18) or representative (DE 3/20) starts with a country code CDS does not accept here. These parties need a GB EORI.",
+   "next": "Check the first two letters of each EORI in DE 3/2, DE 3/16, DE 3/18 and DE 3/20. Replace any non-GB EORI with the party's GB EORI, for example GB123456789000.",
+   "link": null
+  },
+  "CDS12154": {
+   "plain": "An item carries NIIMP, NIDOM or NIEXP in DE 2/2 and also document code 999L in DE 2/3. 999L cannot be used for goods imported into or exported from Northern Ireland.",
+   "next": "Remove 999L from DE 2/3. Look up the commodity code on the UK/NI online tariff, open the measure conditions, and declare the document codes they ask for instead.",
+   "link": "tariff"
+  },
+  "CDS12155": {
+   "plain": "Document code 999L appears more than once in DE 2/3 on one goods item. One 999L per item is enough.",
+   "next": "Open DE 2/3 on the item named in the error and delete the extra 999L lines. Worked example: an item with two measures that both accept 999L needs 999L only once, and that single entry covers both measures.",
+   "link": "doc-codes"
+  },
+  "CDS12156": {
+   "plain": "You declared previous document code CLE in DE 2/1, but its date is missing or not in the yyyymmdd format.",
+   "next": "Open the CLE line in DE 2/1 and enter the acceptance date as yyyymmdd. Worked example: an acceptance date of 3 March 2026 goes in as 20260303.",
+   "link": null
+  },
+  "CDS12157": {
+   "plain": "For a Northern Ireland declaration, one of the parties is not established in Northern Ireland or the EU.",
+   "next": "Check the EORIs for the importer (DE 3/16), exporter (DE 3/2), declarant (DE 3/18) and representative (DE 3/20). Each relevant party needs a permanent business establishment in Northern Ireland or the EU, for example an XI EORI. If one does not, change that party.",
+   "link": null
+  },
+  "CDS12158": {
+   "plain": "A party on the declaration has an XI EORI, which marks it as a Northern Ireland declaration, but DE 2/2 has no Northern Ireland movement statement.",
+   "next": "Open DE 2/2 and add the movement statement that fits: NIIMP for goods imported into Northern Ireland from outside the UK, NIDOM for goods moving from Great Britain into Northern Ireland, NIEXP for goods leaving Northern Ireland. Put it on every item. If the declaration is not a Northern Ireland one, replace the XI EORI in DE 3/2, DE 3/16, DE 3/18 or DE 3/20 with the party's GB EORI.",
+   "link": null
+  },
+  "CDS12170": {
+   "plain": "The VAT number on the declaration is not valid. If you claim Onward Supply Relief (OSR), the business must be identified as trading under the Windsor Framework for VAT.",
+   "next": "Check the VAT number in DE 3/40 digit by digit. If you claim OSR, confirm the business holds Windsor Framework VAT status, then resubmit with that VAT number.",
+   "link": null
+  },
+  "CDS12171": {
+   "plain": "The values in two data elements mean a third data element must be completed, or completed in a certain way, and it is not.",
+   "next": "Read the error pointers to find the third data element and give it a valid value. Worked example: on a Northern Ireland export, if DE 7/4 is 1, 3, 4, 8 or 9, DE 7/15 must be completed.",
+   "link": null
+  },
+  "CDS12172": {
+   "plain": "The values in one or two data elements mean one or two further data elements must be completed, and they are not.",
+   "next": "Read the error pointers to find the further data elements and complete them. Worked example: on a Northern Ireland export supplementary declaration, DE 7/2 set to 1 (containerised) needs a container ID in DE 7/10 at header or item level.",
+   "link": null
+  },
+  "CDS12174": {
+   "plain": "The total amount invoiced in DE 4/11 does not equal the sum of the item prices in DE 4/14.",
+   "next": "Add up DE 4/14 across every goods item and compare it with DE 4/11. Worked example: items of 1,200.00 and 800.00 need 2,000.00 in DE 4/11. Correct whichever figure is wrong.",
+   "link": null
+  },
+  "CDS12500": {
+   "plain": "A value in a data element is higher than the limit allowed for the procedure or relief you claimed.",
+   "next": "Find the data element named in the error and look up the limit for your procedure or relief in Tariff Volume 3. Correct the value, or claim the procedure or relief that matches the real value.",
+   "link": "cpc-checker"
+  },
+  "CDS13000": {
+   "plain": "A value on the declaration failed HMRC's credibility check because it is too high or too low for the goods.",
+   "next": "Check the item price (DE 4/14), net mass (DE 6/1), supplementary units (DE 6/2) and statistical value (DE 8/6) for a keying or decimal slip. Worked example: 1,250 kg keyed as 125000 will trip this check. If the figure is right, keep the evidence that supports it.",
+   "link": null
+  },
+  "CDS14000": {
+   "plain": "The quantity or value you claimed against a quota failed HMRC's credibility check because it is too high or too low.",
+   "next": "Check the quota order number in DE 8/1 and the quantity you claim against it. Compare net mass (DE 6/1) and supplementary units (DE 6/2) with the unit the quota uses on the tariff, and fix any keying or decimal slip.",
+   "link": "tariff"
+  },
+  "CDS19999": {
+   "plain": "The declaration has several errors at once, and CDS has grouped them under this code.",
+   "next": "Work through the other error codes on the same response first and fix each one. If this code is the only one returned, contact the CDS help desk.",
+   "link": null
+  },
+  "CDS20001": {
+   "plain": "CDS cannot find the related movement for this declaration yet.",
+   "next": "Check that the related movement, such as the arrival or departure message, has been sent. Then check that the reference quoted in DE 2/1 matches it exactly, and retry once the movement exists.",
+   "link": null
+  },
+  "CDS20002": {
+   "plain": "CDS found the related movement, but its details do not match the declaration.",
+   "next": "Compare the related movement with the declaration line by line, starting with the UCR in DE 2/1 and the goods location in DE 5/23. Correct whichever side is wrong and resubmit.",
+   "link": null
+  },
+  "CDS20003": {
+   "plain": "CDS cannot find the movement that the declaration refers to.",
+   "next": "Check the movement reference quoted in DE 2/1 for typing errors, then confirm the movement was sent and accepted before you resubmit.",
+   "link": null
+  },
+  "CDS40007": {
+   "plain": "The same value appears twice where only one is allowed, for example the same TARIC or national additional code twice on one item.",
+   "next": "Open DE 6/16 and DE 6/17 on the item named in the error and delete the repeated additional code. Keep one entry of each code.",
+   "link": "tariff"
+  },
+  "CDS40010": {
+   "plain": "A value you gave in a data element does not apply in this case. It is often a formatting slip or a code from the wrong list.",
+   "next": "Open the data element named in the error pointer and check the value against the code list for that element. Check the format too, such as the number of digits and leading zeros.",
+   "link": null
+  },
+  "CDS40011": {
+   "plain": "The commodity code needs a value that the declaration does not give. Most often this is a supplementary unit in DE 6/2.",
+   "next": "Look up the commodity code in DE 6/14 and 6/15 on the UK Trade Tariff and open the Measures column. If it shows a supplementary unit, enter that quantity in DE 6/2. Worked example: a code measured in litres needs the litres in DE 6/2. Then fill any other value a measure asks for.",
+   "link": "tariff"
+  },
+  "CDS40012": {
+   "plain": "A commodity code on this export needs extra information that this simplified dataset cannot carry.",
+   "next": "Resubmit the goods on the standard full export declaration dataset (B1), which carries the extra information.",
+   "link": null
+  },
+  "CDS40013": {
+   "plain": "A data element holds a value that does not fit a tariff measure or its conditions. A common case is a wrong preference code in DE 4/17, or a measurement unit in DE 6/2 or DE 4/4 that does not match.",
+   "next": "Check DE 4/17 against the preferences the tariff offers for the commodity code. For excise, check DE 4/4: some tax types reject LPA and ASV together. The DE 6/2 supplementary unit must also equal the amount against the same unit in DE 4/4. Worked example: 500 litres in DE 6/2 needs 500 against LTR in DE 4/4.",
+   "link": "tariff"
+  },
+  "CDS40044": {
+   "plain": "You declared a document code in DE 2/3 that the commodity code does not allow.",
+   "next": "Open the commodity code on the UK Trade Tariff and read its Conditions box. Declare only the document codes it lists. If you hold no licence, see whether you can declare a waiver, usually a Y-code, as the Conditions box and Appendix 5A describe.",
+   "link": "doc-codes"
+  },
+  "CDS40045": {
+   "plain": "The commodity code needs a licence or exemption document in DE 2/3, and the declaration does not have it.",
+   "next": "Open the commodity code on the UK Trade Tariff and read its Conditions box. Add the licence code it asks for in DE 2/3. If you hold no licence, see whether you can declare a waiver, usually a Y-code, as the Conditions box and Appendix 5A describe.",
+   "link": "doc-codes"
+  },
+  "CDS40047": {
+   "plain": "A prohibition measure on the tariff blocks this commodity code for the value you declared.",
+   "next": "Check the commodity code in DE 6/14 and the country of origin in DE 5/15 on the UK Trade Tariff. Read the prohibition measure, and check whether a licence or exemption applies that you can declare in DE 2/3.",
+   "link": "tariff"
+  },
+  "CDS40049": {
+   "plain": "The quota you claimed in DE 8/1 is used up.",
+   "next": "Remove the quota claim from DE 8/1 and declare the goods at the duty rate without the quota, or wait for the next quota period.",
+   "link": "tariff"
+  },
+  "CDS40053": {
+   "plain": "The quota you claimed in DE 8/1 is suspended.",
+   "next": "Remove the quota order number from DE 8/1 and declare the goods without the quota claim.",
+   "link": "tariff"
+  },
+  "CDS40059": {
+   "plain": "The commodity code, or a tariff measure that depends on it, is not complete.",
+   "next": "Check that DE 6/14 and DE 6/15 together give the full commodity code. Then add any TARIC additional code (DE 6/16) or national additional code (DE 6/17) the measure needs, as shown on the UK Trade Tariff.",
+   "link": "tariff"
+  },
+  "CDS40066": {
+   "plain": "A value on the declaration does not meet a tariff condition for the commodity code.",
+   "next": "Open the commodity code on the UK Trade Tariff and read the Measures box and its Conditions. Declare the licence code it asks for in DE 2/3. If you hold no licence, see whether you can declare a waiver, usually a Y-code, as the Conditions box and Appendix 5A describe.",
+   "link": "tariff"
+  },
+  "CDS40068": {
+   "plain": "The commodity code carries an excise measure, but the national additional code for excise is missing.",
+   "next": "Find the excise measure for the commodity code on the UK Trade Tariff and add its national additional code in DE 6/17 on that item.",
+   "link": "tariff"
+  },
+  "CDS40069": {
+   "plain": "The quota you claimed in DE 8/1 is closed and no longer available.",
+   "next": "Remove the quota order number from DE 8/1 and declare the goods without the quota claim. Check the UK Trade Tariff for any other quota open for the commodity code.",
+   "link": "tariff"
+  },
+  "CDS40070": {
+   "plain": "NIIMP appears in DE 2/2 on some goods items but not on all of them. Once you use NIIMP on one item, every item needs it.",
+   "next": "Open DE 2/2 on every goods item and add NIIMP where it is missing. If some goods are a different movement, put them on a separate declaration.",
+   "link": null
+  },
+  "CDS40071": {
+   "plain": "NIDOM appears in DE 2/2 on some goods items but not on all of them. Once you use NIDOM on one item, every item needs it.",
+   "next": "Open DE 2/2 on every goods item and add NIDOM where it is missing. If some goods are a different movement, put them on a separate declaration.",
+   "link": null
+  },
+  "CDS40072": {
+   "plain": "NIEXP appears in DE 2/2 on some goods items but not on all of them. Once you use NIEXP on one item, every item needs it.",
+   "next": "Open DE 2/2 on every goods item and add NIEXP where it is missing. If some goods are a different movement, put them on a separate declaration.",
+   "link": null
+  },
+  "CDS40073": {
+   "plain": "You declared the de-risking statement NIREM in DE 2/2 on its own. NIREM needs NIIMP or NIDOM on the same goods item.",
+   "next": "Open DE 2/2 on the item with NIREM and add NIIMP or NIDOM, whichever matches the movement. Worked example: goods moving from Great Britain into Northern Ireland carry NIDOM with NIREM.",
+   "link": null
+  },
+  "CDS40074": {
+   "plain": "You declared the subsidy statement NIAID in DE 2/2, but the same goods item has neither NIIMP nor NIDOM.",
+   "next": "Open DE 2/2 on the item with NIAID and add NIIMP or NIDOM at item level, whichever matches the movement.",
+   "link": null
+  },
+  "CDS49999": {
+   "plain": "CDS found an error that does not have its own code.",
+   "next": "Read the error description and the AddInfo text on the response for the specific cause. Correct that data element and resubmit.",
+   "link": null
+  },
+  "CDS50000": {
+   "plain": "The linked ALVS (Automated Licence Verification System) check has not released the goods, so CDS cannot go further.",
+   "next": "Check the status of the linked ALVS or IPAFFS check for the goods. CDS can go on once that check releases them.",
+   "link": null
+  },
+  "CDS50001": {
+   "plain": "The DUCR or MUCR in the inventory linking message is not in the published UCR format.",
+   "next": "Check the UCR character by character against HMRC's published DUCR and MUCR formats, then correct it and resend.",
+   "link": null
+  },
+  "CDS50003": {
+   "plain": "You sent the request against a UCR that sits inside a consolidation, not the one at the top.",
+   "next": "Find the top-level MUCR of the consolidation and send the request against that reference instead.",
+   "link": null
+  },
+  "CDS50008": {
+   "plain": "The UCR type you declared (DUCR or MUCR) does not match the format of the reference you sent.",
+   "next": "Check the reference itself. If it is in DUCR format, declare the type as DUCR; if it is a MUCR, declare MUCR. Correct whichever is wrong and resend.",
+   "link": null
+  },
+  "CDS50015": {
+   "plain": "The declaration was cancelled, terminated, invalidated, handled outside CDS or rejected, so CDS cannot process the arrival against it.",
+   "next": "Check the declaration's status. If the goods still need clearing, submit a new declaration and send the arrival against its UCR.",
+   "link": null
+  },
+  "CDS50018": {
+   "plain": "The inventory linking message has no goods arrival date and time, or the one given is not valid.",
+   "next": "Add a valid goods arrival date and time to the inventory linking message and resend it.",
+   "link": null
+  },
+  "CDS50027": {
+   "plain": "The party that sent the message is not authorised for this role or location.",
+   "next": "Check the sender's role and location permissions in inventory linking, for example that it may act at the goods location used. Send the message from a party that holds the right permission.",
+   "link": null
+  },
+  "CDS50028": {
+   "plain": "The goods location code in DE 5/23 is not valid. It must come from the Appendix 16 code lists.",
+   "next": "Open DE 5/23 and pick the goods location code from Appendix 16. Check each part of the code, as one wrong character makes the whole code invalid.",
+   "link": null
+  },
+  "CDS50031": {
+   "plain": "The movement was already closed with a successful RET message, so CDS refuses any later request on it.",
+   "next": "Do not resend. The movement is complete. If you need to change something, check the declaration status first.",
+   "link": null
+  },
+  "CDS70711": {
+   "plain": "The electronic licence quoted in DE 2/3 does not exist on the licensing system.",
+   "next": "Check the licence reference in DE 2/3 against the licence document, character by character. If the licence is on paper, use a paper licence status code instead of an electronic one.",
+   "link": "doc-codes"
+  },
+  "CDS70719": {
+   "plain": "You quoted an electronic licence in DE 2/3, but the document status code says it is a paper licence.",
+   "next": "Open the licence line in DE 2/3 and change the status code to one for an electronic licence. If the licence really is on paper, keep the paper code and quote the paper licence reference.",
+   "link": "status-codes"
+  },
+  "CDS70724": {
+   "plain": "The licence reference you quoted is not valid for this declaration.",
+   "next": "Check the licence in DE 2/3 against the commodity code, licensing authority, expiry date, remaining quantity and reference number. Also check it belongs to the importer or exporter (DE 3/16 or DE 3/2), covers the country of origin, dispatch or destination, and matches the DUCR in DE 2/1. If still stuck, contact the licensing authority.",
+   "link": "doc-codes"
+  },
+  "CDS70739": {
+   "plain": "You quoted an import licence on an export declaration.",
+   "next": "Replace the licence in DE 2/3 with the export licence for these goods. Check that DE 1/1 shows the movement type you meant.",
+   "link": "doc-codes"
+  },
+  "CDS70740": {
+   "plain": "The importer or exporter on the declaration is not the owner of the licence, or the licence is not valid.",
+   "next": "Compare the EORI in DE 3/16 (importer) or DE 3/2 (exporter) with the holder named on the licence. Correct the party, or quote a licence that belongs to that party.",
+   "link": "doc-codes"
+  },
+  "CDS70758": {
+   "plain": "The licence does not cover the country of destination you declared.",
+   "next": "Check DE 5/8 against the countries the licence covers. Correct DE 5/8 if it is wrong, or quote a licence that covers that destination.",
+   "link": "doc-codes"
+  },
+  "CDS70760": {
+   "plain": "The licence is not valid for this goods item.",
+   "next": "Check the licence line in DE 2/3 against the item's commodity code, licensing authority, expiry date, remaining quantity, quantity type and reference number. Also check it belongs to the importer or exporter, covers the countries declared and matches the DUCR in DE 2/1. If still stuck, contact the issuing authority.",
+   "link": "doc-codes"
+  },
+  "CDS70761": {
+   "plain": "The licence does not have enough quantity left to cover what you declared on this item.",
+   "next": "Compare the quantity against the licence in DE 2/3 with the balance left on the licence. Reduce the claim to the balance, or quote a second licence for the rest.",
+   "link": "doc-codes"
+  },
+  "CDS70791": {
+   "plain": "The licence line number you gave does not exist on the licence.",
+   "next": "Open the licence and find the line that covers these goods. Correct the line number in the DE 2/3 licence entry.",
+   "link": "doc-codes"
+  },
+  "CDS71115": {
+   "plain": "You quoted an export licence on an import declaration.",
+   "next": "Replace the licence in DE 2/3 with the import licence for these goods. Check that DE 1/1 shows the movement type you meant.",
+   "link": "doc-codes"
+  },
+  "CDS71200": {
+   "plain": "The same document reference appears twice in DE 2/3 on one goods item.",
+   "next": "Open DE 2/3 on the item named in the error and find the two lines with the same identifier. Remove the duplicate or correct the reference that was copied by mistake.",
+   "link": "doc-codes"
+  },
+  "CDS71201": {
+   "plain": "The same licence appears more than once on the declaration with different document status codes. Every instance must use the same code.",
+   "next": "Find every DE 2/3 line that quotes this licence, across all goods items. Give them all the same document status code.",
+   "link": "status-codes"
+  },
+  "CDS71203": {
+   "plain": "You used status code EL or EP on a single-use licence. A single-use licence can only be used once, so it cannot be part used.",
+   "next": "Open the licence line in DE 2/3 and replace EL or EP with a status code for a licence that is used up in full in one go.",
+   "link": "status-codes"
+  },
+  "CDS71204": {
+   "plain": "The licence was already surrendered and cannot be used again.",
+   "next": "Quote a valid licence in DE 2/3, or correct the document status code if the licence was quoted by mistake.",
+   "link": "doc-codes"
+  },
+  "CDS71206": {
+   "plain": "The licence is already exhausted, with no quantity left.",
+   "next": "Quote a licence in DE 2/3 that still has quantity remaining.",
+   "link": "doc-codes"
+  },
+  "CDS71216": {
+   "plain": "The licence is inactive and can no longer be used.",
+   "next": "Check you quoted the right licence in DE 2/3. If you did, contact the issuing authority about its status, or quote an active licence.",
+   "link": "doc-codes"
+  },
+  "CDS71236": {
+   "plain": "The licence does not cover the country of origin you declared.",
+   "next": "Check DE 5/15 against the countries the licence covers. Correct DE 5/15 if it is wrong, or quote a licence valid for that origin.",
+   "link": "doc-codes"
+  },
+  "CDS71252": {
+   "plain": "The licence does not cover the country of dispatch you declared.",
+   "next": "Check DE 5/14 against the countries the licence covers. Correct DE 5/14 if it is wrong, or quote a licence valid for that country of dispatch.",
+   "link": "doc-codes"
+  },
+  "CDS71262": {
+   "plain": "You used document status code EA on a declaration that is not a supplementary declaration. EA is only allowed on type Y.",
+   "next": "Check DE 1/2. If this is not a type Y supplementary declaration, replace EA in DE 2/3 with the status code that fits this declaration type.",
+   "link": "status-codes"
+  },
+  "CDS73329": {
+   "plain": "A licence document code cannot be declared on this declaration category and type, even with a waiver or exemption status code.",
+   "next": "Check DE 1/1 and DE 1/2. If the goods qualify for a waiver, replace the licence code in DE 2/3 with a waiver document code. Worked example: use Y903 or Y927 in place of X002 or 9106. If no waiver code fits, use a standard declaration.",
+   "link": "doc-codes"
+  },
+  "CDS77000": {
+   "plain": "You declared a document code in DE 2/3 without the document identifier it needs.",
+   "next": "Add the identifier for the DE 2/3 document code named in the error. The Conditions box for the commodity code and Appendix 5A say what to enter.",
+   "link": "doc-codes"
+  },
+  "CDS77001": {
+   "plain": "The document code you declared needs a quantity, and the quantity is missing.",
+   "next": "Add the quantity against the DE 2/3 line. Worked example: when you use a status code to show a waiver for a licence, enter 0 as the quantity and a measurement unit such as GBP.",
+   "link": "doc-codes"
+  },
+  "CDS77002": {
+   "plain": "You declared a document code in DE 2/3 without a document status code.",
+   "next": "Add a status code to the DE 2/3 line named in the error. Appendix 5A lists the status codes allowed for each document code.",
+   "link": "status-codes"
+  },
+  "CDS77003": {
+   "plain": "This import declaration quotes a licence, so it needs a DUCR at header level, and the DUCR is missing.",
+   "next": "Add the DUCR in DE 2/1 at header level. It must match the DUCR on the licence where the licence names one.",
+   "link": "doc-codes"
+  },
+  "CDS77004": {
+   "plain": "CDS could not reserve the quantity against the licence.",
+   "next": "Retry the licence reservation. Check the remaining quantity on the licence in DE 2/3 against the quantity you declared.",
+   "link": "doc-codes"
+  },
+  "CDS77005": {
+   "plain": "You used a Y-series document code in DE 2/3, but the document reason is empty. Y-codes need a reason.",
+   "next": "Add the reason in the document reason field of the Y-code line in DE 2/3. The Conditions box on the online tariff and Appendix 5A show what the reason must say.",
+   "link": "doc-codes"
+  }
+ }
+}

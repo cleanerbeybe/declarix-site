@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:economics && npm run test:roi && npm run test:eori && npm run test:generators && npm run test:trade-tools && npm run test:procedures && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/agent-layer.mjs && node scripts/verify-build.mjs",
+    "build": "npm run test:economics && npm run test:roi && npm run test:eori && npm run test:generators && npm run test:trade-tools && npm run test:procedures && npm run test:reference && npm run test:authority && tsc -b && vite build && node scripts/generate-static-routes.mjs && node scripts/agent-layer.mjs && node scripts/verify-build.mjs",
     "lint": "oxlint",
     "preview": "vite preview --host 0.0.0.0",
     "verify": "node scripts/verify-build.mjs",
@@ -23,6 +23,8 @@
     "test:procedures:browser": "node tests/customs-procedures.browser.cjs",
     "test:authority": "node --test tests/authority-library.test.mjs",
     "test:authority:browser": "node tests/authority-library.browser.cjs",
+    "test:reference": "node --test tests/customs-reference.test.mjs",
+    "test:reference:browser": "node tests/customs-reference.browser.cjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs"
   },
   "dependencies": {
