@@ -25,6 +25,19 @@ import { calculateValueDutyScenario, valueDutyWorkpapers } from './value-duty-wo
 import { useCaseRoutes } from './use-cases.mjs'
 import { packages } from './pricing.mjs'
 
+// Iteration 1 (16 Oct 2026): pages that opt in with faqSchema must emit FAQPage whose questions match the visible FAQ.
+function verifyVisibleFaqSchema(route, html, itemClass) {
+  const graphs = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]))
+  const faq = graphs.flatMap((schema) => schema['@graph'] || [schema]).find((item) => item['@type'] === 'FAQPage')
+  const visible = (html.match(new RegExp(`class="${itemClass}"`, 'g')) || []).length
+  if (!faq || faq.mainEntity.length !== visible) throw new Error(`${route.path} FAQPage must match the visible FAQ (${visible} visible)`)
+  for (const question of faq.mainEntity) {
+    if (!html.includes(question.name.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'))) {
+      throw new Error(`${route.path} FAQPage question is not visible: ${question.name}`)
+    }
+  }
+}
+
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const contract = JSON.parse(await readFile(join(root, 'contracts/public-claims.v2.0.0.json'), 'utf8'))
 const publicEori = resolvePublicEoriReleaseConfig()
@@ -708,7 +721,9 @@ for (const route of expected) {
   }
 
   if (alternativesRoutes.includes(route)) {
-    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+    if (route.faqSchema) verifyVisibleFaqSchema(route, html, 'faq-item')
+    else if (html.includes('"@type":"FAQPage"')) throw new Error(`${route.path} must not emit FAQPage structured data`)
+    if (html.includes('"@type":"HowTo"')) {
       throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
     }
     if (!html.includes('class="verdict"') || (html.match(/class="faq-item"/g) || []).length < 4) {
@@ -817,7 +832,9 @@ for (const route of expected) {
   }
 
   if (useCaseRoutes.includes(route)) {
-    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
+    if (route.faqSchema) verifyVisibleFaqSchema(route, html, 'uc-faq')
+    else if (html.includes('"@type":"FAQPage"')) throw new Error(`${route.path} must not emit FAQPage structured data`)
+    if (html.includes('"@type":"HowTo"')) {
       throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
     }
     if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html) || /<form/i.test(html)) {

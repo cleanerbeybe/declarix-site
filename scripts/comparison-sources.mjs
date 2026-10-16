@@ -257,3 +257,81 @@ export const products = {
     ],
   },
 }
+
+// Iteration 1 (16 Oct 2026): the /compare/ criteria table shown above the fold. Every cell restates a sourced
+// fact from the products ledger above (same source keys, same check date). Order: Declarix first.
+export const hubMatrixColumns = [
+  ['layer', 'Filing or preparation'],
+  ['cds', 'Files to HMRC CDS'],
+  ['extraction', 'AI document extraction'],
+  ['checks', 'Pre-filing checks'],
+  ['fit', 'Works with Sequoia / Descartes'],
+  ['price', 'Pricing published'],
+]
+
+export const hubMatrix = {
+  declarix: {
+    layer: c('Preparation layer', 'dxScope'),
+    cds: c('Builds the CDS-ready pack; your system files it', 'dxScope'),
+    extraction: c('Yes: the whole job, every field linked to its source', 'dxScope', 'dxHow'),
+    checks: c('Yes: conflicts shown beside both sources as questions', 'dxHow'),
+    fit: c('Yes: CDS-ready exports for Sequoia and Descartes e-Customs', 'dxScope'),
+    price: c('Yes: every package and per-pack rate', 'dxPricing'),
+  },
+  descartes: {
+    layer: c('Filing system', 'deUk'),
+    cds: c('Yes (HMRC list)', 'hmrcList'),
+    extraction: c('Templates, cloning and Excel upload', 'deUk'),
+    checks: c('States full HMRC CDS compliance', 'deUk'),
+    fit: c('Is the filing system', 'deUk'),
+    price: c('Yes: from £178 a month plus £704 + VAT set-up', 'dePrice'),
+  },
+  sequoia: {
+    layer: c('Filing system', 'asmSw'),
+    cds: c('Yes (HMRC list)', 'hmrcList'),
+    extraction: c('Not stated on the pages checked', 'asmSw'),
+    checks: c('Not stated on the pages checked', 'asmSw'),
+    fit: c('Is the filing system', 'asmSw'),
+    price: c('Not published', 'asmSw'),
+  },
+  cargowise: {
+    layer: c('Filing inside a logistics platform', 'cwCustoms'),
+    cds: c('Yes (HMRC list)', 'hmrcList'),
+    extraction: c('Electronic documentation; AI classification in Value Packs', 'cwCustoms', 'cwPr'),
+    checks: c('Automated screening and compliance tools', 'cwCustoms'),
+    fit: c('Is the filing platform', 'cwCustoms'),
+    price: c('Per-job fee; rates not published', 'cwPr'),
+  },
+  customs4trade: {
+    layer: c('Filing platform', 'c4Home'),
+    cds: c('Yes (HMRC list)', 'hmrcList'),
+    extraction: c('Yes: AI data extraction into CAS', 'c4Decl'),
+    checks: c('Classification and master-data modules', 'c4Home'),
+    fit: c('Is the filing platform', 'c4Decl'),
+    price: c('Not published', 'c4Pricing'),
+  },
+  icustoms: {
+    layer: c('Filing platform with AI modules', 'icHome'),
+    cds: c('Yes (HMRC list)', 'hmrcList'),
+    extraction: c('Yes: iDP module', 'icIdp'),
+    checks: c('AI checks before submission (iCDS)', 'icCds'),
+    fit: c('Is the filing system (iCDS); APIs, EDI and CSV', 'icCds', 'icIdp'),
+    price: c('Not published', 'icHome'),
+  },
+  customaite: {
+    layer: c('Preparation suite', 'caHome'),
+    cds: c('Works alongside declaration software', 'caHome'),
+    extraction: c('Yes: extraction and line matching', 'caAuto'),
+    checks: c('Data validation and trade-measure screening', 'caComp'),
+    fit: c('Yes: names Sequoia and Descartes', 'caHome'),
+    price: c('Volume tiers; prices not published', 'caPlans'),
+  },
+  flytta: {
+    layer: c('Preparation, now inside Sedna AI', 'seAcq'),
+    cds: c('Outputs to Sequoia and Descartes, which file', 'seCase'),
+    extraction: c('Yes: invoices and shipping paperwork', 'seCase'),
+    checks: c('Compliance checks against HMRC requirements', 'seCase'),
+    fit: c('Yes: outputs to Sequoia and Descartes', 'seCase'),
+    price: c('Not published on the pages checked', 'seAcq'),
+  },
+}

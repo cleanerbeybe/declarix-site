@@ -1,6 +1,7 @@
 import { breadcrumbList, organizationNode } from './site-graph.mjs'
 import { notHeld } from './held-routes.mjs'
-import { declarix, hmrcList, HMRC_LIST_UPDATED, VENDOR_CHECKED, vendors } from './alternatives-vendors.mjs'
+import { declarix, govAgent, govSubscribe, hmrcList, HMRC_LIST_UPDATED, VENDOR_CHECKED, vendors } from './alternatives-vendors.mjs'
+import { packages } from './pricing.mjs'
 
 // Lane L3 (15 Oct 2026): /alternatives/ hub, seven alternatives pages, the UK buyer shortlist and the
 // customs automation money page. Declarix is listed first and framed by its strengths; competitor facts
@@ -32,6 +33,11 @@ const automationLink = { href: '/customs-automation-software/', label: 'Customs 
 const compareLink = { href: '/compare/', label: 'Compare customs workflows and software', copy: 'Side-by-side comparisons by workflow and vendor.' }
 const scopeLink = { href: '/supported-scope/', label: 'Where Declarix fits', copy: 'Document intake, CDS-ready output and the systems it feeds.' }
 const pilotLink = { href: '/pilot/', label: 'The one-job pilot', copy: '£0 upfront, £1 per declaration, capped at £500.' }
+const entryCheckingLink = { href: '/customs-entry-checking-software/', label: 'Customs entry checking software', copy: '120+ checks on every entry before you file in CDS, each flag linked to its source line.' }
+const icustomsCompareLink = { href: '/compare/declarix-vs-icustoms/', label: 'Declarix vs iCustoms: pricing, features and UK fit', copy: 'Both products on the same eight criteria, every vendor fact sourced and dated.' }
+
+// Package lines built from scripts/pricing.mjs, in the same words as the /pricing/ table.
+const packageLine = (tier) => `£${tier.monthly.toLocaleString('en-GB')} / month, ${tier.included.toLocaleString('en-GB')} packs included, £${tier.rate.toFixed(2)} / extra pack`
 
 const altLink = (id, copy) => ({ href: altPath(id), label: `${vendors[id].name.replace(' (now part of Sedna)', '')} alternatives`, copy })
 
@@ -264,9 +270,10 @@ const alternativesPages = [
       ['Which iCustoms alternatives file directly to CDS?', `Descartes, ASM Sequoia, CargoWise (WiseTech Global) and Customs4trade are on the HMRC software-developer list, updated ${HMRC_LIST_UPDATED}.`],
       ['Does Declarix publish its pricing?', 'Yes: Desk £500 a month for 100 packs, Team £4,000 for 1,000 and Scale £9,000 for 3,000.'],
       ['Does iCustoms publish a price?', `No public price was found on the iCustoms pages we checked on ${VENDOR_CHECKED}.`],
+      ['How does Declarix compare with iCustoms side by side?', 'See Declarix vs iCustoms, which compares filing, document reading, evidence, published pricing and pilot terms on the same eight criteria.'],
       ['How quickly can we see results?', 'Book the 20-minute numbers call, then run one real job through the pilot.'],
     ],
-    related: [altLink('customaite', 'Other AI preparation tools compared.'), shortlistLink, automationLink, compareLink, hubLink],
+    related: [icustomsCompareLink, altLink('customaite', 'Other AI preparation tools compared.'), shortlistLink, automationLink, compareLink, hubLink],
   },
   {
     path: '/alternatives/flytta/',
@@ -658,12 +665,14 @@ const shortlistOrder = ['sequoia', 'descartes', 'icustoms', 'customs4trade', 'ca
 const shortlist = {
   kind: 'shortlist',
   path: '/best-customs-software/',
-  title: 'Best customs declaration software UK: 2026 shortlist',
+  title: 'Best Customs Clearance and Declaration Software UK (2026)',
   description:
     'The best customs declaration and clearance software for UK desks in 2026: “best for” labels, a side-by-side table and dated vendor facts. Declarix leads.',
   eyebrow: 'BUYER SHORTLIST · UK CUSTOMS DECLARATION SOFTWARE',
   ref: 'SHORTLIST 01 · UK 2026',
-  h1: 'The best customs declaration software for UK desks in 2026.',
+  h1: 'The best customs clearance and declaration software for UK desks in 2026',
+  // The previous H1, kept word for word as the subhead under the new H1.
+  subhead: 'The best customs declaration software for UK desks in 2026.',
   standfirst:
     'Eight options, one set of criteria: CDS readiness, fit with your filing system, document pre-check, clerk throughput, pricing model and UK support. Declarix leads for desks that want more declarations from the team they have.',
   stamp: 'UK\nSHORTLIST\n2026',
@@ -684,6 +693,30 @@ const shortlist = {
     'Declarix publishes every package price; of the other seven, only Descartes and Flytta show prices.',
   ],
   options: shortlistOrder,
+  faqSchema: true,
+  // Numbered "Top picks" strip on the first screen. Labels repeat the takeaways and the by-buyer facts below.
+  topPicks: [
+    ['Declarix', 'Best for more declarations per clerk', '#options-heading'],
+    ['ASM Sequoia', 'Best UK forwarder filing platform', '/alternatives/sequoia/'],
+    ['Descartes e-Customs', 'Best broad UK filing suite', '/alternatives/descartes-e-customs/'],
+    ['iCustoms', 'Best for UK and Irish traders filing in-house', '/alternatives/icustoms/'],
+    ['Customs4trade CAS', 'Best for multi-country customs and excise', '/alternatives/customs4trade/'],
+    ['CargoWise Customs and Compliance', 'Best for global forwarders on one logistics platform', '/alternatives/cargowise-customs/'],
+    ['Flytta (now part of Sedna)', 'AI preparation inside the Sedna platform', '/alternatives/flytta/'],
+    ['Customaite', 'AI preparation suite sold by volume tier', '/alternatives/customaite/'],
+  ],
+  howCompared: {
+    intro:
+      `We scored every option on the same six criteria, using each vendor’s own public pages (checked ${VENDOR_CHECKED}) and the HMRC software-developer list (updated ${HMRC_LIST_UPDATED}). The Declarix column shows what Declarix gives a UK desk on each one. See how the pre-filing checks work in our [customs entry checking software](/customs-entry-checking-software/) guide.`,
+    rows: [
+      ['CDS connection', 'Does it file to CDS itself, or build CDS-ready data for the system that does? Is the vendor on the HMRC software-developer list?', declarix.filing],
+      ['Broker or trader', 'Who the vendor says the product is built for: customs brokers, forwarders, importers or exporters.', 'Built for UK customs brokers and forwarders'],
+      ['Pricing model', 'Is the price published? Is it per declaration, per trade or per seat?', declarix.pricing],
+      ['AI extraction', 'Does it read invoices, packing lists, scans, spreadsheets and emails, and show where each value came from?', declarix.precheck],
+      ['Pre-filing checks', 'Are errors and conflicts caught before the entry is filed, with the source of each one?', '120+ checks on every entry before you file in CDS, each flag linked to its source line'],
+      ['Integrations', 'Can you keep the filing system you already run, or must you migrate?', declarix.worksWith],
+    ],
+  },
   criteria: [
     ['CDS readiness', 'Does it file to CDS itself, or produce CDS-ready data for the system that does?'],
     ['Works with your filing system', 'Can you keep Sequoia, Descartes or your customer system, or must you migrate?'],
@@ -730,6 +763,30 @@ const shortlist = {
         'Compare total monthly cost at your real volume.',
       ],
     },
+    {
+      label: '05 · FREE OPTIONS',
+      title: 'Is there free CDS software?',
+      paragraphs: [
+        'For full import and export declarations, GOV.UK points traders to their own purchased customs software, from the developers on HMRC’s software-developer list. The other route is a customs agent, broker or freight forwarder who clears the goods for you.',
+        'The work before filing can start free. Declarix gives UK traders and brokers [free customs tools](/tools/), including the [customs document pack check](/tools/customs-document-pack-check/) and the [UK import duty and VAT calculator](/tools/customs-value-import-duty-vat-calculator/), so the job reaches the filing screen complete.',
+      ],
+    },
+    {
+      label: '06 · PRICES',
+      title: 'How much does customs software cost in the UK?',
+      lead: [
+        'Most UK filing systems quote on request. Declarix publishes every package and every per-pack rate, so you can cost your desk before the first call.',
+      ],
+      facts: [
+        ...packages.map((tier) => [`Declarix ${tier.name}`, packageLine(tier)]),
+        ['Descartes e-Customs', vendors.descartes.pricing],
+        ['Flytta (now part of Sedna)', vendors.flytta.pricing],
+        ['ASM Sequoia, iCustoms, CargoWise, Customs4trade, Customaite', 'Quote-based; see each vendor’s row in the table above'],
+      ],
+      after: [
+        'For example: 2,000 packs on Team = £4,000 + 1,000 extra packs × £4.00 = £8,000 / month. See every package on [Declarix pricing](/pricing/), or model your own volume in the [capacity and ROI calculator](/roi-calculator/).',
+      ],
+    },
   ],
   faqs: [
     ['What is the best customs declaration software in the UK?', 'For a broker or forwarder that wants more output from the same team, Declarix in front of Sequoia or Descartes e-Customs is the strongest choice.'],
@@ -738,11 +795,13 @@ const shortlist = {
     ['Which customs software publishes its prices?', `Among the eight options here, Declarix, Descartes and Flytta publish prices on the pages we checked on ${VENDOR_CHECKED}. Declarix is the only one that publishes every package and per-pack rate.`],
     ['Do I have to replace my filing system to get AI document automation?', 'No: Declarix builds the CDS-ready entry pack and your existing filing system keeps submitting it.'],
     ['How quickly does Declarix process a job?', 'Typical Declarix processing is around 200 seconds before clerk review.'],
+    ['Is there free CDS software?', 'For full import and export declarations, GOV.UK points traders to purchased customs software or to a customs agent, broker or freight forwarder; Declarix gives you free customs tools for the work before filing.'],
+    ['How much does customs software cost in the UK?', 'Declarix publishes every package, from Desk at £500 a month for 100 packs, while most UK filing systems quote on request and Descartes lists e-Customs from £178 a month plus a £704 + VAT set-up fee.'],
   ],
-  related: [hubLink, automationLink, compareLink, altLink('descartes', 'For desks on Descartes e-Customs.'), altLink('sequoia', 'For desks on ASM Sequoia.'), pilotLink],
+  related: [hubLink, entryCheckingLink, automationLink, compareLink, altLink('descartes', 'For desks on Descartes e-Customs.'), altLink('sequoia', 'For desks on ASM Sequoia.'), pilotLink],
   parent: null,
 }
-shortlist.sources = altSources(shortlistOrder)
+shortlist.sources = [...altSources(shortlistOrder), govSubscribe, govAgent]
 
 // ---------------------------------------------------------------------------------------------
 // Customs automation money page (P03). Owner reviews these words before release.
@@ -874,8 +933,15 @@ function bookingHref(route) {
   return `/?src=${encodeURIComponent(`static_${route.path.split('/').filter(Boolean).join('_')}`)}#book`
 }
 
+// Escaped text with [label](/path/) links (links to held routes stay plain text).
+const rich = (value) =>
+  escapeHtml(value).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) => (notHeld(href) ? `<a href="${href}">${label}</a>` : label))
+const plain = (value) => String(value).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '$1')
+
 function renderSheet(section) {
-  const paragraphs = (section.paragraphs || []).map((p) => `<p>${escapeHtml(p)}</p>`).join('')
+  const paragraphs = (section.paragraphs || []).map((p) => `<p>${rich(p)}</p>`).join('')
+  const lead = (section.lead || []).map((p) => `<p>${rich(p)}</p>`).join('')
+  const after = (section.after || []).map((p) => `<p>${rich(p)}</p>`).join('')
   const list = section.list ? `<ul>${section.list.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''
   const facts = section.facts
     ? `<div class="fact-table">${section.facts
@@ -885,7 +951,40 @@ function renderSheet(section) {
   return `<section class="sheet">
     <span class="section-label">${escapeHtml(section.label)}</span>
     <h2>${escapeHtml(section.title)}</h2>
-    ${facts}${paragraphs}${list}
+    ${lead}${facts}${paragraphs}${after}${list}
+  </section>`
+}
+
+function renderTopPicks(route) {
+  if (!route.topPicks) return ''
+  return `<section class="top-picks" aria-labelledby="top-picks-heading">
+    <span class="section-label">RANKED · UK 2026</span>
+    <h2 id="top-picks-heading">Top picks</h2>
+    <ol>${route.topPicks
+      .map(([name, label, href]) => {
+        const inner = `<strong>${escapeHtml(name)}</strong><span>${escapeHtml(label)}</span>`
+        return `<li${name === 'Declarix' ? ' class="is-declarix"' : ''}>${notHeld(href) ? `<a href="${href}">${inner}</a>` : `<a href="#table-heading">${inner}</a>`}</li>`
+      })
+      .join('')}</ol>
+  </section>`
+}
+
+function renderHowCompared(route) {
+  if (!route.howCompared) return ''
+  const { intro, rows } = route.howCompared
+  return `<section class="block" aria-labelledby="how-compared-heading">
+    <span class="section-label">METHOD</span>
+    <h2 id="how-compared-heading">How we compared</h2>
+    <p>${rich(intro)}</p>
+    <div class="table-wrap" role="region" aria-labelledby="how-compared-heading" tabindex="0">
+      <table class="compare-table criteria-table">
+        <caption>The six criteria applied to every option, and what Declarix gives a UK desk on each.</caption>
+        <thead><tr><th scope="col">Criterion</th><th scope="col">What we checked</th><th scope="col">Declarix</th></tr></thead>
+        <tbody>${rows
+          .map(([criterion, checked, dx]) => `<tr><th scope="row">${escapeHtml(criterion)}</th><td data-label="What we checked">${escapeHtml(checked)}</td><td data-label="Declarix" class="is-declarix">${escapeHtml(dx)}</td></tr>`)
+          .join('')}</tbody>
+      </table>
+    </div>
   </section>`
 }
 
@@ -1116,6 +1215,14 @@ export function alternativesJsonLd(route, site) {
     { '@type': 'WebSite', '@id': `${site.origin}/#website`, name: 'Declarix', url: `${site.origin}/`, publisher: { '@id': `${site.origin}/#organization` } },
     breadcrumbList(site, route.path),
   ]
+  // FAQPage only where the same questions are visible on the page (verify-build checks the match).
+  if (route.faqSchema) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': `${url}#faq`,
+      mainEntity: route.faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: plain(a) } })),
+    })
+  }
   if (route.kind === 'hub') {
     const items = [...alternativesPages, shortlist, automation].filter(notHeld)
     page.mainEntity = {
@@ -1149,11 +1256,13 @@ export function renderAlternativesRoute(route, site, { navHtml, webmasterHtml })
     ? `<a href="/">HOME</a> → <a href="${route.parent.href}">${escapeHtml(route.parent.label.toUpperCase())}</a> → ${escapeHtml(route.eyebrow)}`
     : `<a href="/">HOME</a> → ${escapeHtml(route.eyebrow)}`
   const body = [
+    renderTopPicks(route),
     renderVerdict(route),
     publisherNote(route),
     renderFocalCard(route),
     renderStageTable(route),
     renderCriteria(route),
+    renderHowCompared(route),
     route.options ? renderOptionsTable(route) : '',
     route.options ? renderOptionCards(route) : '',
     renderHubList(route),
@@ -1191,7 +1300,7 @@ export function renderAlternativesRoute(route, site, { navHtml, webmasterHtml })
     <script type="application/ld+json">${alternativesJsonLd(route, site)}</script>
   </head>
   <body>
-    <div class="docket">
+    <div class="docket${route.kind === 'shortlist' ? ' is-shortlist' : ''}">
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
         <div class="masthead-cell"><span>CORE OUTCOME</span><strong>UP TO 3×</strong></div>
@@ -1204,6 +1313,7 @@ export function renderAlternativesRoute(route, site, { navHtml, webmasterHtml })
           <div class="hero-copy">
             <p class="eyebrow">${escapeHtml(route.eyebrow)}</p>
             <h1>${escapeHtml(route.h1)}</h1>
+            ${route.subhead ? `<p class="h1-subhead">${escapeHtml(route.subhead)}</p>` : ''}
             <p>${escapeHtml(route.standfirst)}</p>
           </div>
           <aside class="hero-ledger">

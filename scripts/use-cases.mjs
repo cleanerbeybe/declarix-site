@@ -589,8 +589,28 @@ const smallBrokerages = {
   sources: [sources.appoint, sources.standard, sources.developers],
 }
 
+// Iteration 1 (16 Oct 2026): data-extraction and document-automation sections for the IDP search intent.
+// Product facts reuse live site copy (comparison-sources.mjs Declarix cells, this page's check table).
+// CDS data element numbers follow the HMRC import declaration completion guide (sources.vol3).
+function entryExtractionSections() {
+  const rows = [
+    ['Commercial invoice', 'Seller and buyer, invoice number, currency, Incoterm, line descriptions, quantities, item and line values, origin, commodity codes where given', 'DE 2/3 documents (N935 invoice), DE 4/1 delivery terms, DE 4/14 item price, DE 5/15 country of origin, DE 6/8 description, DE 6/14 commodity code'],
+    ['Packing list', 'Packages and package types, net and gross weight per line, marks and numbers', 'DE 6/1 net mass, DE 6/5 gross mass, DE 6/10 number of packages'],
+    ['Bill of lading or air waybill', 'Transport document number, vessel or flight, ports, container numbers, package count and weight', 'DE 2/1 previous documents, DE 7/10 container number, transport and location fields'],
+    ['Spreadsheets, scans, phone photos and email chains', 'The same fields wherever they sit, plus instructions and facts given only in the email', 'Mapped to the matching data element, with the email or file as the source'],
+  ]
+  return `<section class="uc-block" aria-labelledby="data-extraction"><span class="section-label">CUSTOMS DATA EXTRACTION</span><h2 id="data-extraction">Customs data extraction: invoices, packing lists, bills of lading</h2><p>Customs data extraction turns the documents a customer sends into the field values a customs entry needs. Declarix reads invoices, packing lists, transport documents, spreadsheets, scans, phone photos and forwarded email chains across the whole job. Typical processing is around 200 seconds.</p><p>Every field is extracted with its source and mapped to its CDS data element. Every proposed value keeps its document, page and line, so your clerk sees where it came from before approving it.</p><div class="uc-table-wrap" tabindex="0" role="region" aria-label="What Declarix extracts from each document"><table class="uc-table"><caption>What Declarix extracts from each customs document, and where it lands in a CDS import declaration</caption><thead><tr><th scope="col">Document</th><th scope="col">What is extracted</th><th scope="col">Where it lands in the entry</th></tr></thead><tbody>${rows
+    .map(([doc, fields, de]) => `<tr><th scope="row">${escapeHtml(doc)}</th><td data-label="What is extracted">${escapeHtml(fields)}</td><td data-label="Where it lands">${escapeHtml(de)}</td></tr>`)
+    .join('')}</tbody></table></div><p>Commodity codes are checked against the goods description with GIR reasoning, so a code that does not fit the description becomes a flag, not a filed error. Try the free [commodity code checker](/tools/commodity-code-checker/) on a single line.</p></section><section class="uc-block" aria-labelledby="automation-vs-checking"><span class="section-label">DOCUMENT AUTOMATION AND ENTRY CHECKING</span><h2 id="automation-vs-checking">Customs document automation vs entry checking: why you need both</h2><p>Document automation reads the paperwork and fills the entry. Entry checking proves the filled entry is right before it is filed. Declarix does both in one pass, so speed and accuracy arrive together.</p><div class="uc-table-wrap" tabindex="0" role="region" aria-label="Document automation and entry checking compared"><table class="uc-table"><caption>What each layer does on a UK customs desk</caption><thead><tr><th scope="col">Layer</th><th scope="col">What it does</th><th scope="col">What it gives the clerk</th></tr></thead><tbody>${[
+      ['Document automation (extraction, OCR, IDP)', 'Reads every document in the job and builds the entry data', 'No keying: the entry is already built'],
+      ['Entry checking', 'Runs 120+ checks against the documents and the customs rules', 'Every issue flagged, sourced and ready to resolve'],
+      ['Declarix: both, in one pass', 'Extracts, maps to CDS data elements, checks and builds the CDS-ready pack', 'A checked pack to approve and file in your own system'],
+    ].map(([layer, does, gives]) => `<tr><th scope="row">${escapeHtml(layer)}</th><td data-label="What it does">${escapeHtml(does)}</td><td data-label="What the clerk gets">${escapeHtml(gives)}</td></tr>`).join('')}</tbody></table></div><p>See the checks on the compiled declaration in [CDS preflight checks](/features/cds-preflight/), and how the layers fit together in the [customs data validation guide](/guides/customs-data-validation/).</p></section>`
+}
+
 const entryChecking = {
   kind: 'category',
+  faqSchema: true,
   group: 'job',
   path: '/customs-entry-checking-software/',
   shortName: 'Customs entry checking software',
@@ -623,7 +643,7 @@ const entryChecking = {
     ['04', 'Resolve the flags', 'Your clerk works through each flag with both sources side by side, and sends the drafted query for anything missing.'],
     ['05', 'Build and file', 'The CDS XML is validated against the HMRC CDS schema, the pack is built, and your clerk files it in your own system.'],
   ],
-  extra: () => `<section class="uc-block" aria-labelledby="check-categories"><span class="section-label">WHAT GETS CHECKED</span><h2 id="check-categories">15 categories, 124 distinct named checks.</h2><p>Many checks repeat on every goods line, so a three-line job makes 21 cross-document comparisons on its own.</p><div class="uc-table-wrap" tabindex="0" role="region" aria-label="Check categories"><table class="uc-table"><caption>Declarix check categories with example checks</caption><thead><tr><th scope="col">Category</th><th scope="col">Example checks</th></tr></thead><tbody>${[
+  extra: () => `${entryExtractionSections()}<section class="uc-block" aria-labelledby="check-categories"><span class="section-label">WHAT GETS CHECKED</span><h2 id="check-categories">15 categories, 124 distinct named checks.</h2><p>Many checks repeat on every goods line, so a three-line job makes 21 cross-document comparisons on its own.</p><div class="uc-table-wrap" tabindex="0" role="region" aria-label="Check categories"><table class="uc-table"><caption>Declarix check categories with example checks</caption><thead><tr><th scope="col">Category</th><th scope="col">Example checks</th></tr></thead><tbody>${[
     ['Document consistency', 'Quantity, net and gross weight, packages, item value, line value and description agree across invoice, packing list and B/L, per line'],
     ['Maths and weights', 'Invoice total equals the sum of the lines; gross not below net; weight totals match the lines'],
     ['Valuation and Incoterms', 'Freight or insurance counted twice; Incoterm inconsistent with freight or insurance; valid CDS delivery-terms code'],
@@ -647,8 +667,10 @@ const entryChecking = {
     ['Do our clerks still review each entry?', 'Yes. Your clerk gets a checked pack with every issue flagged and sourced, so the review is faster and nothing is missed.'],
     ['Can a clerk override a flag?', 'A lesser flag can be waived and a blocker overridden with a recorded reason, while the eight hard stops cannot be overridden by anyone.'],
     ['Does Declarix file the entry?', 'No. Your clerk files in your existing customs system, because Declarix never submits to HMRC.'],
+    ['What is customs declaration data extraction?', 'Customs declaration data extraction reads the invoice, packing list, transport document and emails for a job and turns them into the values the entry needs. Declarix maps every extracted value to its CDS data element and keeps its source document, page and line.'],
+    ['What is an OCR customs data extractor?', 'An OCR customs data extractor reads scanned or photographed customs documents and turns the text into data. Declarix reads scans and phone photos alongside PDFs, spreadsheets and email chains, then checks every value before your clerk sees the pack.'],
   ],
-  related: ['/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customs-data-entry/', '/use-cases/customs-team-review/', '/use-cases/customs-brokers/', '/for/small-customs-brokerages/', '/customs-declaration-software/', '/best-customs-software/', '/compare/', '/tools/customs-document-pack-check/', '/pilot/'],
+  related: ['/use-cases/invoice-packing-list-reconciliation/', '/use-cases/customs-data-entry/', '/use-cases/customs-team-review/', '/use-cases/customs-brokers/', '/for/small-customs-brokerages/', '/customs-declaration-software/', '/best-customs-software/', '/compare/', '/features/cds-preflight/', '/guides/customs-data-validation/', '/tools/customs-document-pack-check/', '/pilot/'],
   sources: [sources.cds, sources.vol3, sources.amend, sources.developers],
 }
 
@@ -677,6 +699,8 @@ const externalNames = {
   '/compare/': ['Customs software comparisons', 'Declarix and the UK filing and preparation tools, side by side.'],
   '/alternatives/': ['Customs software alternatives', 'Grow the desk without leaving the filing system you know.'],
   '/best-customs-software/': ['Best customs declaration software UK', 'The 2026 buyer shortlist, with the best fit for each desk.'],
+  '/features/cds-preflight/': ['CDS preflight checks', 'Schema checks on the compiled declaration before handoff.'],
+  '/guides/customs-data-validation/': ['Customs data validation guide', 'How the layers of checks fit together.'],
   '/compare/automation-vs-manual-entry/': ['Automation vs manual entry', 'The same job keyed by hand and prepared by Declarix.'],
   '/research/hmrc-customs-administrative-burden-explorer-2026/': ['HMRC customs burden explorer 2026', 'What 460 declarants told HMRC about process time and internal cost.'],
   '/compare/automation-vs-hiring/': ['Automation vs hiring', 'Model the workload before you add a clerk.'],
@@ -730,6 +754,14 @@ function jsonLd(route, site) {
       itemListElement: trail.map(([name, item], index) => ({ '@type': 'ListItem', position: index + 1, name, item })),
     },
   ]
+  // FAQPage only on pages that opt in; the questions are the visible FAQ below.
+  if (route.faqSchema) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': `${site.origin}${route.path}#faq`,
+      mainEntity: route.faqs.map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer.replace(linkPattern, '$1').replaceAll('**', '') } })),
+    })
+  }
   if (route.kind === 'hub') {
     page.mainEntity = { '@id': `${site.origin}${route.path}#list` }
     graph.push({
