@@ -40,6 +40,13 @@ const cwSources = [
   src('CDS Appendix 1 (exports): Requested Procedure 31 — re-export', 'https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-31-re-export-or-dispatch-of-non-union-goods-following-a-special-procedure', '13 JUL 2026'),
   src('DE 2/3 document and reference codes (Union), Appendix 5A', 'https://www.gov.uk/government/publications/data-element-23-documents-and-other-reference-codes-union-of-the-customs-declaration-service-cds', '6 OCT 2026'),
   tariff('6203423100'),
+  src('Special procedure: customs warehousing — using a customs warehouse', 'https://www.gov.uk/guidance/special-procedure-customs-warehousing/using-a-customs-warehouse', '30 APR 2025'),
+  src('Special procedure: customs warehousing — using simplified procedures', 'https://www.gov.uk/guidance/special-procedure-customs-warehousing/using-simplified-procedures', '30 APR 2025'),
+  src('CDS import completion instructions: Group 2 (DE 2/7 warehouse type codes)', 'https://www.gov.uk/government/publications/cds-uk-trade-tariff-volume-3-import-declaration-completion-guide/group-2-references-of-messages-document-certificates-and-authorisations', '7 OCT 2026'),
+  src('CDS Appendix 2B: additional procedure codes, 1 series (1VW VAT-only warehousing)', 'https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes-of-the-customs-declaration-service-cds/additional-procedure-code-1-series-appendix-2b', '6 OCT 2026'),
+  src('Apply for approval to use premises as an excise warehouse', 'https://www.gov.uk/guidance/apply-for-approval-to-use-premises-as-an-excise-warehouse', '4 AUG 2026'),
+  src('How to put goods into a temporary storage facility', 'https://www.gov.uk/guidance/how-to-put-goods-into-a-temporary-storage-facility', '11 AUG 2021'),
+  src('Get your business ready to use a Freeport customs site', 'https://www.gov.uk/guidance/get-your-business-ready-to-use-a-freeport-customs-site', '31 MAR 2022'),
 ]
 
 const customsWarehouse = {
@@ -55,10 +62,11 @@ const customsWarehouse = {
     alt: 'Bonded warehouse',
     description: 'An HMRC-authorised site where imported goods are stored with Customs Duty and import VAT suspended until they are released to the UK market or re-exported.',
   },
-  title: 'Bonded warehouse (customs warehousing) UK guide',
+  title: 'Bonded Warehouse UK: How Customs Warehousing Works (2026)',
   description:
-    'How a UK bonded warehouse works: duty and VAT suspended, authorisation, CPC 7100, 4071 and 3171, CDS data, a worked example and the errors to avoid.',
-  h1: 'Bonded warehouse: pay duty when the stock leaves, not when it lands.',
+    'How a UK bonded warehouse works: duty and VAT suspended, benefits, public vs private types, authorisation, CPC 7100, 4071 and 3171, and a worked example.',
+  h1: 'Bonded warehouse (customs warehouse): pay duty when the stock leaves, not when it lands',
+  subhead: 'Bonded warehouse: pay duty when the stock leaves, not when it lands.',
   eyebrow: 'SPECIAL PROCEDURE · CUSTOMS WAREHOUSING · CPC 7100',
   standfirst:
     'A customs warehouse (the trade still says bonded warehouse) holds imported goods with Customs Duty and import VAT suspended. You pay when you release stock to the UK market, batch by batch, and pay nothing on stock you re-export.',
@@ -70,13 +78,33 @@ const customsWarehouse = {
       'HMRC calls it a customs warehouse. Goods enter under procedure code 7100. Duty and import VAT become due only when goods are released for free circulation (CPC 4071). Goods re-exported from the warehouse (CPC 3171) pay neither. There is no time limit on storage once HMRC authorises the warehouse.',
     ],
   },
+  topSections: [
+    {
+      id: '3pl',
+      label: 'START HERE · IMPORTERS',
+      title: 'Using a 3PL’s public warehouse.',
+      jump: 'Using a 3PL',
+      paras: [
+        'Most importers use a bonded warehouse run by a logistics firm (a 3PL). You are the depositor: the person who puts the goods in. GOV.UK states that you do not need to be authorised by HMRC to be a depositor in a public or private customs warehouse. Only the warehousekeeper of a private warehouse needs authorisation.',
+        'You do not have to own the goods, but you take on the liability for any duty and import VAT that becomes due. You must be established in the UK. An overseas owner uses a UK indirect representative, who is jointly liable for the duty and VAT.',
+      ],
+      list: [
+        'Declare the goods into the warehouse yourself, or give your customs agent clear written instructions.',
+        'Send the goods straight to the named warehouse within 5 working days of customs clearance.',
+        'Give the warehousekeeper all the details of the import declaration.',
+        'Check the warehouse is approved for your goods, for example chilled, frozen or chemical goods.',
+        'Declare each removal correctly: CPC 4071 to sell in the UK and pay duty, or CPC 3171 to re-export with no UK duty or import VAT.',
+        'Keep the import and removal declarations (with their MRNs), the invoices and transport documents, and any proof of origin you will rely on at removal. The warehousekeeper keeps the warehouse stock account; if you use entry in the declarant’s records (EIDR), you keep those records and tell the warehousekeeper when you update them.',
+      ],
+    },
+  ],
   facts: [
     ['What is suspended', 'Customs Duty, import VAT and excise duty'],
     ['Entry code', 'CPC 7100 (DE 1/10), usually APC 000'],
     ['Release to UK market', 'CPC 4071'],
     ['Re-export', 'CPC 3171'],
     ['Authorisation', 'Full authorisation only (no authorisation by declaration)'],
-    ['GB warehouse types', 'Public (R / CW1) and private (U / CWP)'],
+    ['GB warehouse types', 'Public warehouse (a 3PL stores your goods) — type R / CW1; private warehouse (you run it) — type U / CWP'],
     ['Storage limit', 'None after authorisation'],
     ['Stock records kept', 'At least 4 years after removal'],
   ],
@@ -84,10 +112,13 @@ const customsWarehouse = {
     {
       id: 'who',
       label: '01 · WHO IT SUITS',
-      title: 'Importers who sell over time, and anyone who re-exports.',
+      title: 'Who uses one: importers, e-commerce, alcohol and tobacco.',
+      jump: 'Who uses one',
       paras: ['GOV.UK lists the cases a customs warehouse is built for. The most common on a broker desk are these:'],
       list: [
         'Distributors who sell imported stock over months. Duty and VAT follow the sales, not the arrival.',
+        'E-commerce sellers who hold stock in a 3PL’s bonded warehouse and sell to UK and overseas buyers. UK orders leave under 4071; overseas orders leave under 3171 with no UK duty or import VAT.',
+        'Importers of alcohol and tobacco. Customs warehousing suspends excise duty as well as Customs Duty and import VAT. Goods already in the excise regime use an excise warehouse approved by HMRC (DE 2/7 type Y) instead.',
         'Traders who re-export part of a consignment. Re-exported goods never pay UK duty or import VAT.',
         'Importers waiting for a licence. Goods that need a licence can be warehoused without it; the licence is needed at release.',
         'Logistics firms running a public warehouse for other people’s goods (the depositors).',
@@ -96,23 +127,64 @@ const customsWarehouse = {
       ],
     },
     {
+      id: 'benefits',
+      label: '02 · BENEFITS',
+      title: 'Benefits of a bonded warehouse.',
+      jump: 'Benefits',
+      list: [
+        'Cash flow: nothing is due on arrival. Customs Duty, import VAT and excise duty wait until you release each batch to the UK market.',
+        'No time limit: once HMRC authorises the warehouse, goods can stay as long as you need, apart from perishable goods.',
+        'Re-export with no duty: goods that leave the warehouse for another country under CPC 3171 never pay UK duty or import VAT.',
+        'Time to sort the paperwork: goods that need an import licence can be warehoused without it; the licence is needed at release.',
+        'Handling on site: usual forms of handling, such as preserving, repacking and preparing goods for sale, are allowed while duty stays suspended.',
+      ],
+    },
+    {
+      id: 'types',
+      label: '03 · TYPES',
+      title: 'Public vs private customs warehouses (types).',
+      jump: 'Public vs private',
+      paras: ['DE 2/7 on the CDS declaration names the warehouse type with one letter, followed by the warehouse ID, for example R1234567GB.'],
+      table: {
+        caption: 'Customs warehouse types in Great Britain',
+        head: ['Type', 'DE 2/7 letter', 'Authorisation code', 'Who uses it'],
+        rows: [
+          ['Public warehouse (type 1)', 'R', 'C518 + CW1', 'A 3PL or logistics firm stores goods for other people (the depositors).'],
+          ['Private warehouse', 'U', 'C517 + CWP', 'The authorisation holder stores its own goods. The holder is the warehousekeeper.'],
+          ['Public types 2 and 3', 'S, T', 'C519 + CW2', 'Not allowed with a GB warehouse ID.'],
+          ['Excise warehouse', 'Y', 'Excise approval', 'Duty-suspended excise goods; uses a 13-digit warehouse reference.'],
+        ],
+      },
+    },
+    {
       id: 'authorisation',
-      label: '02 · AUTHORISATION',
+      label: '04 · AUTHORISATION',
       title: 'Apply to operate a customs warehouse.',
       paras: [
         'Only a full authorisation works for customs warehousing. GOV.UK states plainly that authorisation by declaration cannot be used for it. HMRC recommends applying at least 2 months before you want to start. Apply online, or use the print and post form if you cannot apply online. Great Britain and Northern Ireland need separate forms.',
       ],
       steps: [
         ['01', 'Meet the warehousekeeper test', 'Be established in the UK with an EORI number, be solvent, have a good customs compliance record, show a business need, keep inventory records and either make declarations or employ an agent who can.'],
-        ['02', 'Choose public or private', 'A public warehouse (type R, code CW1) stores other people’s goods. A private warehouse (type U, code CWP) stores the holder’s own goods. Public type 2 and 3 codes cannot be used with a GB warehouse ID.'],
+        ['02', 'Choose public or private', 'Public warehouse (a 3PL stores your goods) — type R / CW1. Private warehouse (you run it) — type U / CWP. Public type 2 and 3 codes (S and T, CW2) cannot be used with a GB warehouse ID.'],
         ['03', 'Prepare the evidence', 'Written goods-in and goods-out procedures, stock record screenshots from your warehouse or duty management system, site plans, signatories, the procedure codes and commodity codes you will use, and letters of intent from customers for a public warehouse.'],
         ['04', 'Settle the guarantee', 'A guarantee for Customs Duty and VAT may be needed. AEO status, or meeting AEO conditions, removes that need. Your authorisation letter confirms the position.'],
         ['05', 'Run the warehouse', 'Goods must arrive within 5 working days of customs clearance. Report shortages or overages within 14 days of entry. Keep stock records in real time, or by midnight of the next operating day with a duty management system HMRC has approved.'],
       ],
+      box: {
+        label: 'FOR IMPORTERS',
+        title: 'Importers: next step',
+        paras: [
+          'You do not need your own authorisation to use a public warehouse. Ask your broker or 3PL whether they run, or work with, a public customs warehouse for your goods. Bring two numbers: your monthly import value and the share you re-export. The worked example below shows how those two numbers turn into cash you keep.',
+        ],
+        links: [
+          ['/customs-workflows/duty-deferment-account-checklist/', 'Duty deferment account checklist'],
+          ['/customs-workflows/postponed-vat-accounting-checklist/', 'Postponed VAT accounting checklist'],
+        ],
+      },
     },
     {
       id: 'codes',
-      label: '03 · KEY CODES',
+      label: '05 · KEY CODES',
       title: 'The procedure codes a warehouse entry uses.',
       paras: ['These codes come from CDS Appendix 1, updated 6 October 2026. The full list sits in our [customs procedure codes reference](/customs-reference/customs-procedure-codes/).'],
       table: {
@@ -130,7 +202,7 @@ const customsWarehouse = {
     },
     {
       id: 'data',
-      label: '04 · DECLARATION DATA',
+      label: '06 · DECLARATION DATA',
       title: 'The CDS fields that make or break the entry.',
       table: {
         caption: 'Customs warehousing data elements on CDS',
@@ -149,6 +221,23 @@ const customsWarehouse = {
         'Agents need prior written approval from the authorisation holder to enter goods into the warehouse, and must return a copy of the declaration to the holder.',
       ],
     },
+    {
+      id: 'compare',
+      label: '07 · SIMILAR REGIMES',
+      title: 'Bonded warehouse vs excise warehouse vs VAT warehouse vs temporary storage vs freeport.',
+      jump: 'Compared',
+      table: {
+        caption: 'Five places goods can wait with charges unpaid',
+        head: ['Regime', 'What waits', 'Time limit', 'Use it when'],
+        rows: [
+          ['Customs warehouse (bonded)', 'Customs Duty, import VAT and excise duty', 'None after authorisation (perishables excepted)', 'You sell imported stock over time or re-export part of it.'],
+          ['Excise warehouse', 'Excise duty on alcohol, tobacco, vaping products and fuels', 'See the excise warehouse guidance (sources below)', 'Goods are already in the excise regime, for example UK-produced spirits.'],
+          ['VAT-only warehousing (APC 1VW)', 'Import VAT only, on goods with no customs or excise duty', 'As for customs warehousing', 'Duty-free goods where only the import VAT needs to wait.'],
+          ['Temporary storage', 'All import charges, before a customs procedure is chosen', 'Up to 90 days; goods can be seized after that', 'Goods need a short stop at the port or an inland facility before the declaration.'],
+          ['Freeport customs site', 'Import charges inside a secure customs zone', 'See the Freeport guidance (sources below)', 'You import, store or process inside a Freeport, under a single authorisation with easier declarations.'],
+        ],
+      },
+    },
   ],
   example: {
     title: 'Denim jeans from China: £27,520 not paid on arrival.',
@@ -165,8 +254,11 @@ const customsWarehouse = {
       ['Month 6: re-export 2,000 pairs (£16,000) under 3171', '£0'],
       ['Total paid, in step with sales', '£22,016', true],
       ['Duty and VAT never charged on re-exported stock', '£5,504', true],
+      ['If you use postponed VAT accounting: duty not paid on arrival', '£9,600', true],
+      ['… plus duty never paid on the re-exported share (£16,000 × 12%)', '£1,920', true],
     ],
     notes: [
+      'If you use postponed VAT accounting: £9,600 duty not paid on arrival, plus £1,920 duty never paid on the re-exported share.',
       'Duty and exchange rates are those in force when each removal declaration is accepted. Import VAT on release can also be accounted for through [postponed VAT accounting](/customs-workflows/postponed-vat-accounting-checklist/), which moves the cash again in the importer’s favour.',
     ],
   },
@@ -180,6 +272,7 @@ const customsWarehouse = {
     ['Preference lost at removal', 'Note the proof of origin in the stock records on receipt and declare WHSRP on entry. HMRC cannot accept proof of origin more than 2 years after its issue date.'],
   ],
   declarix: {
+    bridge: 'Brokers who file warehouse entries for clients like yours use Declarix to prepare them faster.',
     title: 'The warehouse pack arrives with the evidence already in place.',
     paras: [intake, evidence],
     list: [
@@ -195,6 +288,8 @@ const customsWarehouse = {
     ['When do I pay duty on warehoused goods?', 'You pay when you release the goods for free circulation, using CPC 4071. Goods re-exported under CPC 3171 pay no UK duty or import VAT.'],
     ['Can I use a customs warehouse without a full authorisation?', 'No. GOV.UK states that authorisation by declaration cannot be used for customs warehousing. A depositor using someone else’s public warehouse does not need its own authorisation.'],
     ['Can goods be processed in a customs warehouse?', 'Only usual forms of handling are allowed, such as preserving, repacking or preparing goods for sale. Processing needs inward processing or authorised use.'],
+    ['What goods can go in a bonded warehouse?', 'Goods liable to Customs Duty, excise duty or import VAT, including goods still waiting for an import licence, goods from other special procedures awaiting re-export and VAT-only goods. Prohibited goods, such as counterfeit or pirated goods, cannot be warehoused.'],
+    ['What does it cost to use a bonded warehouse?', 'In a public warehouse the 3PL sets the storage and handling charges, and you need no authorisation of your own. Running a private warehouse needs a full authorisation and, unless you hold AEO status, a guarantee for the duty and VAT. Against that, the duty and VAT stay in your business until you sell: £27,520 on arrival in the worked example on this page.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -215,6 +310,9 @@ const auSources = [
   src('CDS Appendix 1: Requested Procedure 44 — end use', 'https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes-of-the-customs-declaration-service-cds/requested-procedure-44-release-to-free-circulation-with-duty-relief-granted-under-the-end-use-special-procedure', '6 OCT 2026'),
   src('DE 2/3 document and reference codes (Union), Appendix 5A', 'https://www.gov.uk/government/publications/data-element-23-documents-and-other-reference-codes-union-of-the-customs-declaration-service-cds', '6 OCT 2026'),
   tariff('8408107900'),
+  src('Check if you can pay less duty if your goods are imported into authorised use', 'https://www.gov.uk/guidance/check-if-you-can-pay-less-duty-if-your-goods-are-imported-into-end-use', '31 OCT 2024'),
+  src('Authorised use: eligible goods and authorised uses', 'https://www.gov.uk/government/publications/authorised-use-eligible-goods-and-authorised-uses', '8 SEP 2026'),
+  src('Apply to pay less duty on goods you import for specific uses', 'https://www.gov.uk/guidance/apply-to-pay-less-duty-on-goods-you-import-for-specific-uses', '16 JUL 2025'),
 ]
 
 const endUse = {
@@ -230,10 +328,11 @@ const endUse = {
     alt: 'End use relief',
     description: 'A UK customs special procedure that gives a reduced or zero rate of Customs Duty on eligible goods put to a prescribed use within a set period.',
   },
-  title: 'End use relief (authorised use) UK guide',
+  title: 'End Use Relief (Authorised Use) UK: CPC 4400 Guide',
   description:
     'UK end use relief, now authorised use: eligible goods, full and one-off authorisation, CPC 4400, N990 and C990, bills of discharge and a worked example.',
-  h1: 'End use relief: zero or reduced duty for goods with a job to do.',
+  h1: 'End use relief (authorised use): zero or reduced duty for goods with a job to do',
+  subhead: 'End use relief: zero or reduced duty for goods with a job to do.',
   eyebrow: 'SPECIAL PROCEDURE · AUTHORISED USE (END USE) · CPC 4400',
   standfirst:
     'Authorised use, still called end use in Northern Ireland and on CDS code lists, cuts Customs Duty to a reduced or zero rate when eligible goods are put to a prescribed use, such as fitting parts to ships or aircraft, within the set period.',
@@ -325,6 +424,24 @@ const endUse = {
         ],
       },
     },
+    {
+      id: 'eligible',
+      label: '05 · QUICK LIST',
+      title: 'Eligible goods quick list.',
+      jump: 'Eligible goods',
+      paras: ['GOV.UK names these goods and uses. HMRC’s eligible goods and authorised uses document holds the full list.'],
+      list: [
+        'Civil aircraft and their parts.',
+        'Shipwork goods for ships, yachts, tugs, warships, lifeboats and platforms (wind-farm equipment is excluded).',
+        'Fish for processing or industrial manufacture, and prawns for an industrial process.',
+        'Cheese, and casein.',
+        'Bicycle parts (relief from anti-dumping duty).',
+        'Military equipment.',
+        'Hot-rolled steel under a tariff quota.',
+        '1,1,1,2-tetrafluoroethane for medical inhalers.',
+        'CCTV cameras.',
+      ],
+    },
   ],
   example: {
     title: 'A marine engine for a ship repair: £3,600 saved.',
@@ -369,6 +486,7 @@ const endUse = {
     ['Do I need an authorisation before importing?', 'Usually yes: apply for a full authorisation at least a month before importing. Occasional importers can use authorisation by declaration up to 10 times a year, up to £500,000 per import.'],
     ['When is a bill of discharge due?', 'Within 30 days of the end of the agreed discharge period, or within 30 days of discharge under authorisation by declaration. Monthly returns are due 30 days after month end.'],
     ['How do I know if my goods are eligible?', 'Check HMRC’s reference document of eligible goods and authorised uses, and look for an authorised use measure on the commodity code in the UK Trade Tariff.'],
+    ['Can authorised use be applied retrospectively?', 'Yes, in exceptional circumstances. You can ask for an authorisation after you have imported the goods, even if you have already used or exported them, as long as HMRC has not given you a retrospective authorisation in the previous 3 years.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -393,6 +511,9 @@ const taSources = [
   src('CDS Appendix 2A: additional procedure codes, D series', 'https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes-of-the-customs-declaration-service-cds/additional-procedure-code-d-series-appendix-2a', '6 OCT 2026'),
   tariff('8703801090'),
   tariff('8458112000'),
+  src('Apply for an ATA Carnet', 'https://www.gov.uk/guidance/apply-for-an-ata-carnet', '1 JUN 2026'),
+  src('ATA Carnet: introduction', 'https://www.gov.uk/guidance/ata-carnet/introduction', '1 JUN 2026'),
+  src('ATA Carnet: legal and regulatory framework', 'https://www.gov.uk/guidance/ata-carnet/legal-and-regulatory-framework', '1 JUN 2026'),
 ]
 
 const temporaryAdmission = {
@@ -407,10 +528,11 @@ const temporaryAdmission = {
     name: 'Temporary admission',
     description: 'A UK customs special procedure that lets non-UK goods enter for a specific use and leave again, with full or partial relief from import duty and VAT.',
   },
-  title: 'Temporary admission (TA) UK customs guide',
+  title: 'Temporary Admission and ATA Carnets: UK Customs Guide',
   description:
-    'UK temporary admission: full and partial relief, the six authorisation routes, CPC 5300 and D codes, ATA carnets, worked examples and common errors.',
-  h1: 'Temporary admission: bring it in, use it, send it back duty-free.',
+    'UK temporary admission and ATA Carnets: full and partial relief, which route to use, CPC 5300 and D codes, the 24-month limit and worked examples.',
+  h1: 'Temporary admission and ATA Carnets: bring it in, use it, send it back duty-free',
+  subhead: 'Temporary admission: bring it in, use it, send it back duty-free.',
   eyebrow: 'SPECIAL PROCEDURE · TEMPORARY ADMISSION · CPC 5300',
   standfirst:
     'Temporary admission lets non-UK goods come into the UK for a set purpose, such as an exhibition, testing or professional work, with full relief from import duty and VAT, provided they leave again unaltered within the time limit.',
@@ -487,6 +609,38 @@ const temporaryAdmission = {
       },
       after: ['The importer must be the authorisation holder. Preferential duty rates do not apply to goods entered under 53 codes.'],
     },
+    {
+      id: 'carnet-vs-declaration',
+      label: '04 · WHICH ROUTE',
+      title: 'ATA Carnet vs temporary admission by declaration: which one?',
+      jump: 'Carnet vs declaration',
+      paras: ['GOV.UK puts it simply: use a carnet where one international document is simpler than making individual customs declarations; use temporary admission for the wider range of goods where a carnet is not available or not appropriate.'],
+      table: {
+        caption: 'ATA Carnet or temporary admission by declaration',
+        head: ['Question', 'ATA Carnet', 'Temporary admission by declaration'],
+        rows: [
+          ['What it replaces', 'The import and export customs declarations in ATA countries', 'Nothing: you make a CDS import declaration under CPC 5300'],
+          ['Best for', 'Exhibitions, samples and professional kit moving through several countries', 'Any eligible use, including goods outside the carnet categories'],
+          ['How long', 'Valid for up to one year, usable many times in that year', 'Usually up to 24 months, depending on the goods'],
+          ['Security', 'Guaranteed through the issuing chamber of commerce', 'A refundable guarantee or security at import'],
+          ['Freight', 'Form C21i or C21e may still be needed', 'Normal import and re-export declarations'],
+          ['Processing or repair', 'Not allowed', 'Not allowed; maintenance to keep goods in condition is allowed'],
+        ],
+      },
+    },
+    {
+      id: 'get-carnet',
+      label: '05 · ATA CARNETS',
+      title: 'How to get an ATA Carnet in the UK.',
+      jump: 'Get a carnet',
+      steps: [
+        ['01', 'Go to a chamber of commerce', 'ATA Carnets in the UK are guaranteed by the London Chamber of Commerce and Industry. LCCI and HMRC have authorised a network of chambers across the UK to issue them.'],
+        ['02', 'List the goods', 'Describe every item, with its value and quantity, on the carnet’s general list. The carnet works like a passport for those goods.'],
+        ['03', 'Provide the security', 'The issuing chamber asks for security. A cash deposit can be held for up to 33 months from the issue date.'],
+        ['04', 'Use it within the year', 'A carnet is valid for up to one year and can be used for many trips in that time. Get each voucher stamped on every exit and entry.'],
+        ['05', 'Close it properly', 'Return the carnet to the issuing chamber. Keep paper carnets for 12 months after they expire.'],
+      ],
+    },
   ],
   example: {
     title: 'An electric car at a UK motor show: £14,400 relieved.',
@@ -531,6 +685,7 @@ const temporaryAdmission = {
     ['What is the difference between temporary admission and an ATA carnet?', 'An ATA carnet is one way to use temporary admission. It replaces the customs declarations in ATA countries and is valid for up to one year.'],
     ['How does partial relief work?', 'You pay import VAT at import and 3% of the full duty for each month or part month the goods stay. It needs a full authorisation and APC D51.'],
     ['Can goods under temporary admission be sold?', 'Yes, in some cases, such as exhibition goods. The buyer’s side then needs a 4053 entry within 90 days of payment, paying the duty and VAT due.'],
+    ['How long is an ATA Carnet valid?', 'Up to one year from issue, and you can use it for many trips in that year. Goods must come back before the carnet expires.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -549,6 +704,8 @@ const rgrSources = [
   src('CDS Appendix 2A: additional procedure codes, F series', 'https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes-of-the-customs-declaration-service-cds/additional-procedure-code-f-series-appendix-2a', '6 OCT 2026'),
   src('DE 2/3 document and reference codes (National)', 'https://www.gov.uk/guidance/data-element-23-documents-and-other-reference-codes-national-of-the-customs-declaration-service-cds', '4 SEP 2026'),
   tariff('6110209100'),
+  src('Returned goods relief claim form (C1314)', 'https://assets.publishing.service.gov.uk/media/5fddbad28fa8f5148deb3032/C1314.pdf', 'FORM', 'HM Revenue & Customs · GOV.UK'),
+  src('Returning goods to the UK', 'https://www.gov.uk/guidance/returning-goods-to-the-uk', '3 NOV 2022'),
 ]
 
 const returnedGoods = {
@@ -564,10 +721,11 @@ const returnedGoods = {
     alt: 'RGR',
     description: 'Relief from UK import duty, and import VAT where the exporter and importer are the same, for goods exported from the UK that return unaltered within 3 years.',
   },
-  title: 'Returned goods relief (RGR) UK customs guide',
+  title: 'Returned Goods Relief (RGR) UK: Claim It on CDS',
   description:
     'Returned goods relief explained: the 3-year rule, VAT conditions, CPC 6123 and 6110, F01 and F05, the export MRN in DE 2/1 and a worked UK example.',
-  h1: 'Returned goods relief: bring your own goods home without paying twice.',
+  h1: 'Returned goods relief (RGR): bring your own goods home without paying twice',
+  subhead: 'Returned goods relief: bring your own goods home without paying twice.',
   eyebrow: 'SPECIAL PROCEDURE · RETURNED GOODS RELIEF · CPC 6123',
   standfirst:
     'Goods that leave the UK and come back unaltered within 3 years can return free of import duty, and free of import VAT when the exporter and importer are the same. No prior authorisation is needed; the claim is made on the import declaration.',
@@ -635,6 +793,33 @@ const returnedGoods = {
         ],
       },
     },
+    {
+      id: 'ecommerce',
+      label: '04 · E-COMMERCE',
+      title: 'Customer returns for e-commerce sellers.',
+      jump: 'E-commerce returns',
+      paras: [
+        'A UK seller whose overseas customer sends an order back can bring it home free of import duty under returned goods relief, as long as the conditions hold. Partial returns qualify, so one jumper out of a ten-item order can be claimed on its own.',
+      ],
+      list: [
+        'The goods come back unaltered, apart from maintenance to keep them in working order.',
+        'They come back within 3 years of the original export.',
+        'For import VAT relief too, the seller who exported is the importer of the return, with the identical EORI.',
+        'Link each return to its export: the export MRN, or alternative evidence such as the export invoice, the airway bill or bill of lading, a certificate of posting or stock records.',
+        'Make a full import declaration for the return and claim the relief on it (CPC 6123 after a 2300 export, 6110 after a 1040 export).',
+      ],
+    },
+    {
+      id: 'evidence',
+      label: '05 · EVIDENCE',
+      title: 'Evidence: C1314 and the export MRN.',
+      jump: 'C1314 and MRN',
+      paras: [
+        'The export MRN is the strongest evidence. For an export declared on CDS, quote it in DE 2/1 as Z-MRN followed by the MRN. GOV.UK states you must quote the [MRN](/customs-reference/mrn/) on the re-import declaration.',
+        'HMRC may also ask you to complete form C1314, the returned goods relief claim form, and form C&E1158. C1314 claims relief from Customs Duty, VAT and excise duty on goods returning to the UK, and asks for the export declaration.',
+        'Without an export MRN, use ZZZ in DE 2/1 with the reference of the alternative evidence: the export invoice, the airway bill or bill of lading, a certificate of posting or your stock records.',
+      ],
+    },
   ],
   example: {
     title: 'Jumpers back from a US tour: £10,320 relieved.',
@@ -678,6 +863,7 @@ const returnedGoods = {
     ['What is the difference between CPC 6123 and 6110?', '6123 is for goods exported temporarily under CPC 2300. 6110 is for goods exported permanently, for example under 1040.'],
     ['Does RGR cover import VAT?', 'Yes, when the person who exported the goods is the person who re-imports them, with the same EORI. Use APC F05. Otherwise use F01 for duty relief only.'],
     ['Can I use RGR for goods repaired abroad?', 'No. Goods sent abroad for repair or processing return under outward processing, which charges duty only on the value of the work.'],
+    ['What is the 3-year rule?', 'Goods must be re-imported within 3 years of their export to get returned goods relief (6 years for Crown servants). HMRC can waive the limit for long-term hire or loan, capital projects abroad, exhibitions, circumstances beyond your control and a few other listed cases; declare GEN03 when you claim the waiver.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -700,6 +886,9 @@ const ipSources = [
   src('CDS Appendix 1 (exports): Requested Procedure 31 — re-export', 'https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-31-re-export-or-dispatch-of-non-union-goods-following-a-special-procedure', '13 JUL 2026'),
   src('DE 2/3 document and reference codes (Union), Appendix 5A', 'https://www.gov.uk/government/publications/data-element-23-documents-and-other-reference-codes-union-of-the-customs-declaration-service-cds', '6 OCT 2026'),
   tariff('5407520000'),
+  src('Special procedure: inward processing — rate of yield', 'https://www.gov.uk/guidance/special-procedure-inward-processing/rate-of-yield-roy', '30 APR 2025'),
+  src('Special procedure: inward processing — types of bills of discharge', 'https://www.gov.uk/guidance/special-procedure-inward-processing/types-of-bills-of-discharge', '30 APR 2025'),
+  src('Special procedure: inward processing — production accessories and catalysts', 'https://www.gov.uk/guidance/special-procedure-inward-processing/production-accessories-and-catalysts', '30 APR 2025'),
 ]
 
 const inwardProcessing = {
@@ -715,10 +904,11 @@ const inwardProcessing = {
     alt: 'Inward processing relief (IPR)',
     description: 'A UK special procedure that suspends Customs Duty and import VAT on goods imported for processing or repair; nothing is paid if the products are re-exported.',
   },
-  title: 'Inward processing relief (IPR) UK guide',
+  title: 'Inward Processing Relief (IPR) UK: CPC 5100 Guide (2026)',
   description:
     'Inward processing relief in the UK: duty and VAT suspended on goods processed or repaired, authorisation, CPC 5100, 3151 and 4051, and a worked example.',
-  h1: 'Inward processing: import, make, export, and pay no duty on the way through.',
+  h1: 'Inward processing relief (IPR): import, make, export and pay no duty on the way through',
+  subhead: 'Inward processing: import, make, export, and pay no duty on the way through.',
   eyebrow: 'SPECIAL PROCEDURE · INWARD PROCESSING · CPC 5100',
   standfirst:
     'Inward processing relief suspends Customs Duty and import VAT on goods you import to process or repair. Re-export the products and nothing is paid. Keep some in the UK and you pay only on those, at a basis you choose when you apply.',
@@ -786,6 +976,34 @@ const inwardProcessing = {
       },
       after: ['On release to free circulation (4051), declare the value of the processed products in DE 4/14. Postponed VAT accounting can be used.'],
     },
+    {
+      id: 'roy',
+      label: '04 · RATE OF YIELD',
+      title: 'Rate of yield.',
+      jump: 'Rate of yield',
+      paras: [
+        'The rate of yield sets how much of the imported goods ends up in each processed product. It decides the amount of customs charges suspended against each product you export or release. A repair is 1:1.',
+        'You give the rate of yield in the application, one for each processing task. For example, if 2 metres of imported fabric makes one jacket, exporting 1,000 jackets discharges 2,000 metres of fabric from inward processing.',
+      ],
+    },
+    {
+      id: 'bod',
+      label: '05 · BILL OF DISCHARGE',
+      title: 'Bill of discharge: what and when.',
+      jump: 'Bill of discharge',
+      paras: [
+        'A bill of discharge closes the inward processing account. It shows what you imported, what you made, what you exported or released, and any duty now due.',
+      ],
+      table: {
+        caption: 'Inward processing bills of discharge',
+        head: ['Type', 'Who sends it', 'Deadline and route'],
+        rows: [
+          ['BoD1', 'Full authorisation holders', 'To your supervising office no later than 30 days after the end of the period for discharge. Still required even if no goods were declared.'],
+          ['BoD3', 'Authorisation by declaration users', 'To the National Import Reliefs Unit within 30 days of the end of the discharge period (6 months under authorisation by declaration). Include all bank details.'],
+          ['CDS declarations', 'Both', 'Complete the online form, print it and post it.'],
+        ],
+      },
+    },
   ],
   example: {
     title: 'Polyester fabric made into jackets: £29,600 never paid at import.',
@@ -829,6 +1047,7 @@ const inwardProcessing = {
     ['How long do I have to discharge inward processing goods?', 'The period is set in your authorisation, usually no more than 12 months, or 6 months under authorisation by declaration. The bill of discharge is due 30 days after the period ends.'],
     ['Can I use inward processing without a full authorisation?', 'Yes, by declaration, up to 10 times in a rolling year for goods up to £500,000 per import, with security for the full duty and VAT.'],
     ['What happens if processed goods stay in the UK?', 'You declare them under CPC 4051 and pay duty and import VAT, based on the goods as imported or on the finished product, as chosen in your authorisation.'],
+    ['Can I get relief on production accessories?', 'Yes. Production accessories and catalysts can be partly or fully used up in production and still get relief, as long as the processed products are exported. You need a catalyst rate of yield, and a guarantee may be needed when they are used on free circulation goods.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -851,6 +1070,9 @@ const opSources = [
   src('CDS Appendix 2: additional procedure codes, B series (outward processing)', 'https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes/additional-procedure-code-b-series-outward-processing', '29 APR 2026'),
   tariff('8711500000'),
   tariff('6203110000'),
+  src('Special procedure: outward processing — standard exchange system', 'https://www.gov.uk/guidance/special-procedure-outward-processing/standard-exchange-system-ses', '30 APR 2025'),
+  src('Special procedure: outward processing — duty on goods exported for process', 'https://www.gov.uk/guidance/special-procedure-outward-processing/how-duty-is-charged-on-goods-exported-for-process', '30 APR 2025'),
+  src('Pay less import duty and VAT when re-importing goods to the UK', 'https://www.gov.uk/guidance/pay-less-import-duty-and-vat-when-re-importing-goods-to-the-uk-and-eu', '26 NOV 2024'),
 ]
 
 const outwardProcessing = {
@@ -866,10 +1088,11 @@ const outwardProcessing = {
     alt: 'Outward processing relief (OPR)',
     description: 'A UK special procedure that cuts Customs Duty and import VAT on goods sent abroad for repair or processing, charging duty on the value added abroad instead of the full value.',
   },
-  title: 'Outward processing relief (OPR) UK guide',
+  title: 'Outward Processing Relief (OPR) UK: Pay Duty on Repairs Only',
   description:
     'Outward processing relief in the UK: send goods abroad for repair or processing and pay duty only on the work done. CPC 2100, 6121, C&E1154 and examples.',
-  h1: 'Outward processing: pay duty on the repair, not on the whole machine.',
+  h1: 'Outward processing relief (OPR): pay duty on the repair, not the whole machine',
+  subhead: 'Outward processing: pay duty on the repair, not on the whole machine.',
   eyebrow: 'SPECIAL PROCEDURE · OUTWARD PROCESSING · CPC 2100 / 6121',
   standfirst:
     'Outward processing relief lets a UK business send goods abroad for repair or processing and bring them back paying duty only on the value added abroad. A free repair under guarantee comes back with no duty at all.',
@@ -910,7 +1133,16 @@ const outwardProcessing = {
     {
       id: 'authorisation',
       label: '02 · AUTHORISATION',
-      title: 'Full authorisation, or one-off for repairs.',
+      title: 'How to apply (4 authorisation routes).',
+      jump: 'How to apply',
+      paras: ['GOV.UK lists 4 types of outward processing authorisation:'],
+      list: [
+        'Full authorisation: apply at least 30 days before exporting; valid for up to 5 years. Needed for processing abroad and for regular use.',
+        'Authorisation by declaration: repairs only, up to 10 times in a rolling year. Not for simplified declarations, the standard exchange system, anti-dumping goods or goods valued at more than £500,000.',
+        'Retrospective authorisation: back-dated up to 12 months (3 months for sensitive goods), only if none was granted in the previous 3 years. A lack of knowledge alone does not qualify.',
+        'Northern Ireland and EU authorisation: a separate route for goods processed under Northern Ireland and EU rules.',
+      ],
+      after: ['The steps below take a full authorisation or an authorisation by declaration from eligibility to re-import.'],
       steps: [
         ['01', 'Check eligibility', 'Be established in the UK, solvent, with a sound customs record and good records. Freight forwarders, express operators and customs agents cannot hold an OP authorisation.'],
         ['02', 'Full authorisation', 'Apply online or with form SP4 at least 30 days before exporting. Valid for up to 5 years. Needed for processing abroad and for regular use.'],
@@ -937,6 +1169,40 @@ const outwardProcessing = {
           ['DE 6/17', 'No VATZ if VAT relief will be claimed', 'Not applicable'],
         ],
       },
+    },
+    {
+      id: 'ses',
+      label: '04 · STANDARD EXCHANGE',
+      title: 'Standard exchange system.',
+      jump: 'Standard exchange',
+      paras: [
+        'The standard exchange system (SES) lets you import a replacement for defective goods, before or after the defective goods leave the UK for repair. The replacement gets the same outward processing relief as the repaired goods would have.',
+      ],
+      list: [
+        'Repairs only. SES never covers processing.',
+        'The replacement must have the same 8-digit Combined Nomenclature code, the same commercial quality and the same technical characteristics.',
+        'If the defective goods were used, the replacement must be used too, unless it is supplied free under a guarantee or because of a manufacturing defect.',
+        'HMRC must approve SES use in your authorisation. Authorisation by declaration cannot be used with SES.',
+        'Re-import a replacement under CPC 6122, the code for guarantee repairs, textiles and standard exchange.',
+      ],
+    },
+    {
+      id: 'vs-rgr',
+      label: '05 · WHICH RELIEF',
+      title: 'OPR vs returned goods relief: which one?',
+      jump: 'OPR vs RGR',
+      table: {
+        caption: 'Outward processing relief or returned goods relief',
+        head: ['Question', 'Outward processing relief', 'Returned goods relief'],
+        rows: [
+          ['Is work done abroad?', 'Yes: repair, processing or a guarantee swap', 'No: the goods come back unaltered, apart from maintenance'],
+          ['What you pay on return', 'Duty on the value added abroad (the differential method), or nothing for a free guarantee repair', 'No duty; no import VAT if the exporter and importer are the same person'],
+          ['Authorisation', 'Full authorisation or authorisation by declaration before export', 'None; claim on the import declaration'],
+          ['Codes', 'Export 2100 or 2200; re-import 6121 or 6122', 'Export 2300 or 1040; re-import 6123 or 6110'],
+          ['Repair planned but not done', 'Not OPR', 'Relief may still be available'],
+        ],
+      },
+      after: ['The differential method works out the customs value of the products that come back, deducts the value of the goods as exported, and charges duty on the difference. Read the full [returned goods relief guide](/customs-reference/returned-goods-relief/) for the RGR route.'],
     },
   ],
   example: {
@@ -983,6 +1249,7 @@ const outwardProcessing = {
     ['Is a repair under guarantee duty-free?', 'Yes, when the repair is free under the original guarantee, the guarantee cost was in the original customs value and you use 2200 with B51 and 6122 with B02.'],
     ['Can a freight forwarder hold an OP authorisation?', 'No. GOV.UK states that freight forwarders, express operators and customs agents cannot apply. They can still make the declarations for the holder.'],
     ['What is form C&E1154?', 'It is HMRC’s outward processing relief calculation sheet for imports. Its date is declared in DE 2/3 under code 9WKS on the re-import.'],
+    ['What goods cannot use OPR?', 'GOV.UK rules out goods whose export leads to a repayment or remission of import duty, goods released at an end-use rate but not put to that use (repairs excepted), goods that earn an export refund, and exports that gain another UK agricultural policy financial advantage.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -1019,10 +1286,11 @@ const mrnPage = {
     alt: 'Movement Reference Number',
     description: 'The unique 18-character reference a customs system (CDS, NCTS or S&S GB) gives a declaration once it is accepted.',
   },
-  title: 'What is an MRN number? UK customs MRN guide',
+  title: 'What Is an MRN? Customs Movement Reference Number (UK)',
   description:
     'What an MRN is, how the 18 characters break down, where CDS, NCTS and ENS issue one, where it goes next (GMR, C285, DE 2/1) and the mix-ups to avoid.',
-  h1: 'MRN: the reference that follows your goods through every customs step.',
+  h1: 'MRN (Movement Reference Number): the reference that follows your goods through every customs step',
+  subhead: 'MRN: the reference that follows your goods through every customs step.',
   eyebrow: 'CUSTOMS REFERENCE · MOVEMENT REFERENCE NUMBER',
   standfirst:
     'Every accepted UK customs declaration gets a Movement Reference Number. It is the key HMRC, hauliers, ports and your own team use to find the entry again: on a GMR, a supplementary declaration, a repayment claim or a disclosure.',
@@ -1033,6 +1301,7 @@ const mrnPage = {
     body: [
       'CDS issues one for import and export declarations, NCTS for transit declarations, and S&S GB for entry summary declarations (ENS). It starts with the 2-digit year and the country code, for example 26GB. The declarant never chooses it; the declarant’s own reference is the LRN.',
     ],
+    links: [['/tools/mrn-checker/', 'Check an MRN now']],
   },
   facts: [
     ['Length', '18 characters'],
@@ -1086,6 +1355,38 @@ const mrnPage = {
         ],
       },
     },
+    {
+      id: 'find-yours',
+      label: '04 · WHERE TO FIND YOURS',
+      title: 'Where to find your MRN.',
+      jump: 'Where to find it',
+      list: [
+        'Your broker or declarant: CDS sends the MRN to whoever submitted the declaration. The DMSACC notification confirms the declaration is legally accepted; DMSCLE confirms it has cleared. Ask your broker for the MRN of each entry.',
+        'Your own declaration software, if you submit declarations yourself: the MRN comes back when the declaration is submitted.',
+        'The tax notification: DMSTAX tells the submitter the duties reserved against a deferment account or the payment due. On CHIEF this information sat on the E2.',
+        'Transit: the MRN is in the top right-hand corner of the transit accompanying document (TAD), in characters and as a barcode.',
+        'Your customs data reports: importers can download CDS import data for any 31-day period in the last 4 years, as CSV files, from HMRC’s customs data service.',
+      ],
+    },
+    {
+      id: 'tracking',
+      label: '05 · TRACKING',
+      title: 'Is an MRN a tracking number?',
+      jump: 'Is it a tracking number?',
+      paras: [
+        'Not in the parcel-tracking sense. An MRN identifies one declaration, not a parcel. The declarant follows its status through CDS notifications, and software can query the Customs Declarations Information API by MRN, DUCR, UCR or inventory reference. Transit MRNs can be followed on the European Commission MRN follow-up service.',
+        'To check an MRN’s format and what kind of declaration it belongs to, paste it into the free [MRN checker](/tools/mrn-checker/). It reads the year, the country and the check digit in seconds.',
+      ],
+      table: {
+        caption: 'Reading a CDS MRN: 26GB followed by 14 characters',
+        head: ['Part', 'Example', 'What it tells you'],
+        rows: [
+          ['Characters 1–2', '26', 'The year the MRN was issued: 2026'],
+          ['Characters 3–4', 'GB', 'The country: GB for Great Britain, XI for Northern Ireland'],
+          ['Characters 5–18', '14 letters and digits', 'The unique reference the system assigned, ending in a check character'],
+        ],
+      },
+    },
   ],
   example: {
     title: 'Reading a real transit MRN: 22GB00005112345678.',
@@ -1124,6 +1425,8 @@ const mrnPage = {
     ['How do I check an MRN status?', 'For transit, use the European Commission MRN follow-up service. For CDS declarations, check your declaration software, which reads status from HMRC by MRN.'],
     ['Is the MRN the same as the LRN?', 'No. You choose the LRN; the customs system issues the MRN after it accepts your declaration.'],
     ['Do I need the MRN for a GMR?', 'Yes, for most imports through GVMS ports. Transit movements use the NCTS MRN; exports from GB to the EU use DUCRs.'],
+    ['Where do I find my MRN?', 'Ask whoever submitted the declaration: CDS sends the MRN to the submitter on acceptance. For transit, it is in the top right-hand corner of the transit accompanying document.'],
+    ['Can I track my goods with an MRN?', 'An MRN tracks a declaration, not a parcel. Your broker or software checks its status in CDS; transit MRNs can be followed on the European Commission MRN follow-up service.'],
   ],
   related: [
     ['/tools/mrn-checker/', 'TOOL', 'MRN checker'],
@@ -1131,6 +1434,10 @@ const mrnPage = {
     ['/customs-workflows/ens-ics2-entry-summary-declaration-checklist/', 'ENS', 'ENS and ICS2 checklist'],
   ],
   sources: [
+    src('Send documents to support declarations for the Customs Declaration Service', 'https://www.gov.uk/guidance/send-documents-to-support-declarations-for-the-customs-declaration-service', '2 DEC 2024'),
+    src('CDS end-to-end service guide: notifications', 'https://developer.service.hmrc.gov.uk/guides/customs-declarations-end-to-end-service-guide/documentation/notifications.html', 'LIVE', 'HMRC Developer Hub'),
+    src('Transporting goods into the UK under transit: step by step', 'https://www.gov.uk/guidance/transporting-goods-into-the-uk-under-transit-step-by-step', '19 JAN 2023'),
+    src('Get customs data for import and export declarations', 'https://www.gov.uk/guidance/get-customs-data-for-import-and-export-declarations', '2 OCT 2026'),
     devGlossary,
     src('Transit Manual Supplement: common and Union transit', 'https://www.gov.uk/guidance/transit-manual-supplement/4-common-union-transit', '28 JUN 2024'),
     src('Create a goods movement reference', 'https://www.gov.uk/guidance/create-a-goods-movement-reference', '9 JUN 2026'),
@@ -1155,10 +1462,11 @@ const c88Page = {
     alt: 'Single Administrative Document (SAD)',
     description: 'The paper customs declaration form, with numbered boxes, that CDS data elements have replaced for UK declarations.',
   },
-  title: 'C88 form and SAD: what replaced the boxes on CDS',
+  title: 'C88 Form (SAD): What It Is and What Replaced It on CDS',
   description:
     'What the C88 (Single Administrative Document) was, where its boxes went on CDS, when a paper C88 still appears, and the data element mix-ups to avoid.',
-  h1: 'C88: from numbered boxes to CDS data elements.',
+  h1: 'C88 form and Single Administrative Document (SAD): from boxes to CDS data elements',
+  subhead: 'C88: from numbered boxes to CDS data elements.',
   eyebrow: 'CUSTOMS REFERENCE · C88 / SINGLE ADMINISTRATIVE DOCUMENT',
   standfirst:
     'The C88 is the box-numbered customs declaration form brokers learned on CHIEF. CDS replaced the boxes with data elements in eight groups. The habits still matter, because brokers, forms and even GOV.UK pages still say “Box 44”.',
@@ -1170,6 +1478,24 @@ const c88Page = {
       'HMRC describes it as the main customs form used in international trade to declare goods. On CDS, the UK’s single declaration platform since CHIEF closed in December 2024, the boxes are replaced by data elements (DEs) in eight groups. A paper or manual C88 still appears in narrow cases, such as authorised fallback during system downtime or a substitute entry to correct a CFSP error.',
     ],
   },
+  topSections: [
+    {
+      id: 'which-form',
+      label: 'WHICH FORM DO YOU MEAN?',
+      title: 'C88 vs CN22/CN23 vs C79 vs E2.',
+      jump: 'C88 vs CN22 vs C79',
+      table: {
+        caption: 'Four customs papers people call “the customs form”',
+        head: ['Form', 'What it is', 'Who uses it now'],
+        rows: [
+          ['C88 (SAD)', 'The main customs form used in international trade to declare goods, with numbered boxes', 'Replaced by CDS data elements; still seen on substitute entries and in “Box 44” habits'],
+          ['CN22 / CN23', 'Universal Postal Union item declarations stuck on parcels and packets', 'Senders of postal items, for example through Royal Mail; not a C88'],
+          ['C79', 'Import VAT certificate showing the VAT paid on imports through a duty deferment account', 'VAT-registered importers, online every month, usually by the 10th working day'],
+          ['E2', 'The CHIEF entry acceptance advice for imported goods', 'CHIEF-era entries; on CDS the DMSTAX notification carries the tax detail'],
+        ],
+      },
+    },
+  ],
   facts: [
     ['What it is', 'The box-based customs declaration form (SAD)'],
     ['Replaced by', 'CDS data elements, Groups 1 to 8'],
@@ -1181,19 +1507,26 @@ const c88Page = {
     {
       id: 'map',
       label: '01 · WHERE THE BOXES WENT',
-      title: 'The boxes brokers ask about most.',
-      paras: ['The data element names below come from HMRC’s CDS Declaration Completion Instructions. The box numbers are the C88 positions they replaced.'],
+      title: 'C88 box-to-data-element map.',
+      jump: 'Box map',
+      paras: ['The data element names below come from HMRC’s CDS Declaration Completion Instructions and the CDS step-by-step guide, which maps each data element to its old SAD (C88) box. The box numbers are the C88 positions they replaced.'],
       table: {
         caption: 'Former C88 boxes and their CDS data elements',
         head: ['Former C88 box', 'CDS data element'],
         rows: [
           ['Box 1 Declaration', 'DE 1/1 declaration type and DE 1/2 additional declaration type'],
+          ['Box 2 Consignor / exporter', 'DE 3/1 exporter'],
+          ['Box 5 Items', 'DE 1/9 total number of items'],
           ['Box 7 Reference number', 'DE 2/5 LRN'],
+          ['Box 20 Delivery terms', 'DE 4/1 delivery terms (Incoterm)'],
+          ['Box 32 Item number', 'DE 1/6 goods item number'],
           ['Box 33 Commodity code', 'DE 6/14 commodity code, DE 6/15 TARIC code, DE 6/16 and 6/17 additional codes'],
           ['Box 37 Procedure', 'DE 1/10 procedure code and DE 1/11 additional procedure code'],
           ['Box 40 Previous document', 'DE 2/1 simplified declaration and previous documents'],
           ['Box 44 Additional information', 'DE 2/2 additional information and DE 2/3 documents, certificates and authorisations'],
+          ['Box 43 Valuation method', 'DE 4/16 valuation method'],
           ['Box 47 Calculation of taxes', 'DE 4/3 tax type, DE 4/4 tax base, DE 4/6 payable tax, DE 4/8 method of payment'],
+          ['Box 54 Place, date and signature', 'DE 1/8 signature or authentication'],
         ],
       },
       after: ['For the full code lists behind Box 37 and Box 44, see the [customs procedure codes](/customs-reference/customs-procedure-codes/) and [customs document codes](/customs-reference/customs-document-codes/) references.'],
@@ -1226,6 +1559,18 @@ const c88Page = {
           ['8', 'Other data, statistics, guarantees and tariff data'],
         ],
       },
+    },
+    {
+      id: 'copy',
+      label: '04 · GET A COPY',
+      title: 'How to get a copy of your C88 / import entry.',
+      jump: 'Get a copy',
+      list: [
+        'Ask your broker or declarant. They submitted the declaration and hold its data and CDS notifications, including the acceptance and tax notifications.',
+        'Download your own data from HMRC’s customs data service. There are 4 reports: import item (commodity codes, customs values and duty per item), import header, import tax lines and export item. Each covers up to 31 days, from any date in the last 4 years, and arrives as CSV files within 72 hours.',
+        'The importer, the declarant or a third party they authorise can request the reports. An agent Government Gateway user ID cannot be used.',
+        'For import VAT paid through a duty deferment account, download the monthly C79 certificate. Each one stays online for 6 months before it is archived.',
+      ],
     },
   ],
   example: {
@@ -1262,6 +1607,8 @@ const c88Page = {
     ['Is the C88 still used?', 'Rarely. CDS uses data elements, but a paper or manual C88 can appear in authorised fallback or as a substitute entry to correct a CFSP error.'],
     ['What is Box 44 on CDS?', 'Box 44 content now sits in DE 2/2 additional information and DE 2/3 documents, certificates and authorisations.'],
     ['What replaced Box 37?', 'DE 1/10 holds the 4-digit procedure code and DE 1/11 the 3-character additional procedure code.'],
+    ['Is a CN22 or CN23 the same as a C88?', 'No. CN22 and CN23 are postal item declarations used under Universal Postal Union rules. A C88 is the full customs declaration form, now replaced by CDS data elements.'],
+    ['How do I get a copy of my C88?', 'Ask your broker for the declaration, or download your import data from HMRC’s customs data service: up to 31 days per report, from any date in the last 4 years.'],
   ],
   related: [
     ['/customs-reference/customs-procedure-codes/', 'DE 1/10', 'Customs procedure codes'],
@@ -1269,6 +1616,11 @@ const c88Page = {
     ['/customs-reference/cds-error-codes/', 'CDS', 'CDS error codes'],
   ],
   sources: [
+    src('Apply for repayment of import duty and VAT on CHIEF (C88 and E2)', 'https://www.gov.uk/guidance/apply-for-repayment-of-import-duty-and-vat-chief', '10 SEP 2025'),
+    src('CDS step-by-step guide: data element and SAD box correlation (CDSSG07010)', 'https://www.gov.uk/hmrc-internal-manuals/customs-cds-volume-3-tariff-step-by-step-guide/cdssg07010', '3 AUG 2022'),
+    src('Get customs data for import and export declarations', 'https://www.gov.uk/guidance/get-customs-data-for-import-and-export-declarations', '2 OCT 2026'),
+    src('Get your import VAT certificates (C79)', 'https://www.gov.uk/guidance/get-your-import-vat-certificates', '19 MAY 2026'),
+    src('Create a goods movement reference (CN22 and CN23 postal items)', 'https://www.gov.uk/guidance/create-a-goods-movement-reference', '9 JUN 2026'),
     src('Apply for repayment of import duty and VAT (CHIEF): documents list', 'https://www.gov.uk/guidance/apply-for-repayment-of-import-duty-and-vat-chief', '10 SEP 2025'),
     cdsIntro,
     cdsGroup1,
@@ -1293,10 +1645,11 @@ const c285Page = {
     name: 'C285',
     description: 'HMRC’s route to claim back overpaid import duty and VAT after clearance; most CDS importers now claim through the CDS online claim service.',
   },
-  title: 'C285 form: claim back overpaid import duty (UK)',
+  title: 'C285 Form: How to Claim Back Overpaid Import Duty (UK)',
   description:
     'How to claim overpaid UK import duty: when to use the C285 form or the CDS claim service, the 3-year limit, the evidence, VAT rules and a worked example.',
-  h1: 'C285: get overpaid import duty back.',
+  h1: 'C285 form: get overpaid import duty and VAT back',
+  subhead: 'C285: get overpaid import duty back.',
   eyebrow: 'CUSTOMS REFERENCE · C285 REPAYMENT CLAIM',
   standfirst:
     'Paid too much import duty because of a wrong commodity code, value or relief? You have 3 years to claim it back. The route depends on whether you have an EORI and a CDS declaration, and import VAT has its own rules.',
@@ -1307,7 +1660,23 @@ const c285Page = {
     body: [
       'If you have an EORI and the declaration was made on CDS, claim through the CDS online claim service. The online C285 form is for claimants without an EORI registered to them, private individuals, and a few special cases. VAT-registered importers cannot use either route for import VAT: they correct it on their VAT Return.',
     ],
+    links: [['/tools/import-duty-repayment-checker/', 'Check your refund route free']],
   },
+  topSections: [
+    {
+      id: 'decision',
+      label: 'DECISION FLOW',
+      title: 'VAT Return, CDS claim or C285: answer three questions.',
+      jump: 'Decision flow',
+      steps: [
+        ['01', 'Is it import VAT, and are you VAT registered?', 'Yes: correct it on your VAT Return by reducing output tax. You cannot use the C285 form or the online claim services for it, and you cannot recover it as input tax.'],
+        ['02', 'Do you have an EORI, and was the declaration made on CDS?', 'Yes: claim through the CDS online claim service with the MRN, the commercial invoice and the amount that should have been paid.'],
+        ['03', 'No EORI, a private individual, or a special case?', 'Use the online C285 form. It also covers import VAT for claimants who are not VAT registered and have no EORI, the Customs Duty Waiver Scheme and “at risk” goods moved into Northern Ireland.'],
+        ['04', 'Did the parcel come by Royal Mail or Parcelforce?', 'Use form BOR286 instead. Parcels from any other courier or freight company use the C285 form.'],
+      ],
+      after: ['Not sure which applies? The free [import duty repayment checker](/tools/import-duty-repayment-checker/) asks the same questions and names your route.'],
+    },
+  ],
   facts: [
     ['Time limit', '3 years for overpayments'],
     ['Rejected imports', '1 year'],
@@ -1352,6 +1721,35 @@ const c285Page = {
       title: 'Importers and the people acting for them.',
       paras: ['The importer or their representative, a customs agent, or a freight forwarder or express operator acting for the importer can claim. Private individuals can claim too, except for goods sent by Parcelforce or Royal Mail, which use form BOR286.'],
     },
+    {
+      id: 'forms',
+      label: '04 · THREE FORMS',
+      title: 'C285 vs C&E1179 vs BOR286.',
+      jump: 'C285 vs C&E1179 vs BOR286',
+      table: {
+        caption: 'HMRC repayment forms compared',
+        head: ['Form', 'Use it for', 'Time limit'],
+        rows: [
+          ['C285', 'Overpaid import duty (and import VAT for claimants who are not VAT registered and have no EORI), when the CDS online claim service does not apply', '3 years for overpayments; 90 days for withdrawal of a declaration'],
+          ['C&E1179', 'Repayment or remission of charges on rejected imports and agricultural policy (CAP) goods; apply online or on the form at least 48 hours before the goods are packed for re-export or destruction', '1 year for rejected imports'],
+          ['BOR286', 'Parcels and packets through Royal Mail or Parcelforce where Customs Duty or import VAT was calculated incorrectly', 'See the BOR286 guidance'],
+        ],
+      },
+    },
+    {
+      id: 'causes',
+      label: '05 · WHY DUTY GETS OVERPAID',
+      title: 'Common errors that cause overpaid duty.',
+      jump: 'Common causes',
+      paras: ['HMRC repays duty that was not due, duty on goods rejected as damaged, defective or not as ordered, and duty charged because of a customs error you could not have spotted. On a broker desk, the overpayments usually start with one of these:'],
+      list: [
+        'A higher-duty commodity code than the goods need, as in the e-bike example on this page. See the [commodity code guide](/customs-reference/commodity-code/).',
+        'Preferential origin not claimed although the goods qualified under a UK trade agreement.',
+        'A relief not claimed, such as [returned goods relief](/customs-reference/returned-goods-relief/) on goods coming home unaltered.',
+        'The same goods declared twice, or a declaration that should have been withdrawn (claim within 90 days).',
+        'Goods rejected by the buyer as damaged, defective or not matching the contract (claim within 1 year).',
+      ],
+    },
   ],
   example: {
     title: 'E-bikes declared as ordinary bicycles: £1,600 back.',
@@ -1391,6 +1789,7 @@ const c285Page = {
     ['Can I reclaim import VAT on a C285?', 'Not if you are VAT registered. Adjust your VAT Return instead.'],
     ['How long does HMRC take to repay?', 'HMRC aims to decide claims within 30 days.'],
     ['Who can submit a C285?', 'The importer, their representative, a customs agent, or a freight forwarder or express operator acting for the importer, and private individuals.'],
+    ['What is the difference between C285 and C&E1179?', 'C285 claims back overpaid import duty. C&E1179 claims repayment or remission on rejected imports and agricultural policy goods, and must be made at least 48 hours before the goods are packed for re-export or destruction.'],
   ],
   related: [
     ['/tools/import-duty-repayment-checker/', 'TOOL', 'Import duty repayment checker'],
@@ -1398,6 +1797,8 @@ const c285Page = {
     ['/customs-workflows/postponed-vat-accounting-checklist/', 'PVA', 'Postponed VAT accounting checklist'],
   ],
   sources: [
+    src('Refunds and waivers on customs debt', 'https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt', '6 OCT 2025'),
+    src('Report incorrect Customs Duty or VAT on items imported by post (BOR286)', 'https://www.gov.uk/government/publications/report-incorrect-customs-duty-or-vat-on-items-imported-by-post-bor286', '20 FEB 2026'),
     repaySrc,
     src('Refunds and waivers on customs debt', 'https://www.gov.uk/guidance/refunds-and-waivers-on-customs-debt', '6 OCT 2025'),
     amendSrc,
@@ -1659,10 +2060,11 @@ const commodityPage = {
     alt: 'HS code, tariff code',
     description: 'The internationally recognised number that classifies goods for customs, setting duty, VAT, controls and preferences; the first 6 digits are shared worldwide.',
   },
-  title: 'UK commodity codes: how to find and use them',
+  title: 'What Is a Commodity Code? UK HS Code Guide (2026)',
   description:
-    'What a UK commodity code is, how to find one, Advance Tariff Rulings, where it goes on CDS (DE 6/14 to 6/17) and what a wrong code costs, worked through.',
-  h1: 'Commodity code: the number that sets the duty.',
+    'What a UK commodity code is, how it differs from an HS code, how to find one step by step, 8 vs 10 digits, Advance Tariff Rulings and wrong-code costs.',
+  h1: 'Commodity code (HS code): the number that sets the duty',
+  subhead: 'Commodity code: the number that sets the duty.',
   eyebrow: 'CUSTOMS REFERENCE · COMMODITY CODE · DE 6/14',
   standfirst:
     'A commodity code classifies your goods for customs. It decides the duty rate, import VAT, licences, quotas, anti-dumping measures and preferences. Get it right and the rest of the entry follows; get it wrong and you pay too much, or face a demand.',
@@ -1673,7 +2075,28 @@ const commodityPage = {
     body: [
       'Only the first 6 digits are shared worldwide (the Harmonized System). The UK Trade Tariff shows 10-digit import codes, such as 8711 60 10 00. On CDS the code goes in DE 6/14 (Combined Nomenclature code) and DE 6/15 (TARIC code), with any additional codes in DE 6/16 and DE 6/17.',
     ],
+    links: [['/tools/commodity-code-checker/', 'Find a code with the free checker']],
   },
+  topSections: [
+    {
+      id: 'anatomy',
+      label: 'ANATOMY OF A CODE',
+      title: 'The 10 digits, part by part.',
+      jump: '10-digit anatomy',
+      paras: ['The UK Trade Tariff uses 0102 29 10 10 (live cattle) to show how a full import code builds up. The Harmonized System divides goods into 98 chapters across 21 sections.'],
+      table: {
+        caption: 'Anatomy of the UK import code 0102 29 10 10',
+        head: ['Digits', 'Example', 'Level', 'Set by'],
+        rows: [
+          ['1–2', '01', 'Chapter', 'Harmonized System (worldwide)'],
+          ['1–4', '0102', 'Heading', 'Harmonized System (worldwide)'],
+          ['1–6', '0102 29', 'Subheading: the HS code', 'Harmonized System (worldwide)'],
+          ['1–8', '0102 29 10', 'UK 8-digit code: enough for exports', 'UK-specific coding'],
+          ['1–10', '0102 29 10 10', 'UK 10-digit code: needed for imports', 'UK-specific coding'],
+        ],
+      },
+    },
+  ],
   facts: [
     ['Shared worldwide', 'First 6 digits (Harmonized System)'],
     ['UK imports', '10-digit code from the UK Trade Tariff'],
@@ -1686,12 +2109,14 @@ const commodityPage = {
     {
       id: 'find',
       label: '01 · HOW TO FIND ONE',
-      title: 'Four ways to land on the right code.',
+      title: 'How to find a commodity code in 5 steps.',
+      jump: 'Find a code in 5 steps',
       steps: [
-        ['01', 'Search the Trade Tariff', 'Search by product, then read down the headings to the 10-digit line that describes the goods. Use a free [commodity code checker](/tools/commodity-code-checker/) to start from an invoice line.'],
-        ['02', 'Use the classification guides', 'HMRC publishes sector guides, including textiles, footwear, toys, vehicles and electrical equipment.'],
-        ['03', 'Apply the interpretation rules', 'Classification follows the General Interpretative Rules, applied in order; HMRC tariff notices show the reasoning on real goods.'],
-        ['04', 'Get a binding ruling when it matters', 'Apply for an Advance Tariff Ruling before the goods are cleared. You need an EORI starting GB and a plan to import or export.'],
+        ['01', 'Describe the goods', 'Write down what the product is, what it is made of, what it does, and how it is presented or packaged. The UK Trade Tariff classifies on exactly these points.'],
+        ['02', 'Search the Trade Tariff', 'Search by product, then read down the chapter and headings to the 10-digit line that describes the goods. Use a free [commodity code checker](/tools/commodity-code-checker/) to start from an invoice line.'],
+        ['03', 'Apply the General Interpretative Rules (GIRs)', 'Six legally binding rules, set by the World Customs Organization, decide between competing headings. Apply them in order, starting with GIR 1: the wording of the headings and of the section and chapter notes.'],
+        ['04', 'Use the classification guides', 'HMRC publishes sector guides, including textiles, footwear, toys, vehicles and electrical equipment. The Trade Tariff team also gives informal advice by email within 5 working days.'],
+        ['05', 'Get a binding ruling when it matters', 'Apply for an Advance Tariff Ruling before the goods are cleared. You need an EORI starting GB and a plan to import or export.'],
       ],
       after: ['An overseas supplier’s code is a starting point only: just the first 6 digits are international.'],
     },
@@ -1711,6 +2136,32 @@ const commodityPage = {
       label: '03 · ADVANCE TARIFF RULING',
       title: 'A legally binding answer before you import.',
       paras: ['HMRC replies within 30 to 120 days with the code, the start of validity, a unique reference, the holder and the legal justification. Rulings are generally valid for 3 years and cannot be transferred to another business. HMRC refuses applications for goods already cleared, because rulings are not retrospective. Northern Ireland and EU movements use Binding Tariff Information instead.'],
+    },
+    {
+      id: 'hs-vs',
+      label: '04 · THREE NAMES',
+      title: 'HS code vs commodity code vs TARIC.',
+      jump: 'HS vs TARIC',
+      table: {
+        caption: 'HS code, commodity code and TARIC code',
+        head: ['Term', 'Digits', 'What it means in the UK'],
+        rows: [
+          ['HS code', '6', 'The Harmonized System code from the World Customs Organization. Only these 6 digits are used worldwide.'],
+          ['Commodity code', '8 (exports) or 10 (imports)', 'The UK Trade Tariff code. On CDS the first 8 digits go in DE 6/14.'],
+          ['TARIC code', '2 more (digits 9–10)', 'The extra import digits, declared on CDS in DE 6/15. Not used for exports. “TARIC” is the EU name the CDS field keeps.'],
+          ['Additional codes', '4 + 4', 'DE 6/16 and DE 6/17, for measures such as anti-dumping duty and national codes. The full CDS code is 18 characters.'],
+        ],
+      },
+    },
+    {
+      id: 'digits',
+      label: '05 · 8 OR 10 DIGITS',
+      title: '8-digit export vs 10-digit import.',
+      jump: '8 vs 10 digits',
+      paras: [
+        'The UK Trade Tariff states it directly: 10 digits are needed for import, 8 digits for export. A full import code has 5 parts; the first 4 apply to exports and all 5 are needed for imports.',
+        'So an exporter of live cattle declares 0102 29 10, and the importer of the same goods declares 0102 29 10 10. If an overseas supplier or buyer quotes a code, only the first 6 digits are shared worldwide: check the UK digits in the Trade Tariff.',
+      ],
     },
   ],
   example: {
@@ -1745,12 +2196,15 @@ const commodityPage = {
     ['How many digits is a UK commodity code?', 'The UK Trade Tariff shows 10-digit codes for imports, split on CDS across DE 6/14 and DE 6/15. The first 6 digits are shared worldwide.'],
     ['How do I get a binding commodity code decision?', 'Apply to HMRC for an Advance Tariff Ruling before the goods are cleared. It is generally valid for 3 years.'],
     ['What happens if I use the wrong commodity code?', 'You may overpay and need to claim within 3 years, or underpay and face a C18 demand, interest and possible penalties.'],
+    ['What is the difference between an HS code and a commodity code?', 'The HS code is the first 6 digits, shared worldwide. A UK commodity code adds UK-specific digits: 8 digits for exports and 10 for imports.'],
   ],
   related: [
     ['/tools/commodity-code-checker/', 'TOOL', 'Commodity code checker'],
     ['/tools/customs-value-import-duty-vat-calculator/', 'TOOL', 'Customs value, duty and VAT calculator'],
   ],
   sources: [
+    src('UK Trade Tariff: classifying your goods', 'https://www.trade-tariff.service.gov.uk/howto/commodity-codes', 'LIVE', 'UK Trade Tariff · GOV.UK'),
+    src('CDS step-by-step guide: commodity code data elements (CDSSG08010)', 'https://www.gov.uk/hmrc-internal-manuals/customs-cds-volume-3-tariff-step-by-step-guide/cdssg08010', '3 JUL 2022'),
     src('Finding commodity codes for imports into or exports out of the UK', 'https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports', '22 AUG 2022'),
     src('Apply for an Advance Tariff Ruling', 'https://www.gov.uk/guidance/apply-for-an-advance-tariff-ruling', '2 JUN 2026'),
     src('Check what you’ll need to get a legally binding decision on a commodity code', 'https://www.gov.uk/guidance/check-what-youll-need-to-get-a-legally-binding-decision-on-a-commodity-code', '9 SEP 2026'),
