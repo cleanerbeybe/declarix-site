@@ -145,6 +145,54 @@ function renderTable(table, route, index) {
     .join('')}</tbody></table></div>`
 }
 
+// A short callout at the end of a section (for example "Importers: next step").
+function renderBox(box) {
+  if (!box) return ''
+  const links = (box.links || [])
+    .filter(([href]) => /^https?:\/\//.test(href) || isKnownPath(href))
+    .map(([href, label]) => `<a href="${escapeHtml(href)}"${/^https?:/.test(href) ? '' : ` data-authority-related="box_${escapeHtml(href.split('/').filter(Boolean).join('_'))}"`}>${escapeHtml(label)} →</a>`)
+    .join('')
+  return `<aside class="ref-box"><span class="ref-label">${escapeHtml(box.label)}</span><strong>${escapeHtml(box.title)}</strong>${(box.paras || []).map((paragraph) => `<p>${rich(paragraph)}</p>`).join('')}${box.list ? `<ul>${box.list.map((item) => `<li>${rich(item)}</li>`).join('')}</ul>` : ''}${links ? `<div class="ref-box-links">${links}</div>` : ''}</aside>`
+}
+
+// Tool shortcut buttons under the direct answer (e.g. "Check an MRN now").
+function renderAnswerLinks(route) {
+  const links = (route.answer.links || []).filter(([href]) => isKnownPath(href))
+  if (!links.length) return ''
+  return `<p class="ref-answer-links">${links
+    .map(([href, label]) => `<a class="button" href="${href}" data-authority-related="answer_${href.split('/').filter(Boolean).join('_')}">${escapeHtml(label)} →</a>`)
+    .join('')}</p>`
+}
+
+// Jump links (issue S6): one sideways-scrolling row that stays at the top of the screen.
+function renderJumpNav(route, entries) {
+  if (entries.length < 4) return ''
+  return `<nav class="ref-jump" aria-label="On this page"><span>ON THIS PAGE</span>${entries
+    .map(([href, label]) => `<a href="#${href}">${escapeHtml(label)}</a>`)
+    .join('')}</nav>`
+}
+
+// Short jump label: the section's own jump text, else its eyebrow label ("02 · AUTHORISATION" → "Authorisation").
+const jumpLabel = (section) => {
+  if (section.jump) return section.jump
+  const acronyms = { mrns: 'MRNs', mrn: 'MRN', lrn: 'LRN', ducr: 'DUCR', mucr: 'MUCR', gmr: 'GMR', cds: 'CDS', csp: 'CSP', gvms: 'GVMS', ched: 'CHED', btom: 'BTOM' }
+  const text = String(section.label || section.title).split('·').pop().trim().toLowerCase().replace(/[a-z]+/g, (word) => acronyms[word] || word)
+  return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+function jumpEntries(route) {
+  const entries = []
+  for (const [index, section] of (route.topSections || []).entries()) entries.push([`${slugId(route, section.id || `t${index}`)}-s`, jumpLabel(section)])
+  if (route.facts?.length) entries.push([`${slugId(route, 'facts')}-s`, 'At a glance'])
+  for (const [index, section] of route.sections.entries()) entries.push([`${slugId(route, section.id || `s${index}`)}-s`, jumpLabel(section)])
+  if (route.example) entries.push([`${slugId(route, 'example')}-s`, 'Worked example'])
+  if (route.errors?.length) entries.push([`${slugId(route, 'errors')}-s`, 'Common errors'])
+  if (route.declarix) entries.push([`${slugId(route, 'declarix')}-s`, 'Declarix pre-check'])
+  if (route.faqs?.length) entries.push([`${slugId(route, 'faq')}-s`, 'FAQs'])
+  entries.push([`${slugId(route, 'sources')}-s`, 'Sources'])
+  return entries
+}
+
 function renderSection(section, route, index) {
   const id = slugId(route, section.id || `s${index}`)
   const paras = (section.paras || []).map((paragraph) => `<p>${rich(paragraph)}</p>`).join('')
@@ -156,12 +204,12 @@ function renderSection(section, route, index) {
     : ''
   const table = section.table ? renderTable(section.table, route, index) : ''
   const after = (section.after || []).map((paragraph) => `<p>${rich(paragraph)}</p>`).join('')
-  return `<section class="ref-section" aria-labelledby="${id}"><span class="ref-label">${escapeHtml(section.label)}</span><h2 id="${id}">${escapeHtml(section.title)}</h2>${paras}${list}${steps}${table}${after}</section>`
+  return `<section class="ref-section" id="${id}-s" aria-labelledby="${id}"><span class="ref-label">${escapeHtml(section.label)}</span><h2 id="${id}">${escapeHtml(section.title)}</h2>${paras}${list}${steps}${table}${after}${renderBox(section.box)}</section>`
 }
 
 function renderFacts(route) {
   if (!route.facts?.length) return ''
-  return `<section class="ref-facts" aria-labelledby="${slugId(route, 'facts')}"><span class="ref-label">AT A GLANCE</span><h2 id="${slugId(route, 'facts')}">${escapeHtml(route.factsTitle || 'The short version.')}</h2><dl>${route.facts
+  return `<section class="ref-facts" id="${slugId(route, 'facts')}-s" aria-labelledby="${slugId(route, 'facts')}"><span class="ref-label">AT A GLANCE</span><h2 id="${slugId(route, 'facts')}">${escapeHtml(route.factsTitle || 'The short version.')}</h2><dl>${route.facts
     .map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${rich(value)}</dd></div>`)
     .join('')}</dl></section>`
 }
@@ -170,7 +218,7 @@ function renderExample(route) {
   const example = route.example
   if (!example) return ''
   const id = slugId(route, 'example')
-  return `<section class="ref-example" aria-labelledby="${id}"><span class="ref-label">WORKED UK EXAMPLE</span><h2 id="${id}">${escapeHtml(example.title)}</h2>${example.intro
+  return `<section class="ref-example" id="${id}-s" aria-labelledby="${id}"><span class="ref-label">WORKED UK EXAMPLE</span><h2 id="${id}">${escapeHtml(example.title)}</h2>${example.intro
     .map((paragraph) => `<p>${rich(paragraph)}</p>`)
     .join('')}<div class="ref-ledger" role="table" aria-label="${escapeHtml(example.title)}">${example.rows
     .map(
@@ -183,7 +231,7 @@ function renderExample(route) {
 function renderErrors(route) {
   if (!route.errors?.length) return ''
   const id = slugId(route, 'errors')
-  return `<section class="ref-errors" aria-labelledby="${id}"><span class="ref-label">COMMON ERRORS</span><h2 id="${id}">${escapeHtml(route.errorsTitle || 'Where these entries go wrong.')}</h2><ol>${route.errors
+  return `<section class="ref-errors" id="${id}-s" aria-labelledby="${id}"><span class="ref-label">COMMON ERRORS</span><h2 id="${id}">${escapeHtml(route.errorsTitle || 'Where these entries go wrong.')}</h2><ol>${route.errors
     .map(([title, fix]) => `<li><strong>${escapeHtml(title)}</strong><p>${rich(fix)}</p></li>`)
     .join('')}</ol></section>`
 }
@@ -192,7 +240,8 @@ function renderDeclarix(route) {
   const block = route.declarix
   if (!block) return ''
   const id = slugId(route, 'declarix')
-  return `<section class="ref-declarix" aria-labelledby="${id}"><span class="ref-label">HOW DECLARIX PRE-CHECKS THE ENTRY</span><h2 id="${id}">${escapeHtml(block.title)}</h2>${block.paras
+  const bridge = block.bridge ? `<p class="ref-bridge">${rich(block.bridge)}</p>` : ''
+  return `${bridge}<section class="ref-declarix" id="${id}-s" aria-labelledby="${id}"><span class="ref-label">HOW DECLARIX PRE-CHECKS THE ENTRY</span><h2 id="${id}">${escapeHtml(block.title)}</h2>${block.paras
     .map((paragraph) => `<p>${rich(paragraph)}</p>`)
     .join('')}${block.list ? `<ul>${block.list.map((item) => `<li>${rich(item)}</li>`).join('')}</ul>` : ''}<div class="ref-actions"><a class="button" data-authority-related="pack_check" href="/tools/customs-document-pack-check/">RUN THE FREE PACK CHECK</a><a data-authority-related="pilot" href="/pilot/">SEE THE PILOT TERMS →</a></div></section>`
 }
@@ -200,7 +249,7 @@ function renderDeclarix(route) {
 function renderFaqs(route) {
   if (!route.faqs?.length) return ''
   const id = slugId(route, 'faq')
-  return `<section class="ref-faq" aria-labelledby="${id}"><span class="ref-label">QUESTIONS BROKERS ASK</span><h2 id="${id}">Answers first.</h2>${route.faqs
+  return `<section class="ref-faq" id="${id}-s" aria-labelledby="${id}"><span class="ref-label">QUESTIONS BROKERS ASK</span><h2 id="${id}">Answers first.</h2>${route.faqs
     .map(([question, answer]) => `<div class="ref-faq-item"><h3>${escapeHtml(question)}</h3><p>${rich(answer)}</p></div>`)
     .join('')}</section>`
 }
@@ -246,7 +295,7 @@ function renderGlossary(route) {
 
 function renderSources(route) {
   const id = slugId(route, 'sources')
-  return `<section class="authority-sources" aria-labelledby="${id}"><header><span>PRIMARY SOURCE REGISTER</span><h2 id="${id}">Every rule above, traced to GOV.UK.</h2><p>We checked each source on ${escapeHtml(route.checkedLabel)}. The date beside each link is the date the publisher last updated that page.</p></header><ol>${route.sources
+  return `<section class="authority-sources" id="${id}-s" aria-labelledby="${id}"><header><span>PRIMARY SOURCE REGISTER</span><h2 id="${id}">Every rule above, traced to GOV.UK.</h2><p>We checked each source on ${escapeHtml(route.checkedLabel)}. The date beside each link is the date the publisher last updated that page.</p></header><ol>${route.sources
     .map(
       (item) =>
         `<li><a href="${escapeHtml(item.url)}">${escapeHtml(item.title)}</a><span>${escapeHtml(item.publisher)} · UPDATED ${escapeHtml(item.updated)} · CHECKED ${escapeHtml(item.checked)}</span></li>`,
@@ -272,10 +321,11 @@ export function renderProcedureRoute(route, site, { navHtml, webmasterHtml, post
   const canonical = `${site.origin}${route.path}`
   const answer = `<section class="direct-answer"><span>DIRECT ANSWER · ${escapeHtml(route.code)}</span><h2>${escapeHtml(route.answer.heading)}</h2>${route.answer.body
     .map((paragraph) => `<p>${rich(paragraph)}</p>`)
-    .join('')}</section>`
+    .join('')}${renderAnswerLinks(route)}</section>`
+  const top = (route.topSections || []).map((section, index) => renderSection({ id: `t${index}`, ...section }, route, index)).join('')
   const body =
     route.kind === 'glossary'
       ? `${answer}${renderGlossary(route)}${route.sections.map((section, index) => renderSection(section, route, index)).join('')}`
-      : `${answer}${renderFacts(route)}${route.sections.map((section, index) => renderSection(section, route, index)).join('')}${renderExample(route)}${renderErrors(route)}${renderDeclarix(route)}${renderFaqs(route)}`
-  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/><link rel="stylesheet" href="/customs-procedures.css"/><meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><meta property="article:modified_time" content="${route.reviewedOn}"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>CUSTOMS REFERENCE</span><strong>UP TO 3×</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs">${breadcrumbHtml(route)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>PUBLISHED ${route.publishedOn}<br/>REVIEWED ${route.reviewedOn}<br/>BY DECLARIX CUSTOMS DESK</small></aside></header>${body}${renderRelated(route)}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Send the whole job. Your clerk checks it instead of building it.</h2><p>Declarix turns customer paperwork into a CDS-ready entry pack for Sequoia, Descartes e-Customs or your customer integration, with the source beside every field. Up to 3× more declarations per clerk. Bring your weekly volume to the 20-minute numbers call.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED CUSTOMS REFERENCE · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
+      : `${answer}${renderJumpNav(route, jumpEntries(route))}${top}${renderFacts(route)}${route.sections.map((section, index) => renderSection(section, route, index)).join('')}${renderExample(route)}${renderErrors(route)}${renderDeclarix(route)}${renderFaqs(route)}`
+  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/><link rel="stylesheet" href="/customs-procedures.css"/><meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><meta property="article:modified_time" content="${route.reviewedOn}"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>CUSTOMS REFERENCE</span><strong>UP TO 3×</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs">${breadcrumbHtml(route)}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1>${route.subhead ? `<p class="ref-subhead">${escapeHtml(route.subhead)}</p>` : ''}<p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>PUBLISHED ${route.publishedOn}<br/>REVIEWED ${route.reviewedOn}<br/>BY DECLARIX CUSTOMS DESK</small></aside></header>${body}${renderRelated(route)}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Send the whole job. Your clerk checks it instead of building it.</h2><p>Declarix turns customer paperwork into a CDS-ready entry pack for Sequoia, Descartes e-Customs or your customer integration, with the source beside every field. Up to 3× more declarations per clerk. Bring your weekly volume to the 20-minute numbers call.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED CUSTOMS REFERENCE · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
 }
