@@ -2,7 +2,11 @@
 // Vendor facts live in comparison-sources.mjs with source URLs and the date checked.
 import { breadcrumbList, organizationNode } from './site-graph.mjs'
 import { notHeld } from './held-routes.mjs'
-import { CHECKED, CHECKED_ISO, criteria, deskLine, pilotLine, priceLine, products, sources } from './comparison-sources.mjs'
+import { CHECKED, CHECKED_ISO, criteria, deskLine, hubMatrix, hubMatrixColumns, pilotLine, priceLine, products, sources } from './comparison-sources.mjs'
+import { packages } from './pricing.mjs'
+
+// Declarix package lines in the words of the /pricing/ table (scripts/pricing.mjs).
+const packageItems = packages.map((tier) => `${tier.name}: £${tier.monthly.toLocaleString('en-GB')} / month, ${tier.included.toLocaleString('en-GB')} packs included, £${tier.rate.toFixed(2)} / extra pack.`)
 
 const PACK_CHECK = '/tools/customs-document-pack-check/'
 const ROI = '/roi-calculator/'
@@ -32,9 +36,9 @@ const commonChoose = [
 export const comparisonPages = [
   versus('descartes', {
     path: '/compare/declarix-vs-descartes-e-customs/',
-    title: 'Declarix vs Descartes customs software (e-Customs)',
+    title: 'Descartes e-Customs Alternative? Declarix vs Descartes 2026',
     description:
-      'Descartes customs software files UK declarations. Declarix builds the CDS-ready pack ahead of e-Customs for up to 3× more declarations per clerk.',
+      'Declarix vs Descartes customs software: keep e-Customs for CDS filing and add Declarix to build CDS-ready packs for up to 3× more declarations per clerk.',
     h1: 'Declarix vs Descartes customs software: keep e-Customs, add capacity',
     eyebrow: 'COMPARE · DECLARIX AND DESCARTES E-CUSTOMS',
     ref: 'COMPARE 21 · DESCARTES',
@@ -69,6 +73,25 @@ export const comparisonPages = [
         ],
         src: ['dxHome'],
       },
+      {
+        label: 'ALTERNATIVES',
+        title: 'Descartes e-Customs alternatives for UK brokers',
+        paragraphs: [
+          'Most UK brokers who look for a Descartes e-Customs alternative want more declarations from the same team, not a new filing screen. Declarix gives them exactly that. Keep e-Customs for CDS filing, add Declarix in front of it, and each clerk handles up to 3× more declarations.',
+          'If you want to replace the filing system itself, the other CDS filing platforms on HMRC’s software-developer list include ASM Sequoia, CargoWise, Customs4trade CAS and iCustoms. Compare them in [customs software alternatives](/alternatives/), [Sequoia vs Descartes](/compare/sequoia-vs-descartes/) and [iCustoms vs Descartes](/compare/icustoms-vs-descartes/), or open the [best customs clearance software UK](/best-customs-software/) shortlist.',
+        ],
+        src: ['hmrcList'],
+      },
+      {
+        label: 'PRICING',
+        title: 'What Descartes e-Customs costs, and what Declarix costs',
+        paragraphs: [
+          'Descartes publishes e-Customs pricing: the base platform starts from £178 a month, plus a £704 + VAT set-up fee, with volume pricing on request.',
+          'Declarix publishes every package. One monthly allowance. The same clear rate for every pack above it. See [Declarix pricing](/pricing/).',
+        ],
+        list: packageItems,
+        src: ['dePrice', 'dxPricing'],
+      },
     ],
     faqs: [
       ['Does Declarix replace Descartes e-Customs?', 'No, Declarix works ahead of e-Customs: it builds the CDS-ready entry pack that your clerk checks and e-Customs files.'],
@@ -78,14 +101,17 @@ export const comparisonPages = [
       ['How fast is Declarix?', 'Typical Declarix processing is around 200 seconds before the clerk starts the check.'],
       ['What does Declarix cost?', `Declarix publishes its packages: ${priceLine}, with no seat fees.`],
       ['How do I try it on my own work?', `Run one anonymised job through the [pilot](/pilot/): ${pilotLine}.`],
+      ['What does Descartes e-Customs cost?', `Descartes publishes e-Customs pricing from £178 a month for the base platform plus a £704 + VAT set-up fee (checked ${CHECKED}), and Declarix publishes every package on its [pricing page](/pricing/).`],
+      ['Does Descartes e-Customs have a free version?', `Descartes lists e-Customs from £178 a month plus a £704 + VAT set-up fee, with a demo on request (checked ${CHECKED}), while Declarix offers [free customs tools](/tools/) for the checks before filing.`],
+      ['What is the best Descartes e-Customs alternative for a UK broker?', 'For more output from the same team, keep e-Customs for filing and add Declarix in front of it for up to 3× more declarations per clerk.'],
     ],
     related: ['/compare/sequoia-vs-descartes/', '/compare/icustoms-vs-descartes/', '/compare/declarix-vs-sequoia/', '/compare/declarix-vs-icustoms/'],
   }),
   versus('icustoms', {
     path: '/compare/declarix-vs-icustoms/',
-    title: 'Declarix vs iCustoms: UK customs automation compared',
+    title: 'Declarix vs iCustoms (2026): Pricing, Features, UK Fit',
     description:
-      'Declarix vs iCustoms compared on filing, document reading, evidence, pricing and pilot terms. Every vendor fact sourced and checked 15 Oct 2026.',
+      'Declarix vs iCustoms for UK customs desks: filing, AI document reading, evidence, published pricing and pilot terms. Every vendor fact sourced and dated.',
     h1: 'Declarix vs iCustoms: which fits a UK customs desk?',
     eyebrow: 'COMPARE · DECLARIX AND ICUSTOMS',
     ref: 'COMPARE 13 · ICUSTOMS',
@@ -108,6 +134,17 @@ export const comparisonPages = [
           'Your clerk keeps the filing screen they know. What changes is the time it takes: the clerk checks a finished, source-linked pack instead of building the entry field by field.',
         ],
       },
+      {
+        label: 'PRICING',
+        title: 'iCustoms pricing vs Declarix pricing',
+        paragraphs: [
+          'Declarix publishes every package. One monthly allowance. The same clear rate for every pack above it. For example: 2,000 packs on Team = £4,000 + 1,000 extra packs × £4.00 = £8,000 / month. See [Declarix pricing](/pricing/).',
+          'iCustoms did not publish prices on the pages checked. It offers demo booking and a “Start Now” registration.',
+          'Weighing other platforms as well? See [iCustoms alternatives](/alternatives/icustoms/) for UK desks, compared by workflow.',
+        ],
+        list: packageItems,
+        src: ['dxPricing', 'icHome'],
+      },
     ],
     faqs: [
       ['Is Declarix an alternative to iCustoms?', 'Yes, for the preparation work: Declarix turns customer documents into a CDS-ready entry pack for the filing system you already run.'],
@@ -116,6 +153,9 @@ export const comparisonPages = [
       ['Which publishes its prices?', `Declarix publishes its packages (${priceLine}); iCustoms did not publish prices on the pages checked.`],
       ['Is my customer data used to train models?', 'No, Declarix never uses customer documents to train models.'],
       ['How do I compare them on my own work?', `Run the same anonymised job through both, starting with the Declarix [pilot](/pilot/): ${pilotLine}.`],
+      ['Is iCustoms free?', `iCustoms did not publish prices on the pages checked on ${CHECKED}; it offers demo booking and a “Start Now” registration, and a free trial is not stated.`],
+      ['Who uses iCustoms?', 'iCustoms names traders, customs agents, carriers and postal operators as its users, and lists the UK, Ireland and EU states among 28+ countries.'],
+      ['What are the alternatives to iCustoms?', 'Declarix leads for desks that keep their filing system, and the full list is on [iCustoms alternatives](/alternatives/icustoms/).'],
     ],
     related: ['/compare/icustoms-vs-descartes/', '/compare/icustoms-vs-customaite/', '/compare/declarix-vs-customaite/', '/compare/icustoms-vs-flytta/'],
   }),
@@ -644,10 +684,12 @@ export const workflowPages = [
 export const compareHub = {
   kind: 'hub',
   path: '/compare/',
-  title: 'Customs software comparison: UK tools side by side',
+  title: 'Customs Software Comparison UK: 8 Tools Compared (2026)',
   description:
     'Compare UK customs software: Declarix, iCustoms, Customaite, Descartes, Sequoia, CargoWise, Customs4trade and Flytta. Sourced facts, checked 15 Oct 2026.',
-  h1: 'Compare customs workflows and software',
+  h1: 'UK customs software compared: 8 tools side by side',
+  // The previous H1, kept word for word as the subhead.
+  subhead: 'Compare customs workflows and software',
   eyebrow: 'COMPARE · UK CUSTOMS SOFTWARE',
   ref: 'COMPARE 44 · INDEX',
   stamp: 'SOURCED\nAND DATED',
@@ -657,6 +699,15 @@ export const compareHub = {
     'UK customs software falls into two layers. Filing systems, such as ASM Sequoia, Descartes e-Customs, CargoWise, Customs4trade and iCustoms iCDS, submit declarations to CDS. Preparation tools build the entry before filing. Declarix is best for UK customs desks that want up to 3× more declarations per clerk without changing their filing system: it works ahead of Sequoia and Descartes.',
   ],
   blocks: [
+    {
+      label: 'TWO TERMS, ONE JOB',
+      title: 'Customs clearance vs customs declaration software',
+      paragraphs: [
+        'Customs declaration software builds and submits the declaration: the data HMRC needs on CDS for an import or an export. Customs clearance software is the wider name buyers use for the whole job until the goods are released, which can include GVMS, transit and port-system links as well as the declaration.',
+        'Both terms cover two layers. A filing system submits to CDS under your badge. A preparation tool such as Declarix builds the entry first, so each clerk handles up to 3× more declarations. See the ranked [best customs clearance software UK](/best-customs-software/) shortlist, or browse [customs software alternatives](/alternatives/) by workflow.',
+      ],
+      src: ['deUk', 'hmrcList'],
+    },
     {
       label: 'START WITH THE DECISION',
       title: 'Three questions buyers actually face.',
@@ -686,6 +737,7 @@ export const compareHub = {
     ['Which customs software publishes its prices?', `Declarix publishes every package (${priceLine}) and is the only vendor compared here that publishes every package and per-pack rate.`],
     ['Can I keep Sequoia or Descartes and still automate?', 'Yes, Declarix supports CDS-ready exports for Sequoia and Descartes e-Customs, so you automate the build and keep your filing system.'],
     ['Who publishes these comparisons?', 'Declarix Limited publishes them, using vendor pages and GOV.UK as sources, each linked and dated.'],
+    ['What is the best customs clearance software in the UK?', 'For a desk that wants more output from the same team, Declarix in front of Sequoia or Descartes e-Customs leads the [best customs clearance software UK](/best-customs-software/) shortlist.'],
   ],
 }
 
@@ -719,7 +771,10 @@ function collectSourceKeys(page) {
   for (const vendorKey of page.vendors || []) products[vendorKey].facts.forEach((fact) => fact.src.forEach(add))
   for (const row of page.table?.rows || []) for (const cell of row.slice(1)) if (Array.isArray(cell)) cell.slice(1).forEach(add)
   for (const block of page.blocks || []) (block.src || []).forEach(add)
-  if (page.kind === 'hub') ['hmrcList', 'dxPricing', 'dxScope'].forEach(add)
+  if (page.kind === 'hub') {
+    ['hmrcList', 'dxPricing', 'dxScope'].forEach(add)
+    for (const row of Object.values(hubMatrix)) for (const cell of Object.values(row)) cell.src.forEach(add)
+  }
   return keys
 }
 
@@ -801,6 +856,24 @@ function renderHubTable(order) {
     <h2 id="table-heading">Eight products, three facts each.</h2>
     <div class="table-wrap" role="region" aria-labelledby="table-caption" tabindex="0"><table class="compare-table"><caption id="table-caption">UK customs software: main job, CDS filing and published pricing. Checked ${esc(CHECKED)}.</caption><thead><tr><th scope="col">Product</th><th scope="col">Main job</th><th scope="col">Filing to HMRC CDS</th><th scope="col">Published pricing</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>
     <p class="table-note">Numbers in brackets link to the source register below. Scroll sideways on a narrow screen.</p>
+  </section>`
+}
+
+// Criteria table above the fold on /compare/: eight products on the six buying criteria.
+function renderHubMatrix(order) {
+  const keys = ['declarix', 'descartes', 'sequoia', 'cargowise', 'customs4trade', 'icustoms', 'customaite', 'flytta']
+  const rows = keys.map((key) => `<tr${key === 'declarix' ? ' class="is-declarix"' : ''}><th scope="row">${esc(products[key].name)}</th>${hubMatrixColumns
+    .map(([col, label]) => {
+      const cell = hubMatrix[key][col]
+      return `<td data-label="${esc(label)}"${key === 'declarix' ? ' class="is-declarix"' : ''}>${esc(cell.text)}${refs(cell.src, order)}</td>`
+    })
+    .join('')}</tr>`)
+  return `<section class="compare-block hub-matrix" aria-labelledby="matrix-heading">
+    <span class="section-label">THE CRITERIA · CHECKED ${esc(CHECKED.toUpperCase())}</span>
+    <h2 id="matrix-heading">Eight UK customs tools on six criteria.</h2>
+    <div class="table-wrap" role="region" aria-labelledby="matrix-caption" tabindex="0"><table class="compare-table matrix-table"><caption id="matrix-caption">UK customs software on six buying criteria. Vendor facts from each vendor’s own pages and GOV.UK, checked ${esc(CHECKED)}.</caption><thead><tr><th scope="col">Product</th>${hubMatrixColumns.map(([, label]) => `<th scope="col">${esc(label)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
+    <p>Declarix leads for desks that want up to 3× more declarations per clerk and keep their filing system. Want a ranked list? See the <a href="/best-customs-software/">best customs clearance software UK</a> shortlist, or <a href="/alternatives/">customs software alternatives</a> by workflow.</p>
+    <p class="table-note">Numbers in brackets link to the source register below.</p>
   </section>`
 }
 
@@ -982,7 +1055,7 @@ export function renderComparison(page, site, { navHtml = '', webmasterHtml = '',
     <title>${esc(page.title)}</title>
     <script type="application/ld+json">${jsonLd(page, site, list)}</script>
   </head>
-  <body class="compare-page">
+  <body class="compare-page${page.kind === 'hub' ? ' compare-hub' : ''}">
     <div class="docket">
       <header class="masthead">
         <a class="wordmark" href="/">DECLARIX</a>
@@ -996,6 +1069,7 @@ export function renderComparison(page, site, { navHtml = '', webmasterHtml = '',
           <div class="hero-copy">
             <p class="eyebrow">${esc(page.eyebrow)}</p>
             <h1>${esc(page.h1)}</h1>
+            ${page.subhead ? `<p class="h1-subhead">${esc(page.subhead)}</p>` : ''}
             <p>${esc(page.standfirst)}</p>
           </div>
           <aside class="hero-ledger">
@@ -1004,6 +1078,7 @@ export function renderComparison(page, site, { navHtml = '', webmasterHtml = '',
             <div class="review-cell"><span>FACTS CHECKED</span><strong>${CHECKED_ISO}</strong></div>
           </aside>
         </header>
+        ${page.kind === 'hub' ? renderHubMatrix(order) : ''}
         ${renderVerdict(page)}
         ${table}
         ${renderVendorCards(page, order)}
