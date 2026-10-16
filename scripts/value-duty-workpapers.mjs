@@ -4,14 +4,15 @@ export const valueDutyWorkpapers = [
     path: '/tools/customs-value-import-duty-vat-calculator/',
     id: 'customs_value_duty_vat_workpaper',
     ref: 'WORKPAPER 03 · VALUATION + DUTY',
-    title: 'Customs value, ad valorem duty and VAT calculator | Free UK tool',
+    title: 'Import Duty Calculator UK: Duty, VAT and Customs Value',
     schemaName: 'Customs value, ad valorem duty and VAT planning workpaper',
-    reviewedOn: '2026-10-15',
-    modifiedOn: '2026-10-15',
+    reviewedOn: '2026-10-16',
+    modifiedOn: '2026-10-16',
     description:
-      'Build a transparent UK customs value, ad valorem import duty, import VAT value, and tax scenario using only the exchange rates and charges you enter.',
+      'Free UK import duty calculator: work out customs value (CIF to the UK border), import duty, import VAT and landed cost, every formula shown. No sign-up.',
     eyebrow: 'FREE CUSTOMS VALUE WORKPAPER · YOUR RATES · NO SIGN-UP',
-    h1: 'Build the customs value, ad valorem duty and import VAT scenario.',
+    h1: 'Import duty and VAT calculator UK',
+    subhead: 'Build the customs value, ad valorem duty and import VAT scenario.',
     standfirst:
       'Cross-foot the invoice, freight, insurance, adjustments, percentage-based duty and import VAT in one browser-only worksheet. Every rate comes from you. Every formula stays visible.',
     questions: [
@@ -51,7 +52,7 @@ export const valueDutyWorkpapers = [
           'For a percentage (ad valorem) duty, multiply the customs value in pounds by the duty rate for the commodity code. The customs value under the transaction-value method usually starts from the price paid, converted to pounds, plus transport and insurance to the UK border and any other required additions. This calculator shows each of those steps.',
       },
       {
-        question: 'Is import VAT charged on top of the duty?',
+        question: 'Is VAT charged on the duty?',
         answer:
           'Yes. HMRC builds the VAT value from the customs value plus customs duty, any other import charges and relevant incidental expenses, then applies the VAT rate. That is why import VAT is usually more than 20% of the goods price alone.',
       },
@@ -59,6 +60,16 @@ export const valueDutyWorkpapers = [
         question: 'Do goods from the EU pay import duty?',
         answer:
           'Goods that originate in the EU can qualify for a 0% preferential rate under the UK–EU Trade and Cooperation Agreement when the rules of origin are met and the importer holds the required proof of origin. Otherwise the standard rate for the commodity code applies. Enter the rate you have established for the movement.',
+      },
+      {
+        question: 'What is landed cost?',
+        answer:
+          'Landed cost is the full cost of getting goods into the UK and cleared: the goods price, freight and insurance, import duty, import VAT and any other import charges. This calculator shows it as the planning total, and per unit when you enter the number of units. VAT-registered businesses can usually reclaim import VAT, so the result also shows the cost per unit without import VAT.',
+      },
+      {
+        question: 'Do I pay duty on shipping costs?',
+        answer:
+          'Yes. Customs Duty is charged on the price paid for the goods plus postage, packaging and insurance. For a commercial import, freight, loading, handling and insurance up to the place where the goods enter the UK form part of the customs value. Transport and insurance after the goods arrive in the UK can be left out of the customs value when they are shown separately, but they still go into the import VAT value.',
       },
     ],
     sources: [
@@ -97,6 +108,36 @@ export const valueDutyWorkpapers = [
         publisher: 'HM Revenue & Customs · GOV.UK',
         checked: '17 JULY 2026',
         url: 'https://www.gov.uk/trade-tariff',
+      },
+      {
+        title: 'Tax and customs for goods sent from abroad: tax and duty',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/goods-sent-from-abroad/tax-and-duty',
+      },
+      {
+        title: 'Check when you can account for import VAT on your VAT Return',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/check-when-you-can-account-for-import-vat-on-your-vat-return',
+      },
+      {
+        title: 'UK trade agreements in effect',
+        publisher: 'Department for Business and Trade · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/uk-trade-agreements-in-effect',
+      },
+      {
+        title: 'Check your goods meet the rules of origin',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin',
+      },
+      {
+        title: 'Rates of VAT on different goods and services',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/rates-of-vat-on-different-goods-and-services',
       },
     ],
   },
@@ -138,8 +179,7 @@ export function calculateValueDutyScenario(input) {
   const importVat = importVatValue * (input.vatRate / 100)
   const taxDutyTotal = customsDuty + input.otherImportCharges + importVat
   const planningTotal = customsValue + customsDuty + input.otherImportCharges + input.incidentalExpenses + importVat
-
-  return {
+  const scenario = {
     convertedGoods,
     netAdjustments,
     customsValueBeforeClamp,
@@ -149,6 +189,18 @@ export function calculateValueDutyScenario(input) {
     importVat,
     taxDutyTotal,
     planningTotal,
+  }
+  // Optional units: per-unit figures appear only when a unit count is given.
+  if (input.units == null) return scenario
+  if (!Number.isFinite(input.units) || input.units <= 0 || input.units > maxAmount) {
+    throw new Error('Units must be above 0 and inside the supported planning range')
+  }
+  return {
+    ...scenario,
+    units: input.units,
+    dutyVatPerUnit: taxDutyTotal / input.units,
+    landedCostPerUnit: planningTotal / input.units,
+    landedCostPerUnitExVat: (planningTotal - importVat) / input.units,
   }
 }
 
@@ -268,6 +320,83 @@ function renderWorkedExamples() {
     .join('')
 }
 
+// Facts below come from GOV.UK, checked 16 October 2026:
+// - https://www.gov.uk/goods-sent-from-abroad/tax-and-duty (£135 and £39 gift rules, duty on postage + insurance)
+// - https://www.gov.uk/guidance/check-when-you-can-account-for-import-vat-on-your-vat-return (PVA, no approval needed; updated 16 June 2025)
+// - https://www.gov.uk/guidance/uk-trade-agreements-in-effect (no agreement with China or the USA; EU covered by the TCA; updated 1 September 2026)
+// - https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin (preference needs origin + proof)
+// - https://www.gov.uk/guidance/customs-valuation/method-1-transaction-value (transport + insurance to the place of introduction; updated 14 April 2026)
+const originExamples = [
+  {
+    origin: 'China',
+    agreement: 'No UK trade agreement',
+    rate: 'The standard (third-country) rate for the commodity code in the UK Trade Tariff, unless a relief or suspension applies.',
+    story: '£4,000 of goods, £350 freight and £50 insurance to the UK border, at a 6% rate',
+    input: { goodsAmount: 4000, fxRate: 1, freight: 350, insurance: 50, additions: 0, deductions: 0, dutyRate: 6, otherImportCharges: 0, incidentalExpenses: 0, vatRate: 20 },
+  },
+  {
+    origin: 'USA',
+    agreement: 'No UK trade agreement',
+    rate: 'The standard rate for the commodity code in the UK Trade Tariff. Check the code for any quota or suspension measure.',
+    story: '$3,000 of goods at $1.30 per £1, £200 freight and £30 insurance, at a 2% rate',
+    input: { goodsAmount: 3000, fxRate: 1.3, freight: 200, insurance: 30, additions: 0, deductions: 0, dutyRate: 2, otherImportCharges: 0, incidentalExpenses: 0, vatRate: 20 },
+  },
+  {
+    origin: 'EU',
+    agreement: 'UK–EU Trade and Cooperation Agreement',
+    rate: '0% when the goods meet the rules of origin and you hold proof of origin. Otherwise the standard rate.',
+    story: '€8,000 of goods at €1.1564 per £1, £300 freight and £40 insurance, at the 0% preference',
+    input: { goodsAmount: 8000, fxRate: 1.1564, freight: 300, insurance: 40, additions: 0, deductions: 0, dutyRate: 0, otherImportCharges: 0, incidentalExpenses: 0, vatRate: 20 },
+  },
+]
+
+function renderDutyTopics() {
+  const gbp = (value) => new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
+  const pvaExample = calculateValueDutyScenario(workedExamples[0].input)
+  const originRows = originExamples
+    .map((row) => {
+      const r = calculateValueDutyScenario(row.input)
+      return `<tr><th scope="row" data-label="Origin">${escapeHtml(row.origin)}</th><td data-label="Trade agreement">${escapeHtml(row.agreement)}</td><td data-label="Duty rate to enter">${escapeHtml(row.rate)}</td><td data-label="Worked example">${escapeHtml(row.story)}: customs value ${gbp(r.customsValue)}, duty ${gbp(r.customsDuty)}, import VAT ${gbp(r.importVat)}.</td></tr>`
+    })
+    .join('')
+  return `<section class="duty-topics" aria-label="UK import duty and VAT rules">
+          <article class="duty-topic" id="import-vat-pva">
+            <span class="section-label">IMPORT VAT</span>
+            <h2>Import VAT: pay now or postpone (PVA)</h2>
+            <p>A VAT-registered business can postpone import VAT. Postponed VAT accounting (PVA) lets you declare the import VAT on your VAT Return and reclaim it on the same return, instead of paying it when the goods arrive. You do not need HMRC approval to use it. If you are not VAT-registered, you pay import VAT at import, usually through your courier or customs agent.</p>
+            <p><strong>Cash-flow example.</strong> In worked example A, import VAT is ${gbp(pvaExample.importVat)}. Paid at the border, that cash leaves the business weeks before the VAT Return. With PVA, the charge and the reclaim sit on the same return, so the cash never leaves.</p>
+            <p>HMRC puts the postponed amounts on a monthly postponed import VAT statement. Check that every import is on it with the free <a href="/tools/postponed-vat-statement-checker/">postponed VAT statement checker</a>.</p>
+          </article>
+          <article class="duty-topic" id="goods-under-135-and-gifts">
+            <span class="section-label">LOW-VALUE GOODS</span>
+            <h2>Goods under £135 and gifts</h2>
+            <p>Goods worth £135 or less in total pay no Customs Duty unless they are excise goods. If you bought them, the seller adds the VAT at checkout. A gift from one person to another worth £39 or less pays no VAT. These are the Great Britain rules for goods sent by post or courier.</p>
+            <div class="duty-table-wrap"><table class="duty-rules-table">
+              <caption>Duty and VAT on goods sent from abroad to Great Britain</caption>
+              <thead><tr><th scope="col">Goods</th><th scope="col">Customs Duty</th><th scope="col">VAT</th></tr></thead>
+              <tbody>
+                <tr><th scope="row" data-label="Goods">You bought them, £135 or less, not excise goods</th><td data-label="Customs Duty">No charge</td><td data-label="VAT">Included by the seller in the price you paid</td></tr>
+                <tr><th scope="row" data-label="Goods">Gift worth £39 or less</th><td data-label="Customs Duty">No charge</td><td data-label="VAT">No VAT</td></tr>
+                <tr><th scope="row" data-label="Goods">Gift worth more than £39, up to £135</th><td data-label="Customs Duty">No charge</td><td data-label="VAT">Paid to the delivery company</td></tr>
+                <tr><th scope="row" data-label="Goods">Goods worth more than £135</th><td data-label="Customs Duty">The rate for the goods and origin in the Trade Tariff</td><td data-label="VAT">Paid to the delivery company, on the goods, postage, packaging, insurance and duty</td></tr>
+                <tr><th scope="row" data-label="Goods">Excise goods (for example alcohol or tobacco)</th><td data-label="Customs Duty">Charged at any value</td><td data-label="VAT">Charged</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+          <article class="duty-topic" id="duty-by-origin">
+            <span class="section-label">ORIGIN + PREFERENCE</span>
+            <h2>Duty from China, the USA and the EU</h2>
+            <p>Where the goods were made sets the duty rate. The UK has no trade agreement with China or the USA, so the standard rate in the Trade Tariff applies. Goods made in the EU can enter at 0% under the UK–EU Trade and Cooperation Agreement when they meet the rules of origin and you hold the proof. All three examples use 20% VAT.</p>
+            <div class="duty-table-wrap"><table class="duty-rules-table duty-origin-table">
+              <caption>Worked examples by origin</caption>
+              <thead><tr><th scope="col">Origin</th><th scope="col">Trade agreement</th><th scope="col">Duty rate to enter</th><th scope="col">Worked example</th></tr></thead>
+              <tbody>${originRows}</tbody>
+            </table></div>
+            <p>Find the code and its rate with the free <a href="/tools/commodity-code-checker/">commodity code checker</a>, then enter the rate in field 07.</p>
+          </article>
+        </section>`
+}
+
 function workpaperScript(workpaper, posthogKey, posthogHost) {
   const config = JSON.stringify({ posthogKey, posthogHost }).replaceAll('<', '\\u003c')
   const calculate = calculateValueDutyScenario.toString()
@@ -290,6 +419,16 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
         otherImportCharges: document.getElementById('other-import-charges'),
         incidentalExpenses: document.getElementById('incidental-expenses'),
         vatRate: document.getElementById('vat-rate'),
+      };
+      const unitsInput = document.getElementById('units');
+      const perUnit = document.getElementById('value-duty-per-unit');
+      const shareButton = document.getElementById('share-value-duty');
+      let flashTimer = null;
+      const flashButton = (button, text) => {
+        clearTimeout(flashTimer);
+        button.textContent = text;
+        button.classList.add('is-flashed');
+        flashTimer = setTimeout(() => { button.textContent = button.dataset.label; button.classList.remove('is-flashed'); }, 2000);
       };
       const outputIds = [
         'converted-goods', 'net-adjustments', 'customs-value', 'customs-duty',
@@ -327,7 +466,11 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
       const formatCurrency = (value) => new Intl.NumberFormat('en-GB', {
         style: 'currency', currency: 'GBP', maximumFractionDigits: 2, minimumFractionDigits: 2
       }).format(value);
-      const values = () => Object.fromEntries(Object.entries(inputs).map(([key, input]) => [key, Number(input.value)]));
+      const values = () => {
+        const value = Object.fromEntries(Object.entries(inputs).map(([key, input]) => [key, Number(input.value)]));
+        if (unitsInput.value.trim() !== '') value.units = Number(unitsInput.value);
+        return value;
+      };
       const valueBand = (value) => value < 1000 ? 'under_1k' : value < 10000 ? '1k_10k' : value < 100000 ? '10k_100k' : '100k_plus';
       const eventProperties = (value, scenario) => ({
         customs_value_band: valueBand(scenario.customsValue),
@@ -335,6 +478,7 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
         has_adjustments: value.additions > 0 || value.deductions > 0,
         has_duty_rate: value.dutyRate > 0,
         has_vat_rate: value.vatRate > 0,
+        has_units: 'units' in value,
       });
       const render = (showValidation = false) => {
         inputs.deductions.setCustomValidity('');
@@ -359,12 +503,21 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
         outputs['planning-total'].textContent = formatCurrency(scenario.planningTotal);
         document.getElementById('result-duty-rate').textContent = value.dutyRate.toLocaleString('en-GB', { maximumFractionDigits: 4 }) + '%';
         document.getElementById('result-vat-rate').textContent = value.vatRate.toLocaleString('en-GB', { maximumFractionDigits: 4 }) + '%';
+        if (scenario.units) {
+          document.getElementById('duty-vat-per-unit').textContent = formatCurrency(scenario.dutyVatPerUnit);
+          document.getElementById('landed-cost-per-unit').textContent = formatCurrency(scenario.landedCostPerUnit);
+          document.getElementById('landed-cost-per-unit-ex-vat').textContent = formatCurrency(scenario.landedCostPerUnitExVat);
+          document.getElementById('result-units').textContent = scenario.units.toLocaleString('en-GB', { maximumFractionDigits: 4 });
+          perUnit.hidden = false;
+        } else {
+          perUnit.hidden = true;
+        }
         result.hidden = false;
         rendered = true;
         return { value, scenario };
       };
 
-      Object.values(inputs).forEach((input) => input.addEventListener('input', () => {
+      [...Object.values(inputs), unitsInput].forEach((input) => input.addEventListener('input', () => {
         input.setCustomValidity('');
         if (!started) { started = true; track('tool_started'); }
         if (rendered) render(false);
@@ -374,18 +527,19 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
         const calculation = render(true);
         if (!calculation) return;
         track('tool_completed', eventProperties(calculation.value, calculation.scenario));
-        status.textContent = 'Planning scenario calculated from the ten inputs shown.';
+        status.textContent = 'Planning scenario calculated from the inputs shown.';
         result.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
       });
 
       const shareUrl = (value) => {
         const url = new URL(location.href);
-        ['src', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'g', 'x', 'f', 'i', 'a', 'd', 'r', 'o', 'e', 'v'].forEach((key) => url.searchParams.delete(key));
+        ['src', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'g', 'x', 'f', 'i', 'a', 'd', 'r', 'o', 'e', 'v', 'u'].forEach((key) => url.searchParams.delete(key));
         const params = { g: value.goodsAmount, x: value.fxRate, f: value.freight, i: value.insurance, a: value.additions, d: value.deductions, r: value.dutyRate, o: value.otherImportCharges, e: value.incidentalExpenses, v: value.vatRate };
+        if ('units' in value) params.u = value.units;
         Object.entries(params).forEach(([key, entry]) => url.searchParams.set(key, entry));
         return url.toString();
       };
-      document.getElementById('share-value-duty').addEventListener('click', async () => {
+      shareButton.addEventListener('click', async () => {
         const calculation = render(true);
         if (!calculation) return;
         const url = shareUrl(calculation.value);
@@ -394,15 +548,18 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
           if (navigator.share) {
             method = 'native_share';
             await navigator.share({ title: '${escapeHtml(workpaper.schemaName)}', url });
-            status.textContent = 'Planning scenario shared with the ten inputs shown.';
+            status.textContent = 'Planning scenario shared with the inputs shown.';
+            flashButton(shareButton, 'SHARED ✓');
           } else {
             await navigator.clipboard.writeText(url);
-            status.textContent = 'Share link copied. It includes the ten inputs shown on this page.';
+            status.textContent = 'Share link copied. It includes the inputs shown on this page.';
+            flashButton(shareButton, 'COPIED ✓');
           }
           track('tool_result_shared', { ...eventProperties(calculation.value, calculation.scenario), method });
         } catch (error) {
           if (error && error.name === 'AbortError') return;
           status.textContent = 'Sharing was blocked by the browser. Use Print or save instead.';
+          flashButton(shareButton, 'COPY BLOCKED · USE PRINT');
         }
       });
       document.getElementById('print-value-duty').addEventListener('click', () => {
@@ -434,10 +591,12 @@ function workpaperScript(workpaper, posthogKey, posthogHost) {
         }
         inputs[key].value = String(value);
       });
+      const sharedUnits = params.get('u');
+      if (sharedUnits !== null && Number.isFinite(Number(sharedUnits)) && Number(sharedUnits) > 0 && Number(sharedUnits) <= 100000000) unitsInput.value = String(Number(sharedUnits));
       attribution();
       if (hasCompleteSharedState) {
         const calculation = render(false);
-        if (calculation) status.textContent = 'Shared planning scenario restored from the ten inputs in the link.';
+        if (calculation) status.textContent = 'Shared planning scenario restored from the inputs in the link.';
       }
     })();
   </script>`
@@ -484,10 +643,90 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
       <div class="breadcrumbs">${breadcrumbHtml(workpaper.path, 'CUSTOMS VALUE + DUTY')}</div>
       <main>
-        <header class="hero calculator-hero value-duty-hero">
-          <div class="hero-copy">
-            <p class="eyebrow">${escapeHtml(workpaper.eyebrow)}</p>
-            <h1>${escapeHtml(workpaper.h1)}</h1>
+        <header class="hero calculator-hero tool-first-hero value-duty-hero">
+          <p class="eyebrow">${escapeHtml(workpaper.eyebrow)}</p>
+          <h1>${escapeHtml(workpaper.h1)}</h1>
+          <p class="tool-subhead">${escapeHtml(workpaper.subhead)}</p>
+        </header>
+
+        <div class="tool-first-grid value-duty-tool-grid">
+          <div class="tool-first-main">
+        <section class="value-duty-workpaper" id="valuation-workpaper" aria-labelledby="workpaper-heading">
+          <header class="value-duty-workpaper-header"><span class="section-label">YOUR PLANNING SCENARIO</span><h2 id="workpaper-heading">Cross-foot (add up and check) your shipment in three stages.</h2><p>Enter every field. Use 0 only where you have checked that a charge, adjustment or rate does not apply. No input is fetched or inferred.</p></header>
+          <form id="value-duty-form">
+            <fieldset class="valuation-stage">
+              <legend><span>STAGE 01</span><strong>Convert the goods price.</strong><small>Enter the invoice amount and invoice-currency units per £1, matching HMRC's published table direction.</small></legend>
+              <div class="valuation-fields">
+                <label class="valuation-field" for="goods-amount"><span><b>01</b> Goods price / amount</span><small>Amount in the invoice currency before this workpaper converts it.</small><span class="valuation-input-line"><input id="goods-amount" name="goods-amount" type="number" min="0.01" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>INVOICE CURRENCY</i></span></label>
+                <label class="valuation-field" for="fx-rate"><span><b>02</b> Currency units per £1</span><small>If £1 = 1.1564 EUR, enter 1.1564. Enter 1 when the goods amount is GBP.</small><span class="valuation-input-line"><input id="fx-rate" name="fx-rate" type="number" min="0.0001" max="1000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>UNITS / GBP</i></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="valuation-stage">
+              <legend><span>STAGE 02</span><strong>Build the customs value.</strong><small>Enter only the GBP amounts your valuation method and evidence support.</small></legend>
+              <div class="valuation-fields">
+                <label class="valuation-field" for="freight"><span><b>03</b> Freight, loading + handling</span><small>Amount to include up to the relevant UK place of introduction (where the goods enter the UK).</small><span class="valuation-input-line is-gbp"><input id="freight" name="freight" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
+                <label class="valuation-field" for="insurance"><span><b>04</b> Insurance</span><small>Apportioned transport insurance amount you have established (checked and can prove) for customs value.</small><span class="valuation-input-line is-gbp"><input id="insurance" name="insurance" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
+                <label class="valuation-field" for="additions"><span><b>05</b> Other additions</span><small>Assists (tools, moulds, materials or designs you gave the maker free or at a reduced price), packing, royalties, commission or other additions only where established (checked and backed by evidence).</small><small class="valuation-hint">Most buyers who only pay the supplier for the goods enter 0 here.</small><span class="valuation-input-line is-gbp"><input id="additions" name="additions" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
+                <label class="valuation-field" for="deductions"><span><b>06</b> Permitted deductions</span><small>Amounts already included in price that you have established (checked and can prove) may be excluded, such as UK transport after arrival shown separately on the invoice.</small><small class="valuation-hint">Most buyers who only pay the supplier for the goods enter 0 here.</small><span class="valuation-input-line is-gbp"><input id="deductions" name="deductions" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="valuation-stage">
+              <legend><span>STAGE 03</span><strong>Apply your duty + VAT scenario.</strong><small>Use the percentage and charge amounts you have checked for this movement.</small></legend>
+              <div class="valuation-fields">
+                <label class="valuation-field" for="duty-rate"><span><b>07</b> Duty rate (%) — ad valorem</span><small>Ad valorem means a percentage of the customs value. Use the rate established (checked and confirmed) for your commodity code and origin in the UK Trade Tariff. Enter 0 only after checking.</small><span class="valuation-input-line"><input id="duty-rate" name="duty-rate" type="number" min="0" max="1000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>PERCENT</i></span></label>
+                <label class="valuation-field" for="other-import-charges"><span><b>08</b> Other import charges</span><small>Excise Duty, levy or other charge payable on importation, excluding VAT itself.</small><span class="valuation-input-line is-gbp"><input id="other-import-charges" name="other-import-charges" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
+                <label class="valuation-field" for="incidental-expenses"><span><b>09</b> Import VAT incidental expenses</span><small>Relevant known commissions, packing, transport or insurance beyond customs value, such as delivery from the UK port to your first UK address.</small><small class="valuation-hint">Most buyers who only pay the supplier for the goods enter 0 here.</small><span class="valuation-input-line is-gbp"><input id="incidental-expenses" name="incidental-expenses" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
+                <label class="valuation-field" for="vat-rate"><span><b>10</b> Import VAT rate</span><small>Rate you have checked for the goods and import treatment: 20% standard, 5% reduced or 0% zero rate.</small><span class="valuation-input-line"><input id="vat-rate" name="vat-rate" type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>PERCENT</i></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="valuation-stage valuation-stage-optional">
+              <legend><span>OPTIONAL</span><strong>Cost per unit.</strong><small>Add the number of units to see duty + VAT and landed cost for each one.</small></legend>
+              <div class="valuation-fields">
+                <label class="valuation-field" for="units"><span><b>11</b> Units in this shipment</span><small>Optional. For example, 1,200 for 1,200 pieces. Leave blank to skip the per-unit view.</small><span class="valuation-input-line"><input id="units" name="units" type="number" min="0.0001" max="100000000" step="any" inputmode="decimal" placeholder="Optional" autocomplete="off" /><i>UNITS</i></span></label>
+              </div>
+            </fieldset>
+
+            <div class="calculator-submit value-duty-submit"><p><strong>10 explicit inputs + optional units.</strong> Nothing is looked up, inferred, uploaded or emailed.</p><button class="button" type="submit">BUILD MY PLANNING SCENARIO</button></div>
+          </form>
+        </section>
+
+        <section class="value-duty-result" id="value-duty-result" aria-labelledby="value-duty-result-heading" aria-live="polite" hidden>
+          <header class="value-duty-result-lead"><span class="section-label">YOUR CROSS-FOOT (ADD-UP)</span><h2 id="value-duty-result-heading"><output id="tax-duty-total">£0.00</output> duties + taxes in this scenario.</h2><p>The result applies only the inputs shown. Keep the source evidence, valuation decision, commodity code and rate checks beside it.</p></header>
+          <div class="value-duty-ledger">
+            <article><span>CONVERTED GOODS</span><strong><output id="converted-goods">£0.00</output></strong><p>Goods amount ÷ invoice-currency units per £1.</p></article>
+            <article><span>NET OTHER ADJUSTMENTS</span><strong><output id="net-adjustments">£0.00</output></strong><p>Other additions minus permitted deductions.</p></article>
+            <article class="value-duty-key"><span>CUSTOMS VALUE</span><strong><output id="customs-value">£0.00</output></strong><p>Converted goods + freight + insurance + net adjustments.</p></article>
+            <article><span>AD VALOREM DUTY · <b id="result-duty-rate">0%</b></span><strong><output id="customs-duty">£0.00</output></strong><p>Customs value × your percentage duty rate.</p></article>
+            <article><span>IMPORT VAT VALUE</span><strong><output id="import-vat-value">£0.00</output></strong><p>Customs value + duty + other import charges + incidental expenses.</p></article>
+            <article><span>IMPORT VAT · <b id="result-vat-rate">0%</b></span><strong><output id="import-vat">£0.00</output></strong><p>Import VAT value × your VAT rate.</p></article>
+            <article class="value-duty-total"><span>PLANNING TOTAL · LANDED COST</span><strong><output id="planning-total">£0.00</output></strong><p>Customs value + duty + other import charges + incidental expenses + import VAT. This is a worksheet cross-foot, not a declared or assessed amount.</p></article>
+          </div>
+          <div class="value-duty-ledger value-duty-unit-ledger" id="value-duty-per-unit" hidden>
+            <article><span>DUTY + VAT PER UNIT</span><strong><output id="duty-vat-per-unit">£0.00</output></strong><p>Duties + taxes ÷ <output id="result-units">0</output> units.</p></article>
+            <article class="value-duty-key"><span>LANDED COST PER UNIT</span><strong><output id="landed-cost-per-unit">£0.00</output></strong><p>Planning total ÷ units. <output id="landed-cost-per-unit-ex-vat">£0.00</output> a unit without import VAT, for a VAT-registered importer who reclaims it.</p></article>
+          </div>
+          <aside class="result-checkpoint"><span>CHECKPOINT</span><div><h3>Before this number leaves the worksheet.</h3><p>Confirm the valuation method, exchange rate, inclusions, deductions, commodity code, origin, preference or relief, duty measures, VAT treatment, and declaration date. This duty result applies an ad valorem percentage only; it does not calculate a specific or compound tariff.</p></div></aside>
+          <div class="calculator-actions value-duty-actions"><div><span class="section-label">TAKE IT TO THE REVIEW</span><p>The share link includes the visible inputs. Print produces a clean input, formula and result record.</p></div><button class="secondary-button" id="share-value-duty" type="button" data-label="SHARE THIS SCENARIO">SHARE THIS SCENARIO</button><button class="secondary-button" id="print-value-duty" type="button">PRINT / SAVE</button></div>
+        </section>
+        <p class="visually-hidden" id="value-duty-status" aria-live="polite"></p>
+          </div>
+
+        <aside class="calculator-answer value-duty-answer tool-first-answer" aria-labelledby="value-duty-direct-answer">
+          <span class="section-label">DIRECT ANSWER</span>
+          <div>
+            <h2 id="value-duty-direct-answer">How do customs value, duty and import VAT connect?</h2>
+            <p>For a transaction-value planning scenario, start with the converted goods price, then add or deduct the amounts you have established for customs value. Apply the ad valorem percentage you have checked. Build the import VAT value by adding duty, other import charges and relevant incidental expenses.</p>
+            <div class="equation-stack"><code>CONVERTED GOODS = GOODS AMOUNT ÷ CURRENCY UNITS PER £1</code><code>CUSTOMS VALUE = CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS</code><code>AD VALOREM DUTY = CUSTOMS VALUE × YOUR DUTY RATE</code><code>IMPORT VAT = IMPORT VAT VALUE × YOUR VAT RATE</code></div>
+            <p class="tool-first-answer-link">Need the duty rate first? <a href="/tools/commodity-code-checker/">Find it with the free commodity code checker</a>.</p>
+          </div>
+        </aside>
+        </div>
+
+        <section class="tool-first-about value-duty-about" aria-label="About this workpaper">
+          <div class="tool-first-about-copy">
             <p>${escapeHtml(workpaper.standfirst)}</p>
             <div class="value-duty-hero-actions"><a class="button" href="#valuation-workpaper">BUILD MY SCENARIO</a><a href="#official-checkpoints">CHECK THE INPUT SOURCES →</a></div>
             <div class="calculator-trust"><strong>10 EXPLICIT INPUTS</strong><strong>6 DECISION OUTPUTS</strong><strong>PRINT OR SHARE</strong></div>
@@ -497,15 +736,6 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
             <div class="stamp">BUILD<br />THEN CHECK</div>
             <div class="review-cell"><span>EDITION</span><strong>${workpaper.reviewedOn}</strong></div>
           </aside>
-        </header>
-
-        <section class="calculator-answer value-duty-answer" aria-labelledby="value-duty-direct-answer">
-          <span class="section-label">DIRECT ANSWER</span>
-          <div>
-            <h2 id="value-duty-direct-answer">How do customs value, duty and import VAT connect?</h2>
-            <p>For a transaction-value planning scenario, start with the converted goods price, then add or deduct the amounts you have established for customs value. Apply the ad valorem percentage you have checked. Build the import VAT value by adding duty, other import charges and relevant incidental expenses.</p>
-            <div class="equation-stack"><code>CONVERTED GOODS = GOODS AMOUNT ÷ CURRENCY UNITS PER £1</code><code>CUSTOMS VALUE = CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS</code><code>AD VALOREM DUTY = CUSTOMS VALUE × YOUR DUTY RATE</code><code>IMPORT VAT = IMPORT VAT VALUE × YOUR VAT RATE</code></div>
-          </div>
         </section>
 
         <section class="official-checkpoints" id="official-checkpoints" aria-labelledby="checkpoint-heading">
@@ -535,63 +765,13 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
           </div>
         </section>
 
-        <section class="value-duty-workpaper" id="valuation-workpaper" aria-labelledby="workpaper-heading">
-          <header class="value-duty-workpaper-header"><span class="section-label">YOUR PLANNING SCENARIO</span><h2 id="workpaper-heading">Cross-foot the movement in three stages.</h2><p>Enter every field. Use 0 only where you have checked that a charge, adjustment or rate does not apply. No input is fetched or inferred.</p></header>
-          <form id="value-duty-form">
-            <fieldset class="valuation-stage">
-              <legend><span>STAGE 01</span><strong>Convert the goods price.</strong><small>Enter the invoice amount and invoice-currency units per £1, matching HMRC's published table direction.</small></legend>
-              <div class="valuation-fields">
-                <label class="valuation-field" for="goods-amount"><span><b>01</b> Goods price / amount</span><small>Amount in the invoice currency before this workpaper converts it.</small><span class="valuation-input-line"><input id="goods-amount" name="goods-amount" type="number" min="0.01" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>INVOICE CURRENCY</i></span></label>
-                <label class="valuation-field" for="fx-rate"><span><b>02</b> Currency units per £1</span><small>If £1 = 1.1564 EUR, enter 1.1564. Enter 1 when the goods amount is GBP.</small><span class="valuation-input-line"><input id="fx-rate" name="fx-rate" type="number" min="0.0001" max="1000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>UNITS / GBP</i></span></label>
-              </div>
-            </fieldset>
 
-            <fieldset class="valuation-stage">
-              <legend><span>STAGE 02</span><strong>Build the customs value.</strong><small>Enter only the GBP amounts your valuation method and evidence support.</small></legend>
-              <div class="valuation-fields">
-                <label class="valuation-field" for="freight"><span><b>03</b> Freight, loading + handling</span><small>Amount to include up to the relevant UK place of introduction.</small><span class="valuation-input-line is-gbp"><input id="freight" name="freight" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
-                <label class="valuation-field" for="insurance"><span><b>04</b> Insurance</span><small>Apportioned transport insurance amount you have established for customs value.</small><span class="valuation-input-line is-gbp"><input id="insurance" name="insurance" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
-                <label class="valuation-field" for="additions"><span><b>05</b> Other additions</span><small>Assists, packing, royalties, commission or other additions only where established.</small><span class="valuation-input-line is-gbp"><input id="additions" name="additions" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
-                <label class="valuation-field" for="deductions"><span><b>06</b> Permitted deductions</span><small>Amounts already included in price that you have established may be excluded.</small><span class="valuation-input-line is-gbp"><input id="deductions" name="deductions" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="valuation-stage">
-              <legend><span>STAGE 03</span><strong>Apply your duty + VAT scenario.</strong><small>Use the percentage and charge amounts you have checked for this movement.</small></legend>
-              <div class="valuation-fields">
-                <label class="valuation-field" for="duty-rate"><span><b>07</b> Ad valorem duty rate</span><small>Rate established from the applicable tariff treatment. Enter 0 only after checking.</small><span class="valuation-input-line"><input id="duty-rate" name="duty-rate" type="number" min="0" max="1000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>PERCENT</i></span></label>
-                <label class="valuation-field" for="other-import-charges"><span><b>08</b> Other import charges</span><small>Excise Duty, levy or other charge payable on importation, excluding VAT itself.</small><span class="valuation-input-line is-gbp"><input id="other-import-charges" name="other-import-charges" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
-                <label class="valuation-field" for="incidental-expenses"><span><b>09</b> Import VAT incidental expenses</span><small>Relevant known commissions, packing, transport or insurance beyond customs value.</small><span class="valuation-input-line is-gbp"><input id="incidental-expenses" name="incidental-expenses" type="number" min="0" max="100000000" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>GBP</i></span></label>
-                <label class="valuation-field" for="vat-rate"><span><b>10</b> Import VAT rate</span><small>Rate you have checked for the goods and import treatment.</small><span class="valuation-input-line"><input id="vat-rate" name="vat-rate" type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="Required" autocomplete="off" required /><i>PERCENT</i></span></label>
-              </div>
-            </fieldset>
-
-            <div class="calculator-submit value-duty-submit"><p><strong>10 explicit inputs.</strong> Nothing is looked up, inferred, uploaded or emailed.</p><button class="button" type="submit">BUILD MY PLANNING SCENARIO</button></div>
-          </form>
-        </section>
-
-        <section class="value-duty-result" id="value-duty-result" aria-labelledby="value-duty-result-heading" aria-live="polite" hidden>
-          <header class="value-duty-result-lead"><span class="section-label">YOUR CROSS-FOOT</span><h2 id="value-duty-result-heading"><output id="tax-duty-total">£0.00</output> duties + taxes in this scenario.</h2><p>The result applies only the ten inputs shown. Keep the source evidence, valuation decision, commodity code and rate checks beside it.</p></header>
-          <div class="value-duty-ledger">
-            <article><span>CONVERTED GOODS</span><strong><output id="converted-goods">£0.00</output></strong><p>Goods amount ÷ invoice-currency units per £1.</p></article>
-            <article><span>NET OTHER ADJUSTMENTS</span><strong><output id="net-adjustments">£0.00</output></strong><p>Other additions minus permitted deductions.</p></article>
-            <article class="value-duty-key"><span>CUSTOMS VALUE</span><strong><output id="customs-value">£0.00</output></strong><p>Converted goods + freight + insurance + net adjustments.</p></article>
-            <article><span>AD VALOREM DUTY · <b id="result-duty-rate">0%</b></span><strong><output id="customs-duty">£0.00</output></strong><p>Customs value × your percentage duty rate.</p></article>
-            <article><span>IMPORT VAT VALUE</span><strong><output id="import-vat-value">£0.00</output></strong><p>Customs value + duty + other import charges + incidental expenses.</p></article>
-            <article><span>IMPORT VAT · <b id="result-vat-rate">0%</b></span><strong><output id="import-vat">£0.00</output></strong><p>Import VAT value × your VAT rate.</p></article>
-            <article class="value-duty-total"><span>PLANNING TOTAL</span><strong><output id="planning-total">£0.00</output></strong><p>Customs value + duty + other import charges + incidental expenses + import VAT. This is a worksheet cross-foot, not a declared or assessed amount.</p></article>
-          </div>
-          <aside class="result-checkpoint"><span>CHECKPOINT</span><div><h3>Before this number leaves the worksheet.</h3><p>Confirm the valuation method, exchange rate, inclusions, deductions, commodity code, origin, preference or relief, duty measures, VAT treatment, and declaration date. This duty result applies an ad valorem percentage only; it does not calculate a specific or compound tariff.</p></div></aside>
-          <div class="calculator-actions value-duty-actions"><div><span class="section-label">TAKE IT TO THE REVIEW</span><p>The share link includes the ten visible inputs. Print produces a clean input, formula and result record.</p></div><button class="secondary-button" id="share-value-duty" type="button">SHARE THIS SCENARIO</button><button class="secondary-button" id="print-value-duty" type="button">PRINT / SAVE</button></div>
-        </section>
-        <p class="visually-hidden" id="value-duty-status" aria-live="polite"></p>
-
-        <section class="formula-register value-duty-formulas" aria-labelledby="value-duty-formulas-heading"><header><span class="section-label">FORMULA CONTRACT</span><h2 id="value-duty-formulas-heading">Every step is inspectable.</h2><p>The arithmetic is deterministic and runs in this browser. Change one input and rebuild the scenario; no hidden rate or tariff table changes the result.</p></header><div><p><b>CONVERTED GOODS</b><code>GOODS AMOUNT ÷ INVOICE-CURRENCY UNITS PER £1</code></p><p><b>CUSTOMS VALUE</b><code>CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS</code></p><p><b>AD VALOREM DUTY</b><code>CUSTOMS VALUE × YOUR PERCENTAGE DUTY RATE ÷ 100</code></p><p><b>IMPORT VAT VALUE</b><code>CUSTOMS VALUE + DUTY + OTHER IMPORT CHARGES + INCIDENTAL EXPENSES</code></p><p><b>IMPORT VAT</b><code>IMPORT VAT VALUE × YOUR VAT RATE ÷ 100</code></p><p><b>DUTIES + TAXES</b><code>DUTY + OTHER IMPORT CHARGES + IMPORT VAT</code></p></div></section>
+        <section class="formula-register value-duty-formulas" aria-labelledby="value-duty-formulas-heading"><header><span class="section-label">FORMULA CONTRACT</span><h2 id="value-duty-formulas-heading">Every step is inspectable.</h2><p>The arithmetic is deterministic and runs in this browser. Change one input and rebuild the scenario; no hidden rate or tariff table changes the result.</p></header><div><p><b>CONVERTED GOODS</b><code>GOODS AMOUNT ÷ INVOICE-CURRENCY UNITS PER £1</code></p><p><b>CUSTOMS VALUE</b><code>CONVERTED GOODS + FREIGHT + INSURANCE + ADDITIONS − DEDUCTIONS</code></p><p><b>AD VALOREM DUTY</b><code>CUSTOMS VALUE × YOUR PERCENTAGE DUTY RATE ÷ 100</code></p><p><b>IMPORT VAT VALUE</b><code>CUSTOMS VALUE + DUTY + OTHER IMPORT CHARGES + INCIDENTAL EXPENSES</code></p><p><b>IMPORT VAT</b><code>IMPORT VAT VALUE × YOUR VAT RATE ÷ 100</code></p><p><b>DUTIES + TAXES</b><code>DUTY + OTHER IMPORT CHARGES + IMPORT VAT</code></p><p><b>DUTY + VAT PER UNIT</b><code>DUTIES + TAXES ÷ UNITS</code></p><p><b>LANDED COST PER UNIT</b><code>PLANNING TOTAL ÷ UNITS</code></p></div></section>
 
         <section class="duty-guide" id="import-duty-calculator-uk" aria-labelledby="duty-guide-heading">
-          <header><span class="section-label">IMPORT DUTY CALCULATOR UK</span><h2 id="duty-guide-heading">Import duty calculator UK: how duty and VAT are worked out</h2><p>UK import duty on a percentage-rate commodity is the customs value in pounds multiplied by the tariff rate. Import VAT is then charged on the customs value plus the duty, other import charges and incidental expenses. The calculator above runs both steps with your own rates and shows every line.</p></header>
+          <header><span class="section-label">IMPORT DUTY CALCULATOR UK</span><h2 id="duty-guide-heading">How is UK import duty calculated?</h2><p>UK import duty on a percentage-rate commodity is the customs value in pounds multiplied by the tariff rate. The customs value is usually the goods price plus freight and insurance to the UK border (often called CIF value). Import VAT is then charged on the customs value plus the duty, other import charges and incidental expenses. The calculator above runs both steps with your own rates and shows every line.</p></header>
           <ol class="duty-steps">
-            <li><b>01</b><div><strong>Find the commodity code and rate.</strong><p>Look the goods up in the <a href="https://www.gov.uk/trade-tariff">UK Trade Tariff</a>. Note the duty rate for the origin and any preference you can prove.</p></div></li>
+            <li><b>01</b><div><strong>Find the duty rate.</strong><p>Find the commodity code with the <a href="/tools/commodity-code-checker/">free commodity code checker</a>, then note the duty rate for the origin in the <a href="https://www.gov.uk/trade-tariff">UK Trade Tariff</a>, plus any preference you can prove.</p></div></li>
             <li><b>02</b><div><strong>Convert the invoice to pounds.</strong><p>Use the HMRC exchange rate for the period. Enter it as currency units per £1, the way HMRC publishes it.</p></div></li>
             <li><b>03</b><div><strong>Build the customs value.</strong><p>Add freight and insurance to the UK border and any required additions, such as royalties or assists. Take off permitted deductions.</p></div></li>
             <li><b>04</b><div><strong>Apply duty, then VAT.</strong><p>Duty is the customs value × rate. VAT is the VAT value × VAT rate, where the VAT value includes the duty.</p></div></li>
@@ -599,6 +779,8 @@ export function renderValueDutyWorkpaper(workpaper, site, { navHtml, webmasterHt
           <div class="duty-examples">${renderWorkedExamples()}</div>
           <p class="duty-guide-note">The rates in these examples show how the arithmetic works. Take the rate for your own goods from the UK Trade Tariff. Need the invoice first? <a href="/tools/commercial-invoice-generator/">Build a commercial invoice with the free generator</a>.</p>
         </section>
+
+        ${renderDutyTopics()}
 
         <section class="related-workpapers" aria-labelledby="related-workpapers-heading"><header><span class="section-label">KEEP WORKING</span><h2 id="related-workpapers-heading">Take the number into the operation.</h2><p>Use the Declarix research and free workbench to test desk economics, map the document handoff, and prepare for the customs intermediary registration next steps.</p></header><nav aria-label="Related free Declarix resources"><a href="/research/uk-customs-operations-signal-report-2026/"><span>ORIGINAL RESEARCH</span><strong>UK customs operations signals</strong><b>READ THE REPORT →</b></a><a href="/tools/customs-declaration-cost-calculator/"><span>FREE CALCULATOR</span><strong>Customs desk economics</strong><b>RUN THE COST MODEL →</b></a><a href="/tools/customs-document-pack-check/"><span>FREE WORKPAPER</span><strong>Customs document pack check</strong><b>MAP THE HANDOFF →</b></a><a href="/tools/commercial-invoice-generator/"><span>FREE GENERATOR</span><strong>Commercial invoice template and generator</strong><b>BUILD THE INVOICE →</b></a><a href="/customs-intermediary-registration-2026/"><span>FREE RESPONSE KIT</span><strong>Customs intermediary registration 2026</strong><b>OPEN THE KIT →</b></a></nav></section>
 
