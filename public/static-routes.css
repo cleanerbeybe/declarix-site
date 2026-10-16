@@ -796,6 +796,16 @@ a:focus-visible {
     min-height: 360px;
   }
 
+  /* Section hubs (/tools/ and others): the page list is the tool, so keep the hero short on phones. */
+  .hero:has(~ .hub-register) .hero-copy {
+    min-height: 0;
+    padding: 28px 18px;
+  }
+
+  .hero:has(~ .hub-register) .hero-ledger {
+    min-height: 0;
+  }
+
   .sheet,
   .sheet:nth-child(2n) {
     min-height: 0;
