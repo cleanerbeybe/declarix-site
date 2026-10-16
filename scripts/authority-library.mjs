@@ -1,8 +1,10 @@
 import { breadcrumbHtml, breadcrumbList, organizationNode } from './site-graph.mjs'
 import { referenceLinkStrip } from './customs-reference-links.mjs'
+import { SELLER, hubSeo, incotermsSeo, obligationRows } from './incoterms-content.mjs'
 
 const REVIEWED_ON = '2026-07-17'
-const INCOTERMS_REVIEWED_ON = '2026-10-15'
+const INCOTERMS_PUBLISHED_ON = '2026-10-15'
+const INCOTERMS_REVIEWED_ON = '2026-10-16'
 
 const source = (title, publisher, url, checked = '17 JULY 2026') => ({ title, publisher, url, checked })
 const checkedOctober = (title, url) => source(title, 'HM Revenue & Customs · GOV.UK', url, '15 OCTOBER 2026')
@@ -27,7 +29,11 @@ const hmrcMethodOne = checkedOctober('Customs valuation: Method 1 transaction va
 const hmrcDeliveryTerms = checkedOctober('Delivery terms for Data Element 4/1 of CDS', 'https://www.gov.uk/government/publications/delivery-terms-for-data-element-41-of-the-customs-declaration-service')
 const hmrcImportVat = checkedOctober('Paying VAT on imports: valuation of imported goods', 'https://www.gov.uk/guidance/vat-imports-acquisitions-and-purchases-from-abroad')
 const hmrcExchangeRates = checkedOctober('Exchange rates for customs and VAT', 'https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat')
-const incotermSources = [hmrcIncoterms, hmrcValuation, iccIncoterms, hmrcDeliveryCosts, hmrcMethodOne, hmrcDeliveryTerms, hmrcImportVat, hmrcExchangeRates]
+const checkedSixteen = (title, publisher, url) => source(title, publisher, url, '16 OCTOBER 2026')
+const hmrcNotice252 = checkedSixteen('Notice 252: valuation of imported goods for customs purposes, VAT and trade statistics', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/government/publications/notice-252-valuation-of-imported-goods-for-customs-purposes-vat-and-trade-statistics')
+const hmrcPva = checkedSixteen('Check when you can account for import VAT on your VAT Return', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/check-when-you-can-account-for-import-vat-on-your-vat-return')
+const hmrcEori = checkedSixteen('Get an EORI number', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/eori')
+const incotermSources = [hmrcIncoterms, hmrcValuation, iccIncoterms, hmrcDeliveryCosts, hmrcMethodOne, hmrcDeliveryTerms, hmrcImportVat, hmrcExchangeRates, hmrcNotice252, hmrcPva, hmrcEori]
 
 // Worked examples: every amount is an example. Treatments follow HMRC's delivery-cost rules:
 // 'value' = in the customs value; 'uk' = after the place of introduction, separately shown, so outside the customs value
@@ -246,7 +252,6 @@ const termDefinitions = [
       ['UK import clearance + duty', 'Seller'],
       ['Named place · ready to unload', 'Seller → Buyer risk'],
     ],
-    frozenEvidence: 'Frozen GB keyword evidence: 1,400 monthly volume, KD 12, 741 available clicks.',
     example: {
       title: 'Edinburgh retailer · DDP Edinburgh, sea via Leith',
       scenario:
@@ -660,12 +665,24 @@ const workflowDefinitions = [
   {
     slug: 'ens-ics2-entry-summary-declaration-checklist',
     code: 'ENS / ICS2',
-    title: 'ENS and ICS2 entry summary declaration guide and checklist',
+    title: 'ENS and ICS2 Guide: Entry Summary Declaration Checklist UK',
     description:
-      'Step-by-step ENS and ICS2 guide: choose S&S GB or ICS2, who files (carrier or house filer), key data elements, timings by mode, MRN and amendments.',
+      'How to make an entry summary declaration (ENS) on S&S GB or ICS2 (Import Control System 2): who files, deadlines by mode, data elements, DNL, amendments.',
     guide: 'ens',
-    sourcesNote: 'The checklist facts were traced to the source editions checked on 17 July 2026. The step-by-step guide, data, filer and timing tables were checked against the sources marked 15 October 2026. Operational prompts organise the job alongside the current official instruction.',
-    h1: 'Choose the ENS system from the movement—not the habit.',
+    reviewedOn: '2026-10-16',
+    sourcesNote: 'The checklist facts were traced to the source editions checked on 17 July 2026. The step-by-step guide, data, filer and timing tables were checked against the sources marked 15 October 2026. The deadline, Do not load, ICS2 Release 3 and data-supplier sections were checked against the sources marked 16 October 2026. Operational prompts organise the job alongside the current official instruction.',
+    h1: 'ENS and ICS2 entry summary declarations: the UK guide and checklist',
+    // The previous H1 stays word for word as the subhead (INTENT-REVIEW §4.7).
+    subhead: 'Choose the ENS system from the movement—not the habit.',
+    faqs: [
+      ['What is an ENS?', 'An entry summary declaration is a safety and security filing with advance data about goods coming into Great Britain, into Northern Ireland, or into the EU. Customs uses it for risk analysis before the goods arrive.'],
+      ['Who submits the ENS?', 'The carrier is responsible. A forwarder, customs agent or other third party can submit it for the carrier with the carrier’s knowledge and consent, but the legal liability stays with the carrier.'],
+      ['What is the difference between ENS and ICS2?', 'The ENS is the declaration. ICS2 is the system that receives it for Northern Ireland and the EU. For Great Britain, the ENS goes to HMRC’s S&S GB service.'],
+      ['Can I amend an ENS?', 'Yes, until the goods arrive at the border. If the person lodging it or their representative changes, submit a new declaration instead of an amendment.'],
+      ['What do I get when the ENS is accepted?', 'A movement reference number (MRN) from S&S GB or ICS2. Keep it with the shipment and pass it to the arrival team.'],
+      ['What is a “Do not load” message?', 'For deep-sea containerised cargo, S&S GB or ICS2 can send a “Do not load” message (IE351 Advanced Intervention Notification) after risk analysis. Do not load the container. UK Border Force contacts you with the next step.'],
+      ['When is the ENS deadline for container ships?', '24 hours before the goods are loaded at the port of departure. For short-sea and roll-on roll-off crossings it is 2 hours before arrival.'],
+    ],
     standfirst:
       'Great Britain and Northern Ireland movements use different safety-and-security routes. Start with where the goods enter, then lock responsibility, timing, data and amendment ownership.',
     direct: 'Use S&S GB for relevant imports into Great Britain and ICS2 for goods brought into Northern Ireland; submit the complete ENS on time and keep amendment and arrival responsibility explicit.',
@@ -685,6 +702,8 @@ const workflowDefinitions = [
       source('Entry summary declaration requirements (time limits and responsibility)', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/safety-and-security-declarations/safety-and-security-import-requirements-entry-summary-declarations#time-limits', '15 OCTOBER 2026'),
       source('Making an entry summary declaration (ICS2 for Northern Ireland, amendments)', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/making-an-entry-summary-declaration#ics2', '15 OCTOBER 2026'),
       source('Import Control System 2 (ICS2)', 'European Commission · Taxation and Customs Union', 'https://taxation-customs.ec.europa.eu/customs-4/customs-security/import-control-system-2-ics2-0_en', '15 OCTOBER 2026'),
+      source('Making an entry summary declaration (Do not load messages, data elements file updated 14 October 2026)', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/making-an-entry-summary-declaration#do-not-load-messages', '16 OCTOBER 2026'),
+      source('ICS2 frequently asked questions (notifications, referrals, multiple filing)', 'European Commission · Taxation and Customs Union', 'https://taxation-customs.ec.europa.eu/customs-4/customs-security/import-control-system-2-ics2-0/faq_en', '16 OCTOBER 2026'),
     ],
     related: '/tools/customs-document-pack-check/',
     relatedLabel: 'Run the document pack check',
@@ -753,10 +772,12 @@ const SEED_TERMS = new Set(['FOB', 'CIF', 'DAP', 'FCA', 'DDP'])
 const incotermsHub = {
   kind: 'incoterms-hub',
   path: '/customs-reference/incoterms/',
-  title: 'Incoterms chooser and UK customs value atlas',
-  description:
-    'All 11 Incoterms 2020 rules mapped to UK customs value: answer four handoff questions, open the term sheet and follow a worked UK valuation example.',
-  h1: 'Choose the handoff. Then build the customs value trail.',
+  title: hubSeo.title,
+  description: hubSeo.description,
+  h1: hubSeo.h1,
+  // The previous H1 stays word for word as the subhead (INTENT-REVIEW §4.3).
+  subhead: 'Choose the handoff. Then build the customs value trail.',
+  faqs: hubSeo.faqs,
   eyebrow: 'INCOTERMS OPERATIONAL CHOOSER · ALL 11 INCOTERMS 2020 RULES · UK CUSTOMS VALUE',
   standfirst:
     'Incoterms allocate delivery tasks, costs and risk; they do not select the customs valuation method. Use four operational questions to reach a sensible term sheet, then test the actual contract and cost evidence.',
@@ -790,12 +811,19 @@ export const authorityRoutes = [
   incotermsHub,
   ...termDefinitions.map((term) => ({
     ...term,
+    // Search-intent title, H1 and meta (INTENT-REVIEW §4.3); the previous H1 stays as the subhead.
+    title: incotermsSeo[term.code].title,
+    description: incotermsSeo[term.code].description,
+    h1: incotermsSeo[term.code].h1,
+    subhead: term.h1,
+    seo: incotermsSeo[term.code],
+    faqs: incotermsSeo[term.code].faqs,
     kind: 'incoterm-term',
     path: `/customs-reference/incoterms/${term.slug}/`,
     eyebrow: `INCOTERMS 2020 · ${term.code} · OPERATIONAL VALUE SHEET`,
     ref: `TERM SHEET · ${term.code}`,
     stamp: `${term.code}\nMAP`,
-    publishedOn: SEED_TERMS.has(term.code) ? REVIEWED_ON : INCOTERMS_REVIEWED_ON,
+    publishedOn: SEED_TERMS.has(term.code) ? REVIEWED_ON : INCOTERMS_PUBLISHED_ON,
     reviewedOn: INCOTERMS_REVIEWED_ON,
     sources: incotermSources,
   })),
@@ -807,7 +835,7 @@ export const authorityRoutes = [
     eyebrow: `CUSTOMS WORKFLOW · ${workflow.code} · OPERATOR HANDOFF`,
     ref: `WORKFLOW ${String(index + 1).padStart(2, '0')} · ${workflow.code}`,
     stamp: `${workflow.code.replace(' / ', '\n')}`,
-    reviewedOn: REVIEWED_ON,
+    reviewedOn: workflow.reviewedOn || REVIEWED_ON,
   })),
 ]
 
@@ -852,6 +880,14 @@ function jsonLd(route, site) {
     },
     breadcrumbList(site, route.path),
   ]
+  // FAQPage only mirrors the FAQ that is visible on the page (each item carries data-faq-item).
+  if (route.faqs?.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': `${site.origin}${route.path}#faq`,
+      mainEntity: route.faqs.map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } })),
+    })
+  }
   if (route.kind === 'burden-report') {
     graph.push({
       '@type': 'Dataset',
@@ -931,6 +967,9 @@ function burdenSvg() {
 }
 
 export function authorityAssets(route) {
+  if (route.kind === 'incoterms-hub') {
+    return [{ href: '/downloads/incoterms-2020-chart-uk.csv', content: incotermsChartCsv() }]
+  }
   if (route.kind === 'incoterm-term') {
     return [{ href: `/downloads/incoterms-${route.slug}-operational-map.svg`, content: termSvg(route) }]
   }
@@ -951,7 +990,44 @@ function renderDownload(route, asset, label) {
   return `<a class="authority-download" download href="${asset.href}" data-authority-download="${route.kind}" data-asset-format="${extension}"><span>${extension}</span><strong>${escapeHtml(label)}</strong><b>DOWNLOAD ↓</b></a>`
 }
 
-function renderIncotermsHub() {
+const ICC_ORDER = ['EXW', 'FCA', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP', 'FAS', 'FOB', 'CFR', 'CIF']
+const termByCode = (code) => termDefinitions.find((term) => term.code === code)
+const insuranceShort = (code) => (code === 'CIF' ? 'Seller · ICC (C), 110%' : code === 'CIP' ? 'Seller · ICC (A), 110%' : 'None required')
+const chartColumns = ['Rule', 'Full name', 'Mode', 'Risk passes', 'Main freight', 'Insurance', 'Export clearance', 'Import clearance + duty', 'UK customs value']
+
+function chartRow(code) {
+  const term = termByCode(code)
+  const seo = incotermsSeo[code]
+  const o = seo.obligations
+  return [code, term.name, seo.modeShort, seo.riskShort, o.carriage[0], insuranceShort(code), o.export[0], o.import[0], seo.chartValue]
+}
+
+function incotermsChartCsv() {
+  const cell = (value) => `"${String(value).replaceAll('"', '""')}"`
+  return [chartColumns, ...ICC_ORDER.map(chartRow)].map((row) => row.map(cell).join(',')).join('\n') + '\n'
+}
+
+function renderFaq(route, heading) {
+  return `<section class="authority-faq" id="faq" aria-labelledby="faq-heading"><header><span>QUESTIONS</span><h2 id="faq-heading">${escapeHtml(heading)}</h2></header>${route.faqs.map(([question, answer]) => `<div class="authority-faq-item" data-faq-item><h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p></div>`).join('')}</section>`
+}
+
+function renderIncotermsChart(route) {
+  const asset = authorityAssets(route)[0]
+  const rows = ICC_ORDER.map((code) => {
+    const [, name, mode, risk, freight, insurance, exportClearance, importClearance, value] = chartRow(code)
+    return `<tr><th scope="row" data-label="Rule"><a href="/customs-reference/incoterms/${code.toLowerCase()}/" data-authority-related="chart_${code.toLowerCase()}">${code}</a></th><td data-label="Full name">${escapeHtml(name)}</td><td data-label="Mode">${escapeHtml(mode)}</td><td data-label="Risk passes">${escapeHtml(risk)}</td><td data-label="Main freight">${escapeHtml(freight)}</td><td data-label="Insurance">${escapeHtml(insurance)}</td><td data-label="Export clearance">${escapeHtml(exportClearance)}</td><td data-label="Import clearance + duty">${escapeHtml(importClearance)}</td><td data-label="UK customs value">${escapeHtml(value)}</td></tr>`
+  }).join('')
+  return `<section class="incoterms-chart" id="incoterms-chart" aria-labelledby="incoterms-chart-heading"><header><span>INCOTERMS 2020 CHART · ALL 11 RULES</span><h2 id="incoterms-chart-heading">Incoterms 2020 chart: who does what under each rule</h2><p>Read across a row to see who pays the main freight, who must insure, who clears export and UK import, where risk passes, and what to add or take out for the UK customs value.</p></header><div class="table-scroll chart-scroll" tabindex="0" role="region" aria-label="Incoterms 2020 chart"><table><caption>Incoterms 2020 rules: costs, risk, clearance and UK customs value</caption><thead><tr>${chartColumns.map((column) => `<th scope="col">${escapeHtml(column)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><div class="chart-download"><h3>Download the chart</h3><p>Take the chart as a spreadsheet, or print it on one page.</p><div class="chart-download-actions">${renderDownload(route, asset, 'Incoterms 2020 chart for UK trade (CSV)')}<button class="button chart-print" type="button" data-chart-print>PRINT THE CHART</button></div></div></section>`
+}
+
+function renderHubSections() {
+  const listSections = new Set(['incoterms-2010-vs-2020', 'uk-importers'])
+  return hubSeo.sections
+    .map(([id, heading, paragraphs]) => `<section class="authority-prose" id="${id}" aria-labelledby="${id}-heading"><h2 id="${id}-heading">${escapeHtml(heading)}</h2>${listSections.has(id) ? `<ul>${paragraphs.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : paragraphs.map((item) => `<p>${escapeHtml(item)}</p>`).join('')}${id === 'uk-importers' ? `<p>Work out the duty and VAT for any of these rules with the <a href="/tools/customs-value-import-duty-vat-calculator/" data-authority-related="duty_calculator">UK import duty and VAT calculator</a>.</p>` : ''}</section>`)
+    .join('')
+}
+
+function renderIncotermsHub(route) {
   const termRow = (term) => `<a class="term-row" href="/customs-reference/incoterms/${term.slug}/" data-authority-related="term_${term.code.toLowerCase()}"><b>${term.code}</b><span><strong>${term.name}</strong><small>${term.mode}</small></span><em>OPEN SHEET →</em></a>`
   const anyMode = termDefinitions.filter((term) => term.mode.startsWith('Any')).map(termRow).join('')
   const seaOnly = termDefinitions.filter((term) => term.mode.startsWith('Sea')).map(termRow).join('')
@@ -961,7 +1037,7 @@ function renderIncotermsHub() {
       return `<tr><th scope="row"><a href="/customs-reference/incoterms/${term.slug}/">${term.code}</a></th><td data-label="Example">${escapeHtml(example.title)}</td><td data-label="Place of introduction">${escapeHtml(example.placeOfIntroduction)}</td><td data-label="Customs value">${money(example.customsValue)}</td></tr>`
     })
     .join('')
-  return `<section class="chooser" aria-labelledby="chooser-heading"><header><span>FOUR-QUESTION CHOOSER</span><h2 id="chooser-heading">Find the closest operational sheet.</h2><p>The result narrows the handoff to inspect. Your contract and the current ICC rules remain decisive.</p></header><form id="incoterms-chooser"><fieldset><legend>1 · Transport mode</legend><label><input type="radio" name="mode" value="sea" required /> Sea / inland waterway only</label><label><input type="radio" name="mode" value="any" /> Any mode or multimodal</label></fieldset><fieldset><legend>2 · Who contracts main carriage?</legend><label><input type="radio" name="carriage" value="seller" required /> Seller</label><label><input type="radio" name="carriage" value="buyer" /> Buyer</label></fieldset><fieldset><legend>3 · Does the seller handle UK import clearance and duties?</legend><label><input type="radio" name="import" value="seller" required /> Yes</label><label><input type="radio" name="import" value="buyer" /> No</label></fieldset><fieldset><legend>4 · Is delivery promised at the destination place?</legend><label><input type="radio" name="destination" value="yes" required /> Yes</label><label><input type="radio" name="destination" value="no" /> No</label></fieldset><button class="button" type="submit">SHOW THE CLOSEST SHEET</button></form><div class="chooser-result" id="chooser-result" aria-live="polite" hidden><span>CLOSEST SHEET TO INSPECT</span><strong id="chooser-code"></strong><p id="chooser-copy"></p><a id="chooser-link" data-authority-related="chooser_result" href="/customs-reference/incoterms/">OPEN THE TERM SHEET →</a></div></section><section class="term-register" aria-labelledby="term-register-heading"><header><span>FULL ATLAS · INCOTERMS 2020</span><h2 id="term-register-heading">All eleven rules, grouped by transport mode.</h2><p>HMRC groups the rules the same way: seven for any mode of transport and four for sea and inland waterway only.</p></header><h3 class="term-group">Any mode or multimodal · 7 rules</h3>${anyMode}<h3 class="term-group">Sea and inland waterway only · 4 rules</h3>${seaOnly}</section><section class="term-examples" aria-labelledby="term-examples-heading"><header><span>ELEVEN WORKED UK EXAMPLES</span><h2 id="term-examples-heading">One real-world value build for every rule.</h2><p>Each sheet carries its own UK import, its own place of introduction and its own cost split. Each example uses its own amounts, exchange rates and duty rates.</p></header><div class="table-scroll" tabindex="0" role="region" aria-label="Worked example index"><table><caption>Worked customs value examples by Incoterm</caption><thead><tr><th scope="col">Rule</th><th scope="col">Example</th><th scope="col">Place of introduction</th><th scope="col">Customs value</th></tr></thead><tbody>${examples}</tbody></table></div></section><section class="authority-bridge"><span>CUSTOMS VALUE</span><h2>The trade term does not choose the valuation method.</h2><p>Use the term to locate cost and responsibility evidence, then build the value with the applicable valuation method and actual additions or deductions.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a></section>${referenceLinkStrip('incoterms')}`
+  return `${renderIncotermsChart(route)}<section class="chooser" aria-labelledby="chooser-heading"><header><span>FOUR-QUESTION CHOOSER</span><h2 id="chooser-heading">Find the closest operational sheet.</h2><p>The result narrows the handoff to inspect. Your contract and the current ICC rules remain decisive.</p></header><form id="incoterms-chooser"><fieldset><legend>1 · Transport mode</legend><label><input type="radio" name="mode" value="sea" required /> Sea / inland waterway only</label><label><input type="radio" name="mode" value="any" /> Any mode or multimodal</label></fieldset><fieldset><legend>2 · Who contracts main carriage?</legend><label><input type="radio" name="carriage" value="seller" required /> Seller</label><label><input type="radio" name="carriage" value="buyer" /> Buyer</label></fieldset><fieldset><legend>3 · Does the seller handle UK import clearance and duties?</legend><label><input type="radio" name="import" value="seller" required /> Yes</label><label><input type="radio" name="import" value="buyer" /> No</label></fieldset><fieldset><legend>4 · Is delivery promised at the destination place?</legend><label><input type="radio" name="destination" value="yes" required /> Yes</label><label><input type="radio" name="destination" value="no" /> No</label></fieldset><button class="button" type="submit">SHOW THE CLOSEST SHEET</button></form><div class="chooser-result" id="chooser-result" aria-live="polite" hidden><span>CLOSEST SHEET TO INSPECT</span><strong id="chooser-code"></strong><p id="chooser-copy"></p><a id="chooser-link" data-authority-related="chooser_result" href="/customs-reference/incoterms/">OPEN THE TERM SHEET →</a></div></section>${renderHubSections()}<section class="term-register" aria-labelledby="term-register-heading"><header><span>FULL ATLAS · INCOTERMS 2020</span><h2 id="term-register-heading">All eleven rules, grouped by transport mode.</h2><p>HMRC groups the rules the same way: seven for any mode of transport and four for sea and inland waterway only.</p></header><h3 class="term-group">Any mode or multimodal · 7 rules</h3>${anyMode}<h3 class="term-group">Sea and inland waterway only · 4 rules</h3>${seaOnly}</section><section class="term-examples" aria-labelledby="term-examples-heading"><header><span>ELEVEN WORKED UK EXAMPLES</span><h2 id="term-examples-heading">One real-world value build for every rule.</h2><p>Each sheet carries its own UK import, its own place of introduction and its own cost split. Each example uses its own amounts, exchange rates and duty rates.</p></header><div class="table-scroll" tabindex="0" role="region" aria-label="Worked example index"><table><caption>Worked customs value examples by Incoterm</caption><thead><tr><th scope="col">Rule</th><th scope="col">Example</th><th scope="col">Place of introduction</th><th scope="col">Customs value</th></tr></thead><tbody>${examples}</tbody></table></div></section><section class="authority-bridge"><span>CUSTOMS VALUE</span><h2>The trade term does not choose the valuation method.</h2><p>Use the term to locate cost and responsibility evidence, then build the value with the applicable valuation method and actual additions or deductions.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a></section>${renderFaq(route, 'Incoterms questions, answered')}${referenceLinkStrip('incoterms')}`
 }
 
 const money = (value) => `£${value.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -993,10 +1069,49 @@ function renderTermSiblings(route) {
   return `<nav class="term-siblings" aria-label="Other Incoterms 2020 sheets"><span>OTHER INCOTERMS 2020 SHEETS</span><div>${links}</div></nav>`
 }
 
+function renderObligations(route) {
+  const seo = route.seo
+  const rows = obligationRows
+    .map(([key, label]) => {
+      const [party, detail] = seo.obligations[key]
+      return `<tr><th scope="row" data-label="Obligation">${escapeHtml(label)}</th><td data-label="Who">${escapeHtml(party)}</td><td data-label="What it means">${escapeHtml(detail)}</td></tr>`
+    })
+    .join('')
+  return `<section class="obligations" aria-labelledby="obligations-heading"><header><span>WHO DOES WHAT · ${route.code}</span><h2 id="obligations-heading">${route.code} obligations: seller vs buyer</h2><p>The Incoterms 2020 split for ${escapeHtml(route.name)}, line by line.</p></header><div class="table-scroll" tabindex="0" role="region" aria-label="${route.code} obligations table"><table><caption>${route.code} (${escapeHtml(route.name)}) obligations under Incoterms 2020</caption><thead><tr><th scope="col">Obligation</th><th scope="col">Who</th><th scope="col">What it means</th></tr></thead><tbody>${rows}<tr><th scope="row" data-label="Obligation">Risk passes at</th><td data-label="Who">Seller → Buyer</td><td data-label="What it means">${escapeHtml(seo.obligations.risk)}</td></tr><tr><th scope="row" data-label="Obligation">Mode</th><td data-label="Who">${escapeHtml(seo.modeShort)}</td><td data-label="What it means">${escapeHtml(route.mode)}.</td></tr></tbody></table></div></section>`
+}
+
+function renderUkGlance(route) {
+  const o = route.seo.obligations
+  const sellerImports = o.import[0] === SELLER
+  const carrierParty = o.carriage[0] === SELLER ? 'seller' : 'buyer'
+  const items = [
+    ['UK importer and declarant', sellerImports ? 'The seller is the importer of record. A seller based outside the UK usually appoints a UK customs agent to make the import declaration on CDS.' : 'The buyer is the importer. The buyer, or its customs agent, makes the import declaration on CDS.'],
+    ['UK customs value', route.seo.ukValue],
+    ['Import VAT and PVA', sellerImports ? 'The seller pays the import VAT. It can use postponed VAT accounting (PVA) only if it is registered for UK VAT.' : 'The buyer pays the import VAT. A VAT-registered buyer can account for it on its VAT Return with postponed VAT accounting (PVA).'],
+    ['EORI', sellerImports ? 'The seller needs a GB EORI number to import into Great Britain.' : 'The buyer needs a GB EORI number to import into Great Britain.'],
+    ['Entry summary declaration (ENS)', `The carrier that brings the goods into Great Britain lodges the ENS in S&S GB, or a third party lodges it for the carrier. Under ${route.code} the ${carrierParty} books that carrier.`],
+  ]
+  return `<aside class="uk-glance" aria-labelledby="uk-glance-heading"><span>UK CUSTOMS AT A GLANCE · ${route.code}</span><h2 id="uk-glance-heading">UK customs at a glance</h2><dl>${items.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl><p>More on the ENS: the <a href="/customs-workflows/ens-ics2-entry-summary-declaration-checklist/" data-authority-related="ens_guide">ENS and ICS2 entry summary declaration guide</a>.</p></aside>`
+}
+
+function renderDutyLink(route) {
+  return `<section class="duty-link" aria-labelledby="duty-link-heading"><span>DUTY AND VAT · ${route.code}</span><h2 id="duty-link-heading">Work out duty and VAT under ${route.code}</h2><p>Enter the ${route.code} invoice price, the freight and insurance to the UK border and the duty rate in the <a href="/tools/customs-value-import-duty-vat-calculator/" data-authority-related="duty_calculator">UK import duty and VAT calculator</a>. It builds the customs value, the import duty and the import VAT for you.</p></section>`
+}
+
+function renderVs(route) {
+  return `<section class="term-vs" aria-label="${route.code} compared with other rules">${route.seo.vs.map(([heading, copy], index) => `<article><h2 id="vs-${index + 1}">${escapeHtml(heading)}</h2><p>${escapeHtml(copy)}</p></article>`).join('')}</section>`
+}
+
+function renderProsCons(route) {
+  const card = (title, items, tone) => `<div class="pc-card pc-${tone}"><h3>${escapeHtml(title)}</h3><ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`
+  const { advantages, disadvantages } = route.seo
+  return `<section class="pros-cons" aria-labelledby="pros-cons-heading"><header><span>BUYER AND SELLER VIEW · ${route.code}</span><h2 id="pros-cons-heading">${route.code} advantages and disadvantages</h2></header><div class="pc-grid">${card('Advantages for the buyer', advantages.buyer, 'plus')}${card('Advantages for the seller', advantages.seller, 'plus')}${card('Disadvantages for the buyer', disadvantages.buyer, 'minus')}${card('Disadvantages for the seller', disadvantages.seller, 'minus')}</div></section>`
+}
+
 function renderTerm(route) {
   const asset = authorityAssets(route)[0]
   const phases = route.phases.map(([phase, owner], index) => `<li><span>0${index + 1}</span><strong>${escapeHtml(phase)}</strong><em>${escapeHtml(owner)}</em></li>`).join('')
-  return `<section class="direct-answer"><span>DIRECT ANSWER · ${route.code}</span><h2>${escapeHtml(route.fit)}</h2><p>${escapeHtml(route.risk)}</p></section><figure class="handoff-map"><figcaption><span>ORIGINAL OPERATIONAL MAP</span><h2>Delivery, cost and risk handoff.</h2></figcaption><ol>${phases}</ol></figure><div class="responsibility-grid"><section><span>SELLER HANDOFF</span><h2>Seller side</h2><ul>${route.seller.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>BUYER HANDOFF</span><h2>Buyer side</h2><ul>${route.buyer.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><section class="value-checks"><header><span>VALUE WORKPAPER</span><h2>Four checks before the number moves.</h2><p>${route.frozenEvidence ? escapeHtml(route.frozenEvidence) : 'Keep the named place, transport evidence and commercial invoice tied to the same consignment.'}</p></header><ol>${route.valueChecks.map((item, index) => `<li><b>0${index + 1}</b><span>${escapeHtml(item)}</span></li>`).join('')}</ol></section>${renderExample(route)}<div class="download-row">${renderDownload(route, asset, `${route.code} operational map`)}</div><section class="authority-bridge"><span>NEXT WORKPAPER</span><h2>Cross-foot the cost trail.</h2><p>Bring the goods amount, currency direction, freight, insurance and adjustments into one browser-only calculation.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a><a data-authority-related="incoterms_hub" href="/customs-reference/incoterms/">BACK TO THE INCOTERMS CHOOSER</a></section>${renderTermSiblings(route)}${referenceLinkStrip('incoterms')}`
+  return `<section class="direct-answer"><span>DIRECT ANSWER · ${route.code}</span><h2>${escapeHtml(route.fit)}</h2><p>${escapeHtml(route.risk)}</p></section>${renderObligations(route)}${renderUkGlance(route)}${renderDutyLink(route)}<figure class="handoff-map"><figcaption><span>ORIGINAL OPERATIONAL MAP</span><h2>Delivery, cost and risk handoff.</h2></figcaption><ol>${phases}</ol></figure><div class="responsibility-grid"><section><span>SELLER HANDOFF</span><h2>Seller side</h2><ul>${route.seller.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>BUYER HANDOFF</span><h2>Buyer side</h2><ul>${route.buyer.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div>${renderVs(route)}${renderProsCons(route)}<section class="value-checks"><header><span>VALUE WORKPAPER</span><h2>Four checks before the number moves.</h2><p>Keep the named place, transport evidence and commercial invoice tied to the same consignment.</p></header><ol>${route.valueChecks.map((item, index) => `<li><b>0${index + 1}</b><span>${escapeHtml(item)}</span></li>`).join('')}</ol></section>${renderExample(route)}${renderFaq(route, `${route.code} (${route.name}) questions, answered`)}<div class="download-row">${renderDownload(route, asset, `${route.code} operational map`)}</div><section class="authority-bridge"><span>NEXT WORKPAPER</span><h2>Cross-foot the cost trail.</h2><p>Bring the goods amount, currency direction, freight, insurance and adjustments into one browser-only calculation.</p><a data-authority-related="value_workpaper" href="/tools/customs-value-import-duty-vat-calculator/">OPEN THE VALUE + DUTY WORKPAPER →</a><a data-authority-related="incoterms_hub" href="/customs-reference/incoterms/">BACK TO THE INCOTERMS 2020 CHART</a></section>${renderTermSiblings(route)}${referenceLinkStrip('incoterms')}`
 }
 
 function renderBurden(route) {
@@ -1006,11 +1121,31 @@ function renderBurden(route) {
 
 function renderWorkflow(route) {
   const asset = authorityAssets(route)[0]
-  return `<section class="direct-answer"><span>DIRECT ANSWER · ${escapeHtml(route.code)}</span><h2>${escapeHtml(route.direct)}</h2></section><section class="workflow-path" aria-labelledby="workflow-path-heading"><header><span>FIVE-CHECK HANDOFF</span><h2 id="workflow-path-heading">Move the job in order.</h2><p>Each checkpoint produces evidence for the next person or system. A failed checkpoint stays visible.</p></header><ol>${route.steps.map(([number, title, copy]) => `<li><b>${number}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section><div class="responsibility-grid"><section><span>HAVE READY</span><h2>Inputs</h2><ul>${route.inputs.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>STOP AND RESOLVE</span><h2>Do not hand off green</h2><ul>${route.stop.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><div class="download-row">${renderDownload(route, asset, `${route.code} workflow diagram`)}</div><section class="authority-bridge"><span>RELATED DESK JOB</span><h2>Carry the handoff into the pack.</h2><p>The diagram is ungated. Use the related browser workpaper to turn the movement into a reviewable action list.</p><a data-authority-related="workflow_tool" href="${route.related}">${escapeHtml(route.relatedLabel).toUpperCase()} →</a>${(route.extraTools || []).map(([path, label]) => `<a data-authority-related="workflow_free_tool" href="${path}">${escapeHtml(label).toUpperCase()} →</a>`).join('')}</section>`
+  return `<section class="direct-answer"><span>DIRECT ANSWER · ${escapeHtml(route.code)}</span><h2>${escapeHtml(route.direct)}</h2></section>${route.guide === 'ens' ? renderEnsDeadlines() : ''}<section class="workflow-path" aria-labelledby="workflow-path-heading"><header><span>FIVE-CHECK HANDOFF</span><h2 id="workflow-path-heading">Move the job in order.</h2><p>Each checkpoint produces evidence for the next person or system. A failed checkpoint stays visible.</p></header><ol>${route.steps.map(([number, title, copy]) => `<li><b>${number}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section><div class="responsibility-grid"><section><span>HAVE READY</span><h2>Inputs</h2><ul>${route.inputs.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><span>STOP AND RESOLVE</span><h2>Do not hand off green</h2><ul>${route.stop.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section></div><div class="download-row">${renderDownload(route, asset, `${route.code} workflow diagram`)}</div><section class="authority-bridge"><span>RELATED DESK JOB</span><h2>Carry the handoff into the pack.</h2><p>The diagram is ungated. Use the related browser workpaper to turn the movement into a reviewable action list.</p><a data-authority-related="workflow_tool" href="${route.related}">${escapeHtml(route.relatedLabel).toUpperCase()} →</a>${(route.extraTools || []).map(([path, label]) => `<a data-authority-related="workflow_free_tool" href="${path}">${escapeHtml(label).toUpperCase()} →</a>`).join('')}</section>`
 }
 
-function renderEnsGuide(eoriEnabled) {
-  const table = (label, head, rows) => `<div tabindex="0" role="region" aria-label="${escapeHtml(label)}"><table><thead><tr>${head.map((cell) => `<th scope="col">${escapeHtml(cell)}</th>`).join('')}</tr></thead><tbody>${rows.map(([first, ...rest]) => `<tr><th scope="row">${escapeHtml(first)}</th>${rest.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+// ENS time limits into Great Britain: GOV.UK "Entry summary declaration requirements", time limits section
+// (updated 11 February 2026, checked 16 October 2026).
+const ensTimings = [
+  ['Maritime containerised cargo', '24 hours before loading at the port of departure'],
+  ['Maritime bulk or break bulk cargo', '4 hours before arrival'],
+  ['Short-sea journeys', '2 hours before arrival'],
+  ['Roll-on roll-off, accompanied or unaccompanied', '2 hours before arrival'],
+  ['Short-haul flights (under 4 hours)', 'At the time of actual take-off'],
+  ['Long-haul flights (4 hours or more)', '4 hours before arrival'],
+  ['Rail, journey under 2 hours', '1 hour before arrival'],
+  ['Rail, journey over 2 hours', '2 hours before arrival'],
+  ['Road traffic (Channel Tunnel)', '1 hour before arrival at the Eurotunnel terminal (at Coquelles, France)'],
+]
+
+const ensTable = (label, head, rows) => `<div tabindex="0" role="region" aria-label="${escapeHtml(label)}"><table><thead><tr>${head.map((cell) => `<th scope="col">${escapeHtml(cell)}</th>`).join('')}</tr></thead><tbody>${rows.map(([first, ...rest]) => `<tr><th scope="row" data-label="${escapeHtml(head[0])}">${escapeHtml(first)}</th>${rest.map((cell, index) => `<td data-label="${escapeHtml(head[index + 1])}">${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+
+function renderEnsDeadlines() {
+  return `<section class="burden-table ens-guide ens-deadlines" id="ens-timings" aria-labelledby="ens-timings-heading"><header><span>ENS TIME LIMITS BY MODE · GREAT BRITAIN</span><h2 id="ens-timings-heading">ENS deadlines by transport mode</h2><p>HMRC’s minimum ENS time limits for goods entering Great Britain. For delays of more than 2 hours on roll-on roll-off and road, an amendment is not needed if the vehicle moves on the same route with the same carrier within 12 hours of the scheduled departure.</p></header>${ensTable('ENS deadlines by transport mode', ['Mode', 'Lodge the ENS no later than'], ensTimings)}</section>`
+}
+
+function renderEnsGuide(route, eoriEnabled) {
+  const table = ensTable
   const steps = [
     ['Find the first place of entry', 'Goods entering Great Britain use HMRC’s Safety and Security GB (S&S GB) service. Goods entering Northern Ireland use ICS2, which HMRC uses for movements into Northern Ireland from 31 December 2025. Goods entering the EU use the EU’s ICS2.'],
     ['Confirm who lodges it', 'The carrier is legally responsible. A forwarder, customs agent or other third party can lodge the ENS for the carrier, but only with the carrier’s knowledge and consent. Put that agreement in writing.'],
@@ -1037,21 +1172,36 @@ function renderEnsGuide(eoriEnabled) {
     ['Third party or house filer', 'Freight forwarder, NVOCC, customs agent or express operator that holds the house-level shipment data', 'May lodge for the carrier with the carrier’s knowledge and contractual agreement. The carrier’s legal liability remains.'],
     ['Both file for one shipment', 'Carrier and third party each submit data', 'Customs may use both declarations for risk analysis, or accept the carrier’s declaration and not the third party’s.'],
   ]
-  const timings = [
-    ['Maritime containerised cargo', '24 hours before loading at the port of departure'],
-    ['Maritime bulk or break bulk cargo', '4 hours before arrival'],
-    ['Short-sea journeys', '2 hours before arrival'],
-    ['Roll-on roll-off, accompanied or unaccompanied', '2 hours before arrival'],
-    ['Short-haul flights (under 4 hours)', 'At the time of actual take-off'],
-    ['Long-haul flights (4 hours or more)', '4 hours before arrival'],
-    ['Rail, journey under 2 hours', '1 hour before arrival'],
-    ['Rail, journey over 2 hours', '2 hours before arrival'],
-    ['Road traffic (Channel Tunnel)', '1 hour before arrival at the Eurotunnel terminal (at Coquelles, France)'],
-  ]
   const systems = [
     ['Great Britain (England, Scotland, Wales)', 'S&S GB, run by HMRC', 'Lodge the ENS through S&S GB; HMRC returns the MRN.'],
     ['Northern Ireland', 'ICS2, run by HMRC for Northern Ireland', 'Used for movements into Northern Ireland from 31 December 2025.'],
     ['EU member states', 'EU ICS2', 'From 1 June 2026, every consignment entering the EU by any means of transport should have a valid ENS, lodged directly in ICS2 or in a combined transit declaration through NCTS Phase 6 in opt-in countries.'],
+  ]
+  // GOV.UK "Making an entry summary declaration", 'Do not load' messages (updated 14 Oct 2026, checked 16 Oct 2026);
+  // EC ICS2 FAQ notifications IE3Q01-IE3Q03 (checked 16 Oct 2026).
+  const dnlSteps = [
+    ['Stop the load', 'A “Do not load” message (IE351 Advanced Intervention Notification) goes to whoever lodged the ENS. Do not load the container onto the vessel.'],
+    ['Find the shipment', 'Identify the affected shipment from the container and transport document numbers in the declaration. If a third party lodged it, the carrier is also told when the ENS carries its EORI number as ocean carrier and its transport document number.'],
+    ['Wait for Border Force', 'UK Border Force contacts you to tell you what to do next. Keep the shipper and forwarder informed so the goods and documents stay ready.'],
+    ['Answer EU referrals fast', 'In the EU’s ICS2 the person filing can receive a Do Not Load request, an additional information request or a high-risk cargo and mail screening request. Each one must be answered before the risk assessment can resume.'],
+    ['Fix the data at source', 'Most holds come from vague goods descriptions, wrong parties or missing references. Correct the invoice or packing list, then amend the ENS before arrival.'],
+  ]
+  // EC ICS2 page (1 June 2026 statement) and ICS2 FAQ (partial filings, EORI, buyer and seller data), checked 16 Oct 2026.
+  const releaseThree = [
+    'Your EU carrier or forwarder lodges the ENS. They need an EORI number issued by an EU member state; a UK exporter does not file in ICS2 itself.',
+    'Give a precise goods description, such as “men’s cotton knitted T-shirts”. ICS2 rejects vague words such as “parts”, “samples” or “general cargo”.',
+    'Give the 6-digit HS code for each goods item.',
+    'Give the full name and address of the seller and the buyer, and of the consignor and consignee where they differ.',
+    'Give package numbers, package types, shipping marks and gross mass from the packing list.',
+    'Where the carrier and a house filer each lodge part of the ENS, they share the carrier’s EORI, the house filer’s EORI and the transport document number in advance so ICS2 can link the filings.',
+  ]
+  const suppliers = [
+    ['Seller and buyer, consignor and consignee', 'Names, addresses and EORI numbers', 'Checks and passes them on', 'Receives them in the house data'],
+    ['Goods description and HS code', 'From the commercial invoice', 'Checks the wording is precise', 'Uses the house filer’s data'],
+    ['Packages, marks and gross mass', 'From the packing list', 'Checks against the booking', 'Checks against the load'],
+    ['House transport document', 'Not applicable', 'Issues the house bill or air waybill', 'Links it to the master document'],
+    ['Master transport document, container and seals', 'Seal numbers when it loads the container', 'Passes on the booking reference', 'Issues the master bill and records containers and seals'],
+    ['Route, first place of arrival and timing', 'Not applicable', 'Confirms the booking', 'Provides the voyage, flight or crossing details'],
   ]
   const tools = [
     ['/tools/commercial-invoice-generator/', 'FREE GENERATOR', 'Commercial invoice with commodity codes and EORI fields'],
@@ -1063,15 +1213,12 @@ function renderEnsGuide(eoriEnabled) {
     + `<section class="burden-table ens-guide" id="ens-systems" aria-labelledby="ens-systems-heading"><header><span>S&amp;S GB OR ICS2</span><h2 id="ens-systems-heading">Which ENS system applies</h2><p>The first place of entry decides the system, not the habit of the team filing it.</p></header>${table('Which ENS system applies', ['Goods enter', 'System', 'What it means'], systems)}</section>`
     + `<section class="burden-table ens-guide" id="ens-data" aria-labelledby="ens-data-heading"><header><span>KEY DATA ELEMENTS</span><h2 id="ens-data-heading">Key ENS data elements and where they come from</h2><p>Most ENS rejections and holds trace back to the source documents. Get these right on the invoice, packing list and transport document, and the ENS follows.</p></header>${table('Key ENS data elements', ['Data', 'What to give', 'Usual source'], data)}</section>`
     + `<section class="burden-table ens-guide" id="ens-filers" aria-labelledby="ens-filers-heading"><header><span>WHO FILES WHAT</span><h2 id="ens-filers-heading">Who files the ENS: carrier, house filer or third party</h2><p>HMRC is clear that the carrier holds the legal requirement, even when someone else prepares the data.</p></header>${table('Who files the ENS', ['Party', 'Who that is', 'Position'], filers)}</section>`
-    + `<section class="burden-table ens-guide" id="ens-timings" aria-labelledby="ens-timings-heading"><header><span>TIMINGS BY MODE</span><h2 id="ens-timings-heading">ENS time limits by transport mode</h2><p>HMRC’s minimum time limits for an ENS into Great Britain. For delays of more than 2 hours on roll-on roll-off and road, an amendment is not needed if the vehicle moves on the same route with the same carrier within 12 hours of the scheduled departure.</p></header>${table('ENS time limits by transport mode', ['Mode', 'Lodge the ENS no later than'], timings)}</section>`
+    + `<section class="burden-table ens-guide" id="ens-dnl" aria-labelledby="ens-dnl-heading"><header><span>DO NOT LOAD · HIGH RISK</span><h2 id="ens-dnl-heading">‘Do not load’ (DNL) and high-risk messages: what to do</h2><p>Customs runs risk analysis on every ENS. It picks out goods it wants to control on arrival and, for deep-sea containerised cargo only, shipments it wants to stop from being loaded.</p></header><ol class="ens-steps">${dnlSteps.map(([title, copy], index) => `<li><b>${String(index + 1).padStart(2, '0')}</b><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div></li>`).join('')}</ol></section>`
+    + `<section class="burden-table ens-guide" id="ens-ics2-release-3" aria-labelledby="ens-r3-heading"><header><span>EXPORTS TO THE EU · ICS2</span><h2 id="ens-r3-heading">ICS2 Release 3: what UK exporters to the EU must send</h2><p>Goods going from the UK into the EU need an ENS in the EU’s ICS2, not in S&amp;S GB. ICS2 Release 3 brought sea, inland waterway, road and rail carriers and house filers into ICS2. From 1 June 2026, every consignment entering the EU by any means of transport should have a valid ENS, lodged directly in ICS2 or in a combined transit declaration through NCTS Phase 6 in opt-in countries.</p></header><ul class="ens-list">${releaseThree.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>`
+    + `<section class="burden-table ens-guide" id="ens-suppliers" aria-labelledby="ens-suppliers-heading"><header><span>DATA SUPPLY CHAIN</span><h2 id="ens-suppliers-heading">Who supplies each data element</h2><p>The person lodging the ENS can only file what the supply chain gives them. Agree who sends each element, and when, before the first shipment.</p></header>${table('Who supplies each ENS data element', ['Data element', 'Shipper (seller or exporter)', 'Forwarder or house filer', 'Carrier'], suppliers)}</section>`
+    + `<section class="burden-table ens-guide" id="ens-latest" aria-labelledby="ens-latest-heading"><header><span>LATEST CHANGE</span><h2 id="ens-latest-heading">Latest S&amp;S GB data change</h2><p>HMRC updated the file of entry summary declaration data elements for the S&amp;S GB service on 14 October 2026. Read what changed and what to re-test in the <a href="/research/cds-operations-radar/ics2-ens-data-elements-2026-10-14/" data-authority-related="ens_radar">latest S&amp;S GB data change</a> on the CDS operations radar.</p></header></section>`
     + `<section class="burden-table ens-guide" id="ens-tools" aria-labelledby="ens-tools-heading"><header><span>FREE TOOLS FOR THE ENS DATA</span><h2 id="ens-tools-heading">Build the source documents the ENS depends on</h2><p>Clean commercial invoices and packing lists give the filer the descriptions, commodity codes, packages and weights the ENS needs.</p></header><nav class="ens-tools" aria-label="Free Declarix tools for ENS data">${tools.map(([href, label, title]) => `<a href="${href}" data-authority-related="ens_${href.split('/')[2].replaceAll('-', '_')}"><span>${label}</span><strong>${escapeHtml(title)}</strong><b>OPEN →</b></a>`).join('')}</nav></section>`
-    + `<section class="burden-table ens-guide ens-faq" aria-labelledby="ens-faq-heading"><header><span>QUESTIONS</span><h2 id="ens-faq-heading">ENS and ICS2 questions, answered</h2></header>${[
-      ['What is an ENS?', 'An entry summary declaration is a safety and security filing with advance data about goods coming into Great Britain, into Northern Ireland, or into the EU. Customs uses it for risk analysis before the goods arrive.'],
-      ['Who submits the ENS?', 'The carrier is responsible. A forwarder, customs agent or other third party can submit it for the carrier with the carrier’s knowledge and consent, but the legal liability stays with the carrier.'],
-      ['What is the difference between ENS and ICS2?', 'The ENS is the declaration. ICS2 is the system that receives it for Northern Ireland and the EU. For Great Britain, the ENS goes to HMRC’s S&S GB service.'],
-      ['Can I amend an ENS?', 'Yes, until the goods arrive at the border. If the person lodging it or their representative changes, submit a new declaration instead of an amendment.'],
-      ['What do I get when the ENS is accepted?', 'A movement reference number (MRN) from S&S GB or ICS2. Keep it with the shipment and pass it to the arrival team.'],
-    ].map(([q, a], index) => `<details class="ens-question"><summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(q)}</summary><p>${escapeHtml(a)}</p></details>`).join('')}</section>`
+    + `<section class="burden-table ens-guide ens-faq" aria-labelledby="ens-faq-heading"><header><span>QUESTIONS</span><h2 id="ens-faq-heading">ENS and ICS2 questions, answered</h2></header>${route.faqs.map(([q, a], index) => `<details class="ens-question" data-faq-item open><summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(q)}</summary><p>${escapeHtml(a)}</p></details>`).join('')}</section>`
 }
 
 function renderWorkflowCluster(currentRoute) {
@@ -1108,7 +1255,13 @@ function analyticsScript(route, posthogKey, posthogHost) {
       document.getElementById('chooser-link').href = '/customs-reference/incoterms/' + code.toLowerCase() + '/';
       document.getElementById('chooser-result').hidden = false;
       track('authority_chooser_completed', { result_code: code.toLowerCase() });
-    });` : ''
+    });
+    document.querySelectorAll('[data-chart-print]').forEach((button) => button.addEventListener('click', () => {
+      document.body.classList.add('print-chart');
+      track('authority_chart_printed', {});
+      window.print();
+    }));
+    window.addEventListener('afterprint', () => document.body.classList.remove('print-chart'));` : ''
   return `<script>(() => {
     const config = ${config};
     const get = (key) => { try { return sessionStorage.getItem(key) || ''; } catch { return ''; } };
@@ -1125,6 +1278,6 @@ function analyticsScript(route, posthogKey, posthogHost) {
 
 export function renderAuthorityRoute(route, site, { navHtml, webmasterHtml, posthogKey = '', posthogHost = 'https://eu.i.posthog.com', eoriEnabled = false }) {
   const canonical = `${site.origin}${route.path}`
-  const content = route.kind === 'incoterms-hub' ? renderIncotermsHub(route) : route.kind === 'incoterm-term' ? renderTerm(route) : route.kind === 'burden-report' ? renderBurden(route) : `${renderWorkflow(route)}${route.guide === 'ens' ? renderEnsGuide(eoriEnabled) : ''}${renderWorkflowCluster(route)}`
-  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="apple-touch-icon" href="/apple-touch-icon.png" /><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/>${route.kind === 'incoterms-hub' || route.kind === 'incoterm-term' ? '<link rel="stylesheet" href="/customs-reference.css"/>' : ''}<meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs">${breadcrumbHtml(route.path, escapeHtml(route.eyebrow))}</div><main><header class="authority-hero"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>REVIEWED<br/>${route.reviewedOn}</small></aside></header>${content}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
+  const content = route.kind === 'incoterms-hub' ? renderIncotermsHub(route) : route.kind === 'incoterm-term' ? renderTerm(route) : route.kind === 'burden-report' ? renderBurden(route) : `${renderWorkflow(route)}${route.guide === 'ens' ? renderEnsGuide(route, eoriEnabled) : ''}${renderWorkflowCluster(route)}`
+  return `<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="${escapeHtml(route.description)}"/><meta name="robots" content="index,follow,max-image-preview:large"/><meta name="theme-color" content="#17333d"/>${webmasterHtml}<link rel="canonical" href="${canonical}"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="apple-touch-icon" href="/apple-touch-icon.png" /><link rel="stylesheet" href="/static-routes.css"/><link rel="stylesheet" href="/authority-library.css"/>${route.kind === 'incoterms-hub' || route.kind === 'incoterm-term' ? '<link rel="stylesheet" href="/customs-reference.css"/>' : ''}<meta property="og:type" content="article"/><meta property="og:site_name" content="Declarix"/><meta property="og:title" content="${escapeHtml(route.title)}"/><meta property="og:description" content="${escapeHtml(route.description)}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${site.origin}/og.jpg"/><meta name="twitter:card" content="summary_large_image"/><title>${escapeHtml(route.title)}</title><script type="application/ld+json">${jsonLd(route, site)}</script></head><body><div class="docket"><header class="masthead"><a class="wordmark" href="/">DECLARIX</a><div class="masthead-cell"><span>FREE AUTHORITY ASSET</span><strong>UNGATED</strong></div><a class="masthead-cta" data-authority-booking="masthead" href="${bookingHref(route, 'masthead')}">BOOK THE NUMBERS CALL</a></header><nav class="route-nav" aria-label="Primary">${navHtml}</nav><div class="breadcrumbs">${breadcrumbHtml(route.path, escapeHtml(route.eyebrow))}</div><main><header class="authority-hero${route.subhead ? ' authority-hero--keyword' : ''}"><div><p class="eyebrow">${escapeHtml(route.eyebrow)}</p><h1>${escapeHtml(route.h1)}</h1>${route.subhead ? `<p class="authority-subhead">${escapeHtml(route.subhead)}</p>` : ''}${route.seo ? `<p class="authority-definition">${escapeHtml(route.seo.definition)}</p>` : ''}<p>${escapeHtml(route.standfirst)}</p></div><aside><span>${escapeHtml(route.ref)}</span><strong>${escapeHtml(route.stamp).replaceAll('\n', '<br/>')}</strong><small>REVIEWED<br/>${route.reviewedOn}</small></aside></header>${content}${renderSources(route)}<section class="cta-band authority-cta"><div><h2>Bring the real workflow to the numbers call.</h2><p>Map the source documents, current handling time, customs system and failure points. Leave with the best first workflow and an ROI range.</p></div><a class="button" data-authority-booking="bottom" href="${bookingHref(route, 'bottom')}">BOOK THE 20-MINUTE NUMBERS CALL</a></section><div class="source-stamp">SOURCE-LED AUTHORITY ASSET · REVIEWED ${route.reviewedOn} · <a href="/editorial-policy/">SOURCES AND CORRECTIONS</a> · <a href="mailto:${site.contact}">${site.contact}</a></div></main><footer class="footer"><span>${site.company.toUpperCase()} · COMPANY ${site.companyNumber} · LEICESTER, ENGLAND</span><nav><a href="/privacy/">PRIVACY</a><a href="/security/">SECURITY</a><a href="/terms/">TERMS</a><a href="/editorial-policy/">SOURCES &amp; CORRECTIONS</a></nav></footer></div>${analyticsScript(route, posthogKey, posthogHost)}</body></html>`
 }

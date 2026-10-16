@@ -49,6 +49,7 @@ const publicSources = [
   'scripts/radar.mjs',
   'scripts/radar-observations.mjs',
   'scripts/authority-library.mjs',
+  'scripts/incoterms-content.mjs',
   'scripts/customs-reference.mjs',
   'scripts/customs-reference-links.mjs',
   'scripts/customs-procedures.mjs',
@@ -599,8 +600,15 @@ for (const route of expected) {
     if (/type="(?:text|email|file)"/i.test(html) || /<textarea/i.test(html)) {
       throw new Error(`${route.path} must not collect prospect, document, or newsletter data`)
     }
-    if (html.includes('"@type":"FAQPage"') || html.includes('"@type":"HowTo"')) {
-      throw new Error(`${route.path} must not emit FAQPage or HowTo structured data`)
+    if (html.includes('"@type":"HowTo"')) throw new Error(`${route.path} must not emit HowTo structured data`)
+    // FAQPage is allowed only when it mirrors the visible FAQ (iter1 incoterms lane, INTENT-REVIEW §4.8).
+    const visibleFaq = (html.match(/data-faq-item/g) || []).length
+    if (html.includes('"@type":"FAQPage"') || visibleFaq || route.faqs) {
+      const faqSchema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] || '{}')['@graph']?.find((item) => item['@type'] === 'FAQPage')
+      if (!faqSchema || faqSchema.mainEntity.length !== visibleFaq || visibleFaq < 4) throw new Error(`${route.path} FAQPage must match a visible FAQ of 4+ questions`)
+      for (const question of faqSchema.mainEntity) {
+        if (!html.includes(question.name.replaceAll('&', '&amp;').replaceAll('"', '&quot;'))) throw new Error(`${route.path} FAQPage question is not visible: ${question.name}`)
+      }
     }
     for (const phrase of [
       'authority_asset_downloaded',
@@ -650,6 +658,10 @@ for (const route of expected) {
       if ((html.match(/type="radio"/g) || []).length !== 8 || !html.includes('authority_chooser_completed')) {
         throw new Error(`${route.path} is missing the four-question chooser contract`)
       }
+      const chart = html.match(/<section class="incoterms-chart"[\s\S]*?<\/section>/)?.[0] || ''
+      if ((chart.match(/<tr><th scope="row"/g) || []).length !== 11 || html.indexOf('class="incoterms-chart"') > html.indexOf('id="incoterms-chooser"')) {
+        throw new Error(`${route.path} must lead with the 11-row Incoterms 2020 chart`)
+      }
     }
     if (route.kind === 'incoterm-term') {
       if (!html.includes('/tools/customs-value-import-duty-vat-calculator/')) {
@@ -659,6 +671,12 @@ for (const route of expected) {
         throw new Error(`${route.path} is missing its handoff map or value checks`)
       }
       if ((html.match(/class="worked-example"/g) || []).length !== 1) throw new Error(`${route.path} is missing its worked UK example`)
+      const h1 = html.match(/<h1>([\s\S]*?)<\/h1>/)?.[1] || ''
+      const fullName = route.name.toLowerCase()
+      if (!h1.toLowerCase().includes(fullName) || !route.title.toLowerCase().includes(route.code.toLowerCase())) throw new Error(`${route.path} H1 must spell out ${route.name}`)
+      for (const marker of ['class="obligations"', 'class="uk-glance"', 'class="pros-cons"', '>UK import duty and VAT calculator</a>', `Work out duty and VAT under ${route.code}`, `class="authority-subhead">${route.subhead.replaceAll('’', '’')}`]) {
+        if (!html.includes(marker)) throw new Error(`${route.path} is missing rule-page section ${marker}`)
+      }
       const example = incotermExample(route)
       const customsValue = `£${example.customsValue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       if (!html.includes(customsValue)) throw new Error(`${route.path} worked example lost its customs value ${customsValue}`)
@@ -675,6 +693,11 @@ for (const route of expected) {
     if (route.kind === 'workflow') {
       if ((html.match(/class="workflow-path"/g) || []).length !== 1 || !html.includes('FIVE-CHECK HANDOFF')) {
         throw new Error(`${route.path} is missing its five-step workflow`)
+      }
+      if (route.guide === 'ens') {
+        for (const marker of ['ENS deadlines by transport mode', 'href="/research/cds-operations-radar/ics2-ens-data-elements-2026-10-14/"', 'ICS2 Release 3: what UK exporters to the EU must send', 'Who supplies each data element', '(DNL) and high-risk messages']) {
+          if (!html.includes(marker)) throw new Error(`${route.path} is missing ENS section ${marker}`)
+        }
       }
     }
     const inlineScripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/gi)]
