@@ -21,6 +21,8 @@
     "test:trade-tools": "node --test tests/trade-tools-*.test.mjs",
     "test:procedures": "node --test tests/customs-procedures.test.mjs",
     "test:procedures:browser": "node tests/customs-procedures.browser.cjs",
+    "test:authority": "node --test tests/authority-library.test.mjs",
+    "test:authority:browser": "node tests/authority-library.browser.cjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs"
   },
   "dependencies": {

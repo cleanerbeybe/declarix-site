@@ -22,3 +22,90 @@
 .ens-question summary span{font-family:"IBM Plex Mono",monospace;color:var(--authority-amber);font-size:.8rem;line-height:1.9}
 .ens-question p{margin:0 0 1.1rem 2.4rem;max-width:72ch;line-height:1.6}
 @media (max-width:760px){.ens-steps{grid-template-columns:1fr}.ens-question p{margin-left:0}}
+/* iter1 incoterms lane: keyword hero, Incoterms 2020 chart, rule-page sections, ENS additions */
+.authority-hero--keyword h1{font-size:clamp(2.4rem,4.4vw,4.4rem);line-height:1;max-width:24ch;letter-spacing:-.035em}
+.authority-hero--keyword>div{padding:clamp(2rem,4vw,3.5rem) clamp(1.5rem,6vw,5rem)}
+.authority-hero--keyword aside{padding:1.5rem 2rem}
+.authority-hero--keyword aside>strong{font-size:clamp(3rem,6vw,5.5rem);white-space:nowrap}
+.authority-subhead{font-family:Archivo,sans-serif;font-weight:700;font-size:clamp(1.15rem,1.8vw,1.6rem);line-height:1.25;margin:0 0 .9rem;max-width:40ch}
+.authority-definition{font-size:clamp(1.05rem,1.5vw,1.25rem);line-height:1.55;max-width:63ch;margin:0 0 .8rem;padding-left:.9rem;border-left:4px solid var(--authority-amber)}
+.incoterms-chart,.obligations,.uk-glance,.duty-link,.term-vs,.pros-cons,.authority-faq,.authority-prose{padding:clamp(2rem,5vw,4.5rem) clamp(1.5rem,7vw,6rem);border-bottom:1px solid var(--authority-rule)}
+.incoterms-chart>header,.obligations>header,.pros-cons>header,.authority-faq>header{max-width:72ch;margin-bottom:1.6rem}
+.incoterms-chart header>span,.obligations header>span,.uk-glance>span,.duty-link>span,.pros-cons header>span,.authority-faq header>span{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;font-weight:600}
+.incoterms-chart h2,.obligations h2,.uk-glance h2,.duty-link h2,.term-vs h2,.pros-cons h2,.authority-faq h2,.authority-prose h2{font-size:clamp(1.7rem,3.2vw,3rem);line-height:1.05;letter-spacing:-.03em;margin:.3em 0;text-wrap:balance}
+.incoterms-chart [role=region],.obligations [role=region]{overflow:auto}
+.incoterms-chart table,.obligations table{width:100%;border-collapse:collapse;background:var(--authority-field);font-size:.92rem}
+.incoterms-chart table{min-width:960px;font-size:.86rem}
+.incoterms-chart td:last-child{min-width:170px}
+.incoterms-chart caption,.obligations caption{text-align:left;padding:.6rem 0;font-weight:700}
+.incoterms-chart th,.incoterms-chart td,.obligations th,.obligations td{padding:.7rem .75rem;border:1px solid var(--authority-rule);text-align:left;vertical-align:top;line-height:1.4}
+.incoterms-chart thead,.obligations thead{background:var(--authority-ink);color:var(--authority-paper)}
+.incoterms-chart thead th,.incoterms-chart tbody td,.incoterms-chart tbody th{padding:.6rem .55rem}
+.incoterms-chart tbody th a{color:var(--authority-ink);font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:1.05rem;white-space:nowrap}
+.obligations tbody th{white-space:nowrap}
+.chart-download{margin-top:1.5rem;display:grid;gap:.6rem}
+.chart-download h3{margin:0;font-size:1.25rem}
+.chart-download p{margin:0}
+.chart-download-actions{display:flex;flex-wrap:wrap;gap:1rem;align-items:stretch}
+.chart-download-actions .authority-download{flex:1 1 320px}
+.chart-print{white-space:nowrap}
+.uk-glance{background:var(--authority-ink);color:var(--authority-paper)}
+.uk-glance dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;margin:1.4rem 0 0;border-top:1px solid rgba(255,255,255,.4)}
+.uk-glance dl>div{padding:1rem 1rem 1rem 0;border-bottom:1px solid rgba(255,255,255,.4)}
+.uk-glance dt{font-family:"IBM Plex Mono",monospace;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:#f0c58e}
+.uk-glance dd{margin:.4rem 0 0;line-height:1.5}
+.uk-glance a,.duty-link a,.authority-prose a,.ens-guide header a{color:inherit;font-weight:700}
+.duty-link{background:var(--authority-field)}
+.duty-link p,.term-vs p,.authority-prose p,.authority-prose li{font-size:1.08rem;line-height:1.6;max-width:68ch}
+.term-vs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem 3rem}
+.term-vs article{border-top:3px solid var(--authority-ink);padding-top:.6rem}
+.term-vs h2{font-size:clamp(1.4rem,2.4vw,2.2rem)}
+.pc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--authority-rule);border-left:1px solid var(--authority-rule)}
+.pc-card{padding:1.4rem;border-right:1px solid var(--authority-rule);border-bottom:1px solid var(--authority-rule);background:var(--authority-field)}
+.pc-card h3{margin:0 0 .6rem;font-size:1.2rem}
+.pc-card ul{margin:0;padding-left:1.2rem;line-height:1.6}
+.pc-plus h3{color:var(--authority-green)}
+.pc-minus h3{color:#8a4b0f}
+.authority-faq-item{border-top:1px solid var(--authority-rule);padding:1.1rem 0}
+.authority-faq-item h3{margin:0;font-size:1.15rem;line-height:1.3}
+.authority-faq-item p{margin:.5rem 0 0;max-width:72ch;line-height:1.6}
+.authority-prose ul{padding-left:1.2rem}
+.authority-prose li{margin:.45rem 0}
+.ens-list{margin:0;padding-left:1.2rem;line-height:1.6;max-width:76ch}
+.ens-list li{margin:.4rem 0}
+.ens-deadlines table{min-width:0}
+@media(max-width:760px){
+.authority-hero--keyword>div{padding:1.4rem 1rem 1.2rem}
+.authority-hero--keyword h1{font-size:clamp(1.65rem,7.4vw,2.3rem);max-width:none;margin:.25em 0 .35em}
+.authority-hero--keyword .eyebrow{font-size:.62rem}
+.authority-hero--keyword .authority-subhead{font-size:1.05rem}
+.authority-hero--keyword>div>p:last-child{font-size:1rem}
+.authority-hero--keyword aside{min-height:0;flex-direction:row;align-items:center;gap:1rem;padding:.8rem 1rem}
+.authority-hero--keyword aside>strong{font-size:1.5rem;line-height:1;white-space:nowrap}
+.authority-hero--keyword aside>small{padding-top:0;border-top:0}
+.incoterms-chart,.obligations,.uk-glance,.duty-link,.term-vs,.pros-cons,.authority-faq,.authority-prose{padding:1.6rem 1rem}
+.pc-grid{grid-template-columns:1fr}
+.chart-print{width:100%}
+}
+/* S5: tables become labelled cards under 480px; codes never break mid-word */
+@media(max-width:480px){
+.incoterms-chart table,.obligations table,.ens-guide table{min-width:0}
+.incoterms-chart thead,.obligations thead,.ens-guide thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.incoterms-chart table,.incoterms-chart tbody,.incoterms-chart tr,.incoterms-chart th,.incoterms-chart td,.obligations table,.obligations tbody,.obligations tr,.obligations th,.obligations td,.ens-guide table,.ens-guide tbody,.ens-guide tr,.ens-guide th,.ens-guide td{display:block;width:100%}
+.incoterms-chart tr,.obligations tr,.ens-guide tr{border:1px solid var(--authority-rule);margin-bottom:.8rem;background:var(--authority-field)}
+.incoterms-chart th,.incoterms-chart td,.obligations th,.obligations td,.ens-guide th,.ens-guide td{border:0;border-bottom:1px solid #d9d4c6;white-space:normal;overflow-wrap:normal;word-break:normal}
+.incoterms-chart td[data-label],.incoterms-chart th[data-label],.obligations td[data-label],.obligations th[data-label],.ens-guide td[data-label],.ens-guide th[data-label]{display:grid;grid-template-columns:38% minmax(0,1fr);gap:.6rem;align-items:baseline;padding:.5rem .7rem}
+.incoterms-chart [data-label]::before,.obligations [data-label]::before,.ens-guide [data-label]::before{content:attr(data-label);display:block;font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--authority-muted);margin-bottom:0}
+.incoterms-chart tbody th,.obligations tbody th,.ens-guide tbody th{background:var(--authority-ink);color:var(--authority-paper)}
+.incoterms-chart tbody th a{color:var(--authority-paper)}
+.incoterms-chart tbody th[data-label]::before,.obligations tbody th[data-label]::before,.ens-guide tbody th[data-label]::before{color:#f0c58e}
+.incoterms-chart caption,.obligations caption{display:block}
+}
+@media print{
+body.print-chart main>*:not(.incoterms-chart){display:none!important}
+body.print-chart .chart-download{display:none!important}
+body.print-chart .incoterms-chart{padding:0;border:0}
+body.print-chart .incoterms-chart table{min-width:0;font-size:8.5pt}
+body.print-chart .incoterms-chart [role=region]{overflow:visible}
+@page{margin:10mm}
+}
