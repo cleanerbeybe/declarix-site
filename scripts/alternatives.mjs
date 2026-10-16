@@ -34,6 +34,8 @@ const compareLink = { href: '/compare/', label: 'Compare customs workflows and s
 const scopeLink = { href: '/supported-scope/', label: 'Where Declarix fits', copy: 'Document intake, CDS-ready output and the systems it feeds.' }
 const pilotLink = { href: '/pilot/', label: 'The one-job pilot', copy: '£0 upfront, £1 per declaration, capped at £500.' }
 const entryCheckingLink = { href: '/customs-entry-checking-software/', label: 'Customs entry checking software', copy: '120+ checks on every entry before you file in CDS, each flag linked to its source line.' }
+const descartesCompareLink = { href: '/compare/declarix-vs-descartes-e-customs/', label: 'Declarix vs Descartes customs software', copy: 'Keep e-Customs for filing: both products on the same eight criteria, every vendor fact sourced and dated.' }
+const sequoiaCompareLink = { href: '/compare/declarix-vs-sequoia/', label: 'Declarix vs ASM Sequoia', copy: 'Keep Sequoia for filing: both products on the same eight criteria, every vendor fact sourced and dated.' }
 const icustomsCompareLink = { href: '/compare/declarix-vs-icustoms/', label: 'Declarix vs iCustoms: pricing, features and UK fit', copy: 'Both products on the same eight criteria, every vendor fact sourced and dated.' }
 
 // Package lines built from scripts/pricing.mjs, in the same words as the /pricing/ table.
@@ -55,7 +57,7 @@ const alternativesPages = [
   {
     path: '/alternatives/descartes-e-customs/',
     focal: 'descartes',
-    title: 'Descartes customs software alternatives (UK, 2026)',
+    title: 'Descartes e-Customs alternatives for UK customs desks (2026)',
     description:
       'Descartes e-Customs alternatives for UK desks: keep e-Customs and add up to 3× more declarations per clerk with Declarix, or compare CDS filing systems.',
     eyebrow: 'ALTERNATIVES · DESCARTES E-CUSTOMS',
@@ -126,7 +128,7 @@ const alternativesPages = [
       ['How much does Declarix cost next to Descartes?', 'Declarix packages start at £500 a month for 100 packs, with no seat fees, and sit alongside your existing Descartes licence.'],
       ['How do we test it?', 'Run the one-job pilot: £0 upfront, £1 per declaration, capped at £500, and fully waived if the agreed success criteria are missed.'],
     ],
-    related: [altLink('sequoia', 'The same choice for desks on ASM Sequoia.'), shortlistLink, automationLink, hubLink, compareLink],
+    related: [descartesCompareLink, altLink('sequoia', 'The same choice for desks on ASM Sequoia.'), shortlistLink, automationLink, hubLink, compareLink],
   },
   {
     path: '/alternatives/sequoia/',
@@ -199,7 +201,7 @@ const alternativesPages = [
       ['How fast is Declarix?', 'Typical Declarix processing is around 200 seconds before clerk review.'],
       ['What does it cost?', 'Desk is £500 a month for 100 packs, Team £4,000 for 1,000 and Scale £9,000 for 3,000, with extra packs at the package rate and never below £3.00.'],
     ],
-    related: [altLink('descartes', 'The same choice for desks on Descartes e-Customs.'), shortlistLink, automationLink, scopeLink, hubLink],
+    related: [sequoiaCompareLink, altLink('descartes', 'The same choice for desks on Descartes e-Customs.'), shortlistLink, automationLink, scopeLink, hubLink],
   },
   {
     path: '/alternatives/icustoms/',

@@ -1,7 +1,7 @@
 // /compare/ hub and comparison pages (growth pack P13, P15, P17, P19, P21, P23, P25–P29, P33, P35, P44).
 // Vendor facts live in comparison-sources.mjs with source URLs and the date checked.
 import { breadcrumbList, organizationNode } from './site-graph.mjs'
-import { notHeld } from './held-routes.mjs'
+import { isHeld, notHeld } from './held-routes.mjs'
 import { CHECKED, CHECKED_ISO, criteria, deskLine, hubMatrix, hubMatrixColumns, pilotLine, priceLine, products, sources } from './comparison-sources.mjs'
 import { packages } from './pricing.mjs'
 
@@ -36,7 +36,9 @@ const commonChoose = [
 export const comparisonPages = [
   versus('descartes', {
     path: '/compare/declarix-vs-descartes-e-customs/',
-    title: 'Descartes e-Customs Alternative? Declarix vs Descartes 2026',
+    // While /alternatives/descartes-e-customs/ is held, this page also owns "alternative" (INTENT-REVIEW row 66).
+    // Once it is released, the alternatives page owns that word and this title leads with the vendor term (INTENT-REVIEW §4.6 rule for pairs).
+    title: isHeld('/alternatives/descartes-e-customs/') ? 'Descartes e-Customs Alternative? Declarix vs Descartes 2026' : 'Descartes Customs Software vs Declarix (e-Customs, 2026)',
     description:
       'Declarix vs Descartes customs software: keep e-Customs for CDS filing and add Declarix to build CDS-ready packs for up to 3× more declarations per clerk.',
     h1: 'Declarix vs Descartes customs software: keep e-Customs, add capacity',
@@ -105,7 +107,7 @@ export const comparisonPages = [
       ['Does Descartes e-Customs have a free version?', `Descartes lists e-Customs from £178 a month plus a £704 + VAT set-up fee, with a demo on request (checked ${CHECKED}), while Declarix offers [free customs tools](/tools/) for the checks before filing.`],
       ['What is the best Descartes e-Customs alternative for a UK broker?', 'For more output from the same team, keep e-Customs for filing and add Declarix in front of it for up to 3× more declarations per clerk.'],
     ],
-    related: ['/compare/sequoia-vs-descartes/', '/compare/icustoms-vs-descartes/', '/compare/declarix-vs-sequoia/', '/compare/declarix-vs-icustoms/'],
+    related: ['/alternatives/descartes-e-customs/', '/compare/sequoia-vs-descartes/', '/compare/icustoms-vs-descartes/', '/compare/declarix-vs-sequoia/', '/compare/declarix-vs-icustoms/'],
   }),
   versus('icustoms', {
     path: '/compare/declarix-vs-icustoms/',
@@ -375,7 +377,7 @@ export const comparisonPages = [
       ['What does Declarix cost?', `Declarix publishes its packages: ${priceLine}, with no seat fees.`],
       ['How do I try it?', `Book the 20-minute numbers call, then run the [pilot](/pilot/): ${pilotLine}.`],
     ],
-    related: ['/compare/sequoia-vs-descartes/', '/compare/declarix-vs-descartes-e-customs/', '/compare/declarix-vs-cargowise-customs/', '/compare/declarix-vs-flytta/'],
+    related: ['/alternatives/sequoia/', '/compare/sequoia-vs-descartes/', '/compare/declarix-vs-descartes-e-customs/', '/compare/declarix-vs-cargowise-customs/', '/compare/declarix-vs-flytta/'],
   }),
   versus('customs4trade', {
     path: '/compare/declarix-vs-customs4trade/',
@@ -754,7 +756,13 @@ const rich = (value) => esc(value).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, lab
 const plain = (value) => String(value).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '$1')
 
 const allRoutes = () => [...allComparisonRoutes, { path: '/compare/automation-vs-outsourcing/', title: 'Automation vs outsourcing: cost model' }]
+// Alternatives pages a comparison links to in its NEXT STEP list (dropped automatically while held).
+const alternativesNames = {
+  '/alternatives/descartes-e-customs/': 'Descartes e-Customs alternatives for UK customs desks',
+  '/alternatives/sequoia/': 'ASM Sequoia alternatives, and how to keep Sequoia',
+}
 const routeName = (path) => {
+  if (alternativesNames[path]) return alternativesNames[path]
   const route = allRoutes().find((candidate) => candidate.path === path)
   if (!route) throw new Error(`Unknown comparison link ${path}`)
   if (path === '/compare/automation-vs-outsourcing/') return 'Customs automation vs outsourcing: cost model'
