@@ -18,6 +18,8 @@
     "test:generators": "node --test tests/document-generators.test.mjs",
     "test:generators:browser": "node tests/document-generators.browser.cjs",
     "test:trade-tools": "node --test tests/trade-tools-*.test.mjs",
+    "test:authority": "node --test tests/authority-library.test.mjs",
+    "test:authority:browser": "node tests/authority-library.browser.cjs",
     "test:economics:browser": "node tests/preparation-economics.browser.cjs"
   },
   "dependencies": {
