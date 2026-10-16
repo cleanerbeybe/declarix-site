@@ -3,11 +3,13 @@ export const tools = [
   {
     path: '/tools/customs-document-pack-check/',
     ref: 'WORKPAPER 01 · FREE TOOL',
-    title: 'Customs document pack checker and action plan | Free tool',
+    title: 'Customs Document Checker: Free Import Pack Check (UK)',
     description:
-      'Use this free customs document pack checker to map 24 handoff prompts, rank the open actions, and copy, share, or print the result for your operations desk.',
+      'Free customs document checker for UK imports: tick 24 prompts across invoice, packing list, origin, value and controls, then share a ranked action plan.',
     eyebrow: 'FREE CUSTOMS HANDOFF CHECK · 24 PROMPTS · BROWSER ONLY',
-    h1: 'Turn a document pack into an ordered work list.',
+    h1: 'Customs document checker: turn a pack into an ordered work list',
+    subhead: 'Turn a document pack into an ordered work list.',
+    intro: 'Free, no upload. Tick what the pack already covers, then press Review & prioritise.',
     standfirst:
       'Mark what is already mapped. The checker ranks every open prompt into a practical action plan you can copy, share, or print for the desk—without uploading a document.',
     version: '2.0',
@@ -113,12 +115,54 @@ export const tools = [
         url: 'https://www.gov.uk/government/publications/cds-uk-trade-tariff-volume-3-import-declaration-completion-guide/uk-trade-tariff-cds-volume-3-import-declaration-completion-guide',
       },
       {
+        title: 'Customs checklist (international events guidance)',
+        publisher: 'HM Revenue & Customs · GOV.UK',
+        checked: '16 OCTOBER 2026',
+        url: 'https://www.gov.uk/guidance/international-events/customs-checklist',
+      },
+      {
         title: 'Standard for customs intermediaries',
         publisher: 'HM Revenue & Customs · GOV.UK',
         checked: '17 JULY 2026',
         url: 'https://www.gov.uk/government/publications/standard-for-customs-intermediaries',
       },
     ],
+  },
+]
+
+// What should match across the documents (intent review §4.1). Data elements follow the CDS import
+// completion guide (GOV.UK, checked 16 Oct 2026); document list follows HMRC's customs checklist.
+const packMatches = [
+  ['Goods description', 'Commercial invoice, packing list, certificate of origin', 'The same words for the same goods, specific enough to support the commodity code (DE 6/8).'],
+  ['Quantity and packages', 'Invoice, packing list, bill of lading, air waybill or CMR', 'Package count and kind agree on every document (DE 6/10, 6/9). Units agree line by line.'],
+  ['Value and currency', 'Commercial invoice, freight and insurance invoices', 'Line values add up to the invoice total, in one currency (DE 4/10). The Incoterm explains which costs sit in the price.'],
+  ['Weight', 'Packing list, transport document, invoice', 'Gross mass agrees with the transport document. Net mass is never above gross mass (DE 6/1, 6/5).'],
+  ['Origin', 'Commercial invoice, certificate of origin or origin statement', 'The same origin country for each line, with evidence where a preferential rate is claimed (DE 5/15).'],
+  ['Codes and parties', 'Invoice, packing list, previous entries, EORI records', 'The commodity code matches the goods (DE 6/14). Importer and exporter names and EORI numbers are the same on every document.'],
+]
+
+const packQuestions = [
+  {
+    question: 'What documents do I need for UK customs clearance?',
+    answer:
+      'For a UK import you normally need a commercial invoice, a packing list and the transport document (bill of lading, air waybill or CMR), plus the importer’s EORI number. Add a certificate of origin or origin statement when you claim a preferential duty rate, and any licence or certificate the goods need.',
+    link: ['full UK import document checklist', '/guides/customs-declaration-document-checklist/'],
+  },
+  {
+    question: 'Is a packing list required?',
+    answer:
+      'Yes, as part of the standard document pack. HMRC’s customs checklist lists a packing list alongside a commercial invoice in English, and brokers and carriers use it to check packages, marks and weights against the transport document.',
+    link: ['free packing list generator', '/tools/packing-list-generator/'],
+  },
+  {
+    question: 'Does the checker read or upload my documents?',
+    answer:
+      'No. You tick the prompts the pack already covers. The checker asks for no names, EORI numbers, values or files, and your ticks stay on this page.',
+  },
+  {
+    question: 'How do I share the action plan?',
+    answer:
+      'Press “Review & prioritise”, then “Copy action plan” to paste the ranked list into an email, a job note or a chat. You can also print it or save it as a PDF.',
   },
 ]
 
@@ -261,6 +305,19 @@ function toolScript(tool, site, posthogKey, posthogHost) {
       };
       const updateRow = (input) => input.closest('.check-row').classList.toggle('is-checked', input.checked);
       const announce = (message) => { status.textContent = message; };
+      const feedback = document.getElementById('copy-feedback');
+      // Visible confirmation on the button itself (S4); the hidden live region still speaks it.
+      const flash = (button, ok, label, error) => {
+        clearTimeout(button._flash);
+        button.textContent = ok ? label : 'COPY FAILED';
+        button.classList.toggle('is-copied', ok);
+        feedback.hidden = ok;
+        feedback.textContent = ok ? '' : error;
+        button._flash = setTimeout(() => {
+          button.textContent = button.dataset.label;
+          button.classList.remove('is-copied');
+        }, 2000);
+      };
 
       inputs.forEach((input) => input.addEventListener('change', () => {
         updateRow(input);
@@ -290,7 +347,9 @@ function toolScript(tool, site, posthogKey, posthogHost) {
         announce('Workpaper reviewed. ' + checked.length + ' of ' + inputs.length + ' prompts are mapped.');
       });
 
-      document.getElementById('copy-unmapped').addEventListener('click', async () => {
+      const copyButton = document.getElementById('copy-unmapped');
+      const shareButton = document.getElementById('share-workpaper');
+      copyButton.addEventListener('click', async () => {
         const { actions } = current();
         const text = actions.length
           ? [
@@ -310,13 +369,15 @@ function toolScript(tool, site, posthogKey, posthogHost) {
         try {
           await navigator.clipboard.writeText(text);
           announce('Prioritised action plan copied.');
+          flash(copyButton, true, 'COPIED ✓');
           track('tool_result_copied', { open_count: actions.length });
         } catch {
           announce('Copy was blocked by the browser. Use Print / save instead.');
+          flash(copyButton, false, '', 'Your browser blocked the copy. Use Print / save workpaper instead.');
         }
       });
 
-      document.getElementById('share-workpaper').addEventListener('click', async () => {
+      shareButton.addEventListener('click', async () => {
         const { actions } = current();
         const shareData = {
           title: 'Free customs document pack checker',
@@ -327,12 +388,16 @@ function toolScript(tool, site, posthogKey, posthogHost) {
         };
         try {
           if (navigator.share) await navigator.share(shareData);
-          else await navigator.clipboard.writeText(shareData.text + '\\n' + shareData.url);
+          else {
+            await navigator.clipboard.writeText(shareData.text + '\\n' + shareData.url);
+            flash(shareButton, true, 'LINK COPIED ✓');
+          }
           announce(navigator.share ? 'Share sheet opened.' : 'Share link copied.');
           track('tool_result_shared', { open_count: actions.length, method: navigator.share ? 'web_share' : 'clipboard' });
         } catch (error) {
           if (error && error.name === 'AbortError') return;
           announce('Sharing was blocked. Copy the action plan instead.');
+          flash(shareButton, false, '', 'Sharing was blocked. Copy the action plan instead.');
         }
       });
 
@@ -391,10 +456,44 @@ export function renderTool(tool, site, { navHtml, webmasterHtml, posthogKey, pos
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
       <div class="breadcrumbs">${breadcrumbHtml(tool.path, 'CUSTOMS DOCUMENT PACK CHECK')}</div>
       <main>
-        <header class="hero tool-hero">
+        <header class="hero tool-hero pc-lead">
           <div class="hero-copy">
             <p class="eyebrow">${escapeHtml(tool.eyebrow)}</p>
             <h1>${escapeHtml(tool.h1)}</h1>
+            <p class="pc-subhead">${escapeHtml(tool.subhead)}</p>
+            <p class="pc-intro">${escapeHtml(tool.intro)}</p>
+          </div>
+        </header>
+
+        <form class="check-workpaper" id="pack-check" novalidate>
+          ${renderGroups(tool)}
+          <div class="tool-actions">
+            <p><strong>24 prompts. One ordered handoff.</strong> Review now to see what needs attention first.</p>
+            <button class="button" id="review-pack" type="button">REVIEW &amp; PRIORITISE</button>
+          </div>
+        </form>
+
+        <section class="tool-result" id="tool-result" aria-labelledby="result-heading" aria-live="polite" hidden>
+          <div class="result-score"><span>MAPPED PROMPTS</span><strong id="result-score">0 / 24</strong></div>
+          <div class="result-body">
+            <span class="section-label">YOUR PRIORITISED HANDOFF</span>
+            <h2 id="result-heading">Work the list from priority 1 down.</h2>
+            <p id="result-copy"></p>
+            <ul id="result-groups"></ul>
+            <p class="result-limit"><strong>Desk boundary.</strong> This action plan is not a readiness verdict. It does not prove legal completeness, declaration validity, HMRC readiness, or correct filing. Check applicability and the current instructions for the movement.</p>
+            <div class="result-actions">
+              <button class="secondary-button" id="copy-unmapped" type="button" data-label="COPY ACTION PLAN">COPY ACTION PLAN</button>
+              <button class="secondary-button" id="print-workpaper" type="button">PRINT / SAVE WORKPAPER</button>
+              <button class="secondary-button" id="share-workpaper" type="button" data-label="SHARE THE CHECKER">SHARE THE CHECKER</button>
+              <a class="button" id="tool-booking" href="/?src=tool_customs_document_pack_check#book">TURN THIS INTO A 20-MINUTE WORKFLOW PLAN</a>
+            </div>
+            <p class="copy-feedback" id="copy-feedback" role="alert" hidden></p>
+          </div>
+        </section>
+        <p class="visually-hidden" id="tool-status" aria-live="polite"></p>
+
+        <section class="hero tool-hero pc-more" aria-label="About the free customs document checker">
+          <div class="hero-copy">
             <p>${escapeHtml(tool.standfirst)}</p>
             <div class="privacy-strip"><strong>24-POINT HANDOFF</strong><strong>PRIORITISED ACTIONS</strong><strong>COPY · PRINT · SHARE</strong></div>
           </div>
@@ -403,7 +502,8 @@ export function renderTool(tool, site, { navHtml, webmasterHtml, posthogKey, pos
             <div class="stamp">MAP<br />THEN REVIEW</div>
             <div class="review-cell"><span>EDITION</span><strong>${site.reviewedOn}</strong></div>
           </aside>
-        </header>
+        </section>
+
         <section class="answer-block" aria-labelledby="direct-answer">
           <span class="section-label">DIRECT ANSWER</span>
           <div>
@@ -425,41 +525,36 @@ export function renderTool(tool, site, { navHtml, webmasterHtml, posthogKey, pos
           <span>${escapeHtml(tool.limitations)}</span>
         </aside>
 
-        <form class="check-workpaper" id="pack-check" novalidate>
-          ${renderGroups(tool)}
-          <div class="tool-actions">
-            <p><strong>24 prompts. One ordered handoff.</strong> Review now to see what needs attention first.</p>
-            <button class="button" id="review-pack" type="button">REVIEW &amp; PRIORITISE</button>
-          </div>
-        </form>
-
-        <section class="tool-result" id="tool-result" aria-labelledby="result-heading" aria-live="polite" hidden>
-          <div class="result-score"><span>MAPPED PROMPTS</span><strong id="result-score">0 / 24</strong></div>
-          <div class="result-body">
-            <span class="section-label">YOUR PRIORITISED HANDOFF</span>
-            <h2 id="result-heading">Work the list from priority 1 down.</h2>
-            <p id="result-copy"></p>
-            <ul id="result-groups"></ul>
-            <p class="result-limit"><strong>Desk boundary.</strong> This action plan is not a readiness verdict. It does not prove legal completeness, declaration validity, HMRC readiness, or correct filing. Check applicability and the current instructions for the movement.</p>
-            <div class="result-actions">
-              <button class="secondary-button" id="copy-unmapped" type="button">COPY ACTION PLAN</button>
-              <button class="secondary-button" id="print-workpaper" type="button">PRINT / SAVE WORKPAPER</button>
-              <button class="secondary-button" id="share-workpaper" type="button">SHARE THE CHECKER</button>
-              <a class="button" id="tool-booking" href="/?src=tool_customs_document_pack_check#book">TURN THIS INTO A 20-MINUTE WORKFLOW PLAN</a>
-            </div>
-          </div>
+        <section class="pc-match" aria-labelledby="pc-match-heading">
+          <header><span class="section-label">CROSS-DOCUMENT CHECK</span><h2 id="pc-match-heading">What should match across the documents</h2><p>A customs entry stops when two documents tell different stories. Check these six facts across the pack before it goes to the declarant. For every document by movement type, use the <a href="/guides/customs-declaration-document-checklist/" data-pc-related="guide">full UK import document checklist</a>.</p></header>
+          <div class="pc-table-scroll" tabindex="0" role="region" aria-label="Facts to match across customs documents"><table class="pc-table">
+            <thead><tr><th scope="col">Fact</th><th scope="col">Compare</th><th scope="col">What must match</th></tr></thead>
+            <tbody>${packMatches.map(([fact, docs, rule]) => `<tr><th scope="row">${escapeHtml(fact)}</th><td data-label="Compare">${escapeHtml(docs)}</td><td data-label="What must match">${escapeHtml(rule)}</td></tr>`).join('')}</tbody>
+          </table></div>
         </section>
-        <p class="visually-hidden" id="tool-status" aria-live="polite"></p>
 
         <section class="boundary-grid">
           <article><span class="section-label">USE IT ON THE DESK</span><h2>Make ownership visible before work stalls.</h2><p>Use the ordered list at intake, before preparation, or in a process review. Copy it into a job note, print it for a stand-up, or share the checker with the person sending the next pack.</p></article>
           <article><span class="section-label">USE IT ON THE CALL</span><h2>Find the recurring handoff cost.</h2><p>Bring the top open actions, weekly declaration volume, minutes per declaration, and current customs system. The 20-minute numbers call maps where better document intake can return clerk time.</p></article>
         </section>
+
+        <section class="pc-faq" aria-labelledby="pc-faq-heading">
+          <header><span class="section-label">QUESTIONS</span><h2 id="pc-faq-heading">Customs documents questions, answered</h2></header>
+          <div>${packQuestions
+            .map(
+              (item, index) => `<details class="pc-question"${index === 0 ? ' open' : ''}>
+              <summary><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(item.question)}</summary>
+              <p>${escapeHtml(item.answer)}${item.link ? ` Open the <a href="${item.link[1]}" data-pc-related="faq_${index + 1}">${escapeHtml(item.link[0])}</a>.` : ''}</p>
+            </details>`,
+            )
+            .join('')}</div>
+        </section>
+
         <section class="tool-intro tool-generators" aria-labelledby="tool-generators-heading">
           <div><span class="section-label">FREE DOCUMENT GENERATORS</span><h2 id="tool-generators-heading">Missing a document? Build it here first.</h2></div>
           <div>
             <p>If the pack has no usable commercial invoice or packing list, create one in your browser with fields mapped to the CDS data elements, then come back and tick the shipment rows.</p>
-            <p><a href="/tools/commercial-invoice-generator/">Commercial invoice template and generator →</a><br /><a href="/tools/packing-list-generator/">Shipping packing list template and generator →</a><br /><a href="/tools/customs-value-import-duty-vat-calculator/">Import duty and VAT calculator for the valuation rows →</a></p>
+            <p><a href="/tools/commercial-invoice-generator/">Commercial invoice template and generator →</a><br /><a href="/tools/packing-list-generator/">Shipping packing list template and generator →</a><br /><a href="/tools/customs-value-import-duty-vat-calculator/">Import duty and VAT calculator for the valuation rows →</a><br /><a href="/guides/customs-declaration-document-checklist/">Full UK import document checklist →</a></p>
           </div>
         </section>
         ${renderSources(tool)}

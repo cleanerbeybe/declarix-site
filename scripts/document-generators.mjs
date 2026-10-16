@@ -57,9 +57,15 @@ const REASONS = [
   ['other', 'Other'],
 ]
 
+const DOCUMENT_TYPES = [
+  ['commercial', 'Commercial invoice'],
+  ['proforma', 'Proforma invoice'],
+]
+
 const invoiceSchema = {
   kind: 'invoice',
   documentTitle: 'COMMERCIAL INVOICE',
+  proformaTitle: 'PROFORMA INVOICE',
   numberField: 'invoiceNumber',
   groups: [
     { id: 'seller', title: 'Exporter / seller', note: 'The party selling and sending the goods.' },
@@ -75,8 +81,9 @@ const invoiceSchema = {
     { id: 'exporterVat', group: 'seller', label: 'Exporter VAT number', type: 'text', help: 'Optional. Useful for the buyer and for VAT records.', example: 'DE123456789' },
     { id: 'importerName', group: 'buyer', label: 'Importer name', type: 'text', required: true, cds: 'DE 3/15', help: 'Legal name of the buyer or importer.', example: 'Harbour Example Trading Ltd' },
     { id: 'importerAddress', group: 'buyer', label: 'Importer address', type: 'textarea', required: true, cds: 'DE 3/15', help: 'Street, town, postcode and country.', example: 'Unit 4, Example Park, Leicester LE1 1AA, United Kingdom' },
-    { id: 'importerEori', group: 'buyer', label: 'Importer EORI', type: 'text', eori: true, cds: 'DE 3/16', help: 'A GB importer’s EORI starts with GB. Use XI for Northern Ireland movements where required.', example: 'GB123456789000' },
+    { id: 'importerEori', group: 'buyer', label: 'Importer EORI', type: 'text', eori: true, cds: 'DE 3/16', requiredUnless: { field: 'destinationCountry', values: ['GB'] }, requiredHint: 'Needed by the importer’s customs for EU deliveries.', help: 'A GB importer’s EORI starts with GB. Use XI for Northern Ireland movements where required.', example: 'GB123456789000' },
     { id: 'consignee', group: 'buyer', label: 'Consignee, if different', type: 'textarea', cds: 'DE 3/8', help: 'The party receiving the goods when it is not the importer.', example: '' },
+    { id: 'documentType', group: 'refs', label: 'Document type', type: 'select', options: DOCUMENT_TYPES, help: 'Choose proforma when the goods ship before the sale or with no sale, such as samples or repairs.', example: 'commercial' },
     { id: 'invoiceNumber', group: 'refs', label: 'Invoice number', type: 'text', required: true, cds: 'DE 2/3 (N935)', help: 'Unique number. The declaration cites it as the invoice document.', example: 'INV-2026-0142' },
     { id: 'invoiceDate', group: 'refs', label: 'Invoice date', type: 'date', required: true, cds: 'DE 2/3', help: 'Date the invoice was issued.', example: '2026-10-15' },
     { id: 'orderRef', group: 'refs', label: 'Order or contract reference', type: 'text', help: 'Purchase order or contract number, if any.', example: 'PO-88231' },
@@ -86,6 +93,7 @@ const invoiceSchema = {
     { id: 'transportMode', group: 'refs', label: 'Mode of transport', type: 'select', options: TRANSPORT_MODES, cds: 'DE 7/4', help: 'Main mode at the border, if known.', example: 'sea' },
     { id: 'dispatchCountry', group: 'refs', label: 'Country of dispatch', type: 'text', country: true, cds: 'DE 5/14', help: 'Two-letter code, for example DE.', example: 'DE' },
     { id: 'destinationCountry', group: 'refs', label: 'Country of destination', type: 'text', country: true, cds: 'DE 5/8', help: 'Two-letter code, for example GB.', example: 'GB' },
+    { id: 'packages', group: 'refs', label: 'Number and kind of packages', type: 'text', cds: 'DE 6/10, 6/9', help: 'How the goods are packed, for example “2 pallets” or “5 cartons”.', example: '5 cartons' },
     { id: 'reason', group: 'refs', label: 'Reason for export', type: 'select', options: REASONS, cds: 'DE 8/5', help: 'Sale, return, repair, sample or gift.', example: 'sale' },
     { id: 'paymentTerms', group: 'charges', label: 'Payment terms', type: 'text', help: 'For example “30 days from invoice date”.', example: '30 days from invoice date' },
     { id: 'discount', group: 'charges', label: 'Discount', type: 'money', cds: 'DE 4/9', help: 'Total discount deducted from the goods subtotal.', example: '50' },
@@ -116,6 +124,7 @@ const invoiceSchema = {
       importerAddress: 'Unit 4, Example Park, Leicester LE1 1AA, United Kingdom',
       importerEori: 'GB123456789000',
       consignee: '',
+      documentType: 'commercial',
       invoiceNumber: 'INV-2026-0142',
       invoiceDate: '2026-10-15',
       orderRef: 'PO-88231',
@@ -125,6 +134,7 @@ const invoiceSchema = {
       transportMode: 'sea',
       dispatchCountry: 'DE',
       destinationCountry: 'GB',
+      packages: '5 cartons',
       reason: 'sale',
       paymentTerms: '30 days from invoice date',
       discount: '50',
@@ -158,7 +168,7 @@ const packingSchema = {
     { id: 'shipperEori', group: 'seller', label: 'Shipper EORI', type: 'text', eori: true, cds: 'DE 3/2', help: 'Needed when the shipper holds one.', example: 'DE1234567' },
     { id: 'consigneeName', group: 'buyer', label: 'Consignee name', type: 'text', required: true, cds: 'DE 3/8', help: 'Legal name of the receiving party.', example: 'Harbour Example Trading Ltd' },
     { id: 'consigneeAddress', group: 'buyer', label: 'Consignee address', type: 'textarea', required: true, cds: 'DE 3/8', help: 'Delivery address including postcode and country.', example: 'Unit 4, Example Park, Leicester LE1 1AA, United Kingdom' },
-    { id: 'consigneeEori', group: 'buyer', label: 'Consignee or importer EORI', type: 'text', eori: true, cds: 'DE 3/16', help: 'A GB importer’s EORI starts with GB.', example: 'GB123456789000' },
+    { id: 'consigneeEori', group: 'buyer', label: 'Consignee or importer EORI', type: 'text', eori: true, cds: 'DE 3/16', help: 'A GB importer’s EORI starts with GB. The importer needs one to bring goods into the UK, so add it and the forwarder will not have to ask.', example: 'GB123456789000' },
     { id: 'packingListNumber', group: 'refs', label: 'Packing list number', type: 'text', required: true, help: 'Your reference for this list.', example: 'PL-2026-0142' },
     { id: 'packingDate', group: 'refs', label: 'Date', type: 'date', required: true, help: 'Date the goods were packed.', example: '2026-10-15' },
     { id: 'invoiceNumber', group: 'refs', label: 'Commercial invoice number', type: 'text', linkInvoice: true, cds: 'DE 2/3 (N935)', help: 'The invoice this list supports. Reviewers match the two.', example: 'INV-2026-0142' },
@@ -174,11 +184,11 @@ const packingSchema = {
     { id: 'packageCount', label: 'Packages', type: 'number', required: true, integer: true, positive: true, cds: 'DE 6/10', help: 'Number of packages on this line.', example: '4' },
     { id: 'packageType', label: 'Package type', type: 'select', options: PACKAGE_TYPES, cds: 'DE 6/9', help: 'Kind of package. Codes follow UN/ECE Rec 21.', example: 'CT' },
     { id: 'description', label: 'Contents', type: 'text', required: true, cds: 'DE 6/8', help: 'What is inside, matching the invoice description.', example: 'Stainless steel ball bearings, 22 mm bore' },
-    { id: 'commodityCode', label: 'Commodity code', type: 'text', commodity: true, cds: 'DE 6/14', help: 'Optional. 6, 8 or 10 digits.', example: '848210' },
+    { id: 'commodityCode', label: 'Commodity code', type: 'text', commodity: true, cds: 'DE 6/14', help: 'Optional on a packing list. Copy it from the commercial invoice when you have it: 6, 8 or 10 digits.', example: '848210' },
     { id: 'quantity', label: 'Quantity', type: 'number', required: true, positive: true, help: 'Total units across these packages.', example: '400' },
     { id: 'unit', label: 'Unit', type: 'select', options: UNITS, help: 'Unit of the quantity.', example: 'pcs' },
-    { id: 'netMass', label: 'Net kg', type: 'number', required: true, cds: 'DE 6/1', help: 'Net mass for the whole line, in kilograms.', example: '96' },
-    { id: 'grossMass', label: 'Gross kg', type: 'number', required: true, cds: 'DE 6/5', help: 'Gross mass for the whole line, in kilograms.', example: '104' },
+    { id: 'netMass', label: 'Net kg (whole line)', type: 'number', required: true, perPackage: true, cds: 'DE 6/1', help: 'Net mass of all the packages on this line together, in kilograms.', example: '96' },
+    { id: 'grossMass', label: 'Gross kg (whole line)', type: 'number', required: true, perPackage: true, cds: 'DE 6/5', help: 'Gross mass of all the packages on this line together, in kilograms.', example: '104' },
     { id: 'length', label: 'L cm', type: 'number', dimension: true, help: 'Length of one package in centimetres.', example: '60' },
     { id: 'width', label: 'W cm', type: 'number', dimension: true, help: 'Width of one package in centimetres.', example: '40' },
     { id: 'height', label: 'H cm', type: 'number', dimension: true, help: 'Height of one package in centimetres.', example: '30' },
@@ -265,6 +275,48 @@ export function computeDocument(schema, state) {
   return { lines, totals }
 }
 
+export function fieldRequiredNow(field, header) {
+  if (field.required) return true
+  const rule = field.requiredUnless
+  if (!rule) return false
+  const other = String((header || {})[rule.field] || '').trim().toUpperCase()
+  return other !== '' && !rule.values.includes(other)
+}
+
+// Lines that hold goods but have no package size at all. The volume total skips them.
+export function missingDimensionLines(schema, state) {
+  if (schema.kind !== 'packing') return []
+  const blank = (value) => value == null || String(value).trim() === ''
+  return (state.lines || []).reduce((out, line, index) => {
+    const hasGoods = !blank(line.description) || !blank(line.packageCount)
+    const dims = ['length', 'width', 'height'].filter((key) => !blank(line[key]) && parseAmount(line[key]) > 0)
+    if (hasGoods && dims.length < 3) out.push(index)
+    return out
+  }, [])
+}
+
+// Shipping marks for a duplicated line. "HX/0142 1-4" with 4 packages becomes "HX/0142 5-8";
+// "HX/0142 5" with 1 package becomes "HX/0142 6". Anything else is copied unchanged.
+export function nextMarks(marks, packageCount) {
+  const text = String(marks == null ? '' : marks)
+  const count = Number(String(packageCount == null ? '' : packageCount).trim())
+  const pad = (value, like) => String(value).padStart(like.length, '0')
+  const range = text.match(/^(|.*\D)(\d+)(\s*[-–]\s*)(\d+)\s*$/)
+  if (range) {
+    const start = Number(range[2])
+    const end = Number(range[4])
+    if (end < start) return text
+    const size = end - start + 1
+    return range[1] + pad(end + 1, range[2]) + range[3] + pad(end + size, range[4])
+  }
+  const single = text.match(/^(.*\s)(\d+)\s*$/)
+  if (single && Number.isInteger(count) && count >= 1) {
+    const last = Number(single[2])
+    return single[1] + pad(last + 1, single[2]) + (count === 1 ? '' : '-' + pad(last + count, single[2]))
+  }
+  return text
+}
+
 export function validateDocument(schema, state) {
   const errors = []
   const warnings = []
@@ -280,6 +332,10 @@ export function validateDocument(schema, state) {
     const value = header[field.id]
     if (field.required && blank(value)) {
       errors.push({ field: field.id, message: field.label + ' is required.' })
+      continue
+    }
+    if (fieldRequiredNow(field, header) && blank(value)) {
+      errors.push({ field: field.id, message: field.label + ' is required when the destination is not GB. ' + (field.requiredHint || '') })
       continue
     }
     if (blank(value)) {
@@ -337,6 +393,8 @@ export function validateDocument(schema, state) {
       const given = ['length', 'width', 'height'].filter((key) => !blank(line[key]))
       if (given.length > 0 && given.length < 3) {
         warnings.push({ field: 'length', line: index, message: 'Line ' + n + ': enter length, width and height to include the volume.' })
+      } else if (given.length === 0 && (!blank(line.description) || !blank(line.packageCount))) {
+        warnings.push({ field: 'length', line: index, message: 'Line ' + n + ' has no dimensions. Total volume is incomplete.' })
       }
     }
     if (schema.kind === 'invoice' && !blank(line.netMass) && blank(line.grossMass)) {
@@ -400,6 +458,7 @@ export function renderDocumentHtml(schema, state, canonicalUrl) {
       metaRow('Incoterm', (header.incoterm || '') + (header.incotermPlace ? ' ' + header.incotermPlace : '')) +
       metaRow('Transport', optionLabel('transportMode', header.transportMode, schema.fields)) +
       metaRow('Dispatch → destination', [header.dispatchCountry, header.destinationCountry].filter(Boolean).join(' → ').toUpperCase()) +
+      metaRow('Packages', header.packages) +
       metaRow('Reason for export', optionLabel('reason', header.reason, schema.fields)) +
       metaRow('Payment terms', header.paymentTerms)
     const body = rows
@@ -421,7 +480,7 @@ export function renderDocumentHtml(schema, state, canonicalUrl) {
       '<tr><th scope="row">Total net / gross mass</th><td>' + fmtNum(t.netMass, 3) + ' kg / ' + fmtNum(t.grossMass, 3) + ' kg</td></tr>' +
       '</tbody></table>'
     footer =
-      '<section class="doc-declaration"><h3>Declaration</h3><p>I declare that the information on this invoice is true and correct, and that the contents and values of this shipment are as stated above.</p><div class="doc-sign"><p><b>Name</b> ' + show(header.signatoryName) + '</p><p><b>Position</b> ' + show(header.signatoryPosition) + '</p><p><b>Place and date</b> ' + show([header.signaturePlace, header.invoiceDate].filter(Boolean).join(', ')) + '</p><p class="doc-signature-line"><b>Signature</b> <span></span></p></div></section>'
+      '<section class="doc-declaration"><h3>Declaration</h3><p>I declare that the information on this ' + (header.documentType === 'proforma' ? 'proforma invoice' : 'invoice') + ' is true and correct, and that the contents and values of this shipment are as stated above.</p><div class="doc-sign"><p><b>Name</b> ' + show(header.signatoryName) + '</p><p><b>Position</b> ' + show(header.signatoryPosition) + '</p><p><b>Place and date</b> ' + show([header.signaturePlace, header.invoiceDate].filter(Boolean).join(', ')) + '</p><p class="doc-signature-line"><b>Signature</b> <span></span></p></div></section>'
   } else {
     parties =
       party('Shipper / exporter', header.shipperName, header.shipperAddress, header.shipperEori, '') +
@@ -448,13 +507,14 @@ export function renderDocumentHtml(schema, state, canonicalUrl) {
       '<tr><th scope="row">Total packages</th><td>' + fmtNum(t.packages, 0) + '</td></tr>' +
       '<tr><th scope="row">Total net mass</th><td>' + fmtNum(t.netMass, 3) + ' kg</td></tr>' +
       '<tr class="doc-grand"><th scope="row">Total gross mass</th><td>' + fmtNum(t.grossMass, 3) + ' kg</td></tr>' +
-      '<tr><th scope="row">Total volume</th><td>' + fmtNum(t.volumeM3, 3) + ' m³' + (t.lineCount && !t.volumeComplete ? ' (lines with dimensions)' : '') + '</td></tr>' +
+      '<tr><th scope="row">Total volume (CBM)</th><td>' + fmtNum(t.volumeM3, 3) + ' m³' + (t.lineCount && !t.volumeComplete ? ' (lines with dimensions)' : '') + '</td></tr>' +
       '</tbody></table>'
     footer =
       '<section class="doc-declaration"><h3>Packing confirmation</h3><p>The packages listed above were packed and marked as described.</p><div class="doc-sign"><p><b>Prepared by</b> ' + show(header.preparedBy) + '</p><p><b>Date</b> ' + show(header.packingDate) + '</p><p class="doc-signature-line"><b>Signature</b> <span></span></p></div></section>'
   }
+  const title = schema.proformaTitle && header.documentType === 'proforma' ? schema.proformaTitle : schema.documentTitle
   return (
-    '<header class="doc-head"><h2 class="doc-title">' + escapeText(schema.documentTitle) + '</h2><p class="doc-number">' + show(header[schema.numberField]) + '</p></header>' +
+    '<header class="doc-head"><h2 class="doc-title">' + escapeText(title) + '</h2><p class="doc-number">' + show(header[schema.numberField]) + '</p></header>' +
     '<div class="doc-parties">' + parties + '<section class="doc-meta"><h3>References</h3><table><tbody>' + meta + '</tbody></table></section></div>' +
     '<div class="doc-table-wrap">' + table + '</div>' +
     '<div class="doc-foot">' + footer + totals + '</div>' +
@@ -471,9 +531,21 @@ export function csvCell(value) {
 export function documentToCsv(schema, state) {
   const header = state.header || {}
   const computed = computeDocument(schema, state)
+  // Every row carries the document header, so one row on its own still names the parties and references.
   const lead = schema.kind === 'invoice'
-    ? [['invoice_number', header.invoiceNumber], ['invoice_date', header.invoiceDate], ['currency', header.currency], ['incoterm', header.incoterm], ['incoterm_place', header.incotermPlace]]
-    : [['packing_list_number', header.packingListNumber], ['packing_date', header.packingDate], ['invoice_number', header.invoiceNumber]]
+    ? [
+        ['document_type', header.documentType === 'proforma' ? 'Proforma invoice' : header.documentType === 'commercial' ? 'Commercial invoice' : ''],
+        ['invoice_number', header.invoiceNumber], ['invoice_date', header.invoiceDate], ['order_ref', header.orderRef],
+        ['exporter_name', header.exporterName], ['exporter_address', header.exporterAddress], ['exporter_eori', header.exporterEori], ['exporter_vat', header.exporterVat],
+        ['importer_name', header.importerName], ['importer_address', header.importerAddress], ['importer_eori', header.importerEori], ['consignee', header.consignee],
+        ['currency', header.currency], ['incoterm', header.incoterm], ['incoterm_place', header.incotermPlace], ['packages', header.packages],
+        ['dispatch_country', header.dispatchCountry], ['destination_country', header.destinationCountry],
+      ]
+    : [
+        ['packing_list_number', header.packingListNumber], ['packing_date', header.packingDate], ['invoice_number', header.invoiceNumber],
+        ['shipper_name', header.shipperName], ['shipper_eori', header.shipperEori], ['consignee_name', header.consigneeName], ['consignee_eori', header.consigneeEori],
+        ['transport_document', header.transportDocument], ['container_number', header.containerNumber],
+      ]
   const extra = schema.kind === 'invoice' ? ['line_total'] : ['volume_m3']
   const columns = ['line', ...lead.map(([key]) => key), ...schema.lineFields.map((field) => field.id.replace(/[A-Z]/g, (m) => '_' + m.toLowerCase())), ...extra]
   const rows = (state.lines || []).map((line, index) => {
@@ -523,13 +595,14 @@ export const documentGenerators = [
     id: 'commercial_invoice_generator',
     schema: invoiceSchema,
     ref: 'FREE TOOL 05 · COMMERCIAL INVOICE',
-    title: 'Commercial invoice template and generator | Free UK tool',
+    title: 'Commercial Invoice Template UK: Free Generator, PDF + CSV',
     schemaName: 'Free commercial invoice template and generator',
     reviewedOn: '2026-10-15',
     description:
-      'Free commercial invoice template and generator for UK imports and exports. Add parties, EORI, Incoterm and goods lines, then print to PDF or export CSV.',
+      'Free UK commercial invoice template: EORI, Incoterm, HS code and origin per line. Print to PDF or export CSV for Excel. Customs-ready, no sign-up.',
     eyebrow: 'FREE COMMERCIAL INVOICE TEMPLATE · CDS-MAPPED FIELDS · BROWSER ONLY',
     h1: 'Commercial invoice template and generator',
+    intro: 'Free, no sign-up. Fill it in below, then print to PDF or export CSV for Excel.',
     standfirst:
       'Fill in a customs-ready commercial invoice in your browser. Every field maps to the CDS data element a declarant needs, the totals add up as you type, and you can print it to PDF or download it as CSV or JSON.',
     templateCsv: '/downloads/commercial-invoice-template.csv',
@@ -547,6 +620,9 @@ export const documentGenerators = [
       { question: 'Do I need a commodity code on a commercial invoice?', answer: 'It is strongly recommended. The declarant needs a commodity code for every item on a UK customs declaration, so putting it on the invoice saves a round of questions. Look it up in the UK Trade Tariff.' },
       { question: 'Should the invoice be in English?', answer: 'Yes. HMRC’s customs checklist asks for a commercial invoice in English as part of the document pack.' },
       { question: 'What is the difference between a commercial invoice and a proforma invoice?', answer: 'A commercial invoice records a completed sale and its price. A proforma invoice is issued before the sale or where there is no sale, such as samples or repairs. Use the reason-for-export field to show which applies.' },
+      { question: 'Can I open it in Excel or Word?', answer: 'Yes. The CSV download opens in Excel, Google Sheets or Numbers, with the parties, EORI numbers, invoice number, date, Incoterm and order reference on every row. For Word or email, print the invoice to PDF from your browser and attach it.' },
+      { question: 'Can I make a proforma invoice with it?', answer: 'Yes. Set “Document type” to “Proforma invoice” and the printed document, the declaration line and the CSV relabel themselves. Everything else works the same way.' },
+      { question: 'Can I use it for a DHL, FedEx or UPS shipment?', answer: 'Yes. Couriers ask for a commercial invoice with the parties, a clear description, the commodity code, origin and value of each line. Print the PDF and attach it to the parcel, or upload it where the courier’s booking asks for the invoice.' },
       { question: 'Which Incoterm should I put on the invoice?', answer: 'Use the Incoterms® 2020 rule agreed in the sale contract, with its named place, for example “FCA Hamburg”. The Incoterm tells the declarant which costs are inside the price.' },
     ],
     sources: [
@@ -562,13 +638,15 @@ export const documentGenerators = [
     id: 'packing_list_generator',
     schema: packingSchema,
     ref: 'FREE TOOL 06 · PACKING LIST',
-    title: 'Packing list template and generator for UK shipping',
+    title: 'Shipping Packing List Template: Free Export Generator',
     schemaName: 'Free shipping packing list template and generator',
     reviewedOn: '2026-10-15',
     description:
-      'Free shipping packing list template and generator. Add packages, marks, contents, net and gross weights and dimensions, then print to PDF or export CSV.',
+      'Free shipping packing list template for export and UK customs: packages, marks, net and gross weight, dimensions and CBM. Print to PDF or export CSV.',
     eyebrow: 'FREE PACKING LIST TEMPLATE · WEIGHTS + VOLUME · BROWSER ONLY',
-    h1: 'Shipping packing list template and generator',
+    h1: 'Shipping and export packing list template and generator',
+    subhead: 'Shipping packing list template and generator',
+    intro: 'Free, no sign-up. Add each carton or pallet below, then print to PDF or export CSV.',
     standfirst:
       'Build a clear packing list in your browser. Add each package line with marks, contents, weights and dimensions. Totals for packages, net and gross mass and volume update as you type. Print it to PDF or download it as CSV or JSON.',
     templateCsv: '/downloads/packing-list-template.csv',
@@ -585,6 +663,9 @@ export const documentGenerators = [
       { question: 'What is the difference between net and gross mass?', answer: 'Net mass is the weight of the goods alone. Gross mass includes the packaging but not the transport equipment such as containers. Gross mass is always at least the net mass, and the generator checks this for every line.' },
       { question: 'How is the volume worked out?', answer: 'For each line the generator multiplies length × width × height of one package in centimetres, divides by 1,000,000 to get cubic metres, and multiplies by the number of packages.' },
       { question: 'How do I save the packing list as a PDF?', answer: 'Select “Print / save as PDF” and choose “Save as PDF” as the printer. The print layout shows only the finished packing list.' },
+      { question: 'Are the weights per package or for the whole line?', answer: 'For the whole line. Enter the net and gross kilograms of all the packages on that line together. The generator shows the weight per package under each box so you can check it against the scale.' },
+      { question: 'What is CBM on a packing list?', answer: 'CBM means cubic metres, the volume the shipment takes up. The generator works it out from the size of one package and the number of packages, then adds every line into the total CBM that forwarders use to price and plan the load.' },
+      { question: 'Can I open it in Excel?', answer: 'Yes. The CSV download opens in Excel, Google Sheets or Numbers, with the shipper, consignee, references and totals on the rows. For Word or email, print the packing list to PDF from your browser and attach it.' },
       { question: 'Should the packing list match the commercial invoice?', answer: 'Yes. Descriptions, quantities and weights should agree with the invoice. Put the invoice number on the packing list so the reviewer can match the two quickly.' },
     ],
     sources: [
@@ -668,8 +749,16 @@ function renderHeaderFields(schema) {
         <div class="gen-fields">${fields
           .map(
             (field) => `<div class="gen-field${field.type === 'textarea' ? ' is-wide' : ''}">
-              <label for="h-${field.id}">${escapeHtml(field.label)}${field.required ? ' <b aria-hidden="true">*</b>' : ' <small>optional</small>'}</label>
+              <label for="h-${field.id}">${escapeHtml(field.label)}${
+                field.required
+                  ? ' <b aria-hidden="true">*</b>'
+                  : field.requiredUnless
+                    ? ' <b aria-hidden="true" data-required-mark hidden>*</b><small data-optional-mark>optional</small>'
+                    : ' <small>optional</small>'
+              }</label>
               ${inputControl(field, { id: `h-${field.id}`, name: field.id })}
+              ${field.type === 'date' ? `<span class="gen-date-readout" data-date-readout aria-hidden="true">&nbsp;</span>` : ''}
+              ${field.requiredHint ? `<span class="gen-required-hint" id="h-${field.id}-required" data-required-hint hidden>${escapeHtml(field.requiredHint)}</span>` : ''}
               <span class="gen-help" id="h-${field.id}-help">${escapeHtml(field.help)}${field.cds ? ` <i>CDS ${escapeHtml(field.cds)}</i>` : ''}</span>
               <span class="gen-error" id="h-${field.id}-error" hidden></span>
             </div>`,
@@ -688,24 +777,25 @@ function renderLineRow(schema, index) {
         (field) => `<div class="gen-field gen-line-field" data-col="${field.id}">
           <label for="l${index}-${field.id}">${escapeHtml(field.label)}${field.required ? ' <b aria-hidden="true">*</b>' : ''}</label>
           ${inputControl(field, { id: `l${index}-${field.id}`, name: `${field.id}`, line: true })}
+          ${field.perPackage ? `<span class="gen-per-package" data-per-package="${field.id}">&nbsp;</span>` : ''}
           <span class="visually-hidden" id="l${index}-${field.id}-help">${escapeHtml(field.help)}</span>
         </div>`,
       )
       .join('')}
       ${schema.kind === 'invoice' ? '<div class="gen-line-total"><span>LINE TOTAL</span><output data-line-total>—</output></div>' : '<div class="gen-line-total"><span>VOLUME</span><output data-line-total>—</output></div>'}
     </div>
-    <button class="gen-remove" type="button" data-remove-line>REMOVE LINE</button>
+    <div class="gen-line-actions"><button class="gen-remove gen-duplicate" type="button" data-duplicate-line>DUPLICATE LINE</button><button class="gen-remove" type="button" data-remove-line>REMOVE LINE</button></div>
   </fieldset>`
 }
 
 function renderFieldGuide(schema) {
   const all = [...schema.fields.map((field) => ({ ...field, scope: 'Header' })), ...schema.lineFields.map((field) => ({ ...field, scope: 'Each line' }))]
-  return `<div class="gen-table-scroll" tabindex="0" role="region" aria-label="Field guide table"><table class="gen-guide-table">
+  return `<div class="gen-table-scroll" tabindex="0" role="region" aria-label="Field guide table"><table class="gen-guide-table gen-card-table">
     <caption>Field-by-field guide with the matching CDS data element</caption>
     <thead><tr><th scope="col">Field</th><th scope="col">Where</th><th scope="col">What to enter</th><th scope="col">CDS data element</th><th scope="col">Example</th></tr></thead>
     <tbody>${all
       .map(
-        (field) => `<tr><th scope="row">${escapeHtml(field.label)}${field.required ? ' *' : ''}</th><td>${field.scope}</td><td>${escapeHtml(field.help)}</td><td>${escapeHtml(field.cds || '—')}</td><td>${escapeHtml(field.example || '—')}</td></tr>`,
+        (field) => `<tr><th scope="row">${escapeHtml(field.label)}${field.required ? ' *' : field.requiredUnless ? ' *&nbsp;(outside GB)' : ''}</th><td data-label="Where">${field.scope}</td><td data-label="What to enter">${escapeHtml(field.help)}</td><td>${escapeHtml(field.cds || '—')}</td><td data-label="Example">${escapeHtml(field.example || '—')}</td></tr>`,
       )
       .join('')}</tbody>
   </table></div>`
@@ -763,6 +853,69 @@ function renderPackingContent() {
   </section>`
 }
 
+// Search-intent sections (intent review §4.1, 16 Oct 2026). Data element numbers follow the CDS import
+// completion guide; valuation wording follows HMRC "Customs valuation: Method 1" (both checked 15 Oct 2026,
+// URLs in the source register).
+function renderInvoiceIntentSections() {
+  const rows = [
+    ['Exporter and importer, with EORI', 'DE 3/1, 3/2, 3/15, 3/16', 'The declaration names the same parties and their EORI numbers.'],
+    ['Invoice number and date', 'DE 2/3 (N935)', 'The declaration quotes the invoice as the document behind the declared value.'],
+    ['Currency', 'DE 4/10', 'The declarant converts the total with the HMRC exchange rate for the period.'],
+    ['Incoterm and named place', 'DE 4/1', 'Shows which freight and insurance costs sit inside the price, so the customs value can be built.'],
+    ['Price of each line', 'DE 4/14', 'The price paid or payable is the starting point of the customs value (Method 1, transaction value).'],
+    ['Goods description', 'DE 6/8', 'Must be clear enough to support the commodity code. “Parts” or “samples” alone is not.'],
+    ['Commodity code', 'DE 6/14', 'Sets the duty rate and any licence or control on the goods.'],
+    ['Country of origin', 'DE 5/15', 'Decides whether a preferential duty rate can apply.'],
+    ['Net and gross mass', 'DE 6/1, 6/5', 'Checked against the packing list and the transport document.'],
+    ['Number and kind of packages', 'DE 6/10, 6/9', 'Checked against the packing list, the marks and the bill of lading, air waybill or CMR.'],
+  ]
+  return `<section class="gen-content gen-intent" aria-labelledby="gen-proforma">
+    <header><span class="section-label">PROFORMA INVOICE TEMPLATE</span><h2 id="gen-proforma">Proforma invoice template</h2></header>
+    <p>Need a proforma invoice? Set <b>Document type</b> to “Proforma invoice” at the top of the references. The printed document, the declaration line and the CSV all relabel themselves, and every field, check and total works the same way.</p>
+    <p>Send a proforma before the sale is final, for example as a quote the buyer uses to pay or to apply for an import licence. Use it too when goods cross the border with no sale, such as free samples, goods sent for repair or returns. Customs still needs a value for goods with no sale. HMRC’s transaction value method needs a sale, so the declarant uses one of the other valuation methods, and the value on your proforma is the evidence they start from.</p>
+  </section>
+
+  <section class="gen-content gen-intent" aria-labelledby="gen-hmrc">
+    <header><span class="section-label">FOR UK CUSTOMS</span><h2 id="gen-hmrc">Commercial invoice for customs: what HMRC checks</h2><p>HMRC checks the customs declaration, and the declaration is built from your commercial invoice. These are the invoice facts that reach it, with the data element each one fills.</p></header>
+    <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Invoice facts on the customs declaration"><table class="gen-guide-table gen-card-table">
+      <thead><tr><th scope="col">On the invoice</th><th scope="col">On the declaration</th><th scope="col">Why it matters</th></tr></thead>
+      <tbody>${rows.map(([fact, de, why]) => `<tr><th scope="row">${escapeHtml(fact)}</th><td data-label="On the declaration" class="gen-nowrap">${escapeHtml(de)}</td><td data-label="Why it matters">${escapeHtml(why)}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <p class="gen-example-note">HMRC’s customs checklist also asks for the commercial invoice in English. When the invoice and the packing list agree line by line, the broker can key the entry without stopping to ask. <a href="/tools/packing-list-generator/" data-gen-related="sibling_hmrc">Build the matching export packing list</a>.</p>
+  </section>`
+}
+
+function renderPackingIntentSections() {
+  const rows = [
+    ['What it proves', 'The sale: who sold what to whom, and at what price', 'The packing: what is in each package, and how it is marked'],
+    ['Values and prices', 'Yes, per line and in total', 'Not needed'],
+    ['Weights', 'Net and gross per line, where known', 'Net and gross per line, with totals'],
+    ['Packages and marks', 'Number and kind of packages', 'Marks, package count, type and size for every line'],
+    ['Volume (CBM)', 'Not needed', 'Yes, from the size of each package'],
+    ['Who reads it', 'The declarant, to build the customs value', 'The carrier, the warehouse and the declarant, to check the load'],
+  ]
+  return `<section class="gen-content gen-intent" aria-labelledby="gen-vs">
+    <header><span class="section-label">EXPORT PACKING LIST VS COMMERCIAL INVOICE</span><h2 id="gen-vs">Export packing list vs commercial invoice</h2><p>You need both. The commercial invoice states the sale and its value. The export packing list states how the same goods are packed. Customs, the carrier and the receiver read them side by side.</p></header>
+    <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Packing list and commercial invoice compared"><table class="gen-guide-table gen-card-table">
+      <thead><tr><th scope="col">Point</th><th scope="col">Commercial invoice</th><th scope="col">Packing list</th></tr></thead>
+      <tbody>${rows.map(([point, invoice, packing]) => `<tr><th scope="row">${escapeHtml(point)}</th><td data-label="Commercial invoice">${escapeHtml(invoice)}</td><td data-label="Packing list">${escapeHtml(packing)}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <p class="gen-example-note"><a href="/tools/commercial-invoice-generator/" data-gen-related="sibling_vs">Build the matching commercial invoice</a> with the same references and lines.</p>
+  </section>
+
+  <section class="gen-content gen-intent" aria-labelledby="gen-match">
+    <header><span class="section-label">PACKING LIST FOR CUSTOMS</span><h2 id="gen-match">Packing list for customs: what must match</h2><p>The declarant checks the packing list against the invoice and the transport document before the entry is built. Make these agree and the shipment moves without questions.</p></header>
+    <ol class="gen-checks">
+      <li><b>01</b><span><strong>Invoice number.</strong> The packing list quotes the commercial invoice it supports.</span></li>
+      <li><b>02</b><span><strong>Descriptions and quantities.</strong> Every line uses the same goods description and quantity as the invoice.</span></li>
+      <li><b>03</b><span><strong>Package count and type.</strong> Total packages equal the number on the bill of lading, air waybill or CMR (DE 6/10, 6/9).</span></li>
+      <li><b>04</b><span><strong>Gross mass.</strong> Total gross kilograms match the transport document and the invoice (DE 6/5).</span></li>
+      <li><b>05</b><span><strong>Marks and numbers.</strong> The marks on the list are the marks on the packages (DE 6/11), so a checked package is found fast.</span></li>
+      <li><b>06</b><span><strong>Total volume (CBM).</strong> Every line has its sizes, so the CBM the forwarder plans with is complete.</span></li>
+    </ol>
+  </section>`
+}
+
 function renderWorkedExample(generator) {
   const schema = generator.schema
   const computed = computeDocument(schema, schema.example)
@@ -771,16 +924,16 @@ function renderWorkedExample(generator) {
     const money = (p) => formatPence(p, 'EUR')
     return `<section class="gen-example" aria-labelledby="gen-example-heading">
       <header><span class="section-label">WORKED EXAMPLE</span><h2 id="gen-example-heading">A worked commercial invoice, line by line</h2><p>A German seller ships bearings and gaskets to a UK importer on FCA Hamburg terms, invoiced in euros. Load it into the generator with “Load an example”.</p></header>
-      <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Worked example arithmetic"><table class="gen-guide-table">
+      <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Worked example arithmetic"><table class="gen-guide-table gen-card-table">
         <thead><tr><th scope="col">Line</th><th scope="col">Calculation</th><th scope="col">Amount</th></tr></thead>
         <tbody>
-          <tr><th scope="row">1 · Ball bearings (848210, DE)</th><td>400 pcs × €6.85</td><td>${money(computed.lines[0].lineTotalPence)}</td></tr>
-          <tr><th scope="row">2 · Rubber gaskets (401693, CZ)</th><td>1,200 pcs × €0.42</td><td>${money(computed.lines[1].lineTotalPence)}</td></tr>
-          <tr><th scope="row">Goods subtotal</th><td>Line 1 + line 2</td><td>${money(t.subtotalPence)}</td></tr>
-          <tr><th scope="row">Discount</th><td>Agreed discount</td><td>− ${money(t.discountPence)}</td></tr>
-          <tr><th scope="row">Freight + insurance</th><td>€320 + €45 invoiced to the buyer</td><td>${money(t.freightPence + t.insurancePence)}</td></tr>
-          <tr><th scope="row">Invoice total</th><td>Subtotal − discount + freight + insurance + other</td><td><strong>${money(t.totalPence)}</strong></td></tr>
-          <tr><th scope="row">Mass</th><td>Net and gross, all lines</td><td>${t.netMass} kg / ${t.grossMass} kg</td></tr>
+          <tr><th scope="row">1 · Ball bearings (848210, DE)</th><td data-label="Calculation">400 pcs × €6.85</td><td data-label="Amount">${money(computed.lines[0].lineTotalPence)}</td></tr>
+          <tr><th scope="row">2 · Rubber gaskets (401693, CZ)</th><td data-label="Calculation">1,200 pcs × €0.42</td><td data-label="Amount">${money(computed.lines[1].lineTotalPence)}</td></tr>
+          <tr><th scope="row">Goods subtotal</th><td data-label="Calculation">Line 1 + line 2</td><td data-label="Amount">${money(t.subtotalPence)}</td></tr>
+          <tr><th scope="row">Discount</th><td data-label="Calculation">Agreed discount</td><td data-label="Amount">− ${money(t.discountPence)}</td></tr>
+          <tr><th scope="row">Freight + insurance</th><td data-label="Calculation">€320 + €45 invoiced to the buyer</td><td data-label="Amount">${money(t.freightPence + t.insurancePence)}</td></tr>
+          <tr><th scope="row">Invoice total</th><td data-label="Calculation">Subtotal − discount + freight + insurance + other</td><td data-label="Amount"><strong>${money(t.totalPence)}</strong></td></tr>
+          <tr><th scope="row">Mass</th><td data-label="Calculation">Net and gross, all lines</td><td data-label="Amount">${t.netMass} kg / ${t.grossMass} kg</td></tr>
         </tbody>
       </table></div>
       <p class="gen-example-note">Next, the declarant converts the euro total with the HMRC exchange rate and builds the customs value. <a href="/tools/customs-value-import-duty-vat-calculator/" data-gen-related="value_duty">Work out customs value, import duty and VAT</a> with the free calculator.</p>
@@ -789,14 +942,14 @@ function renderWorkedExample(generator) {
   const t = computed.totals
   return `<section class="gen-example" aria-labelledby="gen-example-heading">
     <header><span class="section-label">WORKED EXAMPLE</span><h2 id="gen-example-heading">A worked packing list, package by package</h2><p>The same shipment as the invoice example: five cartons of bearings and gaskets in one container from Hamburg. Load it with “Load an example”.</p></header>
-    <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Worked example arithmetic"><table class="gen-guide-table">
+    <div class="gen-table-scroll" tabindex="0" role="region" aria-label="Worked example arithmetic"><table class="gen-guide-table gen-card-table">
       <thead><tr><th scope="col">Line</th><th scope="col">Calculation</th><th scope="col">Result</th></tr></thead>
       <tbody>
-        <tr><th scope="row">1 · 4 cartons, 60 × 40 × 30 cm</th><td>4 × (60 × 40 × 30) ÷ 1,000,000</td><td>${computed.lines[0].volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 })} m³</td></tr>
-        <tr><th scope="row">2 · 1 carton, 50 × 40 × 25 cm</th><td>1 × (50 × 40 × 25) ÷ 1,000,000</td><td>${computed.lines[1].volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 })} m³</td></tr>
-        <tr><th scope="row">Total packages</th><td>4 + 1</td><td>${t.packages}</td></tr>
-        <tr><th scope="row">Net / gross mass</th><td>96 + 18 kg / 104 + 21.5 kg</td><td>${t.netMass} kg / ${t.grossMass} kg</td></tr>
-        <tr><th scope="row">Total volume</th><td>Line 1 + line 2</td><td><strong>${t.volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 })} m³</strong></td></tr>
+        <tr><th scope="row">1 · 4 cartons, 60 × 40 × 30 cm</th><td data-label="Calculation">4 × (60 × 40 × 30) ÷ 1,000,000</td><td data-label="Result">${computed.lines[0].volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 })} m³</td></tr>
+        <tr><th scope="row">2 · 1 carton, 50 × 40 × 25 cm</th><td data-label="Calculation">1 × (50 × 40 × 25) ÷ 1,000,000</td><td data-label="Result">${computed.lines[1].volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 })} m³</td></tr>
+        <tr><th scope="row">Total packages</th><td data-label="Calculation">4 + 1</td><td data-label="Result">${t.packages}</td></tr>
+        <tr><th scope="row">Net / gross mass</th><td data-label="Calculation">96 + 18 kg / 104 + 21.5 kg</td><td data-label="Result">${t.netMass} kg / ${t.grossMass} kg</td></tr>
+        <tr><th scope="row">Total volume</th><td data-label="Calculation">Line 1 + line 2</td><td data-label="Result"><strong>${t.volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 })} m³</strong></td></tr>
       </tbody>
     </table></div>
     <p class="gen-example-note">The quantities and weights match the commercial invoice example exactly, which is what a reviewer looks for first. <a href="/tools/commercial-invoice-generator/" data-gen-related="sibling_example">Build the matching commercial invoice</a>.</p>
@@ -807,7 +960,7 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
   const config = JSON.stringify({ posthogKey, posthogHost }).replaceAll('<', '\\u003c')
   const schemaJson = JSON.stringify(generator.schema).replaceAll('<', '\\u003c')
   const canonical = `${site.origin}${generator.path}`
-  const engine = [parseAmount, computeDocument, validateDocument, escapeText, formatPence, renderDocumentHtml, csvCell, documentToCsv, documentToJson, documentFromJson]
+  const engine = [parseAmount, computeDocument, fieldRequiredNow, missingDimensionLines, nextMarks, validateDocument, escapeText, formatPence, renderDocumentHtml, csvCell, documentToCsv, documentToJson, documentFromJson]
     .map((fn) => fn.toString())
     .join('\n')
   return `<script>
@@ -881,15 +1034,36 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
             control.setAttribute('aria-describedby', id + '-help');
           });
           row.querySelector('[data-remove-line]').setAttribute('aria-label', 'Remove line ' + (index + 1));
+          row.querySelector('[data-duplicate-line]').setAttribute('aria-label', 'Duplicate line ' + (index + 1));
         });
       };
-      const addLine = (values) => {
+      const addLine = (values, after) => {
         const row = lineTemplate.content.firstElementChild.cloneNode(true);
         if (values) schema.lineFields.forEach((field) => { const control = row.querySelector('[data-field="' + field.id + '"]'); if (values[field.id] != null && values[field.id] !== '') control.value = values[field.id]; });
-        linesHost.appendChild(row);
+        if (after) after.after(row);
+        else linesHost.appendChild(row);
         renumber();
         return row;
       };
+      const todayIso = () => {
+        const now = new Date();
+        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      };
+      // Date boxes start on today; the user can still change them.
+      const fillToday = () => {
+        schema.fields.filter((field) => field.type === 'date').forEach((field) => {
+          const control = form.querySelector('#h-' + field.id);
+          if (control && !control.value) control.value = todayIso();
+        });
+      };
+      const readableDate = (value) => {
+        if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value || '')) return '\u00a0';
+        const [y, m, d] = value.split('-').map(Number);
+        return 'Reads as ' + new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+      };
+      const dimWarning = document.getElementById('gen-dim-warning');
+      const dimWarningText = document.getElementById('gen-dim-warning-text');
+      let missingLines = [];
       const fillState = (state) => {
         schema.fields.forEach((field) => {
           const control = form.querySelector('#h-' + field.id);
@@ -899,6 +1073,7 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
         });
         linesHost.innerHTML = '';
         (state.lines.length ? state.lines : [{}]).forEach((line) => addLine(line));
+        fillToday();
       };
 
       const clearMarks = () => {
@@ -924,7 +1099,44 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
         });
         const total = document.getElementById('gen-running-total');
         if (schema.kind === 'invoice') total.textContent = formatPence(computed.totals.totalPence, state.header.currency || 'GBP');
-        else total.textContent = computed.totals.packages.toLocaleString('en-GB') + ' pkgs · ' + computed.totals.grossMass.toLocaleString('en-GB', { maximumFractionDigits: 3 }) + ' kg';
+        else total.textContent = computed.totals.packages.toLocaleString('en-GB') + ' pkgs · ' + computed.totals.grossMass.toLocaleString('en-GB', { maximumFractionDigits: 3 }) + ' kg · ' + computed.totals.volumeM3.toLocaleString('en-GB', { maximumFractionDigits: 3 }) + ' m³';
+        schema.fields.forEach((field) => {
+          const control = form.querySelector('#h-' + field.id);
+          const box = control.closest('.gen-field');
+          if (field.type === 'date') box.querySelector('[data-date-readout]').textContent = readableDate(control.value);
+          if (!field.requiredUnless) return;
+          const needed = fieldRequiredNow(field, state.header);
+          box.querySelector('[data-required-mark]').hidden = !needed;
+          box.querySelector('[data-optional-mark]').hidden = needed;
+          const hint = box.querySelector('[data-required-hint]');
+          if (hint) hint.hidden = !needed;
+          if (needed) control.setAttribute('aria-required', 'true');
+          else control.removeAttribute('aria-required');
+          control.setAttribute('aria-describedby', (needed && hint ? hint.id + ' ' : '') + 'h-' + field.id + '-help');
+        });
+        lineRows().forEach((row, index) => {
+          const count = computed.lines[index] ? computed.lines[index].packageCount : null;
+          row.querySelectorAll('[data-per-package]').forEach((node) => {
+            const mass = computed.lines[index] ? computed.lines[index][node.dataset.perPackage] : null;
+            node.textContent = Number.isFinite(count) && count > 0 && Number.isFinite(mass) && mass !== null
+              ? '= ' + (mass / count).toLocaleString('en-GB', { maximumFractionDigits: 3 }) + ' kg per package'
+              : '\u00a0';
+          });
+        });
+        missingLines = missingDimensionLines(schema, state);
+        form.querySelectorAll('.is-missing').forEach((node) => node.classList.remove('is-missing'));
+        missingLines.forEach((index) => {
+          lineRows()[index].querySelectorAll('[data-field="length"], [data-field="width"], [data-field="height"]').forEach((control) => {
+            if (!(parseAmount(control.value) > 0)) control.closest('.gen-field').classList.add('is-missing');
+          });
+        });
+        if (dimWarning) {
+          const names = missingLines.map((index) => String(index + 1));
+          dimWarning.hidden = names.length === 0;
+          dimWarningText.textContent = names.length === 0 ? '' : (names.length === 1
+            ? 'Line ' + names[0] + ' has no dimensions.'
+            : 'Lines ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + ' have no dimensions.') + ' Total volume is incomplete.';
+        }
         clearMarks();
         if (showValidation) {
           result.errors.forEach((issue) => {
@@ -960,6 +1172,24 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
       form.addEventListener('change', () => { begin(); render(); });
       form.addEventListener('submit', (event) => { event.preventDefault(); });
       linesHost.addEventListener('click', (event) => {
+        const copy = event.target.closest('[data-duplicate-line]');
+        if (copy) {
+          if (lineRows().length >= 200) { status.textContent = 'The generator supports up to 200 lines.'; return; }
+          begin();
+          const source = copy.closest('.gen-line');
+          const values = {};
+          schema.lineFields.forEach((field) => { values[field.id] = source.querySelector('[data-field="' + field.id + '"]').value; });
+          if ('marks' in values) values.marks = nextMarks(values.marks, values.packageCount);
+          const row = addLine(values, source);
+          render();
+          const from = Number(source.dataset.line) + 1;
+          const to = Number(row.dataset.line) + 1;
+          status.textContent = 'Line ' + to + ' added as a copy of line ' + from + '.';
+          row.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          row.querySelector('[data-field]').focus({ preventScroll: true });
+          track('tool_line_duplicated', { line_count: lineRows().length });
+          return;
+        }
         const button = event.target.closest('[data-remove-line]');
         if (!button) return;
         const rows = lineRows();
@@ -1007,7 +1237,7 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
         link.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       };
-      const fileBase = (state) => (schema.kind === 'invoice' ? 'commercial-invoice-' : 'packing-list-') + ((state.header[schema.numberField] || 'draft').replace(/[^A-Za-z0-9_-]+/g, '-').slice(0, 60) || 'draft');
+      const fileBase = (state) => (schema.kind === 'invoice' ? (state.header.documentType === 'proforma' ? 'proforma-invoice-' : 'commercial-invoice-') : 'packing-list-') + ((state.header[schema.numberField] || 'draft').replace(/[^A-Za-z0-9_-]+/g, '-').slice(0, 60) || 'draft');
 
       document.getElementById('gen-check').addEventListener('click', () => {
         const data = ready('check');
@@ -1081,7 +1311,15 @@ function generatorScript(generator, site, posthogKey, posthogHost) {
       document.querySelectorAll('[data-gen-booking]').forEach((link) => link.addEventListener('click', () => track('tool_booking_clicked', { placement: link.dataset.genBooking })));
       document.querySelectorAll('[data-gen-pack]').forEach((link) => link.addEventListener('click', () => track('tool_pack_check_clicked', { placement: link.dataset.genPack })));
       document.querySelectorAll('[data-gen-related]').forEach((link) => link.addEventListener('click', () => track('tool_related_clicked', { target: link.dataset.genRelated })));
+      const dimFix = document.getElementById('gen-dim-fix');
+      if (dimFix) dimFix.addEventListener('click', () => {
+        const row = lineRows()[missingLines[0]];
+        if (!row) return;
+        const target = [...row.querySelectorAll('[data-field="length"], [data-field="width"], [data-field="height"]')].find((control) => !(parseAmount(control.value) > 0));
+        if (target) { target.scrollIntoView({ block: 'center' }); target.focus({ preventScroll: true }); }
+      });
       document.documentElement.classList.add('gen-js');
+      fillToday();
       render();
       attribution();
     })();
@@ -1133,10 +1371,43 @@ export function renderDocumentGenerator(generator, site, { navHtml, webmasterHtm
       <nav class="route-nav" aria-label="Primary">${navHtml}</nav>
       <div class="breadcrumbs">${breadcrumbHtml(generator.path, escapeHtml(nameForPath(generator.path).toUpperCase()))}</div>
       <main>
-        <header class="hero tool-hero gen-hero">
+        <header class="hero tool-hero gen-hero gen-hero-lead">
           <div class="hero-copy">
             <p class="eyebrow">${escapeHtml(generator.eyebrow)}</p>
             <h1>${escapeHtml(generator.h1)}</h1>
+            ${generator.subhead ? `<p class="gen-subhead">${escapeHtml(generator.subhead)}</p>` : ''}
+            <p class="gen-intro">${escapeHtml(generator.intro)}</p>
+          </div>
+        </header>
+
+        <section class="gen-builder" id="gen-builder" aria-labelledby="gen-builder-heading">
+          <header class="gen-builder-head">
+            <div><span class="section-label">GENERATOR</span><h2 id="gen-builder-heading">Create your ${noun}</h2><p class="gen-cds-note">Green tags show where each field goes on the UK customs declaration, so your broker can key it straight in.</p><p>Fields marked * are needed before export. Amounts use a full stop for decimals; commas and currency symbols are ignored.</p></div>
+            <div class="gen-quick"><button class="secondary-button" id="gen-example" type="button">LOAD AN EXAMPLE</button><button class="secondary-button" id="gen-clear" type="button">CLEAR FORM</button><label class="secondary-button gen-file" for="gen-open-json">OPEN A SAVED JSON FILE<input id="gen-open-json" type="file" accept="application/json,.json" /></label></div>
+          </header>
+          <noscript><p class="gen-noscript">The live generator needs JavaScript. You can still print the blank template below or download the <a href="${generator.templateCsv}">blank CSV template</a>.</p></noscript>
+          <form id="gen-form" novalidate>
+            <div class="gen-groups">${renderHeaderFields(schema)}</div>
+            <section class="gen-lines-block" aria-labelledby="gen-lines-heading">
+              <header><h3 id="gen-lines-heading">${isInvoice ? 'Goods lines' : 'Package lines'}</h3><p>${isInvoice ? 'One line per type of goods. Line totals are quantity × unit price, rounded to the penny.' : 'One line per group of identical packages. Dimensions are for one package; volume covers the whole line.'}</p></header>
+              <div id="gen-lines">${renderLineRow(schema, 0)}</div>
+              <template id="gen-line-template">${renderLineRow(schema, 0)}</template>
+              <div class="gen-lines-foot"><button class="secondary-button" id="gen-add-line" type="button">+ ADD LINE</button><p>${isInvoice ? 'Running invoice total' : 'Running totals'} <output id="gen-running-total">—</output></p></div>
+            </section>
+          </form>
+          <div class="gen-summary" id="gen-summary" tabindex="-1" role="alert" hidden><h3 id="gen-summary-heading"></h3><ul id="gen-summary-list"></ul></div>
+          ${isInvoice ? '' : '<p class="gen-dim-warning" id="gen-dim-warning" role="status" hidden><span id="gen-dim-warning-text"></span> <button class="gen-text-button" id="gen-dim-fix" type="button">ADD SIZES</button></p>'}
+          <div class="gen-actions">
+            <button class="button" id="gen-print" type="button">PRINT / SAVE AS PDF</button>
+            <button class="secondary-button" id="gen-csv" type="button">DOWNLOAD CSV</button>
+            <button class="secondary-button" id="gen-json" type="button">DOWNLOAD JSON</button>
+            <button class="secondary-button" id="gen-check" type="button">CHECK MY ${noun.toUpperCase()}</button>
+          </div>
+          <p class="visually-hidden" id="gen-status" aria-live="polite"></p>
+        </section>
+
+        <section class="hero tool-hero gen-hero gen-hero-more" aria-label="About the free ${noun} generator">
+          <div class="hero-copy">
             <p>${escapeHtml(generator.standfirst)}</p>
             <div class="gen-hero-actions"><a class="button" href="#gen-builder">BUILD MY ${noun.toUpperCase()}</a><a class="gen-text-link" href="#gen-template">SEE THE FREE TEMPLATE →</a></div>
             <div class="privacy-strip"><strong>FREE · NO SIGN-UP</strong><strong>STAYS IN YOUR BROWSER</strong><strong>PDF · CSV · JSON</strong></div>
@@ -1146,7 +1417,7 @@ export function renderDocumentGenerator(generator, site, { navHtml, webmasterHtm
             <div class="stamp">${isInvoice ? 'INVOICE<br />READY' : 'PACKED<br />+ LISTED'}</div>
             <div class="review-cell"><span>EDITION</span><strong>${generator.reviewedOn}</strong></div>
           </aside>
-        </header>
+        </section>
 
         <section class="answer-block" aria-labelledby="direct-answer">
           <span class="section-label">DIRECT ANSWER</span>
@@ -1161,30 +1432,6 @@ export function renderDocumentGenerator(generator, site, { navHtml, webmasterHtm
           <span>The ${noun} is built on this page. Nothing you type is uploaded, emailed or stored by Declarix, and once the page has loaded it keeps working offline. Download the JSON file to keep a copy you can reopen here.</span>
         </section>
 
-        <section class="gen-builder" id="gen-builder" aria-labelledby="gen-builder-heading">
-          <header class="gen-builder-head">
-            <div><span class="section-label">GENERATOR</span><h2 id="gen-builder-heading">Create your ${noun}</h2><p>Fields marked * are needed before export. Amounts use a full stop for decimals; commas and currency symbols are ignored.</p></div>
-            <div class="gen-quick"><button class="secondary-button" id="gen-example" type="button">LOAD AN EXAMPLE</button><button class="secondary-button" id="gen-clear" type="button">CLEAR FORM</button><label class="secondary-button gen-file" for="gen-open-json">OPEN A SAVED JSON FILE<input id="gen-open-json" type="file" accept="application/json,.json" /></label></div>
-          </header>
-          <noscript><p class="gen-noscript">The live generator needs JavaScript. You can still print the blank template below or download the <a href="${generator.templateCsv}">blank CSV template</a>.</p></noscript>
-          <form id="gen-form" novalidate>
-            <div class="gen-groups">${renderHeaderFields(schema)}</div>
-            <section class="gen-lines-block" aria-labelledby="gen-lines-heading">
-              <header><h3 id="gen-lines-heading">${isInvoice ? 'Goods lines' : 'Package lines'}</h3><p>${isInvoice ? 'One line per type of goods. Line totals are quantity × unit price, rounded to the penny.' : 'One line per group of identical packages. Dimensions are for one package; volume covers the whole line.'}</p></header>
-              <div id="gen-lines">${renderLineRow(schema, 0)}</div>
-              <template id="gen-line-template">${renderLineRow(schema, 0)}</template>
-              <div class="gen-lines-foot"><button class="secondary-button" id="gen-add-line" type="button">+ ADD LINE</button><p>${isInvoice ? 'Running invoice total' : 'Running totals'} <output id="gen-running-total">—</output></p></div>
-            </section>
-          </form>
-          <div class="gen-summary" id="gen-summary" tabindex="-1" role="alert" hidden><h3 id="gen-summary-heading"></h3><ul id="gen-summary-list"></ul></div>
-          <div class="gen-actions">
-            <button class="button" id="gen-print" type="button">PRINT / SAVE AS PDF</button>
-            <button class="secondary-button" id="gen-csv" type="button">DOWNLOAD CSV</button>
-            <button class="secondary-button" id="gen-json" type="button">DOWNLOAD JSON</button>
-            <button class="secondary-button" id="gen-check" type="button">CHECK MY ${noun.toUpperCase()}</button>
-          </div>
-          <p class="visually-hidden" id="gen-status" aria-live="polite"></p>
-        </section>
 
         <section class="gen-template" id="gen-template" aria-labelledby="gen-template-heading">
           <header><span class="section-label">FREE ${noun.toUpperCase()} TEMPLATE</span><h2 id="gen-template-heading">${isInvoice ? 'Commercial invoice template' : 'Packing list template'}: live preview</h2><p>This is the layout the generator prints. It fills in as you type above. Print it blank to complete by hand, or take the <a href="${generator.templateCsv}" download data-gen-related="template_csv">blank CSV template</a> into a spreadsheet.</p><button class="secondary-button" id="gen-print-blank" type="button">PRINT THE BLANK TEMPLATE</button></header>
@@ -1197,6 +1444,8 @@ export function renderDocumentGenerator(generator, site, { navHtml, webmasterHtm
         </section>
 
         ${isInvoice ? renderInvoiceContent(eoriEnabled) : renderPackingContent()}
+
+        ${isInvoice ? renderInvoiceIntentSections() : renderPackingIntentSections()}
 
         <section class="gen-guide" aria-labelledby="gen-guide-heading">
           <header><span class="section-label">FIELD GUIDE</span><h2 id="gen-guide-heading">Every field, mapped to the customs declaration</h2><p>Each field lines up with the CDS data element the declarant completes, so the ${noun} answers the broker’s questions before they are asked.</p></header>

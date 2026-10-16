@@ -352,6 +352,129 @@ button:focus-visible {
   border: 0;
 }
 
+/* Customs document checker: H1, one intro line, then the checklist (issue S1). */
+.pc-lead {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.pc-lead .hero-copy {
+  padding: clamp(26px, 4vw, 48px) clamp(22px, 5vw, 60px);
+  border-right: 0;
+}
+
+.tool-hero.pc-lead h1 {
+  max-width: 26ch;
+  margin: 12px 0 10px;
+  font-size: clamp(34px, 4.4vw, 58px);
+}
+
+.pc-lead .hero-copy > p.pc-subhead {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.pc-more {
+  min-height: 0;
+}
+
+.pc-match,
+.pc-faq {
+  padding: clamp(34px, 5vw, 64px) clamp(22px, 5vw, 60px);
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--field);
+}
+
+.pc-match h2,
+.pc-faq h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(28px, 3.8vw, 46px);
+  line-height: 1.04;
+}
+
+.pc-match header p {
+  max-width: 72ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.pc-table-scroll {
+  max-width: 100%;
+  margin-top: 22px;
+  overflow-x: auto;
+}
+
+.pc-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pc-table th,
+.pc-table td {
+  padding: 12px;
+  border: 1px solid rgb(22 49 61 / 0.4);
+  text-align: left;
+  vertical-align: top;
+}
+
+.pc-table thead th {
+  color: var(--paper);
+  background: var(--ink);
+  font: 600 11px/1.3 'IBM Plex Mono', monospace;
+}
+
+.pc-table tbody th {
+  white-space: nowrap;
+}
+
+.pc-faq > div {
+  margin-top: 22px;
+  border-top: 1.5px solid var(--ink);
+}
+
+.pc-question {
+  border-bottom: 1px solid rgb(22 49 61 / 0.45);
+}
+
+.pc-question summary {
+  display: flex;
+  gap: 14px;
+  padding: 16px 0;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pc-question summary span {
+  color: var(--manifest);
+  font: 600 12px/1.8 'IBM Plex Mono', monospace;
+}
+
+.pc-question p {
+  max-width: 72ch;
+  margin: 0 0 18px 40px;
+  line-height: 1.6;
+}
+
+.secondary-button.is-copied {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.copy-feedback {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--manifest);
+  color: var(--paper);
+  font-size: 14px !important;
+  font-weight: 700;
+}
+
 @media (max-width: 760px) {
   .answer-block,
   .tool-intro,
@@ -410,6 +533,93 @@ button:focus-visible {
   .boundary-grid article:last-child {
     border-right: 0;
   }
+
+  .pc-lead .hero-copy {
+    min-height: 0;
+    padding: 18px 16px 16px;
+    border-bottom: 0;
+  }
+
+  .tool-hero.pc-lead h1 {
+    margin: 8px 0 6px;
+    font-size: clamp(27px, 8vw, 36px);
+    line-height: 1.04;
+  }
+
+  .pc-lead .hero-copy > p.pc-subhead {
+    font-size: 15px;
+  }
+
+  .pc-lead .hero-copy > p.pc-intro {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .pc-more .hero-copy {
+    min-height: 0;
+    padding: 30px 22px;
+  }
+
+  .pc-more .hero-ledger {
+    min-height: 0;
+  }
+
+  .pc-lead + .check-workpaper .check-group:first-child {
+    padding-top: 18px;
+  }
+
+  .check-group > p {
+    margin: 8px 0 14px;
+  }
+
+  .pc-question p {
+    margin-left: 0;
+  }
+}
+
+/* Tables as labelled cards on small phones (issue S5). */
+@media (max-width: 480px) {
+  .pc-table {
+    min-width: 0;
+  }
+
+  .pc-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .pc-table,
+  .pc-table tbody,
+  .pc-table tr,
+  .pc-table th,
+  .pc-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .pc-table tr {
+    margin-bottom: 12px;
+    border: 1px solid rgb(22 49 61 / 0.4);
+  }
+
+  .pc-table th,
+  .pc-table td {
+    border: 0;
+    border-bottom: 1px solid rgb(22 49 61 / 0.15);
+  }
+
+  .pc-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font: 600 10px/1.3 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
 }
 
 @media print {
@@ -437,7 +647,11 @@ button:focus-visible {
   .hero-ledger,
   .answer-block,
   .tool-intro,
-  .boundary-grid {
+  .boundary-grid,
+  .pc-more,
+  .pc-match,
+  .pc-faq,
+  .copy-feedback {
     display: none;
   }
 

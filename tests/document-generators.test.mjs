@@ -13,6 +13,9 @@ import {
   renderDocumentHtml,
   templateCsv,
   validateDocument,
+  missingDimensionLines,
+  nextMarks,
+  fieldRequiredNow,
 } from '../scripts/document-generators.mjs'
 
 const invoice = documentGenerators.find((g) => g.schema.kind === 'invoice')
@@ -117,7 +120,10 @@ test('CSV export escapes quotes and neutralises spreadsheet formulas', () => {
   const csv = documentToCsv(invoice.schema, invoice.schema.example)
   const rows = csv.trim().split('\r\n')
   assert.equal(rows.length, 4) // header + 2 lines + total
-  assert.match(rows[0], /"line","invoice_number"/)
+  assert.match(rows[0], /^"line","document_type","invoice_number","invoice_date","order_ref","exporter_name"/)
+  for (const column of ['exporter_eori', 'importer_name', 'importer_eori', 'incoterm', 'packages']) assert.ok(rows[0].includes('"' + column + '"'), column)
+  // CI3: every goods row carries the parties, EORIs and references.
+  for (const value of ['Beispiel Lager GmbH', 'Harbour Example Trading Ltd', 'GB123456789000', 'DE1234567', 'INV-2026-0142', 'PO-88231', 'FCA', '5 cartons']) assert.ok(rows[1].includes('"' + value + '"'), value)
   assert.match(rows[1], /"2740.00"$/)
   assert.match(rows[3], /^"TOTAL"/)
   assert.match(rows[3], /"3559.00"$/)
@@ -165,5 +171,82 @@ test('rendered pages parse and keep the privacy promise in raw HTML', () => {
       assert.ok(generator.title.length <= 60, generator.title)
       assert.ok(generator.description.length <= 155, generator.description)
     }
+  }
+})
+
+test('CI1 + proforma: packages field prints, and the proforma switch relabels the document', () => {
+  const state = structuredClone(invoice.schema.example)
+  let html = renderDocumentHtml(invoice.schema, state, 'x')
+  assert.ok(html.includes('COMMERCIAL INVOICE'))
+  assert.ok(html.includes('<th scope="row">Packages</th><td>5 cartons</td>'))
+  state.header.documentType = 'proforma'
+  html = renderDocumentHtml(invoice.schema, state, 'x')
+  assert.ok(html.includes('PROFORMA INVOICE'))
+  assert.ok(!html.includes('COMMERCIAL INVOICE'))
+  assert.ok(html.includes('on this proforma invoice is true'))
+  assert.match(documentToCsv(invoice.schema, state).split('\r\n')[1], /^"1","Proforma invoice"/)
+})
+
+test('CI2: importer EORI is required when the destination is not GB', () => {
+  const field = invoice.schema.fields.find((f) => f.id === 'importerEori')
+  assert.equal(fieldRequiredNow(field, { destinationCountry: 'GB' }), false)
+  assert.equal(fieldRequiredNow(field, { destinationCountry: '' }), false)
+  assert.equal(fieldRequiredNow(field, { destinationCountry: 'fr' }), true)
+  const state = structuredClone(invoice.schema.example)
+  state.header.importerEori = ''
+  assert.deepEqual(validateDocument(invoice.schema, state).errors, [])
+  state.header.destinationCountry = 'FR'
+  const { errors } = validateDocument(invoice.schema, state)
+  assert.equal(errors.length, 1)
+  assert.equal(errors[0].field, 'importerEori')
+  assert.match(errors[0].message, /Needed by the importer’s customs for EU deliveries/)
+})
+
+test('PL2: lines with goods but no dimensions are flagged, export is not blocked', () => {
+  const state = structuredClone(packing.schema.example)
+  assert.deepEqual(missingDimensionLines(packing.schema, state), [])
+  state.lines[1].length = ''
+  state.lines[1].width = ''
+  state.lines[1].height = ''
+  assert.deepEqual(missingDimensionLines(packing.schema, state), [1])
+  const { errors, warnings } = validateDocument(packing.schema, state)
+  assert.deepEqual(errors, [])
+  assert.ok(warnings.some((w) => w.message === 'Line 2 has no dimensions. Total volume is incomplete.'))
+  assert.equal(computeDocument(packing.schema, state).totals.volumeComplete, false)
+  // A fully blank line is not flagged.
+  assert.deepEqual(missingDimensionLines(packing.schema, { lines: [{}] }), [])
+  assert.deepEqual(missingDimensionLines(invoice.schema, invoice.schema.example), [])
+})
+
+test('PL1: duplicated lines carry the next shipping marks', () => {
+  assert.equal(nextMarks('HX/0142 1-4', '4'), 'HX/0142 5-8')
+  assert.equal(nextMarks('HX/0142 5', '1'), 'HX/0142 6')
+  assert.equal(nextMarks('CT 001', '1'), 'CT 002')
+  assert.equal(nextMarks('C 01-10', '10'), 'C 11-20')
+  assert.equal(nextMarks('HX/0142', '1'), 'HX/0142')
+  assert.equal(nextMarks('', '2'), '')
+  assert.equal(nextMarks('NO MARKS', ''), 'NO MARKS')
+})
+
+test('PL3 + intent: whole-line weight labels, CBM total and the new sections are in the page', () => {
+  const labels = packing.schema.lineFields.map((f) => f.label)
+  assert.ok(labels.includes('Net kg (whole line)'))
+  assert.ok(labels.includes('Gross kg (whole line)'))
+  assert.ok(renderDocumentHtml(packing.schema, packing.schema.example, 'x').includes('Total volume (CBM)'))
+  const site = { origin: 'https://getdeclarix.com', company: 'Declarix Limited', companyNumber: '1', contact: 'a@b' }
+  const opts = { navHtml: '', webmasterHtml: '', posthogKey: '', posthogHost: '', eoriEnabled: true }
+  const packingHtml = renderDocumentGenerator(packing, site, opts)
+  for (const phrase of ['Export packing list vs commercial invoice', 'Packing list for customs: what must match', 'Can I open it in Excel?', 'data-duplicate-line', 'id="gen-dim-warning"', 'data-per-package="netMass"', '<p class="gen-subhead">Shipping packing list template and generator</p>']) {
+    assert.ok(packingHtml.includes(phrase), phrase)
+  }
+  const invoiceHtml = renderDocumentGenerator(invoice, site, opts)
+  for (const phrase of ['Proforma invoice template', 'Commercial invoice for customs: what HMRC checks', 'Can I open it in Excel or Word?', 'Green tags show where each field goes on the UK customs declaration, so your broker can key it straight in.', 'id="h-packages"', 'data-required-hint']) {
+    assert.ok(invoiceHtml.includes(phrase), phrase)
+  }
+  // S1: the form comes straight after the H1 block, before the direct answer.
+  for (const html of [packingHtml, invoiceHtml]) {
+    assert.ok(html.indexOf('id="gen-builder"') < html.indexOf('id="direct-answer"'))
+    assert.ok(html.indexOf('</h1>') < html.indexOf('id="gen-builder"'))
+    assert.ok(html.indexOf('class="hero-ledger"') > html.indexOf('id="gen-builder"'))
   }
 })
