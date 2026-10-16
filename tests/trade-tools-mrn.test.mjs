@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { MRN_PROCEDURES, decodeMrn, findMrns, mrnCharValue, mrnCheckDigit, normaliseMrn } from '../scripts/trade-tools/mrn.mjs'
+import { MRN_NEXT_STEP, MRN_PROCEDURES, decodeMrn, findMrns, mrnCharValue, mrnCheckDigit, mrnStatusService, mrnTracking, normaliseMrn } from '../scripts/trade-tools/mrn.mjs'
 
 // MRNs published in HMRC Developer Hub API specifications (checked 15 Oct 2026).
 const HMRC_EXAMPLES = ['19GB4S24GC3PPFGVR7', '20GB32VVZI0YMFGVR0', '20GBDPQ8A31WX1XXR5', '21GB1NEXFX6SU9C4R1', '10GB00002910B75BE5']
@@ -89,4 +89,37 @@ test('future years are flagged as a warning', () => {
 
 test('finds MRNs inside free text', () => {
   assert.deepEqual(findMrns('Entry 21GB1NEXFX6SU9C4R1 £412.18; and 20gbdpq8a31wx1xxr5'), ['21GB1NEXFX6SU9C4R1', '20GBDPQ8A31WX1XXR5'])
+})
+
+const withLetter = (letter, country = 'GB') => { const body = `24${country}4KX1Q3R0A1B2${letter}`; return body + mrnCheckDigit(body) }
+
+test('MR1: a check-digit failure names lookalikes and does not claim the last digit is the typo', () => {
+  const result = decodeMrn('24GB4KX1Q3R0A1B2C3')
+  assert.equal(result.valid, false)
+  assert.match(result.errors.join(' '), /in any of the 18\. Check lookalikes first: O\/0, I\/1, S\/5, B\/8\./)
+  assert.equal(result.suggestion, '24GB4KX1Q3R0A1B2C' + mrnCheckDigit('24GB4KX1Q3R0A1B2C'))
+  assert.match(MRN_NEXT_STEP, /^This MRN will fail the check\. Get the correct number from whoever raised the declaration\.$/)
+})
+
+test('"Where it is used" follows the procedure letter (C never mentions entry summary declarations)', () => {
+  const exit = decodeMrn(withLetter('C'))
+  assert.equal(exit.valid, true)
+  assert.match(exit.parts.tracking, /exit summary/i)
+  assert.doesNotMatch(exit.parts.tracking, /entry summary/i)
+  assert.match(decodeMrn(withLetter('T')).parts.tracking, /entry summary/i)
+  assert.doesNotMatch(decodeMrn(withLetter('T')).parts.tracking, /exit summary/i)
+  assert.doesNotMatch(decodeMrn(withLetter('L')).parts.tracking, /exit summary/i)
+  assert.doesNotMatch(decodeMrn(withLetter('K')).parts.tracking, /entry summary/i)
+  for (const letter of Object.keys(MRN_PROCEDURES)) {
+    const label = MRN_PROCEDURES[letter].label.toLowerCase()
+    const text = mrnTracking('GB', MRN_PROCEDURES[letter].family, letter).toLowerCase()
+    if (!label.includes('entry summary')) assert.doesNotMatch(text, /entry summary/, letter)
+    if (!label.includes('exit summary')) assert.doesNotMatch(text, /exit summary/, letter)
+  }
+})
+
+test('the result names the status service for the MRN', () => {
+  assert.match(decodeMrn('21GB1NEXFX6SU9C4R1').parts.status, /CDS/)
+  assert.match(mrnStatusService('GB', 'transit'), /NCTS/)
+  assert.match(mrnStatusService('FR', 'export'), /MRN follow-up/)
 })

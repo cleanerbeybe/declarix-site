@@ -14,6 +14,67 @@
   line-height: 1.6;
 }
 
+/* Phone-first layout (S1): the hero holds only the eyebrow, H1, subhead and one line,
+   so the tool starts high. The ledger, value strip and direct answer sit below the tool. */
+.tt-hero {
+  display: block;
+  min-height: 0;
+}
+
+.tt-hero .hero-copy {
+  padding: clamp(20px, 3vw, 36px) clamp(22px, 5vw, 60px);
+  border-right: 0;
+}
+
+.tt-hero h1 {
+  max-width: 24ch;
+  margin: 10px 0;
+  font-size: clamp(30px, 4.2vw, 52px);
+}
+
+.tt-hero + .tt-panel {
+  padding-top: clamp(20px, 3vw, 40px);
+}
+
+.tt-hero .tt-subhead-line {
+  max-width: 48ch;
+  margin: 0 0 8px;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tt-hero .tt-lede {
+  max-width: 70ch;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.tt-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.tt-overview-copy {
+  display: grid;
+  align-content: center;
+  padding: clamp(28px, 5vw, 60px);
+  border-right: 1.5px solid var(--ink);
+}
+
+.tt-overview-copy p {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.tt-overview .hero-ledger {
+  min-height: 260px;
+}
+
 .tt-answer,
 .tt-panel,
 .tt-result,
@@ -180,6 +241,99 @@
   background: var(--ink);
 }
 
+/* Visible copy confirmation (S4). */
+.tt-secondary.is-copied,
+.tt-secondary.is-copied:hover {
+  border-color: var(--cleared);
+  color: var(--paper);
+  background: var(--cleared);
+}
+
+.tt-secondary.is-copy-failed,
+.tt-secondary.is-copy-failed:hover {
+  border-color: var(--manifest);
+  color: var(--ink);
+  background: var(--manifest);
+}
+
+.tt-secondary[hidden] {
+  display: none;
+}
+
+/* Live character counter under the MRN box (MRN smoke test). */
+.tt-counter {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font: 500 12px/1.4 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+.tt-counter.is-complete {
+  color: var(--cleared);
+  font-weight: 600;
+}
+
+/* GMR direction tiles (GM1): no default, four large choices. */
+.tt-choice {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.tt-form .tt-choice label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 56px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--ink);
+  background: var(--field);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tt-form .tt-choice label:has(input:checked) {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.tt-form .tt-choice label small {
+  display: block;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.tt-form input[type='number'] {
+  width: 100%;
+  max-width: 160px;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--field);
+  font: 500 16px/1.4 'IBM Plex Mono', monospace;
+}
+
+.tt-slots {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font: 500 13px/1.5 'IBM Plex Mono', monospace;
+}
+
+.tt-cards .tt-slots li,
+ol.tt-cards .tt-slots li {
+  display: block;
+  padding: 0;
+  border: 0;
+  counter-increment: none;
+}
+
 .tt-two {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -217,6 +371,10 @@
   border-left: 6px solid var(--cleared);
   background: var(--field);
   line-height: 1.5;
+}
+
+.tt-inline-result[hidden] {
+  display: none;
 }
 
 .tt-inline-result.is-fail,
@@ -283,7 +441,19 @@
   border-bottom: 1px solid rgb(22 49 61 / 0.3);
   text-align: left;
   vertical-align: top;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+}
+
+/* S5: codes and short labels never break inside a word; long cells wrap at spaces. */
+.tt-table-wrap tbody th,
+.tt-table-wrap thead th {
+  min-width: 7ch;
+}
+
+.tt-table-wrap td:first-of-type {
+  min-width: 6ch;
 }
 
 .tt-table-wrap thead th {
@@ -661,9 +831,118 @@ ol.tt-cards li strong::before {
     flex: 1 1 100%;
     justify-content: center;
   }
+
+  .tt-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .tt-overview-copy {
+    padding: 30px 22px;
+    border-right: 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .tt-overview .hero-ledger {
+    min-height: 0;
+  }
+
+  .tt-hero .hero-copy {
+    min-height: 0;
+    padding: 18px 16px 14px;
+    border-bottom: 0;
+  }
+
+  .tt-hero .eyebrow {
+    margin: 0;
+  }
+
+  .tt-hero h1 {
+    margin: 6px 0;
+    font-size: clamp(26px, 7.4vw, 36px);
+    line-height: 1.04;
+  }
+
+  .tt-hero .tt-subhead-line {
+    font-size: 16px;
+  }
+
+  .tt-hero .tt-lede {
+    font-size: 15px;
+  }
+
+  .tt-panel {
+    padding: 18px 16px 24px;
+  }
+
+  .tt-panel > header h2 {
+    margin: 6px 0 6px;
+    font-size: 22px;
+  }
+
+  .tt-panel .tt-form {
+    margin-top: 14px;
+  }
+}
+
+/* S5: under 480px, tables with column headings become labelled cards. */
+@media (max-width: 480px) {
+  .tt-choice {
+    grid-template-columns: 1fr;
+  }
+
+  table.tt-cardable thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  table.tt-cardable,
+  table.tt-cardable tbody,
+  table.tt-cardable tr {
+    display: block;
+    width: 100%;
+  }
+
+  table.tt-cardable tr {
+    padding: 10px 0;
+    border-bottom: 1.5px solid rgb(22 49 61 / 0.4);
+  }
+
+  table.tt-cardable caption {
+    display: block;
+    width: 100%;
+  }
+
+  table.tt-cardable th[data-label],
+  table.tt-cardable td[data-label] {
+    position: relative;
+    display: block;
+    min-width: 0;
+    min-height: 1.6em;
+    padding: 4px 0 4px calc(36% + 10px);
+    border-bottom: 0;
+  }
+
+  table.tt-cardable th[data-label]::before,
+  table.tt-cardable td[data-label]::before {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 36%;
+    content: attr(data-label);
+    color: var(--muted);
+    font: 600 10px/1.6 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
 }
 
 @media print {
+  .tt-overview,
+  .tt-value-strip,
+  .tt-answer,
   .tt-panel,
   .tt-steps,
   .tt-faq,

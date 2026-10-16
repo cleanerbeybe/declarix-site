@@ -65,32 +65,65 @@ export function normaliseMrn(input) {
   return String(input || '').toUpperCase().replace(/[\s\-.\/_]/g, '')
 }
 
-function mrnTracking(country, family) {
-  const uk = country === 'GB' || country === 'XI'
-  if (family === 'transit') {
-    return uk
-      ? 'Transit MRN from the New Computerised Transit System (NCTS). The office of departure issues it; the transit accompanying document carries it, and a GVMS crossing needs it in the GMR.'
-      : 'Transit MRN from NCTS in the country of departure. For EU MRNs, the European Commission runs a public MRN follow-up page.'
-  }
-  if (family === 'import') {
-    return uk
-      ? 'Import declaration MRN from the Customs Declaration Service (CDS). The declarant’s CDS software receives its status; the importer needs it for duty, postponed VAT statements and any repayment claim.'
-      : 'Import declaration MRN from the national import system of the country shown in characters 3–4.'
-  }
-  if (family === 'export') {
-    return uk
-      ? 'Export declaration MRN from CDS. Exit results return to the declarant, and the export evidence supports zero-rating for VAT.'
-      : 'Export MRN from the national export system of the country shown in characters 3–4.'
-  }
-  if (family === 'entry' || family === 'exit') {
-    return uk
-      ? 'Safety and security MRN. Entry summary declarations for GB go through the UK safety and security service, and the MRN can be added to a GMR.'
-      : 'Safety and security MRN issued by the import control or export system of the country shown.'
-  }
-  if (family === 'legacy') return 'An older-format MRN. Characters 5–17 form the unique reference, and the check digit still follows ISO 6346. Check the declaration or movement it belongs to in the system that issued it.'
-  if (family === 'storage') return 'Temporary storage MRN, used to link goods held in temporary storage to the declaration that follows.'
-  return 'Proof of status or customs goods manifest MRN.'
+// "Where it is used" text, by procedure letter (MRN smoke test 16 Oct 2026: the text must
+// match the decoded letter, so C never talks about entry summary declarations).
+// Sources: GOV.UK "Create a goods movement reference" (updated 9 June 2026); GOV.UK
+// "Safety and security declarations" manual, exit summary section (updated 31 January 2025);
+// Annex B of Implementing Regulation (EU) 2015/2447 for the letter meanings.
+const UK_USE = {
+  A: 'Export declaration MRN from the Customs Declaration Service (CDS). The exit results go back to the declarant, and the export evidence supports zero-rating for VAT.',
+  B: 'Combined export declaration MRN from CDS: one MRN covers the export declaration and its safety and security (exit summary) data. The exit results go back to the declarant, and the export evidence supports zero-rating for VAT.',
+  C: 'Standalone exit summary declaration MRN: safety and security data for goods leaving, lodged in CDS when no combined export declaration covers them (for example goods in temporary storage for more than 14 days, or goods under transit). The carrier is responsible for it, and for GB to EU crossings it goes into the GMR.',
+  D: 'Re-export notification MRN: used when non-UK goods held in temporary storage or a free zone leave the customs territory again without an export declaration.',
+  E: 'Dispatch MRN for goods sent to a special fiscal territory, which sits inside the customs territory but outside the VAT area.',
+  J: 'Transit MRN from the New Computerised Transit System (NCTS). The office of departure issues it, the transit accompanying document carries it, and a GVMS crossing needs it in the GMR.',
+  K: 'Transit MRN from NCTS that also carries the exit summary (safety and security) data for goods leaving. The transit accompanying document carries it, and a GVMS crossing needs it in the GMR.',
+  L: 'Transit MRN from NCTS that also carries the entry summary (safety and security) data for goods arriving. The transit accompanying document carries it, and a GVMS crossing needs it in the GMR.',
+  M: 'Transit MRN from NCTS that also carries both the exit summary and the entry summary (safety and security) data. The transit accompanying document carries it, and a GVMS crossing needs it in the GMR.',
+  P: 'Proof of customs status or customs goods manifest MRN. It shows the customs status of the goods; it is not an import or export declaration.',
+  R: 'Import declaration MRN from the Customs Declaration Service (CDS). The declarant’s CDS software receives its status; the importer needs it for duty, postponed VAT statements and any repayment claim.',
+  S: 'Combined import declaration MRN from CDS: one MRN covers the import declaration and its entry summary (safety and security) data. The importer needs it for duty, postponed VAT statements and any repayment claim, and it goes into the GMR for the crossing.',
+  T: 'Entry summary declaration (ENS) MRN: safety and security data for goods arriving. Entry summary declarations for GB go through the UK safety and security service, and the MRN can be added to a GMR (it is required for GB to Northern Ireland).',
+  U: 'Temporary storage MRN, used to link goods held in temporary storage to the declaration that follows.',
+  V: 'Introduction MRN for goods arriving from a special fiscal territory, which sits inside the customs territory but outside the VAT area.',
+  W: 'Temporary storage MRN that also carries the entry summary (safety and security) data, linking the goods in temporary storage to the declaration that follows.',
+  Z: 'Arrival notification MRN: tells customs that the means of transport carrying the goods has arrived.',
 }
+
+const OTHER_USE = {
+  export: 'Export MRN from the national export system of the country shown in characters 3–4. For MRNs issued in the EU, the European Commission runs a public MRN follow-up page.',
+  exit: 'Exit summary declaration MRN: safety and security data for goods leaving, issued by the export control system of the country shown in characters 3–4.',
+  transit: 'Transit MRN from NCTS in the country of departure. For MRNs issued in the EU, the European Commission runs a public MRN follow-up page.',
+  import: 'Import declaration MRN from the national import system of the country shown in characters 3–4.',
+  entry: 'Entry summary or arrival MRN: safety and security data for goods arriving, issued by the import control system of the country shown in characters 3–4.',
+  storage: 'Temporary storage MRN from the country shown in characters 3–4, used to link goods held in temporary storage to the declaration that follows.',
+  status: 'Proof of customs status or customs goods manifest MRN from the country shown in characters 3–4.',
+}
+
+export function mrnTracking(country, family, procedure) {
+  if (family === 'legacy') return 'An older-format MRN. Characters 5–17 form the unique reference, and the check digit still follows ISO 6346. Check the declaration or movement it belongs to in the system that issued it.'
+  const uk = country === 'GB' || country === 'XI'
+  if (uk && UK_USE[procedure]) return UK_USE[procedure]
+  return OTHER_USE[family] || 'Check the declaration or movement it belongs to in the system that issued it.'
+}
+
+// Where to see the status (intent review §4.1: "Track an MRN").
+// Sources: GOV.UK "Upload documents and get messages for the Customs Declaration Service"
+// (updated 2 December 2024); GOV.UK "Check if a goods movement reference is valid";
+// European Commission MRN follow-up.
+export function mrnStatusService(country, family) {
+  const uk = country === 'GB' || country === 'XI'
+  if (family === 'transit') return uk
+    ? 'Track it: the holder of the transit procedure sees the status in NCTS. For a lorry crossing, the GMR in GVMS shows whether the goods must report for an inspection.'
+    : 'Track it: the European Commission MRN follow-up page shows transit movements issued in the EU.'
+  if (!uk && family === 'export') return 'Track it: the European Commission MRN follow-up page shows export movements issued in the EU.'
+  if (uk && (family === 'import' || family === 'export' || family === 'exit' || family === 'entry' || family === 'storage')) {
+    return 'Track it: the declarant sees the status in their CDS software. HMRC messages about the declaration arrive in the CDS inbox, where you sign in with your Government Gateway ID and the MRN.'
+  }
+  return 'Track it in the customs system that issued it.'
+}
+
+export const MRN_NEXT_STEP = 'This MRN will fail the check. Get the correct number from whoever raised the declaration.'
 
 export function decodeMrn(input, { now = new Date() } = {}) {
   const normalised = normaliseMrn(input)
@@ -121,7 +154,7 @@ export function decodeMrn(input, { now = new Date() } = {}) {
   if (!procedureInfo) errors.push(`Character 17 is “${procedure}”. It must be a procedure letter: ${Object.keys(MRN_PROCEDURES).join(', ')}.`)
   const expected = mrnCheckDigit(normalised.slice(0, 17))
   if (expected !== null && expected !== checkDigit) {
-    errors.push(`The check digit (character 18) is “${checkDigit}”. For the first 17 characters it must be “${expected}”. One character was probably mistyped.`)
+    errors.push(`The check digit (character 18) is “${checkDigit}”. For the first 17 characters it must be “${expected}”. One character was probably mistyped, in any of the 18. Check lookalikes first: O/0, I/1, S/5, B/8.`)
   }
 
   const yearFull = 2000 + Number(year)
@@ -142,7 +175,8 @@ export function decodeMrn(input, { now = new Date() } = {}) {
     family: procedureInfo ? procedureInfo.family : null,
     checkDigit,
     expectedCheckDigit: expected,
-    tracking: procedureInfo ? mrnTracking(country, procedureInfo.family) : null,
+    tracking: procedureInfo ? mrnTracking(country, procedureInfo.family, procedure) : null,
+    status: procedureInfo ? mrnStatusService(country, procedureInfo.family) : null,
   }
   result.warnings = warnings
   result.valid = errors.length === 0

@@ -17,10 +17,33 @@ const scenarios = {
     await page.getByRole('button', { name: 'TRY THE WORKED EXAMPLE' }).click();
     const text = await page.locator('#tt-result').innerText();
     record(width + ' mrn batch result', text.includes('2 of 3 MRNs pass') && text.includes('21GB1NEXFX6SU9C4R1'));
+    record(width + ' mrn batch says what to do', text.includes('will fail the check: get the correct number from whoever raised the declaration'));
     await page.locator('#mrn-input').fill('21GB1NEXFX6SU9C4R1');
+    record(width + ' mrn live counter', (await page.locator('#mrn-count').innerText()).startsWith('18 of 18 characters'));
     await page.getByRole('button', { name: 'CHECK MRN' }).click();
     const single = await page.locator('#tt-result').innerText();
     record(width + ' mrn single decode', single.includes('Import declaration only') && single.includes('CHECK DIGIT MATCHES'));
+    record(width + ' mrn status service', single.includes('Status service.'));
+    record(width + ' mrn copy as message hidden', await page.locator('#tt-copy-message').isHidden());
+    await page.locator('#tt-copy').click();
+    record(width + ' mrn visible copy confirmation', await page.waitForFunction(() => document.getElementById('tt-copy').textContent.includes('COPIED ✓'), null, { timeout: 1500 }).then(() => true, () => false));
+    await page.waitForTimeout(2200);
+    record(width + ' mrn copy label resets', (await page.locator('#tt-copy').innerText()) === 'COPY RESULT');
+    // MR2 + MR1: pasting checks at once; the failure names lookalikes and the next step.
+    await page.locator('#mrn-input').fill('');
+    await page.locator('#mrn-input').focus();
+    await page.evaluate(() => navigator.clipboard.writeText('24GB4KX1Q3R0A1B2C3'));
+    await page.keyboard.press('ControlOrMeta+V');
+    await page.waitForFunction(() => document.getElementById('tt-result').innerText.includes('24GB4KX1Q3R0A1B2C3'));
+    const fail = await page.locator('#tt-result').innerText();
+    record(width + ' mrn paste checks at once', fail.includes('CHECK THIS MRN'));
+    record(width + ' mrn MR1 wording', fail.includes('in any of the 18. Check lookalikes first: O/0, I/1, S/5, B/8.') && fail.includes('If only the last digit is wrong, the MRN would be') && fail.includes('Ask the sender to read it back from the declaration.'));
+    record(width + ' mrn next step on invalid', fail.includes('This MRN will fail the check. Get the correct number from whoever raised the declaration.'));
+    await page.locator('#mrn-input').fill('24GB4KX1Q3R0A1B2C0');
+    await page.getByRole('button', { name: 'CHECK MRN' }).click();
+    const exit = await page.locator('#tt-result').innerText();
+    record(width + ' mrn procedure C never says entry summary', exit.includes('Exit summary declaration only') && !/entry summary/i.test(exit.split('Where it is used.')[1] || 'entry summary'));
+    if (width === 375) record('375 mrn tables keep column labels', (await page.locator('td[data-label="Who sets it"]').count()) === 3);
   },
   '/tools/gmr-checker/': async (page, record, width) => {
     await page.locator('#gmr-input').fill('gmra000002jr');
@@ -29,9 +52,20 @@ const scenarios = {
     await page.locator('#gmr-input').fill('21GB1NEXFX6SU9C4R1');
     await page.getByRole('button', { name: 'CHECK GMR' }).click();
     record(width + ' gmr spots an MRN', (await page.locator('#gmr-format-result').innerText()).includes('looks like an MRN'));
-    await page.locator('#gmr-direction').selectOption('gb_eu');
+    record(width + ' gmr has no default direction', (await page.locator('input[name="direction"]:checked').count()) === 0);
     await page.getByRole('button', { name: 'LIST THE REFERENCES' }).click();
-    record(width + ' gmr plan', (await page.locator('#tt-result').innerText()).includes('DUCR for every export declaration'));
+    record(width + ' gmr asks for a direction first', await page.locator('#tt-result').isHidden());
+    await page.locator('input[name="direction"][value="gb_eu"]').check();
+    await page.locator('#gmr-consignments').fill('2');
+    await page.getByRole('button', { name: 'LIST THE REFERENCES' }).click();
+    const plan = await page.locator('#tt-result').innerText();
+    record(width + ' gmr plan', plan.includes('DUCR for every export declaration'));
+    record(width + ' gmr one line per consignment', plan.includes('Consignment 1: DUCR') && plan.includes('Consignment 2: DUCR'));
+    record(width + ' gmr exit summary resolved', /Exit summary declaration MRN · NOT NEEDED/i.test(plan));
+    await page.locator('#tt-copy-message').click();
+    record(width + ' gmr copy as message', await page.waitForFunction(() => document.getElementById('tt-copy-message').textContent.includes('COPIED ✓'), null, { timeout: 1500 }).then(() => true, () => false));
+    const message = await page.evaluate(() => navigator.clipboard.readText());
+    record(width + ' gmr message text', message.startsWith('GMR checklist · GB → EU · 2 consignments') && message.includes('- Consignment 2: DUCR'));
   },
   '/tools/postponed-vat-statement-checker/': async (page, record, width) => {
     record(width + ' pva new H1 and old H1 kept as subhead', (await page.locator('h1').innerText()).includes('download it, then reconcile it') && (await page.locator('h1 + p').first().innerText()).includes('Reconcile your postponed VAT statement in minutes.'));
@@ -65,6 +99,13 @@ const scenarios = {
     await page.getByRole('button', { name: 'TRY THE WORKED EXAMPLE' }).click();
     const text = await page.locator('#tt-result').innerText();
     record(width + ' c285 example routes', text.includes('Customs Declaration Service claim') && text.includes('VAT Return adjustment') && text.includes('3 February 2028'));
+    record(width + ' c285 proof of origin for a missed preference', text.includes('Proof of origin'));
+    record(width + ' c285 who claims', text.includes('Your customs agent or broker can claim for you.'));
+    const start = page.getByRole('link', { name: 'START YOUR CLAIM IN CDS ↗' });
+    record(width + ' c285 start claim link', (await start.getAttribute('href')) === 'https://www.tax.service.gov.uk/claim-back-import-duty-vat/start-new-return');
+    await page.locator('input[name="taxes"][value="duty"]').check();
+    record(width + ' c285 VAT question hides for duty only', await page.locator('#c285-vat-question').isHidden());
+    await page.locator('input[name="taxes"][value="both"]').check();
     await page.locator('input[name="eori"][value="no"]').check();
     await page.locator('input[name="vatRegistered"][value="no"]').check();
     await page.getByRole('button', { name: 'SHOW MY ROUTE' }).click();
@@ -160,13 +201,18 @@ async function mockTariff(page) {
     for (const [route, run] of Object.entries(scenarios)) {
       if (!fs.existsSync(path.join(root, route, 'index.html'))) continue;
       for (const width of [1440, 375]) {
-        const context = await browser.newContext({ viewport: { width, height: 900 }, acceptDownloads: true });
+        const context = await browser.newContext({ viewport: { width, height: width === 375 ? 812 : 900 }, acceptDownloads: true, });
         await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin }).catch(() => null);
         const page = await context.newPage();
         const errors = [];
         page.on('pageerror', (error) => errors.push(error.message));
         await page.goto(origin + route);
         record(width + ' ' + route + ' answer in HTML', (await page.locator('.tt-answer').innerText()).length > 100);
+        // S1: the first input of the tool is inside the first screen on a phone.
+        if (width === 375) {
+          const box = await page.locator('main :is(input, textarea, select):visible').first().boundingBox();
+          record('375 ' + route + ' first input above the fold (top ' + Math.round(box.y) + ')', box && box.y + Math.min(box.height, 48) <= 812);
+        }
         await run(page, record, width, live);
         record(width + ' ' + route + ' no horizontal scroll', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         record(width + ' ' + route + ' no page errors', errors.length === 0);

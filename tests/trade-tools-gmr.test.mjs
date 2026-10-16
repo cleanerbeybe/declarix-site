@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { GMR_PATTERN, checkGmr, gmrReferences, normaliseGmr } from '../scripts/trade-tools/gmr.mjs'
+import { GMR_PATTERN, checkGmr, gmrMessage, gmrReferences, normaliseGmr } from '../scripts/trade-tools/gmr.mjs'
 
 // gmrId examples from the HMRC Goods Movement System Haulier API 1.0 spec (checked 15 Oct 2026).
 const SPEC_EXAMPLES = ['GMRA000002JR', 'GMRA000000F8', 'GMRB00000A9C', 'GMRA0000028D']
@@ -56,4 +56,31 @@ test('carnets, EIDR and empty movements', () => {
   assert.ok(gmrReferences({ direction: 'eu_gb', eidr: true }).some((item) => /EORI of the authorised trader/.test(item.reference)))
   assert.equal(gmrReferences({ direction: 'gb_eu', oralOrEmpty: true }).length, 2)
   assert.throws(() => gmrReferences({ direction: 'mars' }))
+})
+
+const exitSummary = (options) => gmrReferences({ direction: 'gb_eu', ...options }).find((item) => item.reference === 'Exit summary declaration MRN')
+
+test('GM2: the exit summary declaration resolves to needed or not needed', () => {
+  assert.equal(exitSummary({}).status, 'not_needed')
+  assert.match(exitSummary({}).detail, /^Not needed: your combined export declarations in CDS already include the safety and security data\./)
+  assert.equal(exitSummary({ standaloneExs: true }).status, 'needed')
+  assert.equal(exitSummary({ transit: true }).status, 'needed')
+  assert.equal(exitSummary({ carnet: true }).status, 'not_needed')
+  assert.throws(() => gmrReferences({}), /Unknown direction/)
+})
+
+test('GM3: one reference line per consignment', () => {
+  const list = gmrReferences({ direction: 'gb_eu', consignments: 2 })
+  assert.deepEqual(list.find((item) => item.reference === 'DUCR for every export declaration').slots, ['Consignment 1: DUCR', 'Consignment 2: DUCR'])
+  assert.equal(gmrReferences({ direction: 'eu_gb', consignments: 3 })[1].slots.length, 3)
+  assert.equal(gmrReferences({ direction: 'eu_gb', consignments: 500 })[1].slots.length, 50)
+})
+
+test('GM4: the ready-to-send message lists each consignment and the resolved exit summary', () => {
+  const options = { direction: 'gb_eu', consignments: 2 }
+  const message = gmrMessage(options, gmrReferences(options))
+  assert.match(message, /^GMR checklist · GB → EU · 2 consignments/)
+  assert.match(message, /- Consignment 2: DUCR/)
+  assert.match(message, /- Exit summary declaration MRN: not needed/)
+  assert.ok(message.split('\n').length < 12)
 })

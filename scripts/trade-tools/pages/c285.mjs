@@ -1,6 +1,8 @@
 import { claimDeadline, ukDate } from '../c285.mjs'
 import { link, source } from '../page-kit.mjs'
 
+const ADDED = '16 OCTOBER 2026'
+
 const c285ExampleDeadline = ukDate(claimDeadline('overpaid', '2025-02-03'))
 
 function widget() {
@@ -8,15 +10,15 @@ function widget() {
     .map(([value, label], index) => `<label><input type="radio" name="${name}" value="${value}"${index === 0 ? ' checked' : ''} /> ${label}</label>`)
     .join('')}</fieldset>`
   return `<section class="tt-panel" aria-labelledby="tt-form-heading">
-    <header><span class="section-label">SIX QUESTIONS</span><h2 id="tt-form-heading">Tell us about the overpayment.</h2><p>Your answers stay in this page. Nothing is sent or stored.</p></header>
+    <header><span class="section-label">SIX QUESTIONS (PLUS ONE IF YOU WANT VAT BACK)</span><h2 id="tt-form-heading">Tell us about the overpayment.</h2><p>Your answers stay in this page. Nothing is sent or stored.</p></header>
     <form id="tt-form" class="tt-form tt-grid-form" novalidate>
-      ${radios('reason', '1 · Why are you claiming?', [['overpaid', 'Duty or VAT was overpaid (wrong code, value, origin or preference)'], ['rejected', 'The goods were rejected (faulty, damaged or not as ordered)'], ['withdrawn', 'The import declaration was withdrawn'], ['waiver', 'Customs Duty Waiver Scheme correction'], ['ni_at_risk', '“At risk” goods moved into Northern Ireland']])}
+      ${radios('reason', '1 · Why are you claiming?', [['overpaid', 'Duty or VAT was overpaid (wrong code, value or rate)'], ['preference', 'Origin or preference not claimed at import (for example 0% under a trade agreement)'], ['rejected', 'The goods were rejected (faulty, damaged or not as ordered)'], ['withdrawn', 'The import declaration was withdrawn'], ['waiver', 'Customs Duty Waiver Scheme correction'], ['ni_at_risk', '“At risk” goods moved into Northern Ireland']])}
       ${radios('postal', '2 · Did Royal Mail or Parcelforce deliver the goods?', [['no', 'No'], ['yes', 'Yes']])}
-      ${radios('who', '3 · Who is claiming?', [['importer', 'The importer or their representative'], ['agent', 'A customs agent, freight forwarder or express operator'], ['individual', 'A private individual, goods for personal use']])}
+      ${radios('who', '3 · Who is claiming?', [['importer', 'The importer (the business that owns the goods)'], ['agent', 'A customs agent or broker, freight forwarder or express operator acting for the importer'], ['individual', 'A private individual, goods for personal use']])}
       ${radios('eori', '4 · Do you have an EORI number?', [['yes', 'Yes'], ['no', 'No']])}
       ${radios('system', '5 · Where was the import declaration made?', [['cds', 'Customs Declaration Service (CDS)'], ['chief', 'CHIEF (older declarations)']])}
       ${radios('taxes', '6 · What do you want back?', [['both', 'Import duty and import VAT'], ['duty', 'Import duty only'], ['vat', 'Import VAT only']])}
-      ${radios('vatRegistered', 'Is the importer VAT-registered?', [['yes', 'Yes'], ['no', 'No']])}
+      <div id="c285-vat-question">${radios('vatRegistered', '7 · Only if you want VAT back: is the importer VAT-registered?', [['yes', 'Yes'], ['no', 'No']])}</div>
       <label for="c285-date"><span>DATE THE DECLARATION WAS ACCEPTED</span><small>Used to count the time limit</small><input id="c285-date" name="acceptedOn" type="date" /></label>
       <div class="tt-actions"><button class="button" type="submit">SHOW MY ROUTE</button><button class="tt-secondary" type="button" data-tt-example>TRY THE WORKED EXAMPLE</button></div>
     </form>
@@ -35,15 +37,35 @@ function content() {
       <p class="tt-note">Check the duty that should have applied with the ${link('/tools/commodity-code-checker/', 'commodity code checker')}, and confirm the MRN with the <a href="/tools/mrn-checker/">MRN checker</a> before you submit.</p>
     </section>
     <section class="tt-explainer" aria-labelledby="tt-routes-heading">
-      <header><span class="section-label">THE ROUTES</span><h2 id="tt-routes-heading">Five ways back, one right one.</h2></header>
+      <header><span class="section-label">THE ROUTES</span><h2 id="tt-routes-heading">Six ways back, one right one.</h2></header>
       <div class="tt-table-wrap"><table><caption>Import duty and VAT repayment routes</caption><thead><tr><th scope="col">Route</th><th scope="col">Use it when</th></tr></thead><tbody>
         <tr><th scope="row">CDS online claim</th><td>You have an EORI and the declaration was made in the Customs Declaration Service. Track the claim on the claims dashboard.</td></tr>
         <tr><th scope="row">Online C285 form</th><td>No EORI registered to you, a private individual, import VAT without VAT registration or an EORI, the Customs Duty Waiver Scheme.</td></tr>
         <tr><th scope="row">VAT Return</th><td>Overpaid import VAT and you are VAT-registered: reduce output tax in Box 1 and keep the records.</td></tr>
         <tr><th scope="row">CHIEF route</th><td>The declaration was made in CHIEF and you have an EORI.</td></tr>
         <tr><th scope="row">BOR286</th><td>Goods delivered by Royal Mail or Parcelforce.</td></tr>
+        <tr><th scope="row">Online C&amp;E1179</th><td>Rejected imports when you cannot claim in CDS: no EORI registered to you, a private individual, import VAT without VAT registration or an EORI.</td></tr>
       </tbody></table></div>
       <p class="tt-note">Time limits on GOV.UK: 3 years for overpayments, 1 year for rejected imports, 90 days for the withdrawal of an import declaration. HMRC aims to decide within 30 days and pays only to a UK bank account.</p>
+      <p class="tt-note">For every box on the form, read the <a href="/customs-reference/c285-form/">C285 form guide</a>.</p>
+    </section>
+    <section class="tt-explainer" aria-labelledby="tt-forms-heading">
+      <header><span class="section-label">WHICH FORM</span><h2 id="tt-forms-heading">C285, C&amp;E1179 or BOR286: which form?</h2><p>The form follows the reason for the claim and how the goods arrived. With an EORI and a CDS declaration, most claims go through the Customs Declaration Service instead.</p></header>
+      <div class="tt-table-wrap"><table><caption>Import duty refund forms compared</caption><thead><tr><th scope="col">Form</th><th scope="col">Use it for</th><th scope="col">Time limit</th></tr></thead><tbody>
+        <tr><th scope="row">C285</th><td>Overpaid duty or import VAT with no EORI registered to you, as a private individual, for import VAT without VAT registration or an EORI, or under the Customs Duty Waiver Scheme</td><td>3 years (90 days for a withdrawn declaration)</td></tr>
+        <tr><th scope="row">C&amp;E1179</th><td>Rejected imports (faulty, damaged before clearance or not as ordered) when you cannot claim in CDS</td><td>1 year</td></tr>
+        <tr><th scope="row">BOR286</th><td>Duty or import VAT calculated wrongly on goods delivered by Royal Mail or Parcelforce</td><td>Follow the BOR286 form guidance</td></tr>
+        <tr><th scope="row">CDS claim</th><td>You have an EORI and the declaration was made in CDS: overpayments and rejected imports</td><td>3 years for overpayments, 1 year for rejected imports</td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="tt-explainer" aria-labelledby="tt-causes-heading">
+      <header><span class="section-label">WHY DUTY GETS OVERPAID</span><h2 id="tt-causes-heading">Common reasons duty is overpaid</h2></header>
+      <ul class="tt-cards">
+        <li><strong>Wrong commodity code</strong><span>A code with a higher duty rate than the goods should carry. Check the right line and its rate with the ${link('/tools/commodity-code-checker/', 'commodity code checker')}.</span></li>
+        <li><strong>Missed preference</strong><span>The goods qualified for a lower rate under a trade agreement, but no preference was claimed at import. You can claim afterwards within 3 years with a valid proof of origin.</span></li>
+        <li><strong>Wrong customs value</strong><span>Freight, insurance or a discount counted wrongly, or the wrong exchange rate. Recalculate the value with the ${link('/tools/customs-value-import-duty-vat-calculator/', 'UK import duty and VAT calculator')}.</span></li>
+        <li><strong>Declaration withdrawn</strong><span>The import declaration was withdrawn, for example because the goods never arrived. The time limit is 90 days.</span></li>
+      </ul>
     </section>`
 }
 
@@ -53,18 +75,21 @@ export default {
   path: '/tools/import-duty-repayment-checker/',
   shortName: 'C285 repayment checker',
   ref: 'PUBLIC TOOL 09 · C285',
-  title: 'C285 repayment checker | Reclaim overpaid import duty',
+  title: 'Import Duty Refund Checker: Reclaim Overpaid Duty (UK)',
   schemaName: 'Free import duty repayment (C285) checker',
   description:
-    'Six questions show how to reclaim overpaid import duty and VAT (C285, CDS claim or VAT Return), your deadline and the evidence to gather.',
+    'Free import duty refund checker: six questions find your route to reclaim overpaid UK import duty and VAT (CDS, C285 or VAT Return), deadline and evidence.',
   eyebrow: 'FREE C285 CHECKER · ROUTE · DEADLINE · EVIDENCE',
-  h1: 'Find the right route to reclaim overpaid import duty.',
+  h1: 'Reclaim overpaid import duty: find your refund route',
+  subhead: 'Find the right route to reclaim overpaid import duty.',
+  intro: 'Six questions (plus one if you want VAT back) give your claim route, your deadline and your evidence list.',
   standfirst:
-    'Six questions tell you whether to claim in the Customs Declaration Service, on the online C285 form, through your VAT Return or with BOR286, when the time limit ends, and which documents to have ready before you start.',
+    'Six questions (plus one if you want VAT back) tell you whether to claim in the Customs Declaration Service, on the online C285 form, through your VAT Return or with BOR286, when the time limit ends, and which documents to have ready before you start.',
   strip: ['SIX QUESTIONS', 'DEADLINE CALCULATED', 'EVIDENCE CHECKLIST'],
   stamp: 'CLAIM\nROUTED',
   featureList: [
-    'Routes the claim to CDS, the online C285 form, the VAT Return, CHIEF or BOR286',
+    'Routes the claim to CDS, the online C285 or C&E1179 form, the VAT Return, CHIEF or BOR286',
+    'Links straight to the official GOV.UK start page for the claim',
     'Calculates the 3-year, 1-year or 90-day time limit from the acceptance date',
     'Builds the evidence checklist for overpayment and rejected-import claims',
     'Copies or prints the result for the claim file',
@@ -74,7 +99,7 @@ export default {
     text: 'C285 is HMRC’s online form for claiming back import duty and import VAT that were overpaid. Since CDS, most importers and agents with an EORI claim in the Customs Declaration Service instead, VAT-registered importers adjust overpaid import VAT on their VAT Return, and C285 is used when there is no EORI, by private individuals and for the Customs Duty Waiver Scheme.',
   },
   steps: [
-    ['01', 'Answer six questions', 'Why you are claiming, how the goods arrived, who you are, whether you have an EORI, which taxes and the date the declaration was accepted.'],
+    ['01', 'Answer six questions (plus one if you want VAT back)', 'Why you are claiming, how the goods arrived, who you are, whether you have an EORI, which taxes and the date the declaration was accepted.'],
     ['02', 'Get the route', 'The checker applies the GOV.UK rules and names the route for the duty and, separately, for the import VAT.'],
     ['03', 'See the deadline', 'It counts the time limit from the acceptance date: 3 years for overpayments, 1 year for rejected imports, 90 days for a withdrawn declaration.'],
     ['04', 'Gather the evidence', 'Copy the checklist into the claim file, check the MRN with the free MRN checker, and submit with a UK bank account ready.'],
@@ -85,6 +110,8 @@ export default {
     ['Who can make the claim?', 'The importer or their representative, a customs agent, a freight forwarder or express operator acting for the importer, or a private individual importing for personal use.'],
     ['How long does HMRC take to decide?', 'HMRC aims to decide a claim within 30 days and may ask for more information.'],
     ['Can the repayment go to a non-UK bank account?', 'No, repayments of import duty and VAT are only made to a UK bank account.'],
+    ['Can I get a refund on goods I returned?', 'Yes, if the goods were rejected because they were faulty, damaged before customs clearance or not as ordered: claim within 1 year, in CDS with an EORI or on the online C&E1179 form.'],
+    ['Can my customs broker claim for me?', 'Yes, a customs agent, freight forwarder or express operator can claim for the importer with the importer’s written instructions; the claim asks for the bank details of the person receiving the repayment.'],
     ['What if the goods came by Royal Mail or Parcelforce?', 'Use form BOR286 to report incorrect duty or VAT on items imported by post.'],
   ],
   sources: [
@@ -92,6 +119,9 @@ export default {
     source('Apply for repayment of import duty and VAT (CHIEF)', 'HM Revenue & Customs · GOV.UK · updated 10 September 2025', 'https://www.gov.uk/guidance/apply-for-repayment-of-import-duty-and-vat-chief'),
     source('Report incorrect Customs Duty or VAT on items imported by post (BOR286)', 'HM Revenue & Customs · GOV.UK · updated 20 February 2026', 'https://www.gov.uk/government/publications/report-incorrect-customs-duty-or-vat-on-items-imported-by-post-bor286'),
     source('Apply to claim a repayment or remission of import duty on ‘at risk’ goods brought into Northern Ireland', 'HM Revenue & Customs · GOV.UK · updated 6 July 2026', 'https://www.gov.uk/guidance/apply-to-claim-a-repayment-or-remission-of-import-duty-on-at-risk-goods-brought-into-northern-ireland'),
+    source('Claim a repayment or remission of charges on rejected imports (C&E1179)', 'HM Revenue & Customs · GOV.UK · updated 2 April 2026', 'https://www.gov.uk/guidance/claim-repayment-or-remission-of-charges-on-rejected-imports-ce1179', ADDED),
+    source('Proving originating status and claiming a reduced rate of Customs Duty for trade between the UK and EU', 'HM Revenue & Customs · GOV.UK · updated 20 December 2022', 'https://www.gov.uk/guidance/proving-originating-status-and-claiming-a-reduced-rate-of-customs-duty-for-trade-between-the-uk-and-eu', ADDED),
+    source('Get someone to deal with customs for you', 'HM Revenue & Customs · GOV.UK · updated 6 February 2025', 'https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf', ADDED),
     source('Complete your VAT Return to account for import VAT', 'HM Revenue & Customs · GOV.UK', 'https://www.gov.uk/guidance/complete-your-vat-return-to-account-for-import-vat'),
   ],
   related: ['/tools/mrn-checker/', '/tools/customs-value-import-duty-vat-calculator/', '/tools/commodity-code-checker/'],
@@ -106,16 +136,24 @@ export default {
         let html = '<header class="tt-verdict ' + (outcome.status === 'expired' ? 'is-fail' : 'is-pass') + '"><span>' + statusLabel + '</span><h2>' + esc(outcome.routes.map((route) => route.title).join(' + ')) + '</h2>' + outcome.notes.map((note) => '<p>' + esc(note) + '</p>').join('') + '</header>';
         html += '<ol class="tt-cards">' + outcome.routes.map((route) => '<li><strong>' + esc(route.title) + '</strong><span>' + esc(route.detail) + '</span></li>').join('') + '</ol>';
         if (outcome.checklist.length) html += '<h3 class="tt-subhead">Have these ready</h3><ul class="tt-checklist">' + outcome.checklist.map((item) => '<li>' + esc(item) + '</li>').join('') + '</ul>';
+        if (outcome.authority) html += '<p class="tt-note"><strong>Who claims.</strong> ' + esc(outcome.authority) + '</p>';
         html += '<p class="tt-note">Check the MRN with the <a href="/tools/mrn-checker/">MRN checker</a> before you start the claim.</p>';
-        lastCopy = ['IMPORT DUTY AND VAT REPAYMENT ROUTE', '', ...outcome.routes.map((route) => '- ' + route.title + ': ' + route.detail), '', ...outcome.notes, '', 'Have ready:', ...outcome.checklist.map((item) => '- ' + item), '', 'Checker: ' + location.origin + location.pathname].join('\\n');
+        if (outcome.start.length) html += '<div class="tt-actions tt-outbound">' + outcome.start.map((item) => { const a = document.createElement('a'); a.className = 'button'; a.href = item.url; a.target = '_blank'; a.rel = 'noopener'; a.dataset.ttStart = 'result'; a.textContent = item.label; return a.outerHTML; }).join('') + '</div>';
+        lastCopy = ['IMPORT DUTY AND VAT REPAYMENT ROUTE', '', ...outcome.routes.map((route) => '- ' + route.title + ': ' + route.detail), '', ...outcome.notes, '', 'Have ready:', ...outcome.checklist.map((item) => '- ' + item), '', ...(outcome.authority ? ['Who claims: ' + outcome.authority, ''] : []), ...outcome.start.map((item) => item.label.replace(' ↗', '') + ': ' + item.url), '', 'Checker: ' + location.origin + location.pathname].join('\\n');
         showResult(html, { reason: data.reason, route: outcome.routes.map((route) => route.id).join('+'), deadline_status: outcome.status });
       };
+      // RP4: the VAT question shows only when VAT is part of the claim.
+      const vatQuestion = document.getElementById('c285-vat-question');
+      const syncVat = () => { vatQuestion.hidden = form.querySelector('[name="taxes"]:checked')?.value === 'duty'; };
+      form.querySelectorAll('[name="taxes"]').forEach((field) => field.addEventListener('change', syncVat));
+      resultBody.addEventListener('click', (event) => { if (event.target.closest('[data-tt-start]')) track('tool_claim_start_clicked'); });
       form.addEventListener('submit', (event) => { event.preventDefault(); render(); });
       exampleButton?.addEventListener('click', () => {
         const set = (name, value) => { const field = form.querySelector('[name="' + name + '"][value="' + value + '"]'); if (field) field.checked = true; };
-        set('reason', 'overpaid'); set('postal', 'no'); set('who', 'importer'); set('eori', 'yes'); set('system', 'cds'); set('taxes', 'both'); set('vatRegistered', 'yes');
+        set('reason', 'preference'); set('postal', 'no'); set('who', 'importer'); set('eori', 'yes'); set('system', 'cds'); set('taxes', 'both'); set('vatRegistered', 'yes');
         form.querySelector('[name="acceptedOn"]').value = '2025-02-03';
         track('tool_example_loaded');
+        syncVat();
         render();
       });
   `,
