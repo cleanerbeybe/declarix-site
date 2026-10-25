@@ -590,6 +590,7 @@ export const routes = [
   },
   {
     path: '/customs-clearance-software/',
+    modifiedOn: '2026-10-25',
     related: [
       ['Automate customs without changing software', '/guides/automate-customs-without-changing-software/', 'Keep the filing layer; automate preparation.'],
       ['Customs preparation for ASM Sequoia', '/customs-workflows/customs-preparation-for-sequoia/', 'The Sequoia workflow.'],
@@ -656,6 +657,12 @@ export const routes = [
           'Count unsupported cases, questions, retries, and corrections—not only successful rows.',
           'Review security, data location, access, retention, deletion, and support for the proposed deployment.',
           'Keep commercial units, minimums, corrections, service expectations, and exit terms in the written quote.',
+        ],
+        linkSentence: [
+          'Check the ', ['source evidence', '/how-it-works/'], ', the ',
+          ['agreed handoff', '/supported-scope/'], ', and the ',
+          ['package costs', '/pricing/'], '. Compare the same job, volume and review times in the ',
+          ['pilot', '/pilot/'], '.',
         ],
       },
       {
