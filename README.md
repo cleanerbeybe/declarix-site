@@ -61,3 +61,9 @@ contract.
 - Update the pinned claims contract only after the corresponding version is merged in
   `cleanerbeybe/declarix/docs/public-claims/current.json`.
 - Never hand-edit generated files in `dist/` or reintroduce copied homepage shells for policy routes.
+
+## Internal SEO evidence review
+
+[Declarix directory evidence adapter](docs/seo-evidence/README.md) connects the existing Agent SEO
+Authority & Links / Monitoring method to the handed-over directory pack. It runs offline and on
+demand. It does not change the website, install a skill, authorise submissions, or create a schedule.
