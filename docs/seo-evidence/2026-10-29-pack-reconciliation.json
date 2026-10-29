@@ -1,0 +1,52 @@
+{
+  "product": "Declarix",
+  "legacy": {
+    "row_count": 86,
+    "statuses": {
+      "todo": 86
+    },
+    "recorded_attempts": 0,
+    "recorded_live_urls": 0,
+    "decision_statuses": {
+      "D0": "open",
+      "D1": "open",
+      "D2": "open",
+      "D3": "open",
+      "D4": "open",
+      "D5": "open",
+      "D6": "open",
+      "D7": "open",
+      "D8": "open",
+      "D9": "open"
+    }
+  },
+  "current": {
+    "row_count": 86,
+    "statuses": {
+      "todo": 86
+    },
+    "recorded_attempts": 0,
+    "recorded_live_urls": 0,
+    "decision_statuses": {
+      "D0": "answered",
+      "D1": "answered",
+      "D2": "open",
+      "D3": "open",
+      "D4": "open",
+      "D5": "open",
+      "D6": "answered",
+      "D7": "open",
+      "D8": "open",
+      "D9": "open"
+    }
+  },
+  "same_row_ids": true,
+  "row_records_changed": [],
+  "decision_records_changed": [
+    "D0",
+    "D1",
+    "D6"
+  ],
+  "interpretation": "saved tracker records only; not a global listing inventory",
+  "external_action_authorized": false
+}

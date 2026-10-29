@@ -1,0 +1,48 @@
+{
+  "product": "Declarix",
+  "approved_facts": {
+    "revision": "synthetic-v1",
+    "fields": {
+      "name": {
+        "state": "approved",
+        "value": "Synthetic vendor"
+      },
+      "website": {
+        "state": "approved",
+        "value": "https://example.invalid"
+      },
+      "address": {
+        "state": "approved",
+        "value": "Synthetic registered office"
+      },
+      "phone": {
+        "state": "not_provided"
+      },
+      "hours": {
+        "state": "unknown"
+      }
+    }
+  },
+  "observations": [
+    {
+      "id": "SYN-01",
+      "url": "https://directory.invalid/example",
+      "capture": "page.html",
+      "sha256": "0d764d312006b2bb5cda05be35ad2bea6b6df55a9e0a4c6db5d9f190b1bede53",
+      "captured_at": "2026-10-28T12:00:00Z",
+      "listing_state": "present",
+      "fields": {
+        "name": "Synthetic vendor",
+        "website": "https://example.invalid",
+        "address": "Synthetic registered office"
+      },
+      "link": {
+        "state": "observed",
+        "href": "https://example.invalid",
+        "rel": "nofollow"
+      },
+      "indexability": "no_noindex_observed"
+    }
+  ],
+  "reviews": []
+}
